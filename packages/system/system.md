@@ -1512,6 +1512,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
     - surfaceVariants({ tone: bandTone, elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/panel/usePanel.ts; see Surface anatomy
   - accentEdge: enum; Opt in to a passive inherited-color edge at logical inline-start. Omission draws no edge. (components[] · packages/ui/src/molecules/panel/types.ts)
   - children: ReactNode; Optional Header, exactly one Body and optional Footer, in direct DOM sibling order. Fragments without wrappers are supported; Panel never parses or repairs the child tree. (components[] · packages/ui/src/molecules/panel/types.ts)
+  - fill: boolean; Opt in to filling the host's block size: Header and Footer stay fixed and only Body scrolls natively. The host owns a definite height; without one Panel stays content-sized. Absence keeps content-sized height. (components[] · packages/ui/src/molecules/panel/types.ts)
   - tone: enum; Explicit Material ownership. Inherit exposes an existing raised host, never infers one. (components[] · packages/ui/src/molecules/panel/types.ts)
   - variant: enum; Shared presentation of the supplied zones, without changing their behavior. (components[] · packages/ui/src/molecules/panel/types.ts)
 ### Popover
@@ -1737,6 +1738,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
     - tabsVariants base: gap-0 → --spacing-0
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/molecules/tabs/useTabs.ts; see Surface anatomy
   - defaultValue: string; Initial uncontrolled selection; when absent, selects the first enabled item. (components[] · packages/ui/src/molecules/tabs/types.ts)
+  - fill: boolean; Fill the host's block size with a fixed tab list and a natively scrolling active panel. The host must have a definite height; otherwise Tabs stays content-sized and nothing scrolls. The root also carries a bare data-fill attribute in this mode. Inactive panels unmount, so scroll position is not preserved. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - fullWidth: boolean; Fill the available width with equal segmented or outline tabs when they fit; overflowing tabs may be unequal. Has no effect on underline. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - items: TabsItem[]; Ordered views: unique, non-empty values and at least one enabled item are required. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - label: string; Accessible name of the tablist. (components[] · packages/ui/src/molecules/tabs/types.ts)
@@ -4491,6 +4493,7 @@ Not exported:
 - heading-id: titleId; approved; SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
 - heading-level: level; approved; ArticleFeature, CalendarGrid, ChapterBreak, Closing, CommunityCard, FooterNavigation, Heading, Hero, LabStage, ListItemTitle, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
 - heading-title: title; approved; AlertDialogContent, ArticleFeature, ChapterBreak, Closing, CommunityCard, DialogContent, Hero, LabStage, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
+- host-fill: fill; approved; Panel, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - icon-glyph-name: name; approved; Icon (propNaming[] · skills/_shared/prop-naming.json)
 - icon-placement: iconPosition; approved; Button (propNaming[] · skills/_shared/prop-naming.json)
 - identity-image-source: src; approved; AppIcon (propNaming[] · skills/_shared/prop-naming.json)

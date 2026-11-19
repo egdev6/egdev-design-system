@@ -1,0 +1,39 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "owner-choice",
+  "decision": "Approve the host-fill convention (fill) for Panel and Tabs without changing any existing component contract.",
+  "evidence": {
+    "taskReference": "odd/tasks/panel-tabs-fill-build.md#log",
+    "userStatements": [
+      {
+        "quote": "Acepto todas",
+        "provenance": "odd/tasks/panel-tabs-fill-specs.md L2 (2026-11-19): acceptance of both fill amendments, including D-N A (approve host-fill / fill for Panel and Tabs) and D-G"
+      },
+      {
+        "quote": "Apruebo con las recomendaciones",
+        "provenance": "Implementation plans approval (2026-11-20): docs/components/panel/v0.5/implementation-plan.md and docs/components/tabs/v0.5/implementation-plan.md, OQ1 approves recording host-fill with this approval record"
+      }
+    ]
+  },
+  "limits": [
+    "Binds only the host-fill convention payload below; fullWidth, sticky, maxHeight, layout and filled keep their existing meanings and approvals.",
+    "Every existing Panel and Tabs API is unchanged; no migration is implied."
+  ],
+  "entries": [
+    {
+      "scope": "convention:host-fill",
+      "contentHash": "sha256:b223d062d6fe022e97b092a24f8902c787d82eb6d44d14281b92fff22c4ab395",
+      "convention": {
+        "id": "host-fill",
+        "name": "fill",
+        "meaning": "Opt in to filling a definite-height host's block size, with fixed chrome and an internal native scrolling region; absence keeps content-sized height.",
+        "whenToUse": "A component sits in a host that owns a definite height and should keep its header, footer or tab list fixed while one inner region scrolls natively.",
+        "avoid": "Inline-axis width (fullWidth), positioning (sticky), height caps (maxHeight), arrangement (layout) or solid glyph rendering (filled).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

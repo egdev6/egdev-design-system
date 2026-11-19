@@ -14,8 +14,8 @@ Implement the approved fill amendments and ship them in one release together wit
 | ID | Specs | Task | Route | Commit |
 |---|---|---|---|---|
 | T1 | S1, S3 | Implementation plans for Panel v0.5 and Tabs v0.5 | worker | see L2 |
-| T2 | S1 | Panel v0.5 fill implementation | worker | pending |
-| T3 | S1 | Tabs v0.5 fill implementation (incl. `data-fill`) | worker | pending |
+| T2 | S1 | Panel v0.5 fill implementation | worker | a6acf3f |
+| T3 | S1 | Tabs v0.5 fill implementation (incl. `data-fill`) | worker | 9df0d98 |
 | T4 | S1, S4 | Registry (`host-fill`), artifact, browser verification (440×640, classic scrollbars), records | worker | pending |
 | T5 | S2, S4 | Joint release (ui, system and dependents) after merge | inline | pending |
 
@@ -24,3 +24,4 @@ Implement the approved fill amendments and ship them in one release together wit
 - L1 — Owner: "todo junto" (after AttachmentField and the fill amendments were merged).
 - L2 — Plans written (shared registry/artifact/verification steps in the Panel plan). Owner: "Apruebo con las recomendaciones" → OQ1 approval record; OQ2 fingerprints from the base commit; OQ3 true-only variants; OQ4 VIS authorized; OQ5 typed samples + CSS assertion; OQ6 one joint record; OQ-T1 extra Tabs default pin; OQ-T2 `data-fill` after native props. Units 1 (Panel) and 2 (Tabs) run as parallel workers with disjoint surfaces.
 - L3 — Units 1–2 by parallel workers: Panel fill (RED 13 failed/57 → GREEN 70/70; ModuleCard green) and Tabs fill (RED 14 failed/74 → GREEN 88/88). Parent fix (OQ-T2): Tabs drops any consumer `data-fill` when fill is off, so it cannot trigger PanelBody's gutter rule (RED observed, then GREEN). Combined 183/183, typecheck clean. FillHost stories deferred to unit 3.
+- L4 — Units 3–4 by worker: FillHost stories (Panel, Tabs) and nested FillWithTabs; controls/docgen/CSS rows; package-consumption typed samples + fill/`:has` CSS assertions; `host-fill` registry entry (worker-written whenToUse/avoid), approval record docs/decisions/prop-naming-panel-tabs-fill-approval.json, 13 usage revisions refreshed; artifact regenerated. 601 focused tests, typecheck, props, artifact, system, exports 137, consumption 14 all pass.

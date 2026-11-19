@@ -860,7 +860,9 @@ const postReceiptProposals = [
   'accepted-file-types',
   'max-file-bytes',
   'max-file-count',
-  'files-rejected'
+  'files-rejected',
+  // Panel and Tabs fill share one approved convention with its own approval record (docs/decisions/prop-naming-panel-tabs-fill-approval.json).
+  'host-fill'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1950,8 +1952,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel and AppIcon add one each;
   // Dialog adds overlay scope and header layout; Collapsible adds two approved conventions; Panel adds one proposal.
   // AttachmentField adds four approved file-intake conventions.
-  assert.equal(actual.length, 177);
-  assert.equal(beforeIndicatorConventions(actual).length, 174);
+  // Panel and Tabs fill add one approved shared convention (host-fill).
+  assert.equal(actual.length, 178);
+  assert.equal(beforeIndicatorConventions(actual).length, 175);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
