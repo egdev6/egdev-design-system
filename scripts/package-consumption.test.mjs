@@ -9915,7 +9915,8 @@ const partialTypography = ${JSON.stringify(partialTypography)};
 // S9 adds the navigation count size: 296 + 1 = 297.
 // #425 adds 14 owner-confirmed semantic role aliases: 297 + 14 = 311.
 // #465 adds the owner-approved --gradient-spectrum: 311 + 1 = 312.
-assert.equal(names.length, 312, 'Packed native artifact must expose 312 variables');
+// Tabs v0.4 adds the owner-approved --mask-scroll-fade-inline: 312 + 1 = 313.
+assert.equal(names.length, 313, 'Packed native artifact must expose 313 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
