@@ -1,12 +1,12 @@
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
-import { render, renderHook, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useEffect } from 'react';
 import { renderToString } from 'react-dom/server';
 import { build } from 'vite';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { surfaceVariants } from '../../primitives/surface';
 import { Tabs } from './index';
 import { useTabs } from './useTabs';
@@ -40,6 +40,19 @@ const edgeFadeUtilities = [
 function selected(name: string) {
   expect(screen.getByRole('tab', { name })).toHaveAttribute('aria-selected', 'true');
 }
+
+function scrollButton(side: 'start' | 'end'): HTMLButtonElement {
+  const button = screen.getByText(`Scroll tabs to ${side}`).closest('button');
+  if (!button) {
+    throw new Error(`Missing ${side} scroll button`);
+  }
+  return button;
+}
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
 
 describe('Tabs public contract', () => {
   it('derives Radix props and counter presence without taking over state', () => {
@@ -434,13 +447,13 @@ describe('Tabs segmented layout opt-ins', () => {
   }, 30_000);
 
   it.each([
-    ['a fitted full-width segmented list', 'segmented', true, 117, 117],
-    ['an overflowing intrinsic segmented list', 'segmented', false, 117, 176],
-    ['an overflowing underline list', 'underline', false, 117, 176],
-    ['an overflowing underline list with fullWidth', 'underline', true, 117, 176]
+    ['a fitted full-width segmented list', 'segmented', true, 117, 117, false],
+    ['an overflowing intrinsic segmented list', 'segmented', false, 117, 176, false],
+    ['an overflowing underline list', 'underline', false, 117, 176, true],
+    ['an overflowing underline list with fullWidth', 'underline', true, 117, 176, true]
   ] as const)(
     'preserves native focus scrolling for %s',
-    async (_name, variant, fullWidth, clientWidth, scrollWidth) => {
+    async (_name, variant, fullWidth, clientWidth, scrollWidth, reveal) => {
       const user = userEvent.setup();
       const onValueChange = vi.fn();
       render(<Tabs {...base} variant={variant} fullWidth={fullWidth} onValueChange={onValueChange} />);
@@ -457,7 +470,15 @@ describe('Tabs segmented layout opt-ins', () => {
       expect(published).toHaveFocus();
       expect(published).toHaveAttribute('aria-selected', 'true');
       expect(onValueChange).toHaveBeenCalledExactlyOnceWith('published');
-      expect(scrollIntoView).not.toHaveBeenCalled();
+      if (reveal) {
+        expect(scrollIntoView).toHaveBeenCalledExactlyOnceWith({
+          block: 'nearest',
+          inline: 'nearest',
+          behavior: 'instant'
+        });
+      } else {
+        expect(scrollIntoView).not.toHaveBeenCalled();
+      }
     }
   );
 
@@ -567,6 +588,10 @@ describe('Tabs segmented layout opt-ins', () => {
           onValueChange={onValueChange}
         />
       );
+      // fullWidth toggles the v0.4-A scroll area wrapper, which remounts the list: query fresh nodes.
+      const list = screen.getByRole('tablist');
+      const tab = screen.getByRole('tab', { name: 'Long queued posts 0' });
+      const count = within(tab).getByText('0');
       expect(list.classList.contains('grid')).toBe(fullWidth);
       expect(tab.classList.contains('whitespace-normal')).toBe(labelWrap);
       expect(tab.classList.contains('justify-center')).toBe(fullWidth && !labelWrap);
@@ -699,8 +724,9 @@ describe('Tabs outline variant', () => {
   ];
 
   // SHA-256 of JSON [list, trigger, count, typeof onFocus] for every variant/size/layout combination,
-  // captured at v0.3 (ff6438f) with scroll-px-1.5 filtered from the list. v0.4 only adds the edge-fade
-  // utilities to scrollable lists (filtered below), so everything else must stay byte-identical.
+  // captured at v0.3 (ff6438f) with scroll-px-1.5 filtered from the list. v0.4 adds the edge-fade
+  // utilities (filtered below). v0.4-A intentionally adds an underline focus handler; assert it separately
+  // and normalize only that entry to its v0.3 value before comparing the unchanged fingerprints.
   const v03Recipes: Record<string, string> = {
     'underline|md|false|false': 'b7e7458902c516780666e15a9541296e4e3a895d467ac915f3f544517879be2c',
     'underline|md|false|true': 'b7e7458902c516780666e15a9541296e4e3a895d467ac915f3f544517879be2c',
@@ -742,13 +768,15 @@ describe('Tabs outline variant', () => {
               .split(' ')
               .filter((part) => part !== 'scroll-px-1.5' && !edgeFadeUtilities.includes(part))
               .join(' ');
+            const focusType = typeof result.listProps.onFocus;
+            expect(focusType).toBe(variant === 'underline' || fullWidth ? 'function' : 'undefined');
             const fingerprint = createHash('sha256')
               .update(
                 JSON.stringify([
                   list,
                   result.triggerClassName,
                   result.items[0]?.countClassName,
-                  typeof result.listProps.onFocus
+                  variant === 'underline' ? 'undefined' : focusType
                 ])
               )
               .digest('hex');
@@ -847,8 +875,9 @@ describe('Tabs outline variant', () => {
     expect(tab).not.toHaveClass('whitespace-nowrap', 'justify-center');
     expect(within(tab).getByText('3')).toHaveClass('whitespace-nowrap');
     rerender(<Tabs {...outlineBase} variant='outline' fullWidth={true} labelWrap={true} />);
-    expect(tab).toHaveClass('wrap-break-word', 'whitespace-normal', 'text-start');
-    expect(tab).toHaveClass(...outlineTreatment);
+    const wrapped = screen.getByRole('tab', { name: 'My apps 3' });
+    expect(wrapped).toHaveClass('wrap-break-word', 'whitespace-normal', 'text-start');
+    expect(wrapped).toHaveClass(...outlineTreatment);
   });
 
   it('reveals the focused tab when the full-width outline list overflows', async () => {
@@ -875,6 +904,175 @@ describe('Tabs outline variant', () => {
     expect(intrinsic.listProps.onFocus).toBeUndefined();
     const filled = renderHook(() => useTabs({ ...outlineBase, variant: 'outline', fullWidth: true })).result.current;
     expect(filled.listProps.onFocus).toBeTypeOf('function');
+  });
+});
+
+describe('Tabs scroll buttons (v0.4-A)', () => {
+  it.each([
+    ['underline', 'underline', false, true],
+    ['underline with fullWidth', 'underline', true, true],
+    ['full-width segmented', 'segmented', true, true],
+    ['full-width outline', 'outline', true, true],
+    ['intrinsic segmented', 'segmented', false, false],
+    ['intrinsic outline', 'outline', false, false]
+  ] as const)('wraps only the scrollable %s list', (_name, variant, fullWidth, scrollable) => {
+    const { container } = render(<Tabs {...base} variant={variant} fullWidth={fullWidth} />);
+    const root = container.firstElementChild;
+    const list = screen.getByRole('tablist');
+    expect(root).not.toBeNull();
+    if (scrollable) {
+      const area = list.parentElement;
+      expect(area?.parentElement).toBe(root);
+      expect(area).toHaveClass('relative');
+      expect(area?.children).toHaveLength(3);
+      expect(scrollButton('start').parentElement).toBe(area);
+      expect(scrollButton('end').parentElement).toBe(area);
+    } else {
+      expect(list.parentElement).toBe(root);
+      expect(root?.children).toHaveLength(items.length + 1);
+      expect(screen.queryByText('Scroll tabs to start')).not.toBeInTheDocument();
+      expect(screen.queryByText('Scroll tabs to end')).not.toBeInTheDocument();
+    }
+  });
+
+  it.each(['ltr', 'rtl'] as const)('tracks %s edges on scroll, resize and changed items', (direction) => {
+    let notifyResize: (() => void) | undefined;
+    const observe = vi.fn();
+    const disconnect = vi.fn();
+    class MockResizeObserver {
+      constructor(callback: ResizeObserverCallback) {
+        notifyResize = () => callback([], this);
+      }
+      observe = observe;
+      unobserve = vi.fn();
+      disconnect = disconnect;
+    }
+    vi.stubGlobal('ResizeObserver', MockResizeObserver);
+    const { rerender, unmount } = render(<Tabs {...base} />);
+    const list = screen.getByRole('tablist');
+    list.style.direction = direction;
+    let width = 300;
+    let position = 0;
+    Object.defineProperties(list, {
+      clientWidth: { configurable: true, value: 100 },
+      scrollWidth: { configurable: true, get: () => width },
+      scrollLeft: { configurable: true, get: () => position }
+    });
+    const start = scrollButton('start');
+    const end = scrollButton('end');
+    const state = (startState: string, endState: string) => {
+      expect(start).toHaveAttribute('data-state', startState);
+      expect(end).toHaveAttribute('data-state', endState);
+    };
+    expect(observe).toHaveBeenCalledWith(list);
+    for (const tab of screen.getAllByRole('tab')) {
+      expect(observe).toHaveBeenCalledWith(tab);
+    }
+    fireEvent.scroll(list);
+    state('hidden', 'visible');
+    position = direction === 'rtl' ? -100 : 100;
+    fireEvent.scroll(list);
+    state('visible', 'visible');
+    position = direction === 'rtl' ? -200 : 200;
+    fireEvent.scroll(list);
+    state('visible', 'hidden');
+    position = 0;
+    width = 100;
+    act(() => notifyResize?.());
+    state('hidden', 'hidden');
+    width = 300;
+    act(() => notifyResize?.());
+    state('hidden', 'visible');
+    rerender(<Tabs {...base} items={[...items, { value: 'new', label: 'New', content: 'New posts' }]} />);
+    expect(observe).toHaveBeenCalledWith(screen.getByRole('tab', { name: 'New' }));
+    unmount();
+    expect(disconnect).toHaveBeenCalled();
+  });
+
+  it.each([
+    ['ltr', false, 'smooth', -148.8, 148.8],
+    ['rtl', true, 'instant', 148.8, -148.8]
+  ] as const)(
+    'scrolls a page in %s with reduced motion %s without changing selection',
+    async (direction, reduced, behavior, startDistance, endDistance) => {
+      const user = userEvent.setup();
+      const onValueChange = vi.fn();
+      const matchMedia = vi.fn(() => ({ matches: reduced }));
+      vi.stubGlobal('matchMedia', matchMedia);
+      render(<Tabs {...base} onValueChange={onValueChange} />);
+      const list = screen.getByRole('tablist');
+      list.style.direction = direction;
+      Object.defineProperties(list, {
+        clientWidth: { configurable: true, value: 200 },
+        scrollWidth: { configurable: true, value: 600 },
+        scrollLeft: { configurable: true, value: direction === 'rtl' ? -200 : 200 }
+      });
+      const scrollBy = vi.fn();
+      Object.defineProperty(list, 'scrollBy', { configurable: true, value: scrollBy });
+      const start = scrollButton('start');
+      const end = scrollButton('end');
+      for (const button of [start, end]) {
+        vi.spyOn(button, 'getBoundingClientRect').mockReturnValue({ width: 25.6 } as DOMRect);
+      }
+      fireEvent.scroll(list);
+      await user.click(start);
+      await user.click(end);
+      expect(scrollBy).toHaveBeenNthCalledWith(1, { left: startDistance, behavior });
+      expect(scrollBy).toHaveBeenNthCalledWith(2, { left: endDistance, behavior });
+      expect(matchMedia).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)');
+      selected('Queue');
+      expect(onValueChange).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each(['start', 'end'] as const)('keeps the hovered %s button inert until pointer leave', (side) => {
+    const onValueChange = vi.fn();
+    render(<Tabs {...base} onValueChange={onValueChange} />);
+    const list = screen.getByRole('tablist');
+    let position = 100;
+    Object.defineProperties(list, {
+      clientWidth: { configurable: true, value: 100 },
+      scrollWidth: { configurable: true, value: 300 },
+      scrollLeft: { configurable: true, get: () => position }
+    });
+    const scrollBy = vi.fn();
+    Object.defineProperty(list, 'scrollBy', { configurable: true, value: scrollBy });
+    const button = scrollButton(side);
+    fireEvent.scroll(list);
+    expect(button).toHaveAttribute('data-state', 'visible');
+    fireEvent.pointerEnter(button);
+    position = side === 'start' ? 0 : 200;
+    fireEvent.scroll(list);
+    expect(button).toHaveAttribute('data-state', 'inert');
+    expect(button).not.toBeDisabled();
+    fireEvent.click(button);
+    expect(scrollBy).not.toHaveBeenCalled();
+    selected('Queue');
+    expect(onValueChange).not.toHaveBeenCalled();
+    fireEvent.pointerLeave(button);
+    expect(button).toHaveAttribute('data-state', 'hidden');
+  });
+
+  it('hides the scroll buttons from assistive technology and skips them on Tab', async () => {
+    const user = userEvent.setup();
+    render(<Tabs {...base} />);
+    for (const side of ['start', 'end'] as const) {
+      const button = scrollButton(side);
+      expect(button).toHaveAttribute('aria-hidden', 'true');
+      expect(button).toHaveAttribute('tabindex', '-1');
+      expect(button).toHaveAttribute('type', 'button');
+      expect(button).toHaveClass('hidden', '[@media(hover:hover)_and_(pointer:fine)]:inline-flex');
+      expect(button).toHaveClass('data-[state=hidden]:invisible', 'data-[state=hidden]:pointer-events-none');
+      expect(button).toHaveClass('data-[state=inert]:opacity-45', 'motion-reduce:transition-none');
+      expect(button.querySelector('svg')).toHaveClass(
+        ...(side === 'start' ? ['rotate-90', 'rtl:-rotate-90'] : ['-rotate-90', 'rtl:rotate-90'])
+      );
+    }
+    expect(screen.queryByRole('button', { name: /scroll tabs/i })).not.toBeInTheDocument();
+    await user.tab();
+    expect(screen.getByRole('tab', { name: 'Queue' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('tabpanel', { name: 'Queue' })).toHaveFocus();
   });
 });
 
