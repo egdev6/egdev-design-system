@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type ReactNode, useEffect, useState } from 'react';
 import { action } from 'storybook/actions';
-import { Button, Field, Textarea } from '../../index';
+import { Button, Field, Link, Textarea } from '../../index';
 import { AttachmentField } from './AttachmentField';
 
 const notes = (
@@ -62,9 +62,9 @@ const ValidationSamples = () => {
     <ul className='m-0 list-none p-0'>
       {links.map(({ name, href, hint }) => (
         <li key={name}>
-          <a href={href} download={name} className='underline'>
+          <Link href={href} download={name}>
             {name}
-          </a>
+          </Link>
           {` (${hint})`}
         </li>
       ))}
