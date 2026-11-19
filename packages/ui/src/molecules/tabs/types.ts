@@ -159,6 +159,32 @@ export const tabsListVariants = cva('', {
   defaultVariants: { variant: 'underline' }
 });
 
+/** v0.4-A positioning context wrapping a scrollable list and its two internal scroll buttons. */
+export const tabsScrollAreaVariants = cva('relative');
+
+/**
+ * v0.4-A fine-pointer scroll buttons over the faded edges; IconButton sm (size-8) matches the fade zone.
+ * Never rendered on coarse pointers; visibility follows the hook-owned data-state (visible, inert, hidden).
+ */
+export const tabsScrollButtonVariants = cva(
+  [
+    'absolute inset-y-0 my-auto hidden [@media(hover:hover)_and_(pointer:fine)]:inline-flex items-center justify-center',
+    '[transition:opacity_var(--duration-fast)_var(--ease-out),color_var(--duration-fast)_var(--ease-out),background-color_var(--duration-fast)_var(--ease-out)] motion-reduce:transition-none',
+    'data-[state=hidden]:invisible data-[state=hidden]:pointer-events-none data-[state=hidden]:opacity-0',
+    'data-[state=inert]:opacity-45 data-[state=inert]:cursor-default'
+  ],
+  {
+    variants: { side: { start: 'start-0', end: 'end-0' } },
+    defaultVariants: { side: 'end' }
+  }
+);
+
+/** The only system chevron points down; rotate it toward the logical inline side, mirrored in RTL. */
+export const tabsScrollIconVariants = cva('', {
+  variants: { side: { start: 'rotate-90 rtl:-rotate-90', end: '-rotate-90 rtl:rotate-90' } },
+  defaultVariants: { side: 'end' }
+});
+
 /** Attribute-based selection styling; no duplicated state classes or keyboard behavior. */
 export const tabsTriggerVariants = cva(
   [

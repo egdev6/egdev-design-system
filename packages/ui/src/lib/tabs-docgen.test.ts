@@ -72,7 +72,8 @@ describe('Tabs Storybook metadata', () => {
       'FullWidthLabelWrap',
       'Outline',
       'OutlineFullWidth',
-      'OutlineCustomAccent'
+      'OutlineCustomAccent',
+      'EdgeFade'
     ]);
     expect(readFileSync(source('Tabs.stories.tsx'), 'utf8')).not.toMatch(/argTypes:|\bplay:/);
   });

@@ -121,6 +121,13 @@ it('compiles production Tabs CVA utilities without writing build artifacts', asy
   );
   expect(css).toMatch(/@supports\s*\(animation-timeline:\s*scroll\(\)\)\s*\{[\s\S]*?mask-repeat:\s*no-repeat/);
   expect(css).toMatch(/:dir\(rtl\)[\s\S]*?--mask-fade-left:\s*var\(--eg-tabs-fade-end\)/);
+  // Scroll buttons are display:none by default; only the fine-hover media rule reveals them.
+  const finePointerSelector = String.raw`.\[\@media\(hover\:hover\)_and_\(pointer\:fine\)\]\:inline-flex`;
+  expect(rule(finePointerSelector)).toMatch(/display:\s*inline-flex/);
+  // The selector's own rule follows its wrapping media query; nothing closes between them.
+  const beforeFinePointer = css.slice(0, css.indexOf(finePointerSelector));
+  const finePointerMedia = beforeFinePointer.slice(beforeFinePointer.lastIndexOf('@media'));
+  expect(finePointerMedia).toMatch(/^@media\s*\(hover:\s*hover\)\s*and\s*\(pointer:\s*fine\)\s*\{\s*$/);
   const theme = readFileSync(fileURLToPath(new URL('../../../tokens/src/theme.css', import.meta.url)), 'utf8');
   // Static layers only: a var() inside a :root token would be substituted at :root, never on the list.
   expect(theme).toContain(
