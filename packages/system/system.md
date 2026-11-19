@@ -1696,6 +1696,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
     - tabsListVariants variant=outline: p-0.75 → --spacing
     - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: p-1.5 → --spacing
     - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
+    - tabsListVariants {"variant":"underline"}: tabsEdgeFade → unresolved
+    - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: tabsEdgeFade → unresolved
     - tabsPanelVariants base: pt-4 → --spacing-4
     - tabsTriggerVariants base: gap-2 → --spacing-2
     - tabsTriggerVariants base: font-sans → --font-sans
@@ -4329,6 +4331,8 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - tabsListVariants variant=outline: p-0.75 → --spacing
     - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: p-1.5 → --spacing
     - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
+    - tabsListVariants {"variant":"underline"}: tabsEdgeFade → unresolved
+    - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: tabsEdgeFade → unresolved
     - tabsPanelVariants base: pt-4 → --spacing-4
     - tabsTriggerVariants base: gap-2 → --spacing-2
     - tabsTriggerVariants base: font-sans → --font-sans
@@ -4594,6 +4598,7 @@ Not exported:
 | --icon-stroke | 1.75 | root |  | tokens[] · packages/tokens/src/theme.css |
 | --logo-red | #E91B35 | root |  | tokens[] · packages/tokens/src/theme.css |
 | --logo-red-shade | #800C1D | root |  | tokens[] · packages/tokens/src/theme.css |
+| --mask-scroll-fade-inline | linear-gradient(to right, transparent, #000), linear-gradient(#000, #000), linear-gradient(to left, transparent, #000) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --mask-section-fade-both | linear-gradient(180deg, transparent, #000 clamp(96px, 14vh, 180px), #000 calc(100% - clamp(96px, 14vh, 180px)), transparent) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --mask-section-fade-bottom | linear-gradient(0deg, transparent, #000 clamp(96px, 14vh, 180px)) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --mask-section-fade-top | linear-gradient(180deg, transparent, #000 clamp(96px, 14vh, 180px)) | root |  | tokens[] · packages/tokens/src/theme.css |
