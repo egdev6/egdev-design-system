@@ -1,7 +1,7 @@
 import { fireEvent, render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type ReactNode, useState } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { type ReactNode, StrictMode, useState } from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AttachmentField } from './AttachmentField';
 import type { AttachmentFieldProps } from './types';
 import { useAttachmentField } from './useAttachmentField';
@@ -32,6 +32,20 @@ const field = (props: Partial<AttachmentFieldProps> = {}, children: ReactNode = 
   <AttachmentField {...({ label: 'Attachments', ...props } as AttachmentFieldProps)}>{children}</AttachmentField>
 );
 const rejectionTexts = () => Array.from(document.querySelectorAll('.eg-field-message')).map((node) => node.textContent);
+
+const urls = { created: [] as File[], revoked: [] as string[] };
+
+beforeEach(() => {
+  urls.created = [];
+  urls.revoked = [];
+  URL.createObjectURL = vi.fn((blob: Blob | MediaSource) => {
+    urls.created.push(blob as File);
+    return `blob:preview-${urls.created.length}`;
+  });
+  URL.revokeObjectURL = vi.fn((url: string) => {
+    urls.revoked.push(url);
+  });
+});
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -257,7 +271,7 @@ describe('AttachmentField v0.1 — validation (AC-09 to AC-13)', () => {
   it('uses the plural count text when several files exceed the capacity', () => {
     render(field({ defaultValue: [makeFile('first.png')], maxFiles: 1 }));
     fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.png'), makeFile('b.png')]) });
-    expect(rejectionTexts()).toEqual(['2 files were not added: at most 1 attachments are allowed.']);
+    expect(rejectionTexts()).toEqual(['2 files were not added: at most 1 attachment is allowed.']);
   });
 
   it('reports one error per broken rule in type, size, count order and each file once', () => {
@@ -271,7 +285,7 @@ describe('AttachmentField v0.1 — validation (AC-09 to AC-13)', () => {
     expect(rejectionTexts()).toEqual([
       'both.bmp was not added: only PNG files are allowed.',
       'big.png was not added: it is larger than 100 B.',
-      'late.png was not added: at most 1 attachments are allowed.'
+      'late.png was not added: at most 1 attachment is allowed.'
     ]);
     expect(onFilesRejected).toHaveBeenCalledTimes(1);
     expect(at(onFilesRejected.mock.calls, 0)[0]).toEqual([
@@ -478,5 +492,306 @@ describe('AttachmentField v0.1 — maximum reached (AC-21)', () => {
     expect(onValueChange).not.toHaveBeenCalled();
     expect(rejectionTexts()).toEqual(['c.png was not added: at most 2 attachments are allowed.']);
     expect(dropzone()).toBeEnabled();
+  });
+});
+
+describe('AttachmentField v0.1 — message grammar (L2)', () => {
+  it('uses the singular and plural count texts', () => {
+    const { unmount } = render(field({ defaultValue: [makeFile('first.png')], maxFiles: 1 }));
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.png')]) });
+    expect(rejectionTexts()).toEqual(['a.png was not added: at most 1 attachment is allowed.']);
+    unmount();
+    render(field({ defaultValue: [makeFile('x.png'), makeFile('y.png'), makeFile('z.png')], maxFiles: 3 }));
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.png'), makeFile('b.png')]) });
+    expect(rejectionTexts()).toEqual(['2 files were not added: at most 3 attachments are allowed.']);
+  });
+});
+
+const removeButtons = () => screen.getAllByRole('button', { name: /^Remove / });
+const status = () => screen.getByRole('status');
+
+describe('AttachmentField v0.1 — strip and labels (AC-16)', () => {
+  it('renders a list named by label with a named image and Remove button per file', () => {
+    render(
+      field({
+        defaultValue: [makeFile('a.png'), makeFile('b.jpg', 'image/jpeg', 2048), makeFile('c.svg', 'image/svg+xml', 12)]
+      })
+    );
+    const list = screen.getByRole('list', { name: 'Attachments' });
+    expect(list.tagName).toBe('UL');
+    expect(list).toHaveClass('eg-cluster');
+    expect(screen.getAllByRole('listitem')).toHaveLength(3);
+    expect(screen.getByRole('img', { name: 'Attachment 1, PNG, 240 KB' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Attachment 2, JPEG, 2 KB' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Attachment 3, SVG, 12 B' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Remove Attachment 1, PNG, 240 KB' })).toBeInTheDocument();
+    expect(removeButtons()).toHaveLength(3);
+  });
+
+  it('applies messages overrides including formatSize and renumbers after a removal', async () => {
+    render(
+      field({
+        defaultValue: [makeFile('a.png'), makeFile('b.png')],
+        messages: {
+          itemLabel: ({ position, sizeLabel }) => `Picture ${position} (${sizeLabel})`,
+          removeItem: (label) => `Delete ${label}`,
+          formatSize: (bytes) => `${bytes} bytes`
+        }
+      })
+    );
+    expect(screen.getByRole('img', { name: 'Picture 2 (245760 bytes)' })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Picture 1 (245760 bytes)' }));
+    expect(screen.getAllByRole('img')).toHaveLength(1);
+    expect(screen.getByRole('img', { name: 'Picture 1 (245760 bytes)' })).toBeInTheDocument();
+  });
+
+  it('keeps duplicate file names as distinct items', () => {
+    render(field({ defaultValue: [makeFile('same.png'), makeFile('same.png')] }));
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+  });
+});
+
+describe('AttachmentField v0.1 — object URLs (AC-17)', () => {
+  it('creates one URL per file and shows it', () => {
+    const files = [makeFile('a.png'), makeFile('b.png')];
+    render(field({ defaultValue: files }));
+    expect(urls.created).toEqual(files);
+    expect(screen.getAllByRole('img').map((img) => img.getAttribute('src'))).toEqual([
+      'blob:preview-1',
+      'blob:preview-2'
+    ]);
+    expect(urls.revoked).toEqual([]);
+  });
+
+  it('creates a URL for an added file only and revokes the URL of a removed file', async () => {
+    const first = makeFile('a.png');
+    render(field({ defaultValue: [first, makeFile('b.png')] }));
+    await userEvent.click(at(removeButtons(), 0));
+    expect(urls.revoked).toEqual(['blob:preview-1']);
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('c.png')]) });
+    expect(urls.created).toHaveLength(3);
+    expect(urls.revoked).toEqual(['blob:preview-1']);
+  });
+
+  it('revokes on a controlled list change and on unmount, never a URL still shown', () => {
+    const [a, b] = [makeFile('a.png'), makeFile('b.png')];
+    const { rerender, unmount } = render(field({ value: [a, b], onValueChange: vi.fn() }));
+    rerender(field({ value: [b], onValueChange: vi.fn() }));
+    expect(urls.revoked).toEqual(['blob:preview-1']);
+    expect(screen.getByRole('img').getAttribute('src')).toBe('blob:preview-2');
+    unmount();
+    expect(urls.revoked).toEqual(['blob:preview-1', 'blob:preview-2']);
+  });
+
+  it('keeps creation and revocation balanced under StrictMode, with none left after unmount', () => {
+    const { unmount } = render(
+      <StrictMode>{field({ defaultValue: [makeFile('a.png'), makeFile('b.png')] })}</StrictMode>
+    );
+    const live = screen.getAllByRole('img').map((img) => img.getAttribute('src'));
+    expect(new Set(live).size).toBe(2);
+    for (const url of live) {
+      expect(urls.revoked).not.toContain(url);
+    }
+    unmount();
+    expect(urls.revoked).toHaveLength(urls.created.length);
+  });
+});
+
+describe('AttachmentField v0.1 — removal (AC-18)', () => {
+  it('removes by click, Enter and Space and emits the list without the file', async () => {
+    const onValueChange = vi.fn();
+    const files = [makeFile('a.png'), makeFile('b.png'), makeFile('c.png'), makeFile('d.png')];
+    render(field({ defaultValue: files, onValueChange }));
+    await userEvent.click(at(removeButtons(), 0));
+    expect(onValueChange).toHaveBeenLastCalledWith([at(files, 1), at(files, 2), at(files, 3)]);
+    at(removeButtons(), 0).focus();
+    await userEvent.keyboard('{Enter}');
+    expect(onValueChange).toHaveBeenLastCalledWith([at(files, 2), at(files, 3)]);
+    at(removeButtons(), 0).focus();
+    await userEvent.keyboard(' ');
+    expect(onValueChange).toHaveBeenLastCalledWith([at(files, 3)]);
+    expect(screen.getAllByRole('img')).toHaveLength(1);
+  });
+
+  it('tabs from the Textarea through the Remove buttons to the Dropzone', async () => {
+    render(field({ defaultValue: [makeFile('a.png'), makeFile('b.png')] }));
+    await userEvent.click(notes());
+    await userEvent.tab();
+    expect(at(removeButtons(), 0)).toHaveFocus();
+    await userEvent.tab();
+    expect(at(removeButtons(), 1)).toHaveFocus();
+    await userEvent.tab();
+    expect(dropzone()).toHaveFocus();
+  });
+
+  it('clears the previous rejection messages on a removal', async () => {
+    render(field({ defaultValue: [makeFile('a.png')] }));
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
+    expect(rejectionTexts()).toHaveLength(1);
+    await userEvent.click(at(removeButtons(), 0));
+    expect(rejectionTexts()).toEqual([]);
+  });
+});
+
+describe('AttachmentField v0.1 — focus after removal (AC-19)', () => {
+  const three = (): [File, File, File] => [makeFile('a.png'), makeFile('b.png'), makeFile('c.png')];
+
+  it('focuses the next item, else the previous, else the Dropzone (uncontrolled)', async () => {
+    render(field({ defaultValue: three() }));
+    await userEvent.click(at(removeButtons(), 1));
+    expect(at(removeButtons(), 1)).toHaveFocus();
+    expect(removeButtons()).toHaveLength(2);
+    await userEvent.click(at(removeButtons(), 1));
+    expect(at(removeButtons(), 0)).toHaveFocus();
+    await userEvent.click(at(removeButtons(), 0));
+    expect(dropzone()).toHaveFocus();
+  });
+
+  it('moves focus in controlled mode once the parent applies the removal', async () => {
+    const Host = () => {
+      const [value, setValue] = useState<File[]>(three());
+      return <AttachmentField label='Attachments' value={value} onValueChange={setValue} />;
+    };
+    render(<Host />);
+    await userEvent.click(at(removeButtons(), 0));
+    expect(at(removeButtons(), 0)).toHaveFocus();
+    expect(removeButtons()).toHaveLength(2);
+  });
+
+  it('keeps focus on the button when a controlled request is not applied', async () => {
+    const onValueChange = vi.fn();
+    render(field({ value: three(), onValueChange }));
+    await userEvent.click(at(removeButtons(), 1));
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+    expect(at(removeButtons(), 1)).toHaveFocus();
+  });
+
+  it('does not steal focus the user already moved elsewhere', async () => {
+    const [a, b, c] = three();
+    const onValueChange = vi.fn();
+    const { rerender } = render(field({ value: [a, b, c], onValueChange }));
+    await userEvent.click(at(removeButtons(), 0));
+    notes().focus();
+    rerender(field({ value: [b, c], onValueChange }));
+    expect(notes()).toHaveFocus();
+  });
+
+  it('discards an unapplied request when a later change arrives', async () => {
+    const [a, b, c] = three();
+    const onValueChange = vi.fn();
+    const { rerender } = render(field({ value: [a, b, c], onValueChange }));
+    await userEvent.click(at(removeButtons(), 0));
+    (document.activeElement as HTMLElement).blur();
+    rerender(field({ value: [a, b, c, makeFile('d.png')], onValueChange }));
+    expect(document.body).toHaveFocus();
+  });
+});
+
+describe('AttachmentField v0.1 — announcements (AC-15)', () => {
+  it('mounts the polite status region before any content and keeps it', () => {
+    const { container } = render(field());
+    expect(status()).toHaveAttribute('aria-live', 'polite');
+    expect(status()).toBeEmptyDOMElement();
+    expect(container.querySelectorAll('[role=status]')).toHaveLength(1);
+  });
+
+  it('announces one text per intake: added, then each rejection', () => {
+    render(field({ acceptedTypes: ['image/png'] }));
+    fireEvent.drop(dropzone(), {
+      dataTransfer: transfer([makeFile('a.png'), makeFile('b.png'), makeFile('c.txt', 'text/plain')])
+    });
+    expect(status()).toHaveTextContent('2 attachments added c.txt was not added: only PNG files are allowed.');
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('only.png')]) });
+    expect(status()).toHaveTextContent(/^Attachment added$/);
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('d.txt', 'text/plain')]) });
+    expect(status()).toHaveTextContent(/^d\.txt was not added: only PNG files are allowed\.$/);
+  });
+
+  it('announces one text per removal', async () => {
+    render(field({ defaultValue: [makeFile('a.png')] }));
+    await userEvent.click(at(removeButtons(), 0));
+    expect(status()).toHaveTextContent(/^Attachment 1, PNG, 240 KB removed$/);
+  });
+
+  it('announces nothing for an empty selection', () => {
+    render(field());
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([]) });
+    expect(status()).toBeEmptyDOMElement();
+  });
+
+  it('replaces the inner span for two identical consecutive announcements', async () => {
+    render(field({ defaultValue: [makeFile('a.png'), makeFile('b.png')] }));
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('x.png')]) });
+    const first = status().firstElementChild;
+    expect(first).toHaveTextContent('Attachment added');
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('y.png')]) });
+    const second = status().firstElementChild;
+    expect(second).toHaveTextContent('Attachment added');
+    expect(second).not.toBe(first);
+  });
+
+  it('keeps visible errors out of live regions', () => {
+    render(field());
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
+    const message = document.querySelector('.eg-field-message') as HTMLElement;
+    expect(message).not.toHaveAttribute('aria-live');
+    expect(message).not.toHaveAttribute('role');
+  });
+});
+
+describe('AttachmentField v0.1 — disabled (AC-22)', () => {
+  it('disables the Dropzone and every Remove button, keeps the strip and sets data-disabled', () => {
+    const { container } = render(field({ defaultValue: [makeFile('a.png'), makeFile('b.png')], disabled: true }));
+    expect(dropzone()).toBeDisabled();
+    for (const button of removeButtons()) {
+      expect(button).toBeDisabled();
+    }
+    expect(screen.getAllByRole('img')).toHaveLength(2);
+    expect(container.firstElementChild).toHaveAttribute('data-disabled');
+  });
+
+  it('ignores paste: no preventDefault, callbacks or announcement', () => {
+    const onValueChange = vi.fn();
+    const onFilesRejected = vi.fn();
+    render(field({ disabled: true, onValueChange, onFilesRejected }));
+    expect(pasteInto(notes(), [makeFile('a.png')])).toBe(true);
+    expect(pasteInto(notes(), [makeFile('a.txt', 'text/plain')])).toBe(true);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onFilesRejected).not.toHaveBeenCalled();
+    expect(status()).toBeEmptyDOMElement();
+  });
+
+  it('does not remove while disabled and restores behavior when enabled again', async () => {
+    const onValueChange = vi.fn();
+    const files = [makeFile('a.png')];
+    const { rerender, container } = render(field({ defaultValue: files, disabled: true, onValueChange }));
+    await userEvent.click(at(removeButtons(), 0));
+    expect(onValueChange).not.toHaveBeenCalled();
+    rerender(field({ defaultValue: files, onValueChange }));
+    expect(container.firstElementChild).not.toHaveAttribute('data-disabled');
+    await userEvent.click(at(removeButtons(), 0));
+    expect(onValueChange).toHaveBeenCalledWith([]);
+  });
+});
+
+describe('AttachmentField v0.1 — rootRef and motion (AC-23)', () => {
+  it('returns a rootRef attached to the root element', () => {
+    const { result } = renderHook(() => useAttachmentField({ label: 'Attachments' }));
+    expect(result.current.rootRef).toHaveProperty('current', null);
+    const { container } = render(field());
+    expect(container.firstElementChild).toHaveClass('eg-attachment-field');
+  });
+
+  it('adds no transition, animation or duration utility of its own', () => {
+    const { container } = render(field({ defaultValue: [makeFile('a.png')] }));
+    const own = [
+      container.firstElementChild,
+      screen.getByRole('list'),
+      screen.getByRole('listitem'),
+      screen.getByRole('status')
+    ].map((node) => node?.className ?? '');
+    for (const className of own) {
+      expect(className).not.toMatch(/(^|\s)(transition|animate|duration)/);
+    }
   });
 });

@@ -12,7 +12,7 @@ Implement the approved spec `docs/components/attachment-field/v0.1/spec.md` (con
 
 | ID | Specs | Task | Route | Commit |
 |---|---|---|---|---|
-| T1 | S1–S3 | Unit 1: list, paste and validation (AC-01–14, 20, 21) | worker | pending |
+| T1 | S1–S3 | Unit 1: list, paste and validation (AC-01–14, 20, 21) | worker | c10d2e0 |
 | T2 | S1–S3 | Unit 2: previews, removal, focus, announcements, disabled (AC-15–19, 22, 23) | worker | pending |
 | T3 | S1–S3 | Unit 3: stories, barrel export, Storybook wiring, package fixtures | worker | pending |
 | T4 | S1–S3 | Unit 4: prop-naming registry + approval record, catalog, system artifact | worker | pending |
@@ -22,3 +22,4 @@ Implement the approved spec `docs/components/attachment-field/v0.1/spec.md` (con
 
 - L1 — Owner: "en orden" (merge #498, then plan, then catalog #499/#500); plan approved with "Apruebo, con el registro de aprobación (OQ1)".
 - L2 — Unit 1 done by worker (RED: module not found → GREEN 52/52; molecules 1013/1013; Biome and typecheck clean). Deviations: empty status region until unit 2; hook returns resolved messages; `onChange` omitted from native props; plan's fixed default strings read "1 files" / "at most 1 attachments" → parent decision: make the defaults singular/plural-correct in unit 2 (no API change).
+- L3 — Unit 2 done by worker (RED 25 failed/54 passed → GREEN 79/79; molecules 1040/1040; Biome and typecheck clean). Grammar decision applied: only the count rejection needed plural forms (single files are named by file name). Status span renders only when non-empty (keeps AC-02's empty region).

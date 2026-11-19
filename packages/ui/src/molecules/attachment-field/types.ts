@@ -147,4 +147,22 @@ export type AttachmentFieldProps = AttachmentFieldNativeProps &
 /** Root layout only; every other part is composed from existing atoms and adds no paint. */
 const attachmentFieldVariants = cva('eg-attachment-field min-w-0');
 
-export { attachmentFieldVariants };
+/** Wrapping strip of thumbnails; the Cluster recipe supplies the flex row, this resets the list. */
+const attachmentFieldStripVariants = cva('list-none m-0 p-0');
+
+/** One strip item; the Remove button is positioned against it. */
+const attachmentFieldItemVariants = cva('relative m-0 p-0');
+
+/** Square 64 px thumbnail (`--space-20`). */
+const attachmentFieldThumbnailVariants = cva('w-20 shrink-0');
+
+/** Corner Remove button, placed with logical insets. */
+const attachmentFieldRemoveVariants = cva('absolute top-1 end-1');
+
+export {
+  attachmentFieldItemVariants,
+  attachmentFieldRemoveVariants,
+  attachmentFieldStripVariants,
+  attachmentFieldThumbnailVariants,
+  attachmentFieldVariants
+};
