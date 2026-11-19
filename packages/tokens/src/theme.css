@@ -529,6 +529,9 @@
   --mask-section-fade-top: linear-gradient(180deg, transparent, #000 clamp(96px, 14vh, 180px));
   --mask-section-fade-bottom: linear-gradient(0deg, transparent, #000 clamp(96px, 14vh, 180px));
   --mask-section-fade-both: linear-gradient(180deg, transparent, #000 clamp(96px, 14vh, 180px), #000 calc(100% - clamp(96px, 14vh, 180px)), transparent);
+  /* --mask-scroll-fade-inline — Horizontal scrollport edge fade as three static layers (left ramp, solid middle, right ramp);
+     the host sizes and positions them with mask-size / mask-position, which resolve on the element (Tabs v0.4). */
+  --mask-scroll-fade-inline: linear-gradient(to right, transparent, #000), linear-gradient(#000, #000), linear-gradient(to left, transparent, #000);
   /* --gradient-sheen — Brillo cenital sobre las superficies (se apila encima del color de surface). */
   --gradient-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 42%);
   /* --gradient-glass-card — Brillo de las tarjetas glass de la web (NowCard, ProjectCard, ArticleFeature, CommunityCard, TerminalCard). */
