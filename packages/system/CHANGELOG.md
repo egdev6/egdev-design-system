@@ -1,6 +1,16 @@
 # Changelog
 
-## Unreleased
+## 0.5.0
+
+### Added
+
+- The artifact and design reference include the `--mask-scroll-fade-inline` token and updated Tabs
+  anatomy.
+
+### Fixed
+
+- Same-file class constants now resolve in the artifact: Link, Panel parts and Textarea gain visual
+  facts, while spurious unresolved entries disappear from Field, Surface and Tabs.
 
 ## 0.4.2
 

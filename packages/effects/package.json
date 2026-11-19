@@ -1,6 +1,6 @@
 {
   "name": "@egdev/effects",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "type": "module",
   "description": "Capas de efecto de EGDEV (AmbientBackground, Isotipo3D). Dependen de canvas y three.js.",
   "main": "./dist/index.js",

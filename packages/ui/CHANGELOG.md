@@ -4,6 +4,21 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.4.0
+
+### Added
+
+- Scrollable Tabs lists fade at edges with hidden content in supporting browsers. Fine-pointer scroll
+  buttons page through overflowing lists, hide at the extremes, and remain inert under a hovering
+  pointer until it leaves; touch devices do not show the buttons.
+
+### Changed
+
+- Focused tabs in overflowing underline lists now scroll away from the faded edges.
+- **Compatibility:** scrollable Tabs lists have an internal scroll-area wrapper, so the tablist is
+  no longer a direct child of `.eg-tabs`; selectors relying on that relationship must be updated.
+- RTL Tabs require a Radix `DirectionProvider` ancestor; a bare `dir="rtl"` ancestor is not enough.
+
 ## 0.3.2
 
 - No code changes. The tarball now ships this `CHANGELOG.md`, and `release:pack` records the release in `release.json` (commit, dirty flag, sha256), so `egdev-ds upgrade` can verify the set and show what changed.
