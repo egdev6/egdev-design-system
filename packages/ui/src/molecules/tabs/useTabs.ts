@@ -73,9 +73,11 @@ export function useTabs(props: TabsProps): UseTabsResult {
     size = 'md',
     fullWidth = false,
     labelWrap = false,
+    fill: fillProp,
     className,
     ...rest
   } = props;
+  const fill = fillProp === true;
   const framed = variant === 'segmented' || variant === 'outline';
   const scrollable = variant === 'underline' || (framed && fullWidth);
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -153,7 +155,10 @@ export function useTabs(props: TabsProps): UseTabsResult {
       value,
       defaultValue: defaultValue ?? items.find((item) => !item.disabled)?.value,
       onValueChange,
-      className: cn(tabsVariants(), className)
+      className: cn(tabsVariants({ fill }), className),
+      // After the native props: only the component sets the marker, so a consumer data-fill can neither
+      // spoof fill mode (and PanelBody's gutter rule) nor suppress it.
+      ...(fill ? { 'data-fill': '' } : { 'data-fill': undefined })
     },
     listProps: {
       'aria-label': label,
@@ -170,15 +175,15 @@ export function useTabs(props: TabsProps): UseTabsResult {
         : undefined,
       className: cn(
         framed && surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }),
-        tabsListVariants({ variant, fullWidth })
+        tabsListVariants({ variant, fullWidth, fill })
       )
     },
     scrollable,
     listRef,
-    scrollAreaClassName: cn(tabsScrollAreaVariants()),
+    scrollAreaClassName: cn(tabsScrollAreaVariants({ fill })),
     scrollButtons,
     triggerClassName: cn(tabsTriggerVariants({ variant, size, fullWidth, labelWrap })),
-    panelClassName: cn(tabsPanelVariants()),
+    panelClassName: cn(tabsPanelVariants({ fill })),
     items: items.map((item) => ({
       ...item,
       showCount: item.count !== undefined,

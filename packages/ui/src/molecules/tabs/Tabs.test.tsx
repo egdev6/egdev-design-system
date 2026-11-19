@@ -1115,3 +1115,169 @@ describe('Tabs edge fade (v0.4)', () => {
     expect(onValueChange).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('Tabs fill contract', () => {
+  // SHA-256 of JSON [root, scroll area, panel, list] class strings, captured from the unmodified v0.4-A
+  // code (base 43adb70) before the fill change. Root, scroll area and panel do not vary with size or
+  // labelWrap; the list varies with variant and fullWidth only.
+  const defaultRecipes: Record<string, string> = {
+    'underline|false': 'bf8d787e1e4db1185696648f401e77c698a30cda43a95b1cae3ffbd0f3f38b73',
+    'underline|true': 'bf8d787e1e4db1185696648f401e77c698a30cda43a95b1cae3ffbd0f3f38b73',
+    'segmented|false': '024bc50c704d4764acdfbcbd9fc2936814e4d781a07a55c80c59380feaaa96c0',
+    'segmented|true': '875d4033e6238d72a3892db8f8373e8429df6c062a77f06fcfddbb2244d671bd',
+    'outline|false': '024bc50c704d4764acdfbcbd9fc2936814e4d781a07a55c80c59380feaaa96c0',
+    'outline|true': '875d4033e6238d72a3892db8f8373e8429df6c062a77f06fcfddbb2244d671bd'
+  };
+  const variants = ['underline', 'segmented', 'outline'] as const;
+  const rootFill = ['h-full', 'min-h-0'];
+  const panelFill = ['min-h-0', 'flex-1', 'overflow-y-auto', '[scrollbar-gutter:stable]'];
+  const fingerprint = (fill: unknown, variant: (typeof variants)[number], fullWidth: boolean) => {
+    const { result } = renderHook(() =>
+      // biome-ignore lint/suspicious/noExplicitAny: untyped values are part of the contract under test
+      useTabs({ ...base, variant, fullWidth, ...(fill === 'omit' ? {} : { fill: fill as any }) })
+    );
+    const r = result.current;
+    return createHash('sha256')
+      .update(JSON.stringify([r.rootProps.className, r.scrollAreaClassName, r.panelClassName, r.listProps.className]))
+      .digest('hex');
+  };
+
+  it.each([['omit'], [false], ['yes'], [1], [null], [undefined]])(
+    'keeps default class output byte-identical for fill=%s',
+    (fill) => {
+      for (const variant of variants) {
+        for (const fullWidth of [false, true]) {
+          expect(fingerprint(fill, variant, fullWidth), `${variant}|${fullWidth}`).toBe(
+            defaultRecipes[`${variant}|${fullWidth}`]
+          );
+        }
+      }
+    }
+  );
+
+  it.each([['omit'], [false], ['yes'], [1], [null]])('adds no fill or data-fill attribute for fill=%s', (fill) => {
+    // biome-ignore lint/suspicious/noExplicitAny: untyped values are part of the contract under test
+    const { container } = render(<Tabs {...base} {...(fill === 'omit' ? {} : { fill: fill as any })} />);
+    const root = container.querySelector('.eg-tabs');
+    expect(root).not.toBeNull();
+    expect(root).not.toHaveAttribute('data-fill');
+    expect(root).not.toHaveAttribute('fill');
+    expect(screen.getByRole('tabpanel')).toHaveClass('pt-4', 'focus-visible:outline-offset-2');
+    expect(screen.getByRole('tabpanel')).not.toHaveClass(...panelFill, 'focus-visible:-outline-offset-2');
+  });
+
+  it.each(variants.flatMap((variant) => [false, true].map((fullWidth) => [variant, fullWidth] as const)))(
+    'applies the fill utilities to every part for %s fullWidth=%s',
+    (variant, fullWidth) => {
+      const { container } = render(<Tabs {...base} variant={variant} fullWidth={fullWidth} fill={true} />);
+      const root = container.querySelector('.eg-tabs');
+      expect(root).toHaveClass('eg-tabs', 'flex', 'flex-col', 'overflow-visible', ...rootFill);
+      expect(root).toHaveAttribute('data-fill', '');
+      expect(root).not.toHaveAttribute('fill');
+      const list = screen.getByRole('tablist');
+      const scrollable = variant === 'underline' || fullWidth;
+      if (scrollable) {
+        const area = list.parentElement;
+        expect(area).toHaveClass('relative', 'shrink-0');
+        expect(list).not.toHaveClass('shrink-0');
+      } else {
+        expect(list).toHaveClass('shrink-0');
+        expect(list.parentElement).toBe(root);
+      }
+      const panel = screen.getByRole('tabpanel');
+      expect(panel).toHaveClass('pt-4', ...panelFill);
+    }
+  );
+
+  it('lets the inset focus ring win over the base offset after merging', () => {
+    render(<Tabs {...base} fill={true} />);
+    const panel = screen.getByRole('tabpanel');
+    expect(panel).toHaveClass('focus-visible:-outline-offset-2', 'focus-visible:outline-2');
+    expect(panel).not.toHaveClass('focus-visible:outline-offset-2');
+  });
+
+  it('keeps default and fill panels distinct in the hook result', () => {
+    const { result } = renderHook(() => useTabs({ ...base, fill: true }));
+    expect(result.current.panelClassName).toContain('focus-visible:-outline-offset-2');
+    expect(result.current.panelClassName).not.toMatch(/(^| )focus-visible:outline-offset-2( |$)/);
+  });
+
+  it('sets data-fill after native props so a consumer cannot spoof or suppress it', () => {
+    const spoof = { 'data-fill': 'nope' } as Record<string, string>;
+    const { container, rerender } = render(<Tabs {...base} {...spoof} fill={true} />);
+    expect(container.querySelector('.eg-tabs')).toHaveAttribute('data-fill', '');
+    rerender(<Tabs {...base} {...spoof} />);
+    // Without fill the marker is dropped, so a consumer value can never trigger PanelBody's gutter rule.
+    expect(container.querySelector('.eg-tabs')).not.toHaveAttribute('data-fill');
+  });
+
+  it('never forwards fill to the DOM and merges className last', () => {
+    const { container } = render(<Tabs {...base} fill={true} className='custom' />);
+    const root = container.querySelector('.eg-tabs');
+    expect(root).toHaveClass('custom', ...rootFill);
+    expect(root).not.toHaveAttribute('fill');
+  });
+
+  it('keeps the ARIA link and tabindex on the active panel in fill mode', () => {
+    render(<Tabs {...base} fill={true} />);
+    const tab = screen.getByRole('tab', { name: 'Queue' });
+    const panel = screen.getByRole('tabpanel');
+    expect(tab).toHaveAttribute('aria-controls', panel.id);
+    expect(panel).toHaveAttribute('aria-labelledby', tab.id);
+    expect(panel).toHaveAttribute('tabindex', '0');
+    expect(screen.getAllByRole('tabpanel')).toHaveLength(1);
+  });
+
+  it('keeps arrows, Home and End working in fill mode', async () => {
+    const user = userEvent.setup();
+    render(<Tabs {...base} fill={true} />);
+    await user.tab();
+    await user.keyboard('{ArrowRight}');
+    selected('Drafts');
+    await user.keyboard('{End}');
+    selected('Published');
+    await user.keyboard('{Home}');
+    selected('Queue');
+    expect(screen.getByRole('tabpanel')).toHaveClass(...panelFill);
+  });
+
+  it.each([
+    ['underline', false],
+    ['segmented', true]
+  ] as const)('keeps the scroll buttons and fade in fill mode for %s', (variant, fullWidth) => {
+    render(<Tabs {...base} variant={variant} fullWidth={fullWidth} fill={true} />);
+    expect(scrollButton('start')).toHaveAttribute('data-state', 'hidden');
+    expect(scrollButton('end')).toHaveAttribute('data-state', 'hidden');
+    expect(screen.getByRole('tablist')).toHaveClass('scroll-px-8');
+  });
+
+  it('emits the fill utilities in production CSS', async () => {
+    const entry = resolve('packages/ui/src/styles/compiled.css');
+    const result = await build({
+      configFile: false,
+      envDir: false,
+      plugins: [tailwindcss({ optimize: false })],
+      logLevel: 'warn',
+      build: { write: false, minify: false, cssMinify: false, rolldownOptions: { input: entry } }
+    });
+    const outputs = (Array.isArray(result) ? result : [result]).flatMap((output) =>
+      'output' in output ? output.output : []
+    );
+    const asset = outputs.find((output) => output.type === 'asset' && output.fileName.endsWith('.css'));
+    if (asset?.type !== 'asset') {
+      throw new Error('Missing production CSS output');
+    }
+    const css = String(asset.source);
+    const rule = (selector: string) => {
+      const start = css.indexOf(selector);
+      expect(start, selector).toBeGreaterThan(-1);
+      return css.slice(start, css.indexOf('}', start) + 1);
+    };
+    expect(rule('.min-h-0')).toMatch(/min-height:/);
+    expect(rule('.flex-1 {')).toContain('flex: 1');
+    expect(rule('.shrink-0')).toContain('flex-shrink: 0');
+    expect(rule('.overflow-y-auto')).toContain('overflow-y: auto');
+    expect(rule(String.raw`.\[scrollbar-gutter\:stable\]`)).toContain('scrollbar-gutter: stable');
+    expect(rule(String.raw`.focus-visible\:-outline-offset-2`)).toContain('outline-offset');
+  }, 30_000);
+});
