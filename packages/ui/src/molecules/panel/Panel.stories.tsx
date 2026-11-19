@@ -365,7 +365,7 @@ export const FillHost: Story = {
 };
 
 const tabPanelContent = (label: string) =>
-  Array.from({ length: 12 }, (_, index) => (
+  Array.from({ length: 40 }, (_, index) => (
     <p key={index}>
       {label} entry {index + 1}: only the active tab panel scrolls inside the fill Panel.
     </p>

@@ -219,7 +219,7 @@ export const EdgeFade: Story = {
 
 const fillItems: TabsItem[] = manyItems.map((item) => ({
   ...item,
-  content: Array.from({ length: 14 }, (_, index) => (
+  content: Array.from({ length: 40 }, (_, index) => (
     <p key={index}>
       {item.label} entry {index + 1}: the list stays fixed while this panel scrolls.
     </p>
