@@ -5586,6 +5586,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ArticleFeature',
       'ArticleFeatureCover',
       'AspectRatio',
+      'AttachmentField',
       'Avatar',
       'Badge',
       'BlogGrid',
@@ -5768,6 +5769,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
   assert.equal(typeof exported.ButtonGroup, 'function', 'ButtonGroup has no public root ref API');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
+  assert.equal(
+    typeof exported.AttachmentField,
+    'function',
+    'AttachmentField must be a plain function with no public ref API'
+  );
+  assert.equal(Object.hasOwn(exported, 'attachmentFieldVariants'), false, 'AttachmentField recipes must stay internal');
   assert.equal(typeof exported.Field, 'function', 'Field has no public ref API');
   for (const name of ['NowCard', 'NowCardBody', 'NowCardFooter', 'NowCardDetail']) {
     assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
@@ -5883,6 +5890,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ArticleFeatureSlottedProps',
     'AspectRatio',
     'AspectRatioProps',
+    'AttachmentField',
+    'AttachmentFieldMessages',
+    'AttachmentFieldProps',
+    'AttachmentItemInfo',
+    'AttachmentRejection',
+    'AttachmentRejectionReason',
     'Avatar',
     'AvatarProps',
     'AvatarSize',
@@ -6501,6 +6514,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'AttachmentField',
+    'AttachmentFieldMessages',
+    'AttachmentFieldProps',
+    'AttachmentItemInfo',
+    'AttachmentRejection',
+    'AttachmentRejectionReason',
     'Notice',
     'NoticeProps',
     'NoticeTone',
@@ -6676,6 +6695,18 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.match(dropzoneHtml, /aria-hidden="true"/);
   assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
+  const attachmentFieldHtml = renderToString(
+    createElement(
+      exported.AttachmentField,
+      { label: 'Attachments' },
+      createElement('textarea', { 'aria-label': 'Notes' })
+    )
+  );
+  assert.match(attachmentFieldHtml, /^<div class="[^"]*\beg-attachment-field\b/);
+  assert.match(attachmentFieldHtml, /<textarea aria-label="Notes"><\/textarea>/);
+  assert.match(attachmentFieldHtml, /role="status"[^>]*aria-live="polite"/);
+  assert.equal((attachmentFieldHtml.match(/aria-live=/g) ?? []).length, 1, 'Only the status region is live');
+  assert.doesNotMatch(attachmentFieldHtml, /<ul|<img|role="alert"/);
   // Countdown SSR is the deterministic initializing placeholder: no digits, clock or live region (D3/D8).
   const countdownHtml = renderToString(
     createElement(exported.Countdown, {

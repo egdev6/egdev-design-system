@@ -1,0 +1,81 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "owner-choice",
+  "decision": "Approve the four AttachmentField file-intake conventions (accepted-file-types, max-file-bytes, max-file-count, files-rejected) as proposed in the approved spec v0.1, without changing any existing component contract.",
+  "evidence": {
+    "taskReference": "odd/tasks/attachment-field-build.md#log",
+    "userStatements": [
+      {
+        "quote": "Acepto todas las recomendaciones",
+        "provenance": "Spec v0.1 owner decisions (2026-11-19): approval of the spec and of conventions C1-C4 in docs/components/attachment-field/v0.1/spec.md section 3 \"Conventions to approve\""
+      },
+      {
+        "quote": "Apruebo, con el registro de aprobación (OQ1)",
+        "provenance": "Implementation plan approval (2026-11-19): OQ1 approves recording these four conventions with this approval record"
+      }
+    ]
+  },
+  "limits": [
+    "Binds only the four convention payloads below; reused conventions (label, value, defaultValue, onValueChange, messages) keep their existing approvals.",
+    "Dropzone accept, files-received and every existing component API are unchanged; no migration is implied."
+  ],
+  "entries": [
+    {
+      "scope": "convention:accepted-file-types",
+      "contentHash": "sha256:9fcdc98bdec2b5d9c658ab1ce50e9d31b1aa635e29f48c778f4e6f043e98fa3c",
+      "convention": {
+        "id": "accepted-file-types",
+        "name": "acceptedTypes",
+        "meaning": "Explicit list of MIME types a file field accepts; files outside it are rejected by the component itself.",
+        "whenToUse": "A component validates picked, dropped or pasted files by MIME type and reports rejections.",
+        "avoid": "A native picker filter that never rejects (Dropzone accept), file extensions, size or count limits.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:max-file-bytes",
+      "contentHash": "sha256:f587f7f8f9fc142836377245c407050818d03e686e43ec59be335ec26fc46d5e",
+      "convention": {
+        "id": "max-file-bytes",
+        "name": "maxFileBytes",
+        "meaning": "Largest allowed size, in bytes, of one file accepted by a file field; a file of exactly this size is accepted.",
+        "whenToUse": "A component validates the size of each picked, dropped or pasted file and reports rejections.",
+        "avoid": "Total size across files, display thresholds, text length limits or scroll viewport heights.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:max-file-count",
+      "contentHash": "sha256:fcbd110f0acc5ff1daaf590dda146b6b600a5a86abdbfccf9a6162d14ab1601a",
+      "convention": {
+        "id": "max-file-count",
+        "name": "maxFiles",
+        "meaning": "Largest number of files a file field holds at once, counting those already attached; further files are rejected.",
+        "whenToUse": "A component limits how many files can be attached and reports rejections of the excess.",
+        "avoid": "Display overflow caps on counters, text length limits or per-file size limits.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:files-rejected",
+      "contentHash": "sha256:7c15adcff4fe8f688d576e664549d890877c2810496d43d1848658dc7889719b",
+      "convention": {
+        "id": "files-rejected",
+        "name": "onFilesRejected",
+        "meaning": "Notification carrying the files a file field refused to attach, each with the rule it broke.",
+        "whenToUse": "A component validates files itself and lets the consumer log, mirror or react to rejections.",
+        "avoid": "Files that were accepted (use onValueChange), upload failures or the visible error text.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

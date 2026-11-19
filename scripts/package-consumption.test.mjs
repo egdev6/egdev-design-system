@@ -195,9 +195,14 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { ArticleFeature, ArticleFeatureCover, AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, CommunityCard, CommunityCardAction, CommunityCardMark, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { ArticleFeature, ArticleFeatureCover, AspectRatio, AttachmentField, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, CommunityCard, CommunityCardAction, CommunityCardMark, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   ArticleFeatureCoverProps,
+  AttachmentFieldMessages,
+  AttachmentFieldProps,
+  AttachmentItemInfo,
+  AttachmentRejection,
+  AttachmentRejectionReason,
   ArticleFeatureLevel,
   ArticleFeatureLinkProps,
   ArticleFeatureProps,
@@ -1311,6 +1316,39 @@ const interceptedDropzone: DropzoneProps = { ...dropzoneProps, onDrop: () => und
 const interceptedPaste: DropzoneProps = { ...dropzoneProps, onPaste: () => undefined };
 // @ts-expect-error No other visual treatments exist.
 const invalidDropzone: DropzoneProps = { ...dropzoneProps, variant: 'solid' };
+// AttachmentField stays outside App: it owns object URLs, paste scope and a live status region.
+export const attachmentChanges: File[][] = [];
+export const attachmentRejections: AttachmentRejection[][] = [];
+export const attachmentReason: AttachmentRejectionReason = 'type';
+export const attachmentMessages: Partial<AttachmentFieldMessages> = {
+  itemLabel: (item: AttachmentItemInfo) => 'Picture ' + item.position + ', ' + item.sizeLabel,
+  rejectedType: (files: File[], accepted: readonly string[]) => files.length + ' not in ' + accepted.join(', ')
+};
+export const attachmentUncontrolledProps: AttachmentFieldProps = {
+  label: 'Attachments', defaultValue: [], onValueChange: (files) => attachmentChanges.push(files),
+  onFilesRejected: (rejections) => attachmentRejections.push(rejections),
+  acceptedTypes: ['image/png', 'image/*'], maxFileBytes: 1024, maxFiles: 3, messages: attachmentMessages,
+  disabled: false, id: 'attachments', className: 'mt-2'
+};
+export const attachmentControlledProps: AttachmentFieldProps = {
+  label: 'Attachments', value: [], onValueChange: (files) => attachmentChanges.push(files)
+};
+export function AttachmentFieldSamples({ disabled = false }: { disabled?: boolean }) {
+  return createElement(AttachmentField, { ...attachmentUncontrolledProps, disabled },
+    createElement('textarea', { 'aria-label': 'Notes', id: 'attachment-notes' }));
+}
+// @ts-expect-error value requires onValueChange.
+const valueWithoutHandler: AttachmentFieldProps = { label: 'Attachments', value: [] };
+// @ts-expect-error value and defaultValue are never combined.
+const valueAndDefault: AttachmentFieldProps = { label: 'Attachments', value: [], onValueChange: () => undefined, defaultValue: [] };
+// @ts-expect-error Only image MIME types are allowed.
+const textTypes: AttachmentFieldProps = { label: 'Attachments', acceptedTypes: ['text/plain'] };
+// @ts-expect-error Paste handling is owned by the hook.
+const interceptedAttachmentPaste: AttachmentFieldProps = { label: 'Attachments', onPaste: () => undefined };
+// @ts-expect-error No ref API on either React major.
+const referencedAttachmentField: AttachmentFieldProps = { label: 'Attachments', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition API.
+const composedAttachmentField: AttachmentFieldProps = { label: 'Attachments', asChild: true };
 // Countdown stays outside App: it owns a client clock and adds no focusable parts.
 export const countdownExpirations: number[] = [];
 export const countdownUnits: CountdownUnits = ['días', 'horas', 'min', 's'];
@@ -4630,6 +4668,16 @@ function assertStatCSS(css) {
   assert.doesNotMatch(css, /\.eg-stat-(?:label|value|delta)\s*\{/, 'Stat part markers carry no stylesheet rules');
 }
 
+// AttachmentField utilities ship for native CSS consumers; the root recipe adds no stylesheet.
+function assertAttachmentFieldCSS(css) {
+  for (const selector of ['.w-20', '.absolute', String.raw`.end-1`, '.top-1', '.list-none']) {
+    assert.ok(css.includes(selector), 'Missing AttachmentField utility ' + selector);
+  }
+  assert.match(css, /width:\s*var\(--space-20\)/);
+  assert.match(css, /list-style-type:\s*none/);
+  assert.doesNotMatch(css, /\.eg-attachment-field[^\s]*\s*\{/, 'No AttachmentField stylesheet rules');
+}
+
 // Dropzone utilities ship for native CSS consumers without enabling Tailwind preflight.
 function assertDropzoneCSS(css) {
   for (const selector of [
@@ -5588,6 +5636,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ArticleFeature',
   'ArticleFeatureCover',
   'AspectRatio',
+  'AttachmentField',
   'Avatar',
   'Badge',
   'BlogGrid',
@@ -5782,6 +5831,7 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
+${assertAttachmentFieldCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertTimelineCSS.toString()}
 ${assertSectionHeaderCSS.toString()}
@@ -5814,6 +5864,7 @@ assertCountdownCSS(shippedStyles);
 ${assertCarouselCSS.toString()}
 assertCarouselCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
+assertAttachmentFieldCSS(shippedStyles);
 assertStatCSS(shippedStyles);
 assertSectionHeaderCSS(shippedStyles);
 ${assertListItemCSS.toString()}
@@ -6524,7 +6575,7 @@ try {
 } finally {
   nowDocument.window.close();
 }
-import { App, ButtonGroupSamples, ButtonWrapSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TerminalCardSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+import { App, AttachmentFieldSamples, ButtonGroupSamples, ButtonWrapSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TerminalCardSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 // Separate SSR evidence keeps the existing ButtonSamples and client button count unchanged.
 {
   const wrapDocument = new JSDOM(renderToString(createElement(ButtonWrapSamples)));
@@ -7126,6 +7177,22 @@ try {
   assert.ok(compact.classList.contains('min-w-0') && !compact.classList.contains('min-w-48'));
 } finally {
   searchDocument.window.close();
+}
+const attachmentDocument = new JSDOM(renderToString(createElement(AttachmentFieldSamples)));
+try {
+  const root = attachmentDocument.window.document.body.firstElementChild;
+  assert.equal(root.tagName, 'DIV');
+  assert.ok(root.classList.contains('eg-attachment-field') && root.classList.contains('mt-2'));
+  assert.equal(root.id, 'attachments');
+  assert.equal(root.querySelector('ul'), null, 'The list is absent without items');
+  assert.equal(root.querySelector('textarea').id, 'attachment-notes');
+  const status = root.querySelector('[role="status"]');
+  assert.equal(status.getAttribute('aria-live'), 'polite');
+  assert.equal(status.textContent, '');
+  assert.equal(root.querySelectorAll('[aria-live]').length, 1);
+  assert.equal(root.querySelector('input[type="file"]').accept, 'image/png,image/*');
+} finally {
+  attachmentDocument.window.close();
 }
 const dropzoneDocument = new JSDOM(renderToString(createElement(DropzoneSamples)));
 try {
@@ -8074,7 +8141,7 @@ const { ToastSamples, packedToast, packedToastOptions, toastActions } = await im
 const { PageHeaderSamples } = await import('./consumer.ts');
 const { photoFrameNumericSamples, photoFrameSamples } = await import('./consumer.ts');
 const { ModuleCardSamples, moduleCardClicks } = await import('./consumer.ts');
-const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, AttachmentFieldSamples, attachmentChanges, attachmentRejections, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -8977,6 +9044,49 @@ try {
   assert.equal(fileTarget.getAttribute('data-state'), 'idle');
   await act(async () => root.render(null));
   stage('dropzone:files:complete');
+  stage('attachment-field:paste:start');
+  {
+    const realCreate = URL.createObjectURL;
+    const realRevoke = URL.revokeObjectURL;
+    let urlCount = 0;
+    const revoked = [];
+    URL.createObjectURL = () => 'blob:consumer-' + (urlCount += 1);
+    URL.revokeObjectURL = (url) => { revoked.push(url); };
+    try {
+      await act(async () => root.render(createElement(AttachmentFieldSamples)));
+      const notes = document.getElementById('attachment-notes');
+      const png = new window.File(['png'], 'shot.png', { type: 'image/png' });
+      const pasteEvent = new Event('paste', { bubbles: true, cancelable: true });
+      Object.defineProperty(pasteEvent, 'clipboardData', { value: { files: [png], types: ['Files'], items: [] } });
+      await act(async () => notes.dispatchEvent(pasteEvent));
+      assert.equal(pasteEvent.defaultPrevented, true);
+      assert.equal(attachmentChanges.length, 1);
+      assert.ok(attachmentChanges[0][0] === png);
+      const thumbnail = document.querySelector('#attachments ul img');
+      assert.ok(thumbnail !== null, 'The pasted image renders a thumbnail');
+      assert.equal(thumbnail.getAttribute('src'), 'blob:consumer-1');
+      const removeButton = document.querySelector('#attachments ul button');
+      assert.match(removeButton.textContent, /^Remove Picture 1, /);
+      await act(async () => removeButton.click());
+      assert.equal(document.querySelector('#attachments ul'), null, 'Removing the last item removes the list');
+      assert.deepEqual(revoked, ['blob:consumer-1'], 'The object URL is revoked once');
+      assert.ok(document.activeElement?.classList.contains('eg-dropzone'), 'Focus lands on the Dropzone');
+      const textFile = new window.File(['x'], 'a.txt', { type: 'text/plain' });
+      const rejectEvent = new Event('paste', { bubbles: true, cancelable: true });
+      Object.defineProperty(rejectEvent, 'clipboardData', { value: { files: [textFile], types: ['Files'], items: [] } });
+      await act(async () => notes.dispatchEvent(rejectEvent));
+      assert.equal(attachmentRejections.length, 1);
+      assert.equal(attachmentRejections[0][0].reason, 'type');
+      assert.ok(document.querySelector('#attachments').textContent.includes('1 not in image/png, image/*'));
+      await act(async () => root.render(createElement(AttachmentFieldSamples, { disabled: true })));
+      assert.equal(document.querySelector('#attachments .eg-dropzone').disabled, true);
+      await act(async () => root.render(null));
+    } finally {
+      URL.createObjectURL = realCreate;
+      URL.revokeObjectURL = realRevoke;
+    }
+  }
+  stage('attachment-field:paste:complete');
   stage('countdown:clock:start');
   // A past deadline expires at the first client sample and notifies once per episode.
   const pastDeadline = Date.now() - 1000;
@@ -9792,6 +9902,7 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
+${assertAttachmentFieldCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertTimelineCSS.toString()}
 ${assertSectionHeaderCSS.toString()}
@@ -9837,6 +9948,7 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+assertAttachmentFieldCSS(emitted);
 ${assertPageHeaderCSS.toString()}
 assertPageHeaderCSS(emitted);
 ${assertButtonGroupCSS.toString()}
@@ -9972,6 +10084,7 @@ assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
+assertAttachmentFieldCSS(twCss);
 assertButtonGroupCSS(twCss);
 assertPageHeaderCSS(twCss);
 assertCountdownCSS(twCss);

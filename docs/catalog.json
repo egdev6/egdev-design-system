@@ -484,6 +484,17 @@
     "notas": "Working-tree controlled color choice under the [approved v0.1 contract](components/color-swatch-group/v0.1/spec.md): named preset radios and an optional sibling native picker share one consumer-owned hex value. Only validated six-digit colors paint decorative patches through the bounded static utility; no stylesheet, native form API, ref, asChild or dependency change. v0.2 ([picker look](components/color-swatch-group/v0.2/picker-look-amendment.md)) adopts the Quorb/Nexo accent-picker look: 38.4px circles in 44.8px targets, visually hidden labels, a neutral double selection ring (no check), a distinct offset focus outline and a spectrum custom control."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "AttachmentField",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "None (composes Dropzone, PhotoFrame, IconButton, FieldMessage, Cluster, VisuallyHidden)",
+    "compone": "Dropzone, PhotoFrame, IconButton, FieldMessage, Cluster, Stack, VisuallyHidden",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/attachment-field/v0.1/spec.md): image attachments for a text field. Paste anywhere inside the root, drop or pick files; validates MIME type, per-file size and total count with visible per-rule errors, shows removable thumbnails with focus management and polite announcements, and is controlled or uncontrolled over a File[] value. Reuses Dropzone (inline) unchanged; no Radix primitive, ref, asChild or stylesheet. Browser and visual verification remain pending."
+  },
+  {
     "actual": "`.eg-btn-split`",
     "nivelActual": "sin ficha",
     "nombre": "ButtonGroup",
