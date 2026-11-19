@@ -18,7 +18,8 @@ const controls: Record<string, string> = {
   variant: 'select',
   size: 'select',
   fullWidth: 'boolean',
-  labelWrap: 'boolean'
+  labelWrap: 'boolean',
+  fill: 'boolean'
 };
 
 function storyNames() {
@@ -45,7 +46,7 @@ describe('Tabs Storybook metadata', () => {
         visit(node.type);
       }
     }
-    expect(properties).toHaveLength(15);
+    expect(properties).toHaveLength(16);
     for (const property of properties) {
       const tags = ts.getJSDocTags(property);
       const control = tags.filter((tag) => tag.tagName.text === 'control');
@@ -73,7 +74,8 @@ describe('Tabs Storybook metadata', () => {
       'Outline',
       'OutlineFullWidth',
       'OutlineCustomAccent',
-      'EdgeFade'
+      'EdgeFade',
+      'FillHost'
     ]);
     expect(readFileSync(source('Tabs.stories.tsx'), 'utf8')).not.toMatch(/argTypes:|\bplay:/);
   });
@@ -102,6 +104,7 @@ describe('Tabs Storybook metadata', () => {
     expect(props.size?.defaultValue?.value).toBe('md');
     expect(props.fullWidth?.defaultValue?.value).toBe('false');
     expect(props.labelWrap?.defaultValue?.value).toBe('false');
+    expect(props.fill?.defaultValue?.value).toBe('false');
     for (const name of ['fullWidth', 'labelWrap']) {
       expect(props[name]?.description, name).toMatch(/segmented/i);
       expect(props[name]?.description, name).toMatch(/underline/i);
