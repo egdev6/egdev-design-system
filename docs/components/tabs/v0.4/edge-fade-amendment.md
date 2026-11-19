@@ -4,6 +4,7 @@
 - **Amends:** [Tabs v0.1](../v0.1/implementation.md), the [v0.2 layout amendment](../v0.2/full-width-wrap-amendment.md) and the [v0.3 outline amendment](../v0.3/outline-variant-amendment.md). Inspired by Diego Haz's scrollable-tabs post (LinkedIn, November 2026); only the post text was available, its video was not accessed.
 - **Approval / recovery:** this file is the recoverable snapshot. The approval covers this spec only; it does not approve the implementation plan, visual references or any change outside the decisions recorded below.
 - **Snapshot identity:** `version: v0.4`; `contentSHA256: e8bc19cf5ffea4b4a1392a3bcea10ee91bde7259975d970613fd189a3b6d68c2`; `visualHashes: VIS-01 Pending, VIS-02 Pending, VIS-03 Pending`; `approvalReference: owner conversation 2026-11-19`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/107`; `latestPublishedComment: Pending`.
+- **Implementation correction (metadata, outside the hashed payload):** 2026-11-19, owner-confirmed. The token in section 6 is implemented as three static mask layers sized on the list, because `var()` inside a `:root` token resolves at `:root`. See the [implementation plan](implementation-plan.md#tabs-v04--edge-fade-implementation-plan) correction.
 - **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, LF line endings and the final newline. Tracking metadata above that heading is excluded.
 
 ## 1. Purpose and scope

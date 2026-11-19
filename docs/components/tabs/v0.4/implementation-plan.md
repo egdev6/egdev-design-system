@@ -3,12 +3,13 @@
 - **Status:** Approved — 2026-11-19 by the owner (conversation reply "si" to this plan).
 - **Spec:** [edge-fade-amendment.md](edge-fade-amendment.md), v0.4, `contentSHA256: e8bc19cf5ffea4b4a1392a3bcea10ee91bde7259975d970613fd189a3b6d68c2`.
 - **Branch:** `feat/tabs-edge-fade`.
+- **Correction — 2026-11-19 (owner-confirmed):** the first token value used `var(--mask-fade-left)` inside a `:root` token; custom properties substitute `var()` where they are declared, so the list would inherit a resolved 0px fade and never show it. The token is now three static mask layers, `linear-gradient(to right, transparent, #000), linear-gradient(#000, #000), linear-gradient(to left, transparent, #000)`, sized and positioned on the list with `mask-size` / `mask-position` from the animated fade sizes. Same name and purpose. The fade width uses `var(--space-8)`, the exact value of `scroll-px-8`. Step 1 below shows the superseded value for history.
 
 ## Technical approach
 
 What Tailwind cannot express lives in `tabs.css`; everything else stays static CVA in `types.ts`. No new `eg-*` class marker.
 
-1. **Token** (`packages/tokens/src/theme.css`, next to `--mask-section-fade-*`): direction-agnostic, physical left/right stops.
+1. **Token** (superseded value, see Correction; `packages/tokens/src/theme.css`, next to `--mask-section-fade-*`): direction-agnostic, physical left/right stops.
 
    ```css
    --mask-scroll-fade-inline: linear-gradient(to right, transparent, #000 var(--mask-fade-left, 0px), #000 calc(100% - var(--mask-fade-right, 0px)), transparent);
@@ -51,3 +52,50 @@ What Tailwind cannot express lives in `tabs.css`; everything else stays static C
 - RTL direction of `scroll(self inline)` progress: verify in a browser before relying on the `rtl:` swap.
 - `focus()` scrolling honoring `scroll-padding`: verify in a browser.
 - Risk: item 3 (new public token; additive, no existing value changes).
+
+## Amendment v0.4-A plan (scroll buttons)
+
+- **Status:** Approved — 2026-11-19 by the owner (reply "si").
+- **Spec:** [scroll-buttons-amendment.md](scroll-buttons-amendment.md), v0.4-A, approved 2026-11-19.
+- **Edge zone:** IconButton `sm` is `size-8` (`packages/ui/src/atoms/icon-button/types.ts:64`), equal to the v0.4 fade (`var(--space-8)`) and `scroll-px-8`. No value changes.
+
+### Changes
+
+1. **`useTabs.ts`**
+   - `scrollable = variant === 'underline' || (framed && fullWidth)`.
+   - The v0.2 `onFocus` reveal (`scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' })` when it overflows) applies to every scrollable list, underline included.
+   - A list ref (Radix `Tabs.List` forwards it) plus one effect with a passive `scroll` listener and a `ResizeObserver`. They derive `hasStart` (`|scrollLeft| > 1`) and `hasEnd` (`|scrollLeft| < max - 1`), which works in LTR and RTL.
+   - Per-button `pointerenter` / `pointerleave` tracking. State is `visible` when content is hidden on that side; when it is not, the state is `inert` if the pointer is over the button and `hidden` otherwise. Leaving an inert button sets it to `hidden`.
+   - Clicking scrolls with `scrollBy({ left: sign * (clientWidth - 2 * zone) })`. The sign comes from the button side and the computed `direction`. Behavior is `smooth`, or `instant` under `matchMedia('(prefers-reduced-motion: reduce)')`. Clicks while `inert` do nothing.
+   - Returns `scrollable`, the props for the scroll area and both buttons, and typed results without `any`.
+2. **`Tabs.tsx`:** when `scrollable`, renders `div` scroll area > List plus two `IconButton` (`ghost`, `sm`, `aria-hidden`, `tabIndex={-1}`) with a rotated `chevron-down` `Icon`. Otherwise it keeps the v0.3 DOM.
+3. **`types.ts`:** CVA for the scroll area (`relative`) and the buttons:
+   - Positioning: `absolute inset-y-0 my-auto start-0` / `end-0`.
+   - Visibility: `hidden [@media(hover:hover)_and_(pointer:fine)]:inline-flex`; `data-[state=hidden]:invisible data-[state=hidden]:pointer-events-none data-[state=hidden]:opacity-0`; `data-[state=inert]:opacity-45`; a token-backed opacity transition with `motion-reduce:transition-none`.
+   - Icons: `rotate-90` (start) / `-rotate-90` (end) with `rtl:` mirrors.
+4. **Story `EdgeFade`:** the description mentions the buttons; there are no structural changes.
+
+### Tests (RED first)
+
+| AC | Test |
+| --- | --- |
+| AC-07 | The scroll area and two buttons exist only for underline and `fullWidth` segmented/outline. The intrinsic segmented/outline DOM matches v0.3. |
+| AC-08 | With mocked `scrollLeft` / `scrollWidth` / `clientWidth`, a `scroll` event and a `ResizeObserver` callback, the buttons' `data-state` covers start, middle and end in LTR and RTL. |
+| AC-09 | Clicking calls `scrollBy` with the expected sign and amount; `instant` under a reduced-motion `matchMedia` mock; selection and `onValueChange` unchanged. |
+| AC-10 | `pointerenter` on the end button, then reaching the end, gives `inert`; a click does not call `scrollBy`; `pointerleave` gives `hidden`. |
+| AC-11 | The buttons have `aria-hidden="true"` and `tabindex="-1"`; Tab skips them; the emitted CSS has the `(hover: hover) and (pointer: fine)` media query. |
+| AC-12 | v0.2 test `preserves native focus scrolling for an overflowing underline list` changes intentionally to expect the reveal. The fingerprint test records underline `onFocus` as the only intended v0.4-A difference. |
+| AC-13 | The v0.4 tests stay green. |
+
+Real browser (Playwright, Chrome): arrow-key sweep at both ends with no tab clipped, click scrolling, the inert state with the pointer resting, touch emulation without buttons, RTL. Captures VIS-01..06.
+
+### Commits
+
+1. `feat(tokens): add an inline scroll-fade mask token` (fixup of `ff6438f` with the static three-layer value).
+2. `feat(ui): fade Tabs scroll edges with scroll-driven masks` (v0.4).
+3. `feat(ui): add Tabs scroll buttons for fine pointers` (v0.4-A).
+4. `docs(ui): record Tabs v0.4 verification`.
+
+### Risks
+
+- Item 3: the DOM wrapper in scrollable configurations (documented compatibility note). Item 4 does not apply (no concurrency). Pointer and resize timing is covered by browser checks.
