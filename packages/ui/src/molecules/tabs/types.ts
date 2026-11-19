@@ -108,6 +108,26 @@ export type TabsProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defa
 /** Public root recipe resets the legacy tablist geometry without emitting legacy part markers. */
 export const tabsVariants = cva('eg-tabs flex flex-col gap-0 border-0 overflow-visible');
 
+/**
+ * v0.4 edge fade for scrollable lists: tabs.css animates the registered fade sizes from the list's own
+ * inline scroll timeline; the static three-layer token mask (left ramp, solid middle, right ramp) is sized
+ * and positioned here from them as physical edges, swapped in RTL. Sizes resolve on the list itself
+ * because custom properties inside a :root token would already be substituted there. Scroll padding keeps
+ * the focused tab outside the faded zones and contains the focus-ring clearance. Longhands only: the
+ * animation shorthand would reset animation-timeline.
+ */
+const tabsEdgeFade = [
+  '[--eg-tabs-fade-size:var(--space-8)] scroll-px-8',
+  '[--mask-fade-left:var(--eg-tabs-fade-start)] [--mask-fade-right:var(--eg-tabs-fade-end)]',
+  'rtl:[--mask-fade-left:var(--eg-tabs-fade-end)] rtl:[--mask-fade-right:var(--eg-tabs-fade-start)]',
+  'supports-[animation-timeline:scroll()]:[mask-image:var(--mask-scroll-fade-inline)] supports-[animation-timeline:scroll()]:[mask-repeat:no-repeat]',
+  'supports-[animation-timeline:scroll()]:[mask-size:var(--mask-fade-left)_100%,calc(100%_-_var(--mask-fade-left)_-_var(--mask-fade-right))_100%,var(--mask-fade-right)_100%]',
+  'supports-[animation-timeline:scroll()]:[mask-position:left,var(--mask-fade-left)_0,right]',
+  'supports-[animation-timeline:scroll()]:[animation-name:eg-tabs-edge-fade] supports-[animation-timeline:scroll()]:[animation-duration:auto]',
+  'supports-[animation-timeline:scroll()]:[animation-timing-function:linear] supports-[animation-timeline:scroll()]:[animation-fill-mode:both]',
+  'supports-[animation-timeline:scroll()]:[animation-timeline:scroll(self_inline)]'
+];
+
 /** Only the segmented and outline lists compose the existing Surface well recipe in useTabs. */
 export const tabsListVariants = cva('', {
   variants: {
@@ -132,7 +152,9 @@ export const tabsListVariants = cva('', {
         '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border-control hover:[&::-webkit-scrollbar-thumb]:bg-fg-muted',
         'supports-[not_selector(::-webkit-scrollbar)]:[scrollbar-width:thin] supports-[not_selector(::-webkit-scrollbar)]:[scrollbar-color:var(--color-border-control)_transparent]'
       ]
-    }
+    },
+    { variant: 'underline', class: tabsEdgeFade },
+    { variant: ['segmented', 'outline'], fullWidth: true, class: tabsEdgeFade }
   ],
   defaultVariants: { variant: 'underline' }
 });

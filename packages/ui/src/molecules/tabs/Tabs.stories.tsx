@@ -176,3 +176,35 @@ export const OutlineCustomAccent: Story = {
     );
   }
 };
+
+const manyItems: TabsItem[] = [
+  'Overview',
+  'Activity',
+  'Schedule',
+  'Drafts',
+  'Published',
+  'Analytics',
+  'Comments',
+  'Settings',
+  'Integrations',
+  'Archive'
+].map((label) => ({ value: label.toLowerCase(), label, content: `${label} view` }));
+
+/**
+ * Overflowing lists fade only the edges that hide more tabs, driven by the list's own scroll position.
+ * Keyboard focus scrolls each tab past the fade. Browsers without scroll timelines show no fade.
+ */
+export const EdgeFade: Story = {
+  args: { items: manyItems, label: 'Project views' },
+  render: function EdgeFadeExample(args) {
+    return (
+      <div className='flex w-48 flex-col gap-6'>
+        <Tabs {...args} />
+        <div dir='rtl'>
+          <Tabs {...args} label='Project views, right to left' />
+        </div>
+        <Tabs {...args} variant='segmented' fullWidth={true} label='Project views, segmented' />
+      </div>
+    );
+  }
+};

@@ -18,6 +18,25 @@ const items = [
 ];
 const base = { items, label: 'Post views' };
 
+/** Tabs v0.4 edge-fade utilities, applied only to scrollable lists. */
+const edgeFadeUtilities = [
+  '[--eg-tabs-fade-size:var(--space-8)]',
+  'scroll-px-8',
+  '[--mask-fade-left:var(--eg-tabs-fade-start)]',
+  '[--mask-fade-right:var(--eg-tabs-fade-end)]',
+  'rtl:[--mask-fade-left:var(--eg-tabs-fade-end)]',
+  'rtl:[--mask-fade-right:var(--eg-tabs-fade-start)]',
+  'supports-[animation-timeline:scroll()]:[mask-image:var(--mask-scroll-fade-inline)]',
+  'supports-[animation-timeline:scroll()]:[mask-repeat:no-repeat]',
+  'supports-[animation-timeline:scroll()]:[mask-size:var(--mask-fade-left)_100%,calc(100%_-_var(--mask-fade-left)_-_var(--mask-fade-right))_100%,var(--mask-fade-right)_100%]',
+  'supports-[animation-timeline:scroll()]:[mask-position:left,var(--mask-fade-left)_0,right]',
+  'supports-[animation-timeline:scroll()]:[animation-name:eg-tabs-edge-fade]',
+  'supports-[animation-timeline:scroll()]:[animation-duration:auto]',
+  'supports-[animation-timeline:scroll()]:[animation-timing-function:linear]',
+  'supports-[animation-timeline:scroll()]:[animation-fill-mode:both]',
+  'supports-[animation-timeline:scroll()]:[animation-timeline:scroll(self_inline)]'
+];
+
 function selected(name: string) {
   expect(screen.getByRole('tab', { name })).toHaveAttribute('aria-selected', 'true');
 }
@@ -384,8 +403,8 @@ describe('Tabs segmented layout opt-ins', () => {
   it('reserves token-derived space for the segmented focus ring at the scrollport and its edges', () => {
     render(<Tabs {...base} variant='segmented' fullWidth={true} />);
     const list = screen.getByRole('tablist');
-    expect(list).toHaveClass('p-1.5', 'scroll-px-1.5');
-    expect(list).not.toHaveClass('p-0.75');
+    expect(list).toHaveClass('p-1.5', 'scroll-px-8');
+    expect(list).not.toHaveClass('p-0.75', 'scroll-px-1.5');
   });
 
   it('compiles the focus-ring padding and logical scroll padding into production CSS', async () => {
@@ -411,7 +430,7 @@ describe('Tabs segmented layout opt-ins', () => {
       return css.slice(start, css.indexOf('}', start) + 1);
     };
     expect(rule(String.raw`.p-1\.5`)).toMatch(/padding:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/);
-    expect(rule(String.raw`.scroll-px-1\.5`)).toMatch(/scroll-padding-inline:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/);
+    expect(rule('.scroll-px-8')).toMatch(/scroll-padding-inline:\s*var\(--space-8\)/);
   }, 30_000);
 
   it.each([
@@ -679,20 +698,39 @@ describe('Tabs outline variant', () => {
     'data-[state=active]:focus-visible:shadow-focus'
   ];
 
-  // SHA-256 of JSON [list, trigger, count, typeof onFocus] for every underline/segmented combination,
-  // captured before the outline variant existed: both existing variants must stay byte-identical.
-  const previousRecipes: Record<string, string> = {
-    'underline|md': 'b7e7458902c516780666e15a9541296e4e3a895d467ac915f3f544517879be2c',
-    'underline|sm': 'd21a97d345ae7ecd826ce0c1b809eb725f29aeef1504af97fcaacd37bc4e35c2',
-    'segmented|false|false': 'd64840bd41c311550f4b9fa74fb935e3a6c019f6a3e6913bd056cbfb98f99ea5',
-    'segmented|false|true': 'd3e44fa60eaf3913c522a7b1e0cf1a788673b947f7615dda328a5d738c39278c',
-    'segmented|true|false': '036f056c4cd58c3eb278aafba8208d110a65ffd66837fd973c0c9c43255d8d41',
-    'segmented|true|true': '4b3a500ff50186960394fcf9ae1bd8effeea98a274d727ce6100f0957da8104e'
+  // SHA-256 of JSON [list, trigger, count, typeof onFocus] for every variant/size/layout combination,
+  // captured at v0.3 (ff6438f) with scroll-px-1.5 filtered from the list. v0.4 only adds the edge-fade
+  // utilities to scrollable lists (filtered below), so everything else must stay byte-identical.
+  const v03Recipes: Record<string, string> = {
+    'underline|md|false|false': 'b7e7458902c516780666e15a9541296e4e3a895d467ac915f3f544517879be2c',
+    'underline|md|false|true': 'b7e7458902c516780666e15a9541296e4e3a895d467ac915f3f544517879be2c',
+    'underline|md|true|false': 'b7e7458902c516780666e15a9541296e4e3a895d467ac915f3f544517879be2c',
+    'underline|md|true|true': 'b7e7458902c516780666e15a9541296e4e3a895d467ac915f3f544517879be2c',
+    'underline|sm|false|false': 'd21a97d345ae7ecd826ce0c1b809eb725f29aeef1504af97fcaacd37bc4e35c2',
+    'underline|sm|false|true': 'd21a97d345ae7ecd826ce0c1b809eb725f29aeef1504af97fcaacd37bc4e35c2',
+    'underline|sm|true|false': 'd21a97d345ae7ecd826ce0c1b809eb725f29aeef1504af97fcaacd37bc4e35c2',
+    'underline|sm|true|true': 'd21a97d345ae7ecd826ce0c1b809eb725f29aeef1504af97fcaacd37bc4e35c2',
+    'segmented|md|false|false': 'd64840bd41c311550f4b9fa74fb935e3a6c019f6a3e6913bd056cbfb98f99ea5',
+    'segmented|md|false|true': 'd3e44fa60eaf3913c522a7b1e0cf1a788673b947f7615dda328a5d738c39278c',
+    'segmented|md|true|false': 'ed4ea369c1e97530ea3470c23b4d9df64fdc7bcec2fa6ba35b630fd6a15f49f8',
+    'segmented|md|true|true': '32a231c592d7d77e1226cd72e2ca3e9cc4924ab0ae8c49809500fd28178c7443',
+    'segmented|sm|false|false': 'd64840bd41c311550f4b9fa74fb935e3a6c019f6a3e6913bd056cbfb98f99ea5',
+    'segmented|sm|false|true': 'd3e44fa60eaf3913c522a7b1e0cf1a788673b947f7615dda328a5d738c39278c',
+    'segmented|sm|true|false': 'ed4ea369c1e97530ea3470c23b4d9df64fdc7bcec2fa6ba35b630fd6a15f49f8',
+    'segmented|sm|true|true': '32a231c592d7d77e1226cd72e2ca3e9cc4924ab0ae8c49809500fd28178c7443',
+    'outline|md|false|false': '51509cff3bc7f03bb648b7427460079ce802846325a1a72ed17f5db97d87ae0b',
+    'outline|md|false|true': '60b3e60262457586795239d4a68710f9841a0d6c65ab20d1734b0db73d4c3345',
+    'outline|md|true|false': '2700b37a73cf2a0a045161573617d4b1b3164be6ffba1e7d0b98f7c8ece74a95',
+    'outline|md|true|true': '25304d1bac7cf0daedc1d35a8a4b3c0661abfcfc61413de7243c3188247e7e5b',
+    'outline|sm|false|false': '51509cff3bc7f03bb648b7427460079ce802846325a1a72ed17f5db97d87ae0b',
+    'outline|sm|false|true': '60b3e60262457586795239d4a68710f9841a0d6c65ab20d1734b0db73d4c3345',
+    'outline|sm|true|false': '2700b37a73cf2a0a045161573617d4b1b3164be6ffba1e7d0b98f7c8ece74a95',
+    'outline|sm|true|true': '25304d1bac7cf0daedc1d35a8a4b3c0661abfcfc61413de7243c3188247e7e5b'
   };
 
-  it('keeps every underline and segmented list, trigger, counter and focus handler byte-identical', () => {
+  it('keeps every list, trigger, counter and focus handler byte-identical to v0.3 apart from the edge fade', () => {
     const counted = [{ value: 'a', label: 'A', count: 1, content: 'x' }];
-    for (const variant of ['underline', 'segmented'] as const) {
+    for (const variant of ['underline', 'segmented', 'outline'] as const) {
       for (const size of ['md', 'sm'] as const) {
         for (const fullWidth of [false, true]) {
           for (const labelWrap of [false, true]) {
@@ -700,18 +738,22 @@ describe('Tabs outline variant', () => {
               useTabs({ items: counted, label: 'L', variant, size, fullWidth, labelWrap })
             );
             const result = hook.current;
+            const list = (result.listProps.className ?? '')
+              .split(' ')
+              .filter((part) => part !== 'scroll-px-1.5' && !edgeFadeUtilities.includes(part))
+              .join(' ');
             const fingerprint = createHash('sha256')
               .update(
                 JSON.stringify([
-                  result.listProps.className,
+                  list,
                   result.triggerClassName,
                   result.items[0]?.countClassName,
                   typeof result.listProps.onFocus
                 ])
               )
               .digest('hex');
-            const key = variant === 'underline' ? `underline|${size}` : `segmented|${fullWidth}|${labelWrap}`;
-            expect(fingerprint, `${variant} ${size} ${fullWidth} ${labelWrap}`).toBe(previousRecipes[key]);
+            const key = `${variant}|${size}|${fullWidth}|${labelWrap}`;
+            expect(fingerprint, key).toBe(v03Recipes[key]);
           }
         }
       }
@@ -791,7 +833,7 @@ describe('Tabs outline variant', () => {
       'self-stretch',
       'overflow-x-auto',
       'p-1.5',
-      'scroll-px-1.5',
+      'scroll-px-8',
       '[&::-webkit-scrollbar]:h-1.5'
     );
     expect(list).not.toHaveClass('inline-flex', 'self-start', 'p-0.75');
@@ -833,5 +875,45 @@ describe('Tabs outline variant', () => {
     expect(intrinsic.listProps.onFocus).toBeUndefined();
     const filled = renderHook(() => useTabs({ ...outlineBase, variant: 'outline', fullWidth: true })).result.current;
     expect(filled.listProps.onFocus).toBeTypeOf('function');
+  });
+});
+
+describe('Tabs edge fade (v0.4)', () => {
+  it.each([
+    ['underline md', { variant: 'underline', size: 'md' }],
+    ['underline sm', { variant: 'underline', size: 'sm' }],
+    ['segmented full width', { variant: 'segmented', fullWidth: true }],
+    ['outline full width', { variant: 'outline', fullWidth: true }],
+    ['segmented full width wrapped', { variant: 'segmented', fullWidth: true, labelWrap: true }]
+  ] as const)('masks the scroll edges and pads focus past the fade on the %s list', (_, props) => {
+    render(<Tabs {...base} {...props} />);
+    const list = screen.getByRole('tablist');
+    expect(list).toHaveClass(...edgeFadeUtilities);
+    expect(list).not.toHaveClass('scroll-px-1.5');
+    expect(list.className).not.toMatch(/(^|\s)(supports-\[[^\]]+\]:)?\[animation:/);
+  });
+
+  it.each([
+    ['segmented', 'segmented'],
+    ['outline', 'outline']
+  ] as const)('leaves the non-scrolling intrinsic %s list without a mask or scroll padding', (_, variant) => {
+    render(<Tabs {...base} variant={variant} />);
+    const list = screen.getByRole('tablist');
+    for (const utility of edgeFadeUtilities) {
+      expect(list).not.toHaveClass(utility);
+    }
+  });
+
+  it('keeps selection, keyboard and panel behavior on a masked underline list', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<Tabs {...base} onValueChange={onValueChange} />);
+    await user.tab();
+    await user.keyboard('{End}');
+    const tabs = screen.getAllByRole('tab');
+    const last = tabs[tabs.length - 1];
+    expect(last).toHaveFocus();
+    expect(last).toHaveAttribute('aria-selected', 'true');
+    expect(onValueChange).toHaveBeenCalledTimes(1);
   });
 });
