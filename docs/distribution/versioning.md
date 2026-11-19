@@ -16,9 +16,9 @@ The release set is:
 | `@egdev/tokens` | Token CSS source and compiled native artifact |
 | `@egdev/ui` | Component library |
 | `@egdev/effects` | Effect layers (`AmbientBackground`, `Isotipo3D`, `ScrollReveal`, `HomeTemplate`) |
-| `@egdev/system` | Design system data artifact (added by its own task) |
-| `@egdev/mcp` | Offline MCP server (added by its own task) |
-| `@egdev/cli` | The `egdev-ds` command: `init`, `upgrade` and `doctor` for consumer apps ([egdev-ds-cli.md](./egdev-ds-cli.md)) |
+| `@egdev/system` | Design system data artifact (`design-system.json`, generated `system.md`) |
+| `@egdev/mcp` | Offline, read-only MCP server over the `@egdev/system` artifact |
+| `@egdev/cli` | The `egdev-ds` command: `init`, `upgrade` (with `--add`), `doctor` and `status` for consumer apps ([egdev-ds-cli.md](./egdev-ds-cli.md)) |
 
 `pnpm release:pack` packs the release-set members that exist in the workspace, in the order above.
 A new member joins the same run when its package lands; the script never needs a second packing

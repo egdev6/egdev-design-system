@@ -1,6 +1,6 @@
 # Plan de traspaso
 
-Plan histórico de traspaso desde Claude Design; no es el roadmap vigente ni autoriza implementación. La planificación aprobada vive en [#8](https://github.com/egdev6/egdev-design-system/issues/8). Las menciones a JSON y generadores describen el arranque; T1 los sustituye por [fuente CSS única](odd/t1-css-tokens.md). Cada fase original proponía algo usable para la web y el AppShell.
+Plan histórico de traspaso desde Claude Design; no es el roadmap vigente ni autoriza implementación. La planificación aprobada vive en [#491](https://github.com/egdev6/egdev-design-system/issues/491) (el índice anterior, #8, está cerrado). Las menciones a JSON y generadores describen el arranque; T1 los sustituye por [fuente CSS única](odd/t1-css-tokens.md). Cada fase original proponía algo usable para la web y el AppShell.
 
 ## Fase 0 · Base (hecho en el arranque)
 
