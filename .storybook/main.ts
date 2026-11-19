@@ -131,6 +131,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   colorSwatchGroup: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'disabled'],
   countdown: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   dropzone: ['id', 'title', 'disabled', 'className', 'aria-describedby', 'onClick'],
+  attachmentField: ['id', 'title', 'aria-describedby', 'className', 'style'],
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
   field: ['id', 'title', 'aria-describedby', 'className', 'style'],
   fieldMessage: ['id', 'title', 'role', 'aria-live', 'aria-describedby', 'className', 'style'],

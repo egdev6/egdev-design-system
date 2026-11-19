@@ -15,6 +15,9 @@ import {
   attachmentFieldVariants
 } from './types';
 
+// Layout effects warn during React 18 server rendering; the focus restore only matters on the client.
+const useClientLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 const REASON_ORDER = ['type', 'size', 'count'] as const satisfies readonly AttachmentRejectionReason[];
 
 /** Messages after defaults; the Dropzone labels stay undefined unless the consumer defines them. */
@@ -173,7 +176,7 @@ export function useAttachmentField({
     };
   }, []);
 
-  useLayoutEffect(() => {
+  useClientLayoutEffect(() => {
     const pending = pendingFocus.current;
     if (!pending) {
       return;
