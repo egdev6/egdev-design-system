@@ -317,6 +317,158 @@ test('Button anatomy identifies its shared rounded-md token and size-specific sp
   );
 });
 
+test('Tabs edge-fade compounds expand without unresolved identifiers', () => {
+  const artifact = read('packages/system/design-system.json');
+  const tabs = artifact.components.find(({ name }) => name === 'Tabs');
+  const recipe = tabs.anatomy.find(({ name }) => name === 'tabsListVariants');
+  const facts = (ids) => ids.map((id) => artifact.anatomyUtilities[id]);
+  const underline = recipe.compounds.find(({ conditions }) => conditions.variant === 'underline');
+  const fullWidth = recipe.compounds.filter(
+    ({ conditions }) => conditions.variant === "['segmented', 'outline']" && conditions.fullWidth === 'true'
+  );
+  const classes = [
+    ...recipe.base,
+    ...Object.values(recipe.variants).flatMap((values) => Object.values(values).flat()),
+    ...recipe.compounds.flatMap(({ classes }) => classes)
+  ];
+  assert.equal(fullWidth.length, 2);
+  assert.ok(
+    !facts(classes).some(({ className }) => className === 'tabsEdgeFade'),
+    'tabsEdgeFade is no longer unresolved'
+  );
+  assert.deepEqual(facts(underline.classes), []);
+  assert.deepEqual(facts(fullWidth[1].classes), []);
+});
+
+test('same-file literal constants produce the same anatomy as inline classes', () => {
+  const fixture = [
+    "import { artifactExternalClass } from '../../primitives/text/types';",
+    "const artifactString = 'p-3 shadow-edge';",
+    'const artifactTemplate = `px-4 gap-2`;',
+    "const artifactNested = ['py-2', ['rounded-md', `font-sans`]];",
+    "let artifactMutable = 'p-5';",
+    "const artifactCall = String('p-6');",
+    'const artifactSubstituted = `p-${3}`;',
+    'const artifactAlias = artifactString;',
+    "const artifactMixed = ['p-7', artifactString];",
+    'const artifactCycle = [artifactCycle];',
+    "const artifactShadowed = 'p-9';",
+    "export const artifactFixtureVariants = cva('', { variants: { fixture: {",
+    '  string: artifactString,',
+    "  inlineString: 'p-3 shadow-edge',",
+    '  template: artifactTemplate,',
+    '  inlineTemplate: `px-4 gap-2`,',
+    '  nested: artifactNested,',
+    "  inlineNested: ['py-2', ['rounded-md', `font-sans`]],",
+    "  arrayMember: ['p-2', artifactString],",
+    "  inlineArrayMember: ['p-2', 'p-3 shadow-edge'],",
+    "  inlineShadow: 'p-4',",
+    '  imported: artifactExternalClass,',
+    '  mutable: artifactMutable,',
+    '  call: artifactCall,',
+    '  substituted: artifactSubstituted,',
+    '  alias: artifactAlias,',
+    '  mixed: artifactMixed,',
+    '  cycle: artifactCycle,',
+    "  directCall: String('p-6'),",
+    '  directTemplate: `p-${3}`',
+    '} } });',
+    "{ const artifactShadowed = 'p-4'; const artifactShadowVariants = cva(artifactShadowed); }"
+  ].join('\n');
+  const loader = `
+    import fs from 'node:fs';
+    import { syncBuiltinESMExports } from 'node:module';
+    import { resolve } from 'node:path';
+    const read = fs.readFileSync;
+    const write = fs.writeFileSync;
+    const button = resolve('packages/ui/src/atoms/button/types.ts');
+    const external = resolve('packages/ui/src/primitives/text/types.ts');
+    const artifact = resolve('packages/system/design-system.json');
+    fs.readFileSync = function (path, options) {
+      const value = read.call(this, path, options);
+      if (typeof path !== 'string') return value;
+      const target = resolve(path);
+      const addition = target === button ? ${JSON.stringify(fixture)} :
+        target === external ? "\\nexport const artifactExternalClass = 'p-8';\\n" : null;
+      if (addition === null) return value;
+      const changed = value.toString() + '\\n' + addition;
+      return typeof value === 'string' ? changed : Buffer.from(changed);
+    };
+    fs.writeFileSync = function (path, value, ...rest) {
+      if (typeof path === 'string' && resolve(path) === artifact) {
+        process.stdout.write(value);
+        return;
+      }
+      return write.call(this, path, value, ...rest);
+    };
+    syncBuiltinESMExports();
+  `;
+  const before = readFileSync('packages/system/design-system.json', 'utf8');
+  const result = spawnSync(
+    process.execPath,
+    [
+      '--import',
+      `data:text/javascript;base64,${Buffer.from(loader).toString('base64')}`,
+      'scripts/build-artifact.mjs',
+      '--write'
+    ],
+    { encoding: 'utf8', timeout: 120_000, maxBuffer: 4_000_000 }
+  );
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, '');
+  assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
+  const artifact = JSON.parse(result.stdout);
+  const button = artifact.components.find(({ name }) => name === 'Button');
+  const recipe = button.anatomy.find(({ name }) => name === 'artifactFixtureVariants');
+  const values = recipe.variants.fixture;
+  const facts = (ids) => ids.map((id) => artifact.anatomyUtilities[id]);
+  const unresolved = (className) => [{ className, tokens: [], unresolved: true }];
+  for (const [key, className] of [
+    ['imported', 'artifactExternalClass'],
+    ['mutable', 'artifactMutable'],
+    ['call', 'artifactCall'],
+    ['substituted', 'artifactSubstituted'],
+    ['alias', 'artifactAlias'],
+    ['mixed', 'artifactMixed'],
+    ['cycle', 'artifactCycle'],
+    ['directCall', "String('p-6')"],
+    ['directTemplate', '`p-${3}`']
+  ]) {
+    assert.deepEqual(facts(values[key]), unresolved(className), key);
+  }
+  assert.deepEqual(facts(values.inlineString), [
+    { className: 'p-3', tokens: ['--spacing-3'], unresolved: false },
+    { className: 'shadow-edge', tokens: ['--shadow-edge'], unresolved: false }
+  ]);
+  assert.deepEqual(facts(values.inlineNested), [
+    { className: 'py-2', tokens: ['--spacing-2'], unresolved: false },
+    { className: 'rounded-md', tokens: ['--radius-md'], unresolved: false },
+    { className: 'font-sans', tokens: ['--font-sans'], unresolved: false }
+  ]);
+  for (const [actual, inline] of [
+    ['string', 'inlineString'],
+    ['template', 'inlineTemplate'],
+    ['nested', 'inlineNested'],
+    ['arrayMember', 'inlineArrayMember']
+  ]) {
+    assert.deepEqual(facts(values[actual]), facts(values[inline]), actual);
+  }
+  const shadow = button.anatomy.find(({ name }) => name === 'artifactShadowVariants');
+  assert.deepEqual(facts(shadow.base), facts(values.inlineShadow));
+});
+
+test('--check accepts the current artifact without writing', () => {
+  const before = readFileSync('packages/system/design-system.json', 'utf8');
+  const result = spawnSync(process.execPath, ['scripts/build-artifact.mjs', '--check'], {
+    encoding: 'utf8',
+    timeout: 120_000
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, '');
+  assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
+});
+
 test('Surface anatomy retains compound conditions and source-proven composition', () => {
   const artifact = read('packages/system/design-system.json');
   const { components } = artifact;
