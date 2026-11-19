@@ -14,7 +14,7 @@ Implement the approved spec `docs/components/attachment-field/v0.1/spec.md` (con
 |---|---|---|---|---|
 | T1 | S1–S3 | Unit 1: list, paste and validation (AC-01–14, 20, 21) | worker | c10d2e0 |
 | T2 | S1–S3 | Unit 2: previews, removal, focus, announcements, disabled (AC-15–19, 22, 23) | worker | 05e883c |
-| T3 | S1–S3 | Unit 3: stories, barrel export, Storybook wiring, package fixtures | worker | pending |
+| T3 | S1–S3 | Unit 3: stories, barrel export, Storybook wiring, package fixtures | worker | cc4225a |
 | T4 | S1–S3 | Unit 4: prop-naming registry + approval record, catalog, system artifact | worker | pending |
 | T5 | S1–S3 | Unit 5: browser verification, VIS captures, implementation record | worker | pending |
 
@@ -24,3 +24,4 @@ Implement the approved spec `docs/components/attachment-field/v0.1/spec.md` (con
 - L2 — Unit 1 done by worker (RED: module not found → GREEN 52/52; molecules 1013/1013; Biome and typecheck clean). Deviations: empty status region until unit 2; hook returns resolved messages; `onChange` omitted from native props; plan's fixed default strings read "1 files" / "at most 1 attachments" → parent decision: make the defaults singular/plural-correct in unit 2 (no API change).
 - L3 — Unit 2 done by worker (RED 25 failed/54 passed → GREEN 79/79; molecules 1040/1040; Biome and typecheck clean). Grammar decision applied: only the count rejection needed plural forms (single files are named by file name). Status span renders only when non-empty (keeps AC-02's empty region).
 - L4 — Unit 3 done by worker (stories, barrel export, Storybook/CSS wiring, controls rows, export and consumption fixtures; R4 did not occur: docgen keeps all union rows). Parent fixes: reverted the build-regenerated design-system.json (unit 4 owns it); React 18 SSR warned `useLayoutEffect does nothing on the server` in package-consumption → switched the focus effect to a local `useClientLayoutEffect` (Carousel precedent); consumption 14/14 with 0 warnings, typecheck and build clean.
+- L5 — Unit 4 done by worker: conventions accepted-file-types, max-file-bytes, max-file-count, files-rejected (approved, record docs/decisions/prop-naming-attachment-field-approval.json) and five AttachmentFieldProps usages; catalog row; artifact regenerated (propNaming 173→177, catalog 109→110, components 185→186; tokens unchanged). props:check, test:props 130, test:artifact 34, system tests 31 all pass.
