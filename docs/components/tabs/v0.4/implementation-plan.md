@@ -1,7 +1,7 @@
 # Tabs v0.4 — edge-fade implementation plan
 
 - **Status:** Approved — 2026-11-19 by the owner (conversation reply "si" to this plan).
-- **Spec:** [edge-fade-amendment.md](edge-fade-amendment.md), v0.4, `contentSHA256: e8bc19cf5ffea4b4a1392a3bcea10ee91bde7259975d970613fd189a3b6d68c2`.
+- **Spec:** [edge-fade-amendment.md](edge-fade-amendment.md), v0.4, `contentSHA256: 4bf76b8f014447af778d71e8ca9fcc532ce52419ab21ea180e66b2974b4404d0`.
 - **Branch:** `feat/tabs-edge-fade`.
 - **Correction — 2026-11-19 (owner-confirmed):** the first token value used `var(--mask-fade-left)` inside a `:root` token; custom properties substitute `var()` where they are declared, so the list would inherit a resolved 0px fade and never show it. The token is now three static mask layers, `linear-gradient(to right, transparent, #000), linear-gradient(#000, #000), linear-gradient(to left, transparent, #000)`, sized and positioned on the list with `mask-size` / `mask-position` from the animated fade sizes. Same name and purpose. The fade width uses `var(--space-8)`, the exact value of `scroll-px-8`. Step 1 below shows the superseded value for history.
 

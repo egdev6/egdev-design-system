@@ -1,4 +1,5 @@
 import { createAccentTheme } from '@egdev/tokens/accent';
+import { DirectionProvider } from '@radix-ui/react-direction';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type CSSProperties, useState } from 'react';
 import { action } from 'storybook/actions';
@@ -194,7 +195,8 @@ const manyItems: TabsItem[] = [
  * Overflowing lists fade only the edges that hide more tabs, driven by the list's own scroll position.
  * With a mouse or other fine pointer, arrow buttons over the faded edges scroll one page; each hides at its
  * extreme and stays inert while the pointer rests on it. Touch keeps the fade only. Keyboard focus scrolls
- * each tab past the fade. Browsers without scroll timelines show no fade.
+ * each tab past the fade. Browsers without scroll timelines show no fade. Right to left comes from a Radix
+ * DirectionProvider; a bare dir attribute is ignored.
  */
 export const EdgeFade: Story = {
   args: { items: manyItems, label: 'Project views' },
@@ -202,9 +204,11 @@ export const EdgeFade: Story = {
     return (
       <div className='flex w-48 flex-col gap-6'>
         <Tabs {...args} />
-        <div dir='rtl'>
-          <Tabs {...args} label='Project views, right to left' />
-        </div>
+        <DirectionProvider dir='rtl'>
+          <div dir='rtl'>
+            <Tabs {...args} label='Project views, right to left' />
+          </div>
+        </DirectionProvider>
         <Tabs {...args} variant='segmented' fullWidth={true} label='Project views, segmented' />
       </div>
     );
