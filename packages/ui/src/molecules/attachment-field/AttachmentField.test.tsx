@@ -375,6 +375,94 @@ describe('AttachmentField v0.1 — rejection messages (AC-14)', () => {
   });
 });
 
+describe('AttachmentField v0.1.1 — external value changes (AC-14a to AC-14d)', () => {
+  type HarnessProps = { initial?: File[]; transform?: (next: File[]) => File[]; recreate?: boolean };
+  const Harness = ({
+    initial = [makeFile('first.png')],
+    transform = (next) => next,
+    recreate = false
+  }: HarnessProps) => {
+    const [files, setFiles] = useState<File[]>(initial);
+    return (
+      <AttachmentField
+        label='Attachments'
+        maxFileBytes={100}
+        value={recreate ? [...files] : files}
+        onValueChange={(next) => setFiles(transform(next))}
+      >
+        <textarea aria-label='Notes' />
+        <button type='button' onClick={() => setFiles([])}>
+          Reset
+        </button>
+      </AttachmentField>
+    );
+  };
+  const mixed = () => [makeFile('ok.png', 'image/png', 10), makeFile('big.png', 'image/png', 500)];
+  const rejectedBig = 'big.png was not added: it is larger than 100 B.';
+
+  it('AC-14a clears messages and aria-describedby on a parent reset and leaves focus on the Textarea', () => {
+    render(<Harness />);
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
+    expect(rejectionTexts()).toHaveLength(1);
+    expect(dropzone()).toHaveAttribute('aria-describedby');
+    notes().focus();
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+    expect(rejectionTexts()).toEqual([]);
+    expect(dropzone()).not.toHaveAttribute('aria-describedby');
+    expect(document.activeElement).toBe(notes());
+  });
+
+  it.each([
+    ['the same array', (next: File[]) => next],
+    ['a copied array', (next: File[]) => [...next]]
+  ])('AC-14b keeps the message of a mixed intake echoed as %s', (_name, transform) => {
+    render(<Harness transform={transform} />);
+    fireEvent.drop(dropzone(), { dataTransfer: transfer(mixed()) });
+    expect(rejectionTexts()).toEqual([rejectedBig]);
+    expect(dropzone()).toHaveAttribute('aria-describedby');
+  });
+
+  it('AC-14b keeps the message when the parent re-creates the same list on every render', () => {
+    render(<Harness recreate={true} />);
+    fireEvent.drop(dropzone(), { dataTransfer: transfer(mixed()) });
+    expect(rejectionTexts()).toEqual([rejectedBig]);
+  });
+
+  it('AC-14c clears the messages when the value is replaced by other files', () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(field({ maxFileBytes: 100, value: [makeFile('first.png')], onValueChange }));
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
+    expect(rejectionTexts()).toHaveLength(1);
+    rerender(field({ maxFileBytes: 100, value: [makeFile('other.png')], onValueChange }));
+    expect(rejectionTexts()).toEqual([]);
+    expect(dropzone()).not.toHaveAttribute('aria-describedby');
+  });
+
+  it('AC-14c clears the messages when the parent filters the requested list', () => {
+    render(<Harness initial={[]} transform={(next) => next.slice(0, 1)} />);
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([...mixed(), makeFile('also.png', 'image/png', 5)]) });
+    expect(rejectionTexts()).toEqual([]);
+  });
+
+  it('AC-14d adds no announcement and no node when the messages are cleared', () => {
+    const { container } = render(<Harness />);
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
+    const statusText = screen.getByRole('status').textContent;
+    const nodes = container.querySelectorAll('*').length;
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+    expect(screen.getByRole('status').textContent).toBe(statusText);
+    expect(container.querySelectorAll('*').length).toBeLessThan(nodes);
+    expect(container.querySelectorAll('.eg-field-message')).toHaveLength(0);
+  });
+
+  it('AC-14d leaves the uncontrolled field unchanged: messages stay until the next intake or removal', () => {
+    const { rerender } = render(field({ maxFileBytes: 100 }));
+    fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
+    rerender(field({ maxFileBytes: 100, className: 'other' }));
+    expect(rejectionTexts()).toHaveLength(1);
+  });
+});
+
 describe('AttachmentField v0.1 — message defaults', () => {
   const messages = () => renderHook(() => useAttachmentField({ label: 'Attachments' })).result.current.messages;
 

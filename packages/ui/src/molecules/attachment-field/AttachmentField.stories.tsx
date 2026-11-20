@@ -150,7 +150,7 @@ const ControlledExample = () => {
   );
 };
 
-/** The parent owns the list: changes arrive as requests and a "Clear after save" button resets it. */
+/** The parent owns the list: changes arrive as requests and "Clear after save" empties it, which also clears any rejection messages. */
 export const Controlled: Story = { render: () => <ControlledExample /> };
 
 /** Only `defaultValue` is read, once; the field then keeps its own list. */
