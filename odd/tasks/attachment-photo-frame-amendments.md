@@ -14,8 +14,10 @@ Draft two independent spec amendments from the owner-approved cataloging (Engram
 |---|---|---|---|---|
 | T1 | S1, S3 | AttachmentField v0.1.1 amendment draft | worker | see L2 |
 | T2 | S2, S3 | PhotoFrame fit amendment draft | worker | see L2 |
+| T3 | S1, S2 | Joint implementation plan (owner approval) | worker | see L3 |
 
 ## Log
 
 - L1 — Owner chose to catalog Recado's issues; answers: #508 "Cualquier cambio externo (Recomendado)"; #509 "No por ahora (Recomendado)", "Variante fit en PhotoFrame (Recomendado)", "No, lo compone la app (Recomendado)".
 - L2 — Drafts written; owner: "Acepto todas" (AF-1 filter/transform counts as external; AF-2 standalone until next minor; PF-1 convention `image-fit`/`fit`; PF-2 no `data-fit`; PF-3 focalPoint active under contain; PF-4 letterbox shows the existing Surface; PF-5 story note only). Approved hashes: AttachmentField v0.1.1 cd7e6b88…, PhotoFrame v0.5 f2012624… (both re-verified by the parent).
+- L3 — Joint plan at docs/components/photo-frame/v0.5/implementation-plan.md; owner: "Apruebo con las recomendaciones" (Reset story; release separate; VIS-07/08 authorized; fingerprints inline). First push failed on the load-sensitive Heading packed-fixture typecheck (timed out while a worker ran in parallel); push again with no concurrent workers.
