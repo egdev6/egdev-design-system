@@ -15,9 +15,11 @@ Add an explicit, declarative reset signal so a controlled consumer that saves wi
 | ID | Specs | Task | Route | Commit |
 |---|---|---|---|---|
 | T1 | S1–S5 | Amendment v0.2 draft | worker | see L2 |
-| T2 | S1–S5 | Owner approval, plan, implementation, release | inline/worker | pending |
+| T2 | S1–S5 | Implementation plan | worker | see L3 |
+| T3 | S1–S5 | Implementation, verification, consolidated spec, release | inline/worker | pending |
 
 ## Log
 
 - L1 — Recado opened #516 (empty list → rejected paste → save → value [] → [] keeps the message; saves with its own handlers, no <form>). Owner chose a new issue, then the four answers quoted in S1–S3.
 - L2 — Draft written (convention `transient-feedback-reset-key` / `resetKey`; AC-27–31, AC-14d revised). Owner: "Apruebo todo (recomendado)" — amendment and convention approved; consolidated spec (v0.1 + v0.1.1 + v0.2) as a separate docs task before release. contentSHA256 3d83fc4b….
+- L3 — Plan at docs/components/attachment-field/v0.2/implementation-plan.md; owner: "Apruebo con las recomendaciones" (parent runs builds/artifact/package-release; Chrome verification, screen reader Not evaluated; ui minor after the consolidated spec). Added to PR #517.
