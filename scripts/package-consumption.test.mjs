@@ -1328,11 +1328,15 @@ export const attachmentUncontrolledProps: AttachmentFieldProps = {
   label: 'Attachments', defaultValue: [], onValueChange: (files) => attachmentChanges.push(files),
   onFilesRejected: (rejections) => attachmentRejections.push(rejections),
   acceptedTypes: ['image/png', 'image/*'], maxFileBytes: 1024, maxFiles: 3, messages: attachmentMessages,
-  disabled: false, id: 'attachments', className: 'mt-2'
+  disabled: false, resetKey: 'save-0', id: 'attachments', className: 'mt-2'
 };
 export const attachmentControlledProps: AttachmentFieldProps = {
-  label: 'Attachments', value: [], onValueChange: (files) => attachmentChanges.push(files)
+  label: 'Attachments', value: [], onValueChange: (files) => attachmentChanges.push(files), resetKey: 0
 };
+// @ts-expect-error The reset token accepts only a string or number in uncontrolled mode.
+const invalidUncontrolledResetKey: AttachmentFieldProps = { label: 'Attachments', resetKey: true };
+// @ts-expect-error The reset token accepts only a string or number in controlled mode.
+const invalidControlledResetKey: AttachmentFieldProps = { label: 'Attachments', value: [], onValueChange: () => undefined, resetKey: {} };
 export function AttachmentFieldSamples({ disabled = false }: { disabled?: boolean }) {
   return createElement(AttachmentField, { ...attachmentUncontrolledProps, disabled },
     createElement('textarea', { 'aria-label': 'Notes', id: 'attachment-notes' }));

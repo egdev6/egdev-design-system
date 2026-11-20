@@ -179,6 +179,44 @@ describe('Dialog header-layout metadata and stories', () => {
 });
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts the shared AttachmentField reset token for both value modes without a default', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(source('molecules/attachment-field/AttachmentField.tsx'))
+      .find(({ displayName }) => displayName === 'AttachmentField');
+    const reset = doc?.props.resetKey;
+    expect(reset).toMatchObject({ required: false, defaultValue: null });
+    expect(reset?.type.name).toMatch(/string.*number|number.*string/);
+    const resetTags = reset?.tags as Record<string, string> | undefined;
+    expect(resetTags?.control?.split('\n').every((value: string) => value === 'false')).toBe(true);
+    expect(resetTags?.controlReason).toMatch(/consumer.*save handler.*Controlled story/);
+    const file = ast(source('molecules/attachment-field/types.ts'));
+    const shared = ownProps(file, ['AttachmentFieldOwnProps']);
+    expect(shared).toHaveLength(9);
+    const declarations = shared.filter((property) => property.name.getText(file) === 'resetKey');
+    expect(declarations).toHaveLength(1);
+    const declaration = declarations[0];
+    if (!declaration) {
+      throw new Error('Missing AttachmentField resetKey declaration');
+    }
+    expect(declaration.questionToken).toBeDefined();
+    expect(declaration.type?.getText(file)).toBe('string | number');
+    const tags = ts.getJSDocTags(declaration);
+    expect(tags.filter(({ tagName }) => tagName.text === 'control').map(({ comment }) => comment)).toEqual(['false']);
+    expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+    const props = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'AttachmentFieldProps'
+    );
+    if (!props || !ts.isTypeAliasDeclaration(props)) {
+      throw new Error('Missing AttachmentFieldProps');
+    }
+    const type = props.type.getText(file);
+    expect(type).toMatch(/AttachmentFieldOwnProps/);
+    expect(type).toMatch(/AttachmentFieldControlledProps\s*\|\s*AttachmentFieldUncontrolledProps/);
+    expect(publicAPI.AttachmentField).toBeDefined();
+  });
+
   it('publishes a composed WebTemplate page while keeping the existing stories', async () => {
     const stories = await import('../templates/web-template/WebTemplate.stories');
     expect(Object.keys(stories)).toEqual(expect.arrayContaining(['Default', 'Full', 'Localized', 'CatalogPage']));
