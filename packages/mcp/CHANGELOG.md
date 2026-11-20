@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.4
+
+- No code changes. Depend on `@egdev/system` 0.6.0 so every tool serves the artifact with
+  AttachmentField and the `fill` props.
+
 ## 0.4.3
 
 - No code changes. Depend on `@egdev/system` 0.5.0 so every tool serves the updated artifact.

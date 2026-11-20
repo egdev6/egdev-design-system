@@ -4,6 +4,22 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.5.0
+
+### Added
+
+- **AttachmentField** molecule for image attachments: paste from a Textarea, drop or pick files,
+  with type, size and count validation, removable thumbnails and screen-reader announcements.
+  Works controlled or uncontrolled.
+- Panel and Tabs accept `fill`: the component fills a definite-height host, keeps its chrome fixed
+  and scrolls its content in a single native scroller with a stable gutter. A fill Tabs nested in
+  a fill Panel does not add a second gutter.
+
+### Changed
+
+- **Behavior change:** Tabs no longer honors a consumer-supplied `data-fill` attribute; only the
+  component sets it, from `fill`. Use the `fill` prop instead.
+
 ## 0.4.0
 
 ### Added
