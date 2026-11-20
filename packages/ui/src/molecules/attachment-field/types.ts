@@ -84,6 +84,14 @@ type AttachmentFieldOwnProps = {
    */
   disabled?: boolean;
   /**
+   * Reset token for transient feedback. Its value at mount does nothing; each later change (compared with
+   * `Object.is`) silently clears the rejection messages and empties the hidden status region, without
+   * remounting, moving focus or changing the list. Bump it after a save, even without a form.
+   * @control false
+   * @controlReason A token the consumer changes from its own save handler; see the Controlled story.
+   */
+  resetKey?: string | number;
+  /**
    * The consumer's control or controls, usually a Field wrapping a Textarea; paste from any descendant is handled.
    * @control false
    * @controlReason ReactNode content is not serializable; see the WithTextarea story.

@@ -1,6 +1,6 @@
 import { fireEvent, render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type ReactNode, StrictMode, useState } from 'react';
+import { type ReactNode, StrictMode, useLayoutEffect, useRef, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AttachmentField } from './AttachmentField';
 import type { AttachmentFieldProps } from './types';
@@ -451,13 +451,19 @@ describe('AttachmentField v0.1.1 — external value changes (AC-14a to AC-14d)',
     expect(rejectionTexts()).toEqual([rejectedBig]);
   });
 
-  it('AC-14d adds no announcement and no node when the messages are cleared', () => {
+  it('AC-14d empties the mounted status without inserting an announcement on an external clear', () => {
     const { container } = render(<Harness />);
     fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
-    const statusText = screen.getByRole('status').textContent;
+    const region = screen.getByRole('status');
+    expect(region).toHaveTextContent('a.txt was not added: only image files are allowed.');
+    const observer = new MutationObserver(() => undefined);
+    observer.observe(region, { childList: true, characterData: true, subtree: true });
     const nodes = container.querySelectorAll('*').length;
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
-    expect(screen.getByRole('status').textContent).toBe(statusText);
+    expect(screen.getByRole('status')).toBe(region);
+    expect(region).toBeEmptyDOMElement();
+    expectNoInsertedLiveText(observer.takeRecords());
+    observer.disconnect();
     expect(container.querySelectorAll('*').length).toBeLessThan(nodes);
     expect(container.querySelectorAll('.eg-field-message')).toHaveLength(0);
   });
@@ -465,8 +471,220 @@ describe('AttachmentField v0.1.1 — external value changes (AC-14a to AC-14d)',
   it('AC-14d leaves the uncontrolled field unchanged: messages stay until the next intake or removal', () => {
     const { rerender } = render(field({ maxFileBytes: 100 }));
     fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
+    const previousStatus = screen.getByRole('status').textContent;
     rerender(field({ maxFileBytes: 100, className: 'other' }));
     expect(rejectionTexts()).toHaveLength(1);
+    expect(screen.getByRole('status')).toHaveTextContent(previousStatus ?? '');
+    expect(dropzone()).toHaveAttribute('aria-describedby');
+  });
+});
+
+const expectNoInsertedLiveText = (records: MutationRecord[]) => {
+  for (const record of records) {
+    if (record.type === 'characterData') {
+      expect(record.target.textContent).toBe('');
+    }
+    for (const node of record.addedNodes) {
+      expect(node.textContent).toBe('');
+    }
+  }
+};
+
+describe('AttachmentField v0.2 — transient feedback reset (AC-27 to AC-31)', () => {
+  const rejection = 'diagram.svg was not added: only PNG files are allowed.';
+  const rejectSvg = () => {
+    const svg = makeFile('diagram.svg', 'image/svg+xml', 1);
+    expect(pasteInto(notes(), [svg])).toBe(true);
+    expect(rejectionTexts()).toEqual([rejection]);
+    expect(dropzone()).toHaveAttribute('aria-describedby');
+    expect(dropzone()).toHaveAccessibleDescription(rejection);
+    expect(screen.getByRole('status')).toHaveTextContent(rejection);
+    return svg;
+  };
+  const expectCleared = () => {
+    expect(rejectionTexts()).toEqual([]);
+    expect(dropzone()).not.toHaveAttribute('aria-describedby');
+    expect(screen.getByRole('status')).toBeEmptyDOMElement();
+  };
+
+  it('AC-27 clears an empty controlled list’s rejection after save without callbacks', () => {
+    const onValueChange = vi.fn();
+    const onFilesRejected = vi.fn();
+    const props = { acceptedTypes: ['image/png'] as const, onValueChange, onFilesRejected };
+    const { rerender } = render(field({ ...props, value: [], resetKey: 0 }));
+    const svg = rejectSvg();
+    expect(onFilesRejected).toHaveBeenCalledExactlyOnceWith([{ file: svg, reason: 'type' }]);
+    expect(onValueChange).not.toHaveBeenCalled();
+    rerender(field({ ...props, value: [], resetKey: 1 }));
+    expectCleared();
+    expect(screen.queryByRole('list', { name: 'Attachments' })).not.toBeInTheDocument();
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onFilesRejected).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['a number', 7],
+    ['NaN', Number.NaN]
+  ])('AC-28 keeps feedback during typing and unchanged %s token rerenders', async (_name, token) => {
+    const onValueChange = vi.fn();
+    const onFilesRejected = vi.fn();
+    const Host = ({ resetKey }: { resetKey: number }) => {
+      const [text, setText] = useState('');
+      return (
+        <AttachmentField
+          label='Attachments'
+          acceptedTypes={['image/png']}
+          value={[]}
+          resetKey={resetKey}
+          onValueChange={onValueChange}
+          onFilesRejected={onFilesRejected}
+        >
+          <textarea aria-label='Notes' value={text} onChange={(event) => setText(event.target.value)} />
+        </AttachmentField>
+      );
+    };
+    const { rerender } = render(<Host resetKey={token} />);
+    const svg = rejectSvg();
+    const description = dropzone().getAttribute('aria-describedby');
+    const region = screen.getByRole('status');
+    await userEvent.type(notes(), 'typing');
+    expect(notes()).toHaveValue('typing');
+    expect(rejectionTexts()).toEqual([rejection]);
+    expect(dropzone()).toHaveAttribute('aria-describedby', description);
+    expect(region).toHaveTextContent(rejection);
+    rerender(<Host resetKey={token} />);
+    expect(rejectionTexts()).toEqual([rejection]);
+    expect(dropzone()).toHaveAttribute('aria-describedby', description);
+    expect(screen.getByRole('status')).toBe(region);
+    expect(region).toHaveTextContent(rejection);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onFilesRejected).toHaveBeenCalledExactlyOnceWith([{ file: svg, reason: 'type' }]);
+  });
+
+  it('AC-29 leaves an initial token inert even when feedback arrives during mount', () => {
+    const svg = makeFile('diagram.svg', 'image/svg+xml', 1);
+    const onValueChange = vi.fn();
+    const onFilesRejected = vi.fn();
+    const RejectOnMount = () => {
+      const ref = useRef<HTMLTextAreaElement>(null);
+      useLayoutEffect(() => {
+        if (ref.current) {
+          pasteInto(ref.current, [svg]);
+        }
+      }, []);
+      return <textarea ref={ref} aria-label='Notes' />;
+    };
+    render(
+      <AttachmentField
+        label='Attachments'
+        acceptedTypes={['image/png']}
+        resetKey='initial'
+        onValueChange={onValueChange}
+        onFilesRejected={onFilesRejected}
+      >
+        <RejectOnMount />
+      </AttachmentField>
+    );
+    expect(rejectionTexts()).toEqual([rejection]);
+    expect(dropzone()).toHaveAttribute('aria-describedby');
+    expect(dropzone()).toHaveAccessibleDescription(rejection);
+    expect(screen.getByRole('status')).toHaveTextContent(rejection);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onFilesRejected).toHaveBeenCalledExactlyOnceWith([{ file: svg, reason: 'type' }]);
+  });
+
+  it.each([
+    ['omitted to supplied', undefined, 'saved'],
+    ['supplied to omitted', 'saved', undefined],
+    ['positive zero to negative zero', 0, -0]
+  ])('AC-29 resets when the token changes from %s', (_name, initial, next) => {
+    const onValueChange = vi.fn();
+    const onFilesRejected = vi.fn();
+    const props = (resetKey: string | number | undefined) => ({
+      acceptedTypes: ['image/png'] as const,
+      onValueChange,
+      onFilesRejected,
+      ...(resetKey === undefined ? {} : { resetKey })
+    });
+    const { rerender } = render(field(props(initial)));
+    const svg = rejectSvg();
+    rerender(field(props(next)));
+    expectCleared();
+    expect(screen.queryByRole('list', { name: 'Attachments' })).not.toBeInTheDocument();
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onFilesRejected).toHaveBeenCalledExactlyOnceWith([{ file: svg, reason: 'type' }]);
+  });
+
+  it.each(['controlled', 'uncontrolled'] as const)(
+    'AC-30/31 preserve nodes, focus and every populated item in %s StrictMode',
+    (mode) => {
+      const files = [makeFile('first.png'), makeFile('second.png')];
+      const onValueChange = vi.fn();
+      const onFilesRejected = vi.fn();
+      const props = {
+        acceptedTypes: ['image/png'] as const,
+        onValueChange,
+        onFilesRejected,
+        ...(mode === 'controlled' ? { value: files } : { defaultValue: files })
+      };
+      const { container, rerender } = render(<StrictMode>{field({ ...props, resetKey: 0 })}</StrictMode>);
+      const svg = rejectSvg();
+      const root = container.firstElementChild;
+      const textarea = notes();
+      const region = screen.getByRole('status');
+      const list = screen.getByRole('list', { name: 'Attachments' });
+      const items = screen.getAllByRole('listitem');
+      const images = screen.getAllByRole('img');
+      textarea.focus();
+      expect(textarea).toHaveFocus();
+      const observer = new MutationObserver(() => undefined);
+      observer.observe(region, { childList: true, characterData: true, subtree: true });
+      rerender(<StrictMode>{field({ ...props, resetKey: 1 })}</StrictMode>);
+      expectCleared();
+      expect(container.firstElementChild).toBe(root);
+      expect(root).not.toHaveAttribute('resetKey');
+      expect(notes()).toBe(textarea);
+      expect(textarea).toHaveFocus();
+      expect(screen.getByRole('status')).toBe(region);
+      expectNoInsertedLiveText(observer.takeRecords());
+      observer.disconnect();
+      expect(screen.getByRole('list', { name: 'Attachments' })).toBe(list);
+      expect(screen.getAllByRole('listitem')).toEqual(items);
+      expect(screen.getAllByRole('img')).toEqual(images);
+      expect(onValueChange).not.toHaveBeenCalled();
+      expect(onFilesRejected).toHaveBeenCalledExactlyOnceWith([{ file: svg, reason: 'type' }]);
+    }
+  );
+
+  it('clears simultaneous external and token changes once, then preserves new feedback at the same token', () => {
+    const first = makeFile('first.png');
+    const replacement = makeFile('replacement.png');
+    const onValueChange = vi.fn();
+    const onFilesRejected = vi.fn();
+    const props = { acceptedTypes: ['image/png'] as const, onValueChange, onFilesRejected };
+    const { rerender } = render(field({ ...props, value: [first], resetKey: 0 }));
+    rejectSvg();
+    notes().focus();
+    const region = screen.getByRole('status');
+    const observer = new MutationObserver(() => undefined);
+    observer.observe(region, { childList: true, characterData: true, subtree: true });
+    rerender(field({ ...props, value: [replacement], resetKey: 1 }));
+    expectCleared();
+    expect(notes()).toHaveFocus();
+    expect(screen.getByRole('status')).toBe(region);
+    expectNoInsertedLiveText(observer.takeRecords());
+    observer.disconnect();
+    expect(screen.getAllByRole('img')).toHaveLength(1);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onFilesRejected).toHaveBeenCalledTimes(1);
+    rejectSvg();
+    rerender(field({ ...props, value: [replacement], resetKey: 1 }));
+    expect(rejectionTexts()).toEqual([rejection]);
+    expect(dropzone()).toHaveAttribute('aria-describedby');
+    expect(dropzone()).toHaveAccessibleDescription(rejection);
+    expect(region).toHaveTextContent(rejection);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onFilesRejected).toHaveBeenCalledTimes(2);
   });
 });
 

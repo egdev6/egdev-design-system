@@ -123,6 +123,7 @@ export function useAttachmentField({
   onFilesRejected,
   messages,
   disabled = false,
+  resetKey,
   children,
   className,
   ...rest
@@ -135,16 +136,27 @@ export function useAttachmentField({
   latestFiles.current = files;
   /** Last list this hook passed to `onValueChange`; a parent echo of it is not an external change. */
   const requested = useRef<File[] | undefined>(undefined);
+  const [status, setStatus] = useState({ text: '', key: 0 });
+  /** Clears transient feedback silently: rejection messages and the hidden status text; the list is untouched. */
+  const clearFeedback = () => {
+    setRejections([]);
+    setStatus((previous) => (previous.text === '' ? previous : { text: '', key: previous.key }));
+  };
   const [seenValue, setSeenValue] = useState(value);
   if (value !== seenValue) {
-    // Adjust state during render (no stale frame): clear the messages silently on an external controlled change.
+    // Adjust state during render (no stale frame): clear feedback silently on an external controlled change.
     setSeenValue(value);
     if (value !== undefined && !sameFiles(value, requested.current) && !sameFiles(value, seenValue)) {
-      setRejections([]);
+      clearFeedback();
     }
   }
+  // v0.2: the token's mount value is inert; any later change (Object.is) clears feedback the same silent way.
+  const [seenResetKey, setSeenResetKey] = useState(resetKey);
+  if (!Object.is(resetKey, seenResetKey)) {
+    setSeenResetKey(resetKey);
+    clearFeedback();
+  }
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const [status, setStatus] = useState({ text: '', key: 0 });
   const [urls, setUrls] = useState<ReadonlyMap<File, string>>(() => new Map());
   const urlMap = useRef(new Map<File, string>());
   const itemKeys = useRef({ ids: new WeakMap<File, number>(), next: 0 });
