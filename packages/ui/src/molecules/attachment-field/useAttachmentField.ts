@@ -67,6 +67,10 @@ const formatSize = (bytes: number) => {
   return kilobytes < 1024 ? `${kilobytes} KB` : `${Number((bytes / (1024 * 1024)).toFixed(1))} MB`;
 };
 
+/** Entry-by-entry equality by `File` reference; `undefined` never matches. */
+const sameFiles = (a: readonly File[], b: readonly File[] | undefined) =>
+  b !== undefined && a.length === b.length && a.every((file, index) => file === b[index]);
+
 const nameOf = (file: File | undefined) => file?.name || 'Image';
 
 const subject = (files: File[]) => (files.length === 1 ? nameOf(files[0]) : `${files.length} files`);
@@ -129,6 +133,16 @@ export function useAttachmentField({
   const files = value ?? internal;
   const latestFiles = useRef(files);
   latestFiles.current = files;
+  /** Last list this hook passed to `onValueChange`; a parent echo of it is not an external change. */
+  const requested = useRef<File[] | undefined>(undefined);
+  const [seenValue, setSeenValue] = useState(value);
+  if (value !== seenValue) {
+    // Adjust state during render (no stale frame): clear the messages silently on an external controlled change.
+    setSeenValue(value);
+    if (value !== undefined && !sameFiles(value, requested.current) && !sameFiles(value, seenValue)) {
+      setRejections([]);
+    }
+  }
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [status, setStatus] = useState({ text: '', key: 0 });
   const [urls, setUrls] = useState<ReadonlyMap<File, string>>(() => new Map());
@@ -198,6 +212,7 @@ export function useAttachmentField({
   };
 
   const commit = (next: File[]) => {
+    requested.current = next;
     if (value === undefined) {
       latestFiles.current = next;
       setInternal(next);

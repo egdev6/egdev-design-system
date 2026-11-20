@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef } from 'react';
 import { cn } from '@/lib/cn';
 import { surfaceVariants } from '../../primitives/surface';
-import type { PhotoFrameFocalPoint, PhotoFrameProps, PhotoFrameVariant } from './types';
+import type { PhotoFrameFit, PhotoFrameFocalPoint, PhotoFrameProps, PhotoFrameVariant } from './types';
 import {
   photoFrameCaptionVariants,
   photoFrameImageVariants,
@@ -65,6 +65,7 @@ export function usePhotoFrame({
   ratio: requestedRatio,
   variant: requestedVariant,
   focalPoint: requestedFocalPoint,
+  fit: requestedFit,
   imageCaption,
   className,
   ...native
@@ -82,6 +83,7 @@ export function usePhotoFrame({
     requestedFocalPoint === 'right-bottom'
       ? requestedFocalPoint
       : 'center';
+  const fit: PhotoFrameFit = requestedFit === 'contain' ? 'contain' : 'cover';
   const caption = typeof imageCaption === 'string' && imageCaption.trim() ? imageCaption : undefined;
   return {
     rootProps: {
@@ -117,7 +119,7 @@ export function usePhotoFrame({
       referrerPolicy,
       onLoad,
       onError,
-      className: cn(photoFrameImageVariants({ focalPoint }))
+      className: cn(photoFrameImageVariants({ focalPoint, fit }))
     },
     caption,
     captionClassName: cn(photoFrameCaptionVariants()),

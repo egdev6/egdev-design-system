@@ -1,2 +1,2 @@
 export { PhotoFrame } from './PhotoFrame';
-export type { PhotoFrameFocalPoint, PhotoFrameProps, PhotoFrameRatio, PhotoFrameVariant } from './types';
+export type { PhotoFrameFit, PhotoFrameFocalPoint, PhotoFrameProps, PhotoFrameRatio, PhotoFrameVariant } from './types';

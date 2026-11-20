@@ -17,6 +17,9 @@ export type PhotoFrameFocalPoint =
   | 'left-bottom'
   | 'right-bottom';
 
+/** How the image is scaled inside its reserved viewport: fill and crop, or show whole and letterbox. */
+export type PhotoFrameFit = 'cover' | 'contain';
+
 type PhotoFrameImageProps = Pick<
   ComponentPropsWithoutRef<'img'>,
   | 'srcSet'
@@ -82,6 +85,13 @@ export type PhotoFrameProps = PhotoFrameNativeProps &
      * @control select
      */
     focalPoint?: PhotoFrameFocalPoint;
+    /** Static image scaling inside the reserved viewport. `cover` fills and crops; `contain` shows the
+     * whole image and letterboxes the spare axis over the media Surface, without changing the reserved
+     * size. `focalPoint` still aligns the letterboxed image. Unrecognised values fall back to cover.
+     * @default cover
+     * @control select
+     */
+    fit?: PhotoFrameFit;
     /** Optional plain caption; blank text omits the caption and its gap.
      * @control text
      */
@@ -117,6 +127,7 @@ export const photoFrameImageVariants = cva(
   'eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none',
   {
     variants: {
+      fit: { cover: '', contain: 'object-contain' },
       focalPoint: {
         center: 'object-center',
         top: 'object-top',
@@ -129,7 +140,7 @@ export const photoFrameImageVariants = cva(
         'right-bottom': 'object-right-bottom'
       }
     },
-    defaultVariants: { focalPoint: 'center' }
+    defaultVariants: { fit: 'cover', focalPoint: 'center' }
   }
 );
 export const photoFrameCaptionVariants = cva(

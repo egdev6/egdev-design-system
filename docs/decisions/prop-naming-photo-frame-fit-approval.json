@@ -1,0 +1,39 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "owner-choice",
+  "decision": "Approve the image-fit convention (fit) for PhotoFrame without changing any existing component contract.",
+  "evidence": {
+    "taskReference": "odd/tasks/attachment-reset-photo-frame-fit-build.md#log",
+    "userStatements": [
+      {
+        "quote": "Acepto todas",
+        "provenance": "odd/tasks/attachment-photo-frame-amendments.md L2 (2026-11-20): acceptance of the PhotoFrame v0.5 fit amendment, including PF-1 (approve image-fit / fit)"
+      },
+      {
+        "quote": "Apruebo con las recomendaciones",
+        "provenance": "Implementation plan approval (2026-11-20): docs/components/photo-frame/v0.5/implementation-plan.md, which records image-fit with this approval record"
+      }
+    ]
+  },
+  "limits": [
+    "Binds only the image-fit convention payload below; ratio, focalPoint, variant and imageCaption keep their existing meanings and approvals.",
+    "Every existing PhotoFrame API is unchanged; no migration is implied."
+  ],
+  "entries": [
+    {
+      "scope": "convention:image-fit",
+      "contentHash": "sha256:f7ac2f26d57ccb6e771c86f15adf4984d950f8bf20934df542cd1b77c694cf64",
+      "convention": {
+        "id": "image-fit",
+        "name": "fit",
+        "meaning": "How a replaced image is scaled inside its already-reserved viewport: fill and crop (cover) or show whole and letterbox (contain).",
+        "whenToUse": "A media component exposes a finite set of static scaling policies independent of its proportion and crop alignment.",
+        "avoid": "Reserved proportion, absolute width/height, crop alignment, Material tone, arbitrary inline CSS.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}
