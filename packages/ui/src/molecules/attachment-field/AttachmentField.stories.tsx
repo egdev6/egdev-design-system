@@ -133,24 +133,33 @@ export const WithAttachments: Story = {
 
 const ControlledExample = () => {
   const [files, setFiles] = useState<File[]>(() => sampleImages(2));
+  const [resetKey, setResetKey] = useState(0);
   return (
     <AttachmentField
       label='Attachments'
       value={files}
+      acceptedTypes={['image/png']}
+      resetKey={resetKey}
       onValueChange={(next) => {
         action('onValueChange')(next);
         setFiles(next);
       }}
     >
       {notes}
-      <Button variant='secondary' onClick={() => setFiles([])}>
+      <Button
+        variant='secondary'
+        onClick={() => {
+          setFiles([]);
+          setResetKey((key) => key + 1);
+        }}
+      >
         Clear after save
       </Button>
     </AttachmentField>
   );
 };
 
-/** The parent owns the list: changes arrive as requests and "Clear after save" empties it, which also clears any rejection messages. */
+/** The parent owns the list: changes arrive as requests. "Clear after save" empties it and bumps `resetKey`, which also clears a rejection when the list was already empty (only PNG is accepted here). */
 export const Controlled: Story = { render: () => <ControlledExample /> };
 
 /** Only `defaultValue` is read, once; the field then keeps its own list. */

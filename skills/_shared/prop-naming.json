@@ -504,7 +504,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -611,7 +611,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -728,7 +728,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -2155,7 +2155,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -4248,7 +4248,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -8555,7 +8555,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -8582,7 +8582,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -8609,7 +8609,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -8636,7 +8636,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]
@@ -8701,6 +8701,33 @@
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
           "revision": "sha256:fad6ce9bb92ea38a215c7c0f105bc1ba18c4a5e14144724a09bb984981b017b6"
+        }
+      }
+    ]
+  },
+  {
+    "id": "transient-feedback-reset-key",
+    "name": "resetKey",
+    "meaning": "Consumer token changes reset component-defined transient feedback without changing its value or remounting.",
+    "whenToUse": "Use declaratively when a consumer needs to reset transient feedback.",
+    "avoid": "List resets, React identity keys and callbacks.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-attachment-field-reset-key-approval.json",
+      "scope": "convention:transient-feedback-reset-key",
+      "contentHash": "sha256:8e01ec065900955aad6ed92e470fe2dd4f4a33a38112b184e92f65360ecb8b82"
+    },
+    "usages": [
+      {
+        "component": "AttachmentField",
+        "type": "string | number (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
         }
       }
     ]

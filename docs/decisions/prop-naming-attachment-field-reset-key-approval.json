@@ -1,0 +1,39 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "owner-choice",
+  "decision": "Approve the transient-feedback-reset-key convention (resetKey) for declaratively clearing transient feedback without changing the component value or remounting.",
+  "evidence": {
+    "taskReference": "odd/tasks/attachment-field-reset-key.md#log",
+    "userStatements": [
+      {
+        "quote": "Apruebo todo (recomendado)",
+        "provenance": "odd/tasks/attachment-field-reset-key.md L2 (2026-11-20): approval of the AttachmentField v0.2 amendment and transient-feedback-reset-key convention in docs/components/attachment-field/v0.2/reset-key-amendment.md section 2"
+      },
+      {
+        "quote": "Apruebo con las recomendaciones",
+        "provenance": "odd/tasks/attachment-field-reset-key.md L3 (2026-11-20): separate approval of docs/components/attachment-field/v0.2/implementation-plan.md"
+      }
+    ]
+  },
+  "limits": [
+    "Binds only the transient-feedback-reset-key convention payload below; existing conventions and their approvals remain unchanged.",
+    "The token resets transient feedback, not the component value or React identity; no migration or callback is implied."
+  ],
+  "entries": [
+    {
+      "scope": "convention:transient-feedback-reset-key",
+      "contentHash": "sha256:8e01ec065900955aad6ed92e470fe2dd4f4a33a38112b184e92f65360ecb8b82",
+      "convention": {
+        "id": "transient-feedback-reset-key",
+        "name": "resetKey",
+        "meaning": "Consumer token changes reset component-defined transient feedback without changing its value or remounting.",
+        "whenToUse": "Use declaratively when a consumer needs to reset transient feedback.",
+        "avoid": "List resets, React identity keys and callbacks.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

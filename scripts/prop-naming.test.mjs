@@ -68,6 +68,10 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/attachment-field/types.ts#AttachmentFieldProps'
   })),
+  {
+    conventionId: 'transient-feedback-reset-key',
+    source: 'packages/ui/src/molecules/attachment-field/types.ts#AttachmentFieldProps'
+  },
   // ColorSwatchGroup records reviewed own props after the existing convention receipts.
   ...[
     ['accessible-name', 'ColorSwatchGroupProps.label'],
@@ -864,7 +868,9 @@ const postReceiptProposals = [
   // Panel and Tabs fill share one approved convention with its own approval record (docs/decisions/prop-naming-panel-tabs-fill-approval.json).
   'host-fill',
   // PhotoFrame fit adds one approved convention with its own approval record (docs/decisions/prop-naming-photo-frame-fit-approval.json).
-  'image-fit'
+  'image-fit',
+  // AttachmentField v0.2 adds its independently approved reset token after the frozen receipts.
+  'transient-feedback-reset-key'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -918,6 +924,87 @@ function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
       };
     });
 }
+
+test('AttachmentField resetKey binds its approved convention and every reviewed source revision', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'transient-feedback-reset-key');
+  assert.ok(entry, 'The approved resetKey convention must be registered');
+  const reference = 'docs/decisions/prop-naming-attachment-field-reset-key-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'owner-choice');
+  for (const [quote, locator] of [
+    ['Apruebo todo (recomendado)', 'odd/tasks/attachment-field-reset-key.md L2'],
+    ['Apruebo con las recomendaciones', 'odd/tasks/attachment-field-reset-key.md L3']
+  ]) {
+    assert.ok(
+      receipt.evidence.userStatements.some(
+        ({ quote: actual, provenance }) =>
+          actual === quote && provenance.includes(locator) && provenance.includes('2026-11-20')
+      )
+    );
+  }
+  const amendment = fs.readFileSync(
+    resolve(root, 'docs/components/attachment-field/v0.2/reset-key-amendment.md'),
+    'utf8'
+  );
+  // The hash definition line quotes the heading too, so slice from the heading line itself.
+  const heading = amendment.indexOf('\n## 1. What changes') + 1;
+  assert.notEqual(heading, 0);
+  assert.equal(
+    digest(amendment.slice(heading)),
+    'sha256:3d83fc4b53f8617a54c7c4de89306e3d6153157fe30fcce766991c82700a1263'
+  );
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(convention, {
+    id: 'transient-feedback-reset-key',
+    name: 'resetKey',
+    meaning:
+      'Consumer token changes reset component-defined transient feedback without changing its value or remounting.',
+    whenToUse: 'Use declaratively when a consumer needs to reset transient feedback.',
+    avoid: 'List resets, React identity keys and callbacks.',
+    status: 'approved',
+    aliases: [],
+    exceptions: []
+  });
+  const contentHash = props.conventionHash(entry);
+  assert.deepEqual(approval, { reference, scope: 'convention:transient-feedback-reset-key', contentHash });
+  assert.deepEqual(receipt.entries, [{ scope: approval.scope, contentHash, convention }]);
+  const path = 'packages/ui/src/molecules/attachment-field/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  assert.deepEqual(usages, [
+    {
+      component: 'AttachmentField',
+      type: 'string | number (optional)',
+      status: 'existing',
+      source: { path, symbol: 'AttachmentFieldProps', revision }
+    }
+  ]);
+  const reviewed = registry.flatMap(({ id, usages: observations }) =>
+    observations.filter(({ source }) => source.path === path).map(({ source }) => ({ id, source }))
+  );
+  assert.deepEqual(reviewed.map(({ id }) => id).sort(), [
+    'accepted-file-types',
+    'accessible-name',
+    'files-rejected',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'localized-messages',
+    'max-file-bytes',
+    'max-file-count',
+    'primary-value',
+    'transient-feedback-reset-key'
+  ]);
+  for (const { source } of reviewed) {
+    assert.deepEqual(source, { path, symbol: 'AttachmentFieldProps', revision });
+  }
+  assert.deepEqual(historicalRegistry([entry]), []);
+  validate(registry);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
 
 test('Dialog placement and body padding bind the delegated naming approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
@@ -1956,8 +2043,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // AttachmentField adds four approved file-intake conventions.
   // Panel and Tabs fill add one approved shared convention (host-fill).
   // PhotoFrame fit adds one approved convention (image-fit).
-  assert.equal(actual.length, 179);
-  assert.equal(beforeIndicatorConventions(actual).length, 176);
+  // AttachmentField v0.2 adds the approved transient-feedback reset token.
+  assert.equal(actual.length, 180);
+  assert.equal(beforeIndicatorConventions(actual).length, 177);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

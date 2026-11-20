@@ -496,6 +496,7 @@ const expected: Record<string, Record<string, string | false>> = {
     onFilesRejected: false,
     messages: false,
     disabled: 'boolean',
+    resetKey: false,
     children: false,
     value: false,
     onValueChange: false,
@@ -773,7 +774,7 @@ const ownPropCounts: Record<string, number> = {
   buttongroup: 3,
   pageheader: 6,
   dropzone: 6,
-  attachmentfield: 11,
+  attachmentfield: 12,
   gauge: 8,
   field: 9,
   fieldmessage: 3,
@@ -1375,14 +1376,28 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   });
 
   it('keeps every controlled and uncontrolled AttachmentField row after real union extraction', () => {
+    const metadata = component('AttachmentField');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const reset = metadata.__docgenInfo.props.resetKey;
+    expect(reset?.type.name).toMatch(/string.*number|number.*string/);
+    expect(reset?.required).toBe(false);
+    expect(reset?.defaultValue).toBeNull();
+    const resetTags = reset?.tags as Record<string, string> | undefined;
+    expect(resetTags?.control?.split('\n').every((value: string) => value === 'false')).toBe(true);
+    expect(resetTags?.controlReason).toMatch(/consumer.*save handler.*Controlled story/);
     const { argTypes, args } = story('AttachmentField');
-    for (const name of ['label', 'value', 'onValueChange', 'defaultValue', 'acceptedTypes', 'messages']) {
+    for (const name of ['label', 'value', 'onValueChange', 'defaultValue', 'acceptedTypes', 'messages', 'resetKey']) {
       expect(argTypes[name], name).toBeDefined();
     }
     expect(argTypes.label?.type?.required).toBe(true);
-    for (const name of ['value', 'defaultValue', 'onValueChange']) {
+    for (const name of ['value', 'defaultValue', 'onValueChange', 'resetKey']) {
       expect(argTypes[name]?.control, name).toBe(false);
     }
+    expect(argTypes.resetKey?.type?.required).not.toBe(true);
+    expect(argTypes.resetKey?.table?.disable).toBeUndefined();
+    expect(argTypes.resetKey?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.resetKey?.description).toMatch(/Object\.is/);
     for (const name of ['id', 'title', 'aria-describedby', 'className', 'style']) {
       expect(argTypes[name], name).toBeDefined();
     }
