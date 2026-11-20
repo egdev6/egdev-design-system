@@ -1,7 +1,7 @@
 # AttachmentField v0.1.1 reset and PhotoFrame v0.5 fit — joint implementation and verification record
 
 - **Amendments:**
-  - [AttachmentField v0.1.1](../../attachment-field/v0.1.1/reset-amendment.md): `contentSHA256: cd7e6b8841cda81a7739c90bd81fbc72fbf9729814a1ca46852ddc6aff16e756`.
+  - [AttachmentField v0.1.1](../../attachment-field/v0.1.1/reset-amendment.md): `contentSHA256: 3803812f0f16bb755328c8d10b72bbea3f341e393c475eb96ad2e9bba1c158a0`.
   - [PhotoFrame v0.5](fit-amendment.md): `contentSHA256: f201262463ed1b01eb5e2bed88dcb0c82368b4c0e1540041db960d3cc76e0f49`.
   - Both approved 2026-11-20 ("Acepto todas").
 - **Plan:** [implementation-plan.md](implementation-plan.md), approved 2026-11-20 ("Apruebo con las recomendaciones").

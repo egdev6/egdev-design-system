@@ -357,14 +357,15 @@ describe('PhotoFrame fit (v0.5)', () => {
   it.each(fingerprintKeys)(
     'PF5-01 keeps the v0.4 output byte-identical for %s with fit omitted, cover or unknown',
     (key) => {
-      for (const fit of [undefined, 'cover', 'fill', null, 3]) {
+      for (const fit of [undefined, 'cover', 'fill', null, 3, 'none', 'scale-down', 'Contain', ' contain', true]) {
         const { container, unmount } = render(<PhotoFrame {...base} {...fingerprintProps[key]} {...withFit(fit)} />);
         expect(container.innerHTML).toBe(baseline[key]);
         unmount();
       }
       const plain = render(<PhotoFrame {...base} {...fingerprintProps[key]} />);
       expect(plain.container.innerHTML).toBe(baseline[key]);
-    }
+    },
+    60_000
   );
 
   it.each(ratios)('PF5-02 gives contain object-contain and no object-cover on the image only (ratio %s)', (ratio) => {

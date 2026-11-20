@@ -444,6 +444,13 @@ describe('AttachmentField v0.1.1 — external value changes (AC-14a to AC-14d)',
     expect(rejectionTexts()).toEqual([]);
   });
 
+  it('AC-14b keeps the message when the parent filters the request back to the previous list', () => {
+    // Clarified 2026-11-20: a filter that returns exactly the previous value is not an external change.
+    render(<Harness transform={(next) => next.slice(0, 1)} />);
+    fireEvent.drop(dropzone(), { dataTransfer: transfer(mixed()) });
+    expect(rejectionTexts()).toEqual([rejectedBig]);
+  });
+
   it('AC-14d adds no announcement and no node when the messages are cleared', () => {
     const { container } = render(<Harness />);
     fireEvent.drop(dropzone(), { dataTransfer: transfer([makeFile('a.txt', 'text/plain')]) });
