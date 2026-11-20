@@ -57,6 +57,12 @@ Conditions: Chrome 157 on Windows, Playwright viewport 520 × 720, device scale 
 | Panel VIS-02 | [vis-02-panel-tabs-nested.png](vis-02-panel-tabs-nested.png) | Nested fill Tabs inside a fill Panel: single gutter | `0199219f5586db21` |
 | Tabs VIS-01 | [../../tabs/v0.5/vis-01-tabs-fill.png](../../tabs/v0.5/vis-01-tabs-fill.png) | Tabs FillHost with the panel scrolled | `ed0227ceb3d2eb03` |
 
+## Consumer responsibility found after release (#507)
+
+Recado reported this from its WebView2 window. In `<Tabs fill>` the active panel is the scroll container and has no inline padding, so a control that starts at the panel edge (for example a Textarea) has its focus ring clipped. The ring is clipped left and right, and at the top or bottom at the ends of the scroll range.
+
+Owner decision (2026-11-20): this is the consumer's to fix. Tabs content is consumer-owned ("Panel spacing only: consumers own content surfaces"), and a forced DS padding would double the inset for content that already has its own. Content inside a fill Tabs panel keeps its own token inset (for example a wrapper with `p-1` / `var(--space-1)`) so descendant focus rings stay visible. The Tabs FillHost story documents it. Panel `fill` is unaffected, because PanelBody keeps its `p-4`.
+
 ## Not evaluated
 
 - Firefox, Safari and WebView2. Keyboard-focusable scrollers in Safari are the D-P1 risk; Recado's WebView2 is Chromium.
