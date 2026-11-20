@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0
+
+### Added
+
+- The artifact and design reference include AttachmentField, the Panel and Tabs `fill` props, the
+  `host-fill` convention and four AttachmentField conventions.
+
 ## 0.5.0
 
 ### Added
