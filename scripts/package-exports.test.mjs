@@ -3244,13 +3244,20 @@ test('UI ships PhotoFrame declarations and native utility resets', async () => {
   assert.equal(exported.usePhotoFrame, undefined);
   assert.equal(exported.photoFrameRootVariants, undefined);
   const declarations = readFileSync(artifact('ui', './dist/atoms/photo-frame/types.d.ts'), 'utf8');
-  for (const name of ['PhotoFrameProps', 'PhotoFrameRatio', 'PhotoFrameVariant', 'PhotoFrameFocalPoint']) {
+  for (const name of [
+    'PhotoFrameProps',
+    'PhotoFrameRatio',
+    'PhotoFrameVariant',
+    'PhotoFrameFocalPoint',
+    'PhotoFrameFit'
+  ]) {
     assert.match(declarations, new RegExp(`export (?:declare )?type ${name}\\b`));
   }
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
   for (const selector of [
     '.object-cover',
+    '.object-contain',
     '.object-center',
     '.object-left-top',
     '.object-right-top',
@@ -6160,6 +6167,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PanelTone',
     'PanelVariant',
     'PhotoFrame',
+    'PhotoFrameFit',
     'PhotoFrameFocalPoint',
     'PhotoFrameProps',
     'PhotoFrameRatio',
@@ -6567,6 +6575,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ProgressBarVariant',
     'progressBarVariants',
     'PhotoFrame',
+    'PhotoFrameFit',
     'PhotoFrameFocalPoint',
     'PhotoFrameProps',
     'PhotoFrameRatio',

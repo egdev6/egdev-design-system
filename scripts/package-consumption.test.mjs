@@ -189,7 +189,7 @@ import type { TableColumn, TableProps, TableRow, TableSort, TableSortDirection, 
 import { GaugeGroup } from '@egdev/ui';
 import type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from '@egdev/ui';
 import { PhotoFrame } from '@egdev/ui';
-import type { PhotoFrameProps, PhotoFrameRatio, PhotoFrameVariant, PhotoFrameFocalPoint } from '@egdev/ui';
+import type { PhotoFrameProps, PhotoFrameRatio, PhotoFrameVariant, PhotoFrameFocalPoint, PhotoFrameFit } from '@egdev/ui';
 import { Menu, menuVariants, cn } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef, Fragment } from 'react';
@@ -2254,7 +2254,8 @@ const timedStat: StatProps = { ...statProps, highlighted: 3000 };
 const photoFrameRatio: PhotoFrameRatio = 'auto';
 const photoFrameVariant: PhotoFrameVariant = 'framed';
 const photoFrameFocalPoint: PhotoFrameFocalPoint = 'left-top';
-export const photoFrameProps: PhotoFrameProps = { src: '/grid.svg', alt: 'Grid', ratio: photoFrameRatio, variant: photoFrameVariant, focalPoint: photoFrameFocalPoint, imageCaption: 'Grid caption', id: 'consumer-photo-frame' };
+const photoFrameFit: PhotoFrameFit = 'contain';
+export const photoFrameProps: PhotoFrameProps = { src: '/grid.svg', alt: 'Grid', ratio: photoFrameRatio, variant: photoFrameVariant, focalPoint: photoFrameFocalPoint, fit: photoFrameFit, imageCaption: 'Grid caption', id: 'consumer-photo-frame' };
 export const photoFrameNumericProps: PhotoFrameProps = { src: '/grid.svg', alt: 'Grid', ratio: 716 / 890, focalPoint: photoFrameFocalPoint, id: 'consumer-photo-frame-numeric' };
 export function photoFrameSamples({ src = photoFrameProps.src }: { src?: string }) {
   return createElement(PhotoFrame, { ...photoFrameProps, src });
@@ -2266,6 +2267,8 @@ export function photoFrameNumericSamples() {
 const photoFrameMissing: PhotoFrameProps = {};
 // @ts-expect-error The ratio union is exhaustive: only presets, auto or a number.
 const photoFrameUnknownRatio: PhotoFrameProps = { ...photoFrameProps, ratio: 'wide' };
+// @ts-expect-error PhotoFrame fit accepts only cover and contain.
+const photoFrameUnknownFit: PhotoFrameProps = { ...photoFrameProps, fit: 'fill' };
 // @ts-expect-error PhotoFrame is passive and has no children API.
 const photoFrameChildren: PhotoFrameProps = { ...photoFrameProps, children: 'child' };
 // @ts-expect-error PhotoFrame has no ref API.
@@ -6748,6 +6751,8 @@ try {
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('alt'), 'Grid');
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('loading'), 'lazy');
   assert.ok(photoFrameFigure.querySelector('img').classList.contains('object-left-top'));
+  assert.ok(photoFrameFigure.querySelector('img').classList.contains('object-contain'));
+  assert.equal(photoFrameFigure.querySelector('img').classList.contains('object-cover'), false);
   assert.equal(photoFrameFigure.querySelector('figcaption').textContent, 'Grid caption');
   assert.equal(photoFrameFigure.hasAttribute('role'), false);
 } finally { photoFrameDocument.window.close(); }

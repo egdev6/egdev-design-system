@@ -295,6 +295,7 @@ const expected: Record<string, Record<string, string | false>> = {
     ratio: false,
     variant: 'select',
     focalPoint: 'select',
+    fit: 'select',
     imageCaption: 'text'
   },
   indicator: {
@@ -734,7 +735,7 @@ const ownPropCounts: Record<string, number> = {
   terminalcard: 3,
   terminalcardbar: 3,
   terminalcardlist: 2,
-  photoframe: 6,
+  photoframe: 7,
   indicator: 8,
   panel: 5,
   panelheader: 1,
