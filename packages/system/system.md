@@ -2219,6 +2219,7 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · AspectRatio
     - photoFrameViewportVariants variant=framed: rounded-lg → --radius-lg
     - surfaceVariants({         tone: variant === 'framed' ? 'surface-0' : 'surface-1',         elevation: variant === 'framed' ? 2 : 1,         padding: 'none',         radius: 'xl'       }) · packages/ui/src/atoms/photo-frame/usePhotoFrame.ts; see Surface anatomy
   - alt: string; Image alternative; use an explicit empty string for decorative media. (components[] · packages/ui/src/atoms/photo-frame/types.ts)
+  - fit: enum; Static image scaling inside the reserved viewport. `cover` fills and crops; `contain` shows the whole image and letterboxes the spare axis over the media Surface, without changing the reserved size. `focalPoint` still aligns the letterboxed image. Unrecognised values fall back to cover. (components[] · packages/ui/src/atoms/photo-frame/types.ts)
   - focalPoint: enum; Static cover alignment inside the viewport. Corners combine a horizontal and a vertical physical keyword, so the crop never mirrors. Unrecognised values fall back to center. (components[] · packages/ui/src/atoms/photo-frame/types.ts)
   - imageCaption: string; Optional plain caption; blank text omits the caption and its gap. (components[] · packages/ui/src/atoms/photo-frame/types.ts)
   - ratio: number \| PhotoFrameRatio; Reserved viewport proportion. `square` is 1, `portrait` is 4/5 and `landscape` is 4/3; `auto` reserves nothing, so the media fills the height the host layout gives the figure and the host owns that definite height. `auto` also stretches the figure itself (`h-full min-h-0`) so a grid, flex or block host can size it instead of the image's natural height. A number is the width divided by the height and is normalised by AspectRatio; unrepresentable numbers (zero, negative, NaN, infinite) fall back to a square. Unrecognised strings fall back to landscape. (components[] · packages/ui/src/atoms/photo-frame/types.ts)
@@ -4498,6 +4499,7 @@ Not exported:
 - icon-placement: iconPosition; approved; Button (propNaming[] · skills/_shared/prop-naming.json)
 - identity-image-source: src; approved; AppIcon (propNaming[] · skills/_shared/prop-naming.json)
 - image-caption: imageCaption; approved; PhotoFrame (propNaming[] · skills/_shared/prop-naming.json)
+- image-fit: fit; approved; PhotoFrame (propNaming[] · skills/_shared/prop-naming.json)
 - image-focal-point: focalPoint; approved; PhotoFrame, TipCard (propNaming[] · skills/_shared/prop-naming.json)
 - indicator-count: count; approved; Indicator (propNaming[] · skills/_shared/prop-naming.json)
 - indicator-count-cap: max; approved; Indicator (propNaming[] · skills/_shared/prop-naming.json)

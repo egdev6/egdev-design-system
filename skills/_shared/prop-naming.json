@@ -1042,7 +1042,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
+          "revision": "sha256:fad6ce9bb92ea38a215c7c0f105bc1ba18c4a5e14144724a09bb984981b017b6"
         }
       },
       {
@@ -3884,7 +3884,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
+          "revision": "sha256:fad6ce9bb92ea38a215c7c0f105bc1ba18c4a5e14144724a09bb984981b017b6"
         }
       },
       {
@@ -5899,7 +5899,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
+          "revision": "sha256:fad6ce9bb92ea38a215c7c0f105bc1ba18c4a5e14144724a09bb984981b017b6"
         }
       }
     ]
@@ -5926,7 +5926,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
+          "revision": "sha256:fad6ce9bb92ea38a215c7c0f105bc1ba18c4a5e14144724a09bb984981b017b6"
         }
       },
       {
@@ -8674,6 +8674,33 @@
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
           "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+        }
+      }
+    ]
+  },
+  {
+    "id": "image-fit",
+    "name": "fit",
+    "meaning": "How a replaced image is scaled inside its already-reserved viewport: fill and crop (cover) or show whole and letterbox (contain).",
+    "whenToUse": "A media component exposes a finite set of static scaling policies independent of its proportion and crop alignment.",
+    "avoid": "Reserved proportion, absolute width/height, crop alignment, Material tone, arbitrary inline CSS.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-photo-frame-fit-approval.json",
+      "scope": "convention:image-fit",
+      "contentHash": "sha256:f7ac2f26d57ccb6e771c86f15adf4984d950f8bf20934df542cd1b77c694cf64"
+    },
+    "usages": [
+      {
+        "component": "PhotoFrame",
+        "type": "PhotoFrameFit ('cover' | 'contain')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/photo-frame/types.ts",
+          "symbol": "PhotoFrameProps",
+          "revision": "sha256:fad6ce9bb92ea38a215c7c0f105bc1ba18c4a5e14144724a09bb984981b017b6"
         }
       }
     ]
