@@ -301,6 +301,11 @@ prose. It is the only `sh` block in this file; every other example is `text`.
    - **Mode B — no Tailwind in the consumer.** `@egdev/tokens/tokens.css` is the compiled native
      artifact, so no Tailwind pipeline is needed at all. The compiled `styles.css` of each package
      already carries the utilities its components use.
+
+   In both modes the tokens declare `color-scheme: dark` on `:root`, because the system ships a
+   single dark theme: native scrollbars, form controls and other browser UI render dark. An app
+   rule for `color-scheme` on `:root` has the same specificity, so whichever stylesheet loads last
+   wins.
 5. **`--strict-peer-dependencies`.** The React, `three` and `@egdev/tokens` peers are checked at
    install time. A consumer that silently installs an untested React version is the failure mode
    this flag removes.

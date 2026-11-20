@@ -428,6 +428,8 @@
 }
 
 :root {
+  /* color-scheme — The system ships a single dark theme, so native scrollbars, form controls and other browser UI render dark too. */
+  color-scheme: dark;
   /* --logo-red — Del archivo del logotipo V4 (no está en Penpot). Cara iluminada del isotipo. Solo para el logo y piezas que lo citan; 4.67:1 sobre canvas. */
   --logo-red: #E91B35;
   /* --logo-red-shade — Del archivo del logotipo V4 (no está en Penpot). Cara en sombra del isotipo. Decorativo: 1.99:1 sobre canvas, nunca para texto. */

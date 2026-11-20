@@ -247,3 +247,10 @@ test('ScrollReveal wipe timing is the owner-approved 800ms root token', () => {
   // Existing reveal timing remains unchanged.
   assert.equal(declarations.find(({ name }) => name === '--duration-reveal')?.value, '560ms');
 });
+
+// The DS ships one dark theme: native scrollbars, form controls and other UA chrome must render dark too.
+test('theme.css declares a dark color scheme on :root and the compiled artifact ships it', () => {
+  assert.match(rootBlock, /^\s*color-scheme:\s*dark;/m, ':root declares color-scheme: dark');
+  const artifact = readFileSync(at('../dist/tokens.css'), 'utf8');
+  assert.match(artifact, /:root\s*\{[^}]*color-scheme:\s*dark/, 'dist/tokens.css ships color-scheme: dark on :root');
+});
