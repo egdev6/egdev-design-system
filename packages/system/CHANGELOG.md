@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.0
+
+### Added
+
+- The artifact and design reference include AttachmentField's `resetKey` prop and the
+  `transient-feedback-reset-key` convention.
+
 ## 0.7.0
 
 ### Added

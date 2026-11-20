@@ -18,9 +18,9 @@ See Typography roles for source-derived font families and sizes; display heading
 Schema: 1.0.0 (schemaVersion)
 | Package | Version | Source |
 | --- | --- | --- |
-| @egdev/effects | 0.2.6 | packages[] · packages/effects/package.json |
+| @egdev/effects | 0.2.7 | packages[] · packages/effects/package.json |
 | @egdev/tokens | 0.6.1 | packages[] · packages/tokens/package.json |
-| @egdev/ui | 0.6.0 | packages[] · packages/ui/package.json |
+| @egdev/ui | 0.7.0 | packages[] · packages/ui/package.json |
 Re-run: `pnpm exec egdev-system-md --write`
 
 ## Typography roles

@@ -4,6 +4,19 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.7.0
+
+### Added
+
+- AttachmentField accepts `resetKey?: string | number`. Its value at mount does nothing; each later
+  change silently clears rejection messages and the hidden status text, without remounting, moving
+  focus or changing the list. Bump it after a save, even when the list was already empty.
+
+### Changed
+
+- AttachmentField also empties its hidden status text when a parent externally resets or replaces
+  the controlled `value`, so screen-reader users do not land on a stale announcement.
+
 ## 0.6.0
 
 ### Added
