@@ -137,7 +137,7 @@ importers:
   packages/mcp:
     dependencies:
       '@egdev/system':
-        specifier: workspace:0.6.1
+        specifier: workspace:0.7.0
         version: link:../system
       '@modelcontextprotocol/sdk':
         specifier: 1.32.2

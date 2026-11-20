@@ -4,6 +4,19 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.6.0
+
+### Added
+
+- PhotoFrame accepts `fit: 'cover' | 'contain'` and exports `PhotoFrameFit`. The default `cover`
+  keeps existing output unchanged; `contain` shows the whole image inside the reserved frame.
+
+### Fixed
+
+- AttachmentField silently clears rejection messages when a parent externally resets or replaces
+  its controlled `value`, without moving focus. An echo of the field's own request, or a filter back
+  to the previous list, keeps the messages.
+
 ## 0.5.1
 
 - No code changes. Repacked so the peer on `@egdev/tokens` is 0.6.1.

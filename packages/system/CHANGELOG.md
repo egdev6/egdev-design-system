@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0
+
+### Added
+
+- The artifact and design reference include PhotoFrame's `fit` prop and the `image-fit` convention.
+
 ## 0.6.1
 
 - Regenerate the artifact and design reference for the `@egdev/tokens` 0.6.1, `@egdev/ui` 0.5.1 and
