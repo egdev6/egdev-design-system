@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { PhotoFrame } from './PhotoFrame';
 import * as stories from './PhotoFrame.stories';
-import type { PhotoFrameProps } from './types';
+import type { PhotoFrameFit, PhotoFrameProps } from './types';
 
 const base = { src: '/diagnostic.svg', alt: 'Diagnostic grid' } satisfies PhotoFrameProps;
 const focalPointClasses = {
@@ -19,6 +19,46 @@ const focalPointClasses = {
 } as const;
 const focalPoints = Object.keys(focalPointClasses) as (keyof typeof focalPointClasses)[];
 const storyRender = (story: { render?: unknown }) => render((story.render as () => ReactElement)());
+
+/** Serialized default output captured from the unmodified v0.4 code (base 2c29b88) before `fit` existed. */
+const baseline: Record<string, string> = {
+  default:
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'ratio:square':
+    '<figure data-ratio="square" data-variant="default" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 100%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'ratio:portrait':
+    '<figure data-ratio="portrait" data-variant="default" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 125%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'ratio:landscape':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'ratio:auto':
+    '<figure data-ratio="auto" data-variant="default" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0 h-full min-h-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none h-full"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></figure>',
+  'ratio:numeric':
+    '<figure data-ratio="0.8044943820224719" data-variant="default" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 124.30167597765363%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div></figure>',
+  framed:
+    '<figure data-ratio="landscape" data-variant="framed" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-0 rounded-xl border-border-hairline-strong shadow-[var(--shadow-edge-strong),var(--shadow-elev-2)] bg-[image:var(--gradient-sheen)] transition-none p-1.5 rotate-[calc(var(--tilt-max)/3)] motion-reduce:rotate-none motion-reduce:transform-none motion-reduce:transition-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-lg"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div></figure>',
+  caption:
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-3"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div><figcaption class="eg-photo__cap relative inset-auto z-auto m-0 block min-w-0 pointer-events-auto"><span class="eg-photo__label block min-w-0 font-display text-label-eyebrow uppercase text-inherit before:content-none">Context</span></figcaption></figure>',
+  'framed-caption':
+    '<figure data-ratio="landscape" data-variant="framed" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-10"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-0 rounded-xl border-border-hairline-strong shadow-[var(--shadow-edge-strong),var(--shadow-elev-2)] bg-[image:var(--gradient-sheen)] transition-none p-1.5 rotate-[calc(var(--tilt-max)/3)] motion-reduce:rotate-none motion-reduce:transform-none motion-reduce:transition-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-lg"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div><figcaption class="eg-photo__cap relative inset-auto z-auto m-0 block min-w-0 pointer-events-auto"><span class="eg-photo__label block min-w-0 font-display text-label-eyebrow uppercase text-inherit before:content-none">Context</span></figcaption></figure>',
+  'focal:center':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="center" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'focal:top':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="top" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-top" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'focal:bottom':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="bottom" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-bottom" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'focal:left':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="left" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-left" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'focal:right':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="right" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-right" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'focal:left-top':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="left-top" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-left-top" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'focal:right-top':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="right-top" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-right-top" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'focal:left-bottom':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="left-bottom" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-left-bottom" src="/diagnostic.svg"></div></div></div></div></figure>',
+  'focal:right-bottom':
+    '<figure data-ratio="landscape" data-variant="default" data-focal-point="right-bottom" class="eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0"><div class="eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shadow-edge),var(--shadow-elev-1)] transition-none transform-none rotate-none"><div style="position: relative; width: 100%; padding-bottom: 75%;" data-radix-aspect-ratio-wrapper=""><div class="eg-aspect-ratio min-w-0" style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;"><div class="size-full overflow-hidden rounded-xl"><img alt="Diagnostic grid" loading="lazy" decoding="async" class="eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-right-bottom" src="/diagnostic.svg"></div></div></div></div></figure>'
+};
 
 describe('PhotoFrame', () => {
   it('provides the planned diagnostic story matrix with the adopted fixture', () => {
@@ -288,5 +328,172 @@ describe('PhotoFrame', () => {
     // @ts-expect-error no composition API.
     const slot: PhotoFrameProps = { ...base, asChild: true };
     expect([missing, children, click, ref, slot]).toHaveLength(5);
+  });
+});
+
+const fingerprintProps: Record<string, Partial<PhotoFrameProps>> = {
+  default: {},
+  'ratio:square': { ratio: 'square' },
+  'ratio:portrait': { ratio: 'portrait' },
+  'ratio:landscape': { ratio: 'landscape' },
+  'ratio:auto': { ratio: 'auto' },
+  'ratio:numeric': { ratio: 716 / 890 },
+  framed: { variant: 'framed' },
+  caption: { imageCaption: 'Context' },
+  'framed-caption': { variant: 'framed', imageCaption: 'Context' },
+  ...Object.fromEntries(focalPoints.map((focalPoint) => [`focal:${focalPoint}`, { focalPoint }]))
+};
+const fingerprintKeys = Object.keys(fingerprintProps);
+const ratios = ['square', 'portrait', 'landscape', 'auto', 716 / 890] as const;
+const withFit = (fit: unknown) => ({ fit }) as unknown as Partial<PhotoFrameProps>;
+const nodeStyles = (container: HTMLElement) =>
+  [...container.querySelectorAll('*')].map((node) => (node.hasAttribute('style') ? node.tagName : ''));
+
+describe('PhotoFrame fit (v0.5)', () => {
+  it('pins a baseline fingerprint for every matrix case', () => {
+    expect(Object.keys(baseline).sort()).toEqual([...fingerprintKeys].sort());
+  });
+
+  it.each(fingerprintKeys)(
+    'PF5-01 keeps the v0.4 output byte-identical for %s with fit omitted, cover or unknown',
+    (key) => {
+      for (const fit of [undefined, 'cover', 'fill', null, 3]) {
+        const { container, unmount } = render(<PhotoFrame {...base} {...fingerprintProps[key]} {...withFit(fit)} />);
+        expect(container.innerHTML).toBe(baseline[key]);
+        unmount();
+      }
+      const plain = render(<PhotoFrame {...base} {...fingerprintProps[key]} />);
+      expect(plain.container.innerHTML).toBe(baseline[key]);
+    }
+  );
+
+  it.each(ratios)('PF5-02 gives contain object-contain and no object-cover on the image only (ratio %s)', (ratio) => {
+    const cover = render(<PhotoFrame {...base} ratio={ratio} fit='cover' imageCaption='c' />);
+    const coverClasses = [...cover.container.querySelectorAll('*')].map((node) => node.className);
+    cover.unmount();
+    const { container } = render(<PhotoFrame {...base} ratio={ratio} fit='contain' imageCaption='c' />);
+    const image = screen.getByRole('img');
+    expect(image).toHaveClass('eg-photo__img', 'object-contain', 'object-center');
+    expect(image).not.toHaveClass('object-cover');
+    const differing = [...container.querySelectorAll('*')].filter(
+      (node, index) => node.className !== coverClasses[index]
+    );
+    expect(differing).toEqual([image]);
+    expect(container.innerHTML.match(/object-contain/g)).toHaveLength(1);
+  });
+
+  it('PF5-03 falls back to cover for an unknown fit without leaking it to the DOM', () => {
+    for (const fit of ['fill', 'none', 'scale-down', '', null, 0]) {
+      const { container, unmount } = render(<PhotoFrame {...base} {...withFit(fit)} />);
+      expect(screen.getByRole('img')).toHaveClass('object-cover');
+      expect(screen.getByRole('img')).not.toHaveClass('object-contain');
+      expect(container.innerHTML).toBe(baseline.default);
+      expect(container.innerHTML).not.toMatch(/fill|scale-down|data-fit/);
+      unmount();
+    }
+  });
+
+  it.each(ratios)('PF5-04 keeps the reservation unchanged under contain (ratio %s)', (ratio) => {
+    const cover = render(<PhotoFrame {...base} ratio={ratio} fit='cover' />);
+    const coverWrapper = cover.container.querySelector('[data-radix-aspect-ratio-wrapper]') as HTMLElement | null;
+    const coverPadding = coverWrapper?.style.paddingBottom;
+    const coverRoot = screen.getByRole('figure').className;
+    const coverMarker = screen.getByRole('figure').getAttribute('data-ratio');
+    const coverFrame = (screen.getByRole('figure').firstElementChild as HTMLElement).className;
+    cover.unmount();
+    const { container } = render(<PhotoFrame {...base} ratio={ratio} fit='contain' />);
+    const wrapper = container.querySelector('[data-radix-aspect-ratio-wrapper]') as HTMLElement | null;
+    expect(wrapper?.style.paddingBottom).toBe(coverPadding);
+    expect(wrapper === null).toBe(ratio === 'auto');
+    expect(screen.getByRole('figure').className).toBe(coverRoot);
+    expect((screen.getByRole('figure').firstElementChild as HTMLElement).className).toBe(coverFrame);
+    expect(screen.getByRole('figure').getAttribute('data-ratio')).toBe(coverMarker);
+  });
+
+  it('PF5-04 keeps auto stretching the figure and filling the host height under contain', () => {
+    render(<PhotoFrame {...base} ratio='auto' fit='contain' />);
+    expect(screen.getByRole('figure')).toHaveClass('h-full', 'min-h-0');
+    expect(screen.getByRole('figure').firstElementChild).toHaveClass('h-full');
+  });
+
+  it.each(ratios)('PF5-05 adds no inline appearance and keeps the media Surface classes (ratio %s)', (ratio) => {
+    const cover = render(<PhotoFrame {...base} ratio={ratio} fit='cover' />);
+    const coverStyles = nodeStyles(cover.container);
+    const coverMedia = (screen.getByRole('figure').firstElementChild as HTMLElement).className;
+    cover.unmount();
+    const { container } = render(<PhotoFrame {...base} ratio={ratio} fit='contain' />);
+    expect(nodeStyles(container)).toEqual(coverStyles);
+    expect(screen.getByRole('img')).not.toHaveAttribute('style');
+    expect((screen.getByRole('figure').firstElementChild as HTMLElement).className).toBe(coverMedia);
+    expect(coverMedia).toContain('eg-surface');
+    expect(container.innerHTML).not.toMatch(/object-\[|\[object|style="[^"]*object-fit/);
+  });
+
+  it('PF5-05 keeps the framed media Surface under contain', () => {
+    render(<PhotoFrame {...base} variant='framed' fit='contain' />);
+    expect(screen.getByRole('figure').firstElementChild).toHaveClass('eg-surface', 'bg-surface-0', 'p-1.5');
+  });
+
+  it.each(focalPoints)(
+    'PF5-06 composes contain with focalPoint %s, framed and caption without extra classes',
+    (focalPoint) => {
+      const cover = render(<PhotoFrame {...base} focalPoint={focalPoint} variant='framed' imageCaption='Caption' />);
+      const coverNodes = [...cover.container.querySelectorAll('*')].map((node) => new Set(node.className.split(' ')));
+      const coverMarkers = screen.getByRole('figure').getAttributeNames();
+      cover.unmount();
+      const { container } = render(
+        <PhotoFrame {...base} focalPoint={focalPoint} variant='framed' imageCaption='Caption' fit='contain' />
+      );
+      const figure = screen.getByRole('figure');
+      const image = screen.getByRole('img');
+      const nodes = [...container.querySelectorAll('*')];
+      nodes.forEach((node, index) => {
+        const expected = new Set(coverNodes[index]);
+        if (node === image) {
+          expected.delete('object-cover');
+          expected.add('object-contain');
+        }
+        expect(new Set(node.className.split(' '))).toEqual(expected);
+      });
+      expect(image).toHaveClass(focalPointClasses[focalPoint]);
+      expect(figure).toHaveAttribute('data-focal-point', focalPoint);
+      expect(figure).toHaveAttribute('data-variant', 'framed');
+      expect(figure.getAttributeNames()).toEqual(coverMarkers);
+      expect(figure).not.toHaveAttribute('data-fit');
+      expect(container.querySelector('figcaption')).toHaveTextContent('Caption');
+    }
+  );
+
+  it('keeps the fit change at runtime to the static class without remounting the image', () => {
+    const { rerender } = render(<PhotoFrame {...base} />);
+    const image = screen.getByRole('img');
+    rerender(<PhotoFrame {...base} fit='contain' />);
+    expect(screen.getByRole('img')).toBe(image);
+    expect(image).toHaveClass('object-contain');
+    expect(image).not.toHaveClass('object-cover');
+    rerender(<PhotoFrame {...base} fit='cover' />);
+    expect(screen.getByRole('img')).toBe(image);
+    expect(image).toHaveClass('object-cover');
+    expect(image).not.toHaveClass('object-contain');
+  });
+
+  it('rejects unsupported fit values at the type boundary', () => {
+    // @ts-expect-error only cover and contain are supported.
+    const fill: PhotoFrameProps = { ...base, fit: 'fill' };
+    const contain: PhotoFrameProps = { ...base, fit: 'contain' satisfies PhotoFrameFit };
+    expect([fill, contain]).toHaveLength(2);
+  });
+
+  it('provides the Fit story with a tall screenshot fixture and the PF-5 recommendation', () => {
+    expect(Object.keys(stories)).toContain('Fit');
+    const { container } = storyRender(stories.Fit);
+    const images = [...container.querySelectorAll('img')];
+    expect(images.length).toBeGreaterThanOrEqual(4);
+    expect(new Set(images.map((image) => image.getAttribute('src'))).size).toBe(1);
+    expect(images.some((image) => image.classList.contains('object-contain'))).toBe(true);
+    expect(images.some((image) => image.classList.contains('object-cover'))).toBe(true);
+    const framed = container.querySelector('[data-variant="framed"][data-focal-point="top"]');
+    expect(framed?.querySelector('img')).toHaveClass('object-contain');
+    expect(container.querySelector('[data-radix-aspect-ratio-wrapper]')).not.toBeNull();
   });
 });

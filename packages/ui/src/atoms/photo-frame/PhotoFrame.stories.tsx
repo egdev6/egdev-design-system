@@ -80,6 +80,53 @@ export const AutoHeight: Story = {
     </div>
   )
 };
+const tallScreenshotSvg = [
+  "<svg xmlns='http://www.w3.org/2000/svg' width='300' height='900' viewBox='0 0 300 900'>",
+  "<rect width='300' height='900' fill='#1f2937'/>",
+  "<rect x='6' y='6' width='288' height='888' fill='none' stroke='#f9fafb' stroke-width='6'/>",
+  "<rect x='20' y='20' width='260' height='60' fill='#3b82f6'/>",
+  "<rect x='20' y='420' width='260' height='60' fill='#f59e0b'/>",
+  "<rect x='20' y='820' width='260' height='60' fill='#10b981'/>",
+  "<text x='150' y='58' font-size='28' text-anchor='middle' fill='#fff'>TOP</text>",
+  "<text x='150' y='458' font-size='28' text-anchor='middle' fill='#fff'>MIDDLE</text>",
+  "<text x='150' y='858' font-size='28' text-anchor='middle' fill='#fff'>BOTTOM</text>",
+  '</svg>'
+].join('');
+const tallScreenshot = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(tallScreenshotSvg)}`;
+const tallArgs = { src: tallScreenshot, alt: 'Tall screenshot with labelled top, middle and bottom bands' };
+/** `cover` fills the viewport and crops a tall screenshot; `contain` shows it whole and letterboxes the spare axis
+ * over the media Surface. Reserved size is identical in both columns. For tall images under `contain`, prefer
+ * `portrait` or a numeric `ratio`: `landscape` shrinks them heavily. The last cell combines `contain` with
+ * `framed` and `focalPoint='top'`.
+ */
+export const Fit: Story = {
+  args: tallArgs,
+  render: () => (
+    <div className='grid grid-cols-2 gap-6 sm:grid-cols-4'>
+      {(['cover', 'contain'] as const).map((fit) => (
+        <PhotoFrame
+          key={`portrait-${fit}`}
+          {...tallArgs}
+          ratio='portrait'
+          fit={fit}
+          imageCaption={`portrait / ${fit}`}
+        />
+      ))}
+      {(['cover', 'contain'] as const).map((fit) => (
+        <PhotoFrame key={`ratio-${fit}`} {...tallArgs} ratio={1 / 3} fit={fit} imageCaption={`1/3 / ${fit}`} />
+      ))}
+      <PhotoFrame {...tallArgs} ratio='landscape' fit='contain' imageCaption='landscape / contain (shrinks)' />
+      <PhotoFrame
+        {...tallArgs}
+        ratio='portrait'
+        fit='contain'
+        variant='framed'
+        focalPoint='top'
+        imageCaption='framed / contain / top'
+      />
+    </div>
+  )
+};
 /** Compare inherited foreground on different host contexts. */
 export const HostContexts: Story = {
   args,
