@@ -4,6 +4,10 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.6.1
+
+- The theme `:root` now declares `color-scheme: dark`, so native scrollbars, form controls and other browser UI render dark. An app `:root` `color-scheme` rule with equal specificity wins if it loads later.
+
 ## 0.6.0
 
 - Add `--mask-scroll-fade-inline` for scrollable content that fades at its inline edges.

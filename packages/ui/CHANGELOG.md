@@ -4,6 +4,10 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.5.1
+
+- No code changes. Repacked so the peer on `@egdev/tokens` is 0.6.1.
+
 ## 0.5.0
 
 ### Added

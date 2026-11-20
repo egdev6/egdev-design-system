@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.1
+
+- Regenerate the artifact and design reference for the `@egdev/tokens` 0.6.1, `@egdev/ui` 0.5.1 and
+  `@egdev/effects` 0.2.5 package versions.
+
 ## 0.6.0
 
 ### Added
