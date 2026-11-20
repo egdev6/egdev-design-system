@@ -7,6 +7,7 @@ import { Portal } from '../../primitives/portal';
 import { Surface } from '../../primitives/surface';
 import { Heading } from '../../primitives/text';
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '../popover';
+import { Tabs } from '../tabs';
 import { Panel, PanelBody, PanelFooter, PanelHeader } from './Panel';
 
 /**
@@ -28,6 +29,9 @@ import { Panel, PanelBody, PanelFooter, PanelHeader } from './Panel';
  * Overlay is reserved for actually floating content. Container width and heading rank are consumer-owned.
  * accentEdge='start' adds a decorative logical-start edge, never a status or focus indicator.
  * The opt-in positions its root, which can change the containing block of absolute descendants.
+ * fill makes Panel fill a host that owns a definite height: Header and Footer stay fixed and only Body scrolls.
+ * Without a definite host height Panel stays content-sized. A Body whose direct child is a fill Tabs hands
+ * scrolling to that child and leaves the scrollbar gutter to it.
  * className supports only documented outer layout and per-part content alignment/grid merges.
  */
 const meta = {
@@ -325,5 +329,84 @@ export const InPopover: Story = {
         </Panel>
       </PopoverContent>
     </Popover>
+  )
+};
+
+const longBody = Array.from({ length: 14 }, (_, index) => (
+  <p key={index}>
+    Paragraph {index + 1}: consumer-owned content keeps flowing inside the Body while the Header and Footer stay put.
+  </p>
+));
+
+/** A fixed 440 × 640 host owns the definite height: Header and Footer stay fixed and only Body scrolls. */
+export const FillHost: Story = {
+  args: {
+    variant: 'banded',
+    fill: true,
+    children: (
+      <>
+        <PanelHeader>
+          <h2>Workspace summary</h2>
+        </PanelHeader>
+        <PanelBody>{longBody}</PanelBody>
+        <PanelFooter>
+          <Button variant='secondary' onClick={action('refresh-summary')}>
+            Refresh summary
+          </Button>
+        </PanelFooter>
+      </>
+    )
+  },
+  render: (args) => (
+    <div className='h-[640px] w-[440px]'>
+      <Panel {...args} />
+    </div>
+  )
+};
+
+const tabPanelContent = (label: string) =>
+  Array.from({ length: 40 }, (_, index) => (
+    <p key={index}>
+      {label} entry {index + 1}: only the active tab panel scrolls inside the fill Panel.
+    </p>
+  ));
+
+/**
+ * A fill Panel whose only Body child is a fill Tabs: the tab list stays fixed and the active panel is the single
+ * scroller. Body leaves its scrollbar gutter to Tabs, so only one gutter shows. Fixed 440 × 640 host.
+ */
+export const FillWithTabs: Story = {
+  args: {
+    variant: 'banded',
+    fill: true,
+    children: (
+      <>
+        <PanelHeader>
+          <h2>Workspace</h2>
+        </PanelHeader>
+        <PanelBody>
+          <Tabs
+            fill={true}
+            variant='outline'
+            label='Workspace views'
+            items={[
+              { value: 'queue', label: 'Queue', content: tabPanelContent('Queue') },
+              { value: 'drafts', label: 'Drafts', content: tabPanelContent('Draft') },
+              { value: 'published', label: 'Published', content: tabPanelContent('Published') }
+            ]}
+          />
+        </PanelBody>
+        <PanelFooter>
+          <Button variant='secondary' onClick={action('refresh-workspace')}>
+            Refresh workspace
+          </Button>
+        </PanelFooter>
+      </>
+    )
+  },
+  render: (args) => (
+    <div className='h-[640px] w-[440px]'>
+      <Panel {...args} />
+    </div>
   )
 };

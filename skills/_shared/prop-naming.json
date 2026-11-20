@@ -484,7 +484,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -591,7 +591,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -708,7 +708,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -955,7 +955,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -1252,7 +1252,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -1272,7 +1272,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:c45b38f34521708baa0996044a57d81d172636bc2e7864115711bec43b386b91"
+          "revision": "sha256:f1e3c8748b22d624dc4cdfc69df38dbde105462aef802107bc2fafdb253dd87e"
         }
       },
       {
@@ -1520,7 +1520,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsItem",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -1550,7 +1550,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:c45b38f34521708baa0996044a57d81d172636bc2e7864115711bec43b386b91"
+          "revision": "sha256:f1e3c8748b22d624dc4cdfc69df38dbde105462aef802107bc2fafdb253dd87e"
         }
       },
       {
@@ -2055,7 +2055,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -4041,7 +4041,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -8441,7 +8441,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       }
     ]
@@ -8468,7 +8468,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:686c92d98726d184ee618299d99569251faf5d2f187c472039782d7b03713032"
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       },
       {
@@ -8528,7 +8528,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:c45b38f34521708baa0996044a57d81d172636bc2e7864115711bec43b386b91"
+          "revision": "sha256:f1e3c8748b22d624dc4cdfc69df38dbde105462aef802107bc2fafdb253dd87e"
         }
       }
     ]
@@ -8637,6 +8637,43 @@
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
           "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+        }
+      }
+    ]
+  },
+  {
+    "id": "host-fill",
+    "name": "fill",
+    "meaning": "Opt in to filling a definite-height host's block size, with fixed chrome and an internal native scrolling region; absence keeps content-sized height.",
+    "whenToUse": "A component sits in a host that owns a definite height and should keep its header, footer or tab list fixed while one inner region scrolls natively.",
+    "avoid": "Inline-axis width (fullWidth), positioning (sticky), height caps (maxHeight), arrangement (layout) or solid glyph rendering (filled).",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-panel-tabs-fill-approval.json",
+      "scope": "convention:host-fill",
+      "contentHash": "sha256:b223d062d6fe022e97b092a24f8902c787d82eb6d44d14281b92fff22c4ab395"
+    },
+    "usages": [
+      {
+        "component": "Panel",
+        "type": "boolean (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/panel/types.ts",
+          "symbol": "PanelProps",
+          "revision": "sha256:f1e3c8748b22d624dc4cdfc69df38dbde105462aef802107bc2fafdb253dd87e"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "boolean (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
         }
       }
     ]

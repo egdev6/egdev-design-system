@@ -49,6 +49,13 @@ export type PanelProps = PanelNativeProps & {
    * @control select
    */
   accentEdge?: 'start';
+  /**
+   * Opt in to filling the host's block size: Header and Footer stay fixed and only Body scrolls natively.
+   * The host owns a definite height; without one Panel stays content-sized. Absence keeps content-sized height.
+   * @default false
+   * @control boolean
+   */
+  fill?: boolean;
 };
 
 /** Supplied identity/context zone; no generated heading or landmark. */
@@ -102,6 +109,7 @@ export const panelVariants = cva(
         overlay: '',
         inherit: 'border-0 border-solid bg-transparent bg-none shadow-none backdrop-filter-none'
       },
+      fill: { true: 'h-full min-h-0' },
       accentEdge: {
         start: [
           'relative before:absolute before:pointer-events-none before:z-10',
@@ -133,19 +141,29 @@ export const panelVariants = cva(
 export const panelHeaderVariants = cva(['eg-panel__header flex flex-wrap items-center gap-3', zoneGeometry], {
   variants: {
     tone: cornerVariants,
-    variant: { default: '', banded: 'border-x-0 border-t-0 border-b' }
+    variant: { default: '', banded: 'border-x-0 border-t-0 border-b' },
+    fill: { true: 'shrink-0' }
   }
 });
 
 /** Transparent body geometry, never an independent Surface recipe. */
 export const panelBodyVariants = cva(['eg-panel__body flex flex-col gap-4', zoneGeometry], {
-  variants: { tone: cornerVariants }
+  variants: {
+    tone: cornerVariants,
+    fill: {
+      true: [
+        'min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable] has-[>[data-fill]]:[scrollbar-gutter:auto]',
+        'focus-visible:outline-none focus-visible:inset-ring-2 focus-visible:inset-ring-focus-ring'
+      ]
+    }
+  }
 });
 
 /** Native lower band keeps only its top hairline, with no sheen or shadow. */
 export const panelFooterVariants = cva(['eg-panel__footer flex flex-wrap items-center gap-3', zoneGeometry], {
   variants: {
     tone: cornerVariants,
-    variant: { default: '', banded: 'border-x-0 border-b-0 border-t bg-none shadow-none' }
+    variant: { default: '', banded: 'border-x-0 border-b-0 border-t bg-none shadow-none' },
+    fill: { true: 'shrink-0' }
   }
 });

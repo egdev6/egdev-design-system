@@ -105,10 +105,20 @@ export type TabsProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defa
    * @control boolean
    */
   labelWrap?: boolean;
+  /**
+   * Fill the host's block size with a fixed tab list and a natively scrolling active panel. The host must
+   * have a definite height; otherwise Tabs stays content-sized and nothing scrolls. The root also carries
+   * a bare data-fill attribute in this mode. Inactive panels unmount, so scroll position is not preserved.
+   * @default false
+   * @control boolean
+   */
+  fill?: boolean;
 };
 
 /** Public root recipe resets the legacy tablist geometry without emitting legacy part markers. */
-export const tabsVariants = cva('eg-tabs flex flex-col gap-0 border-0 overflow-visible');
+export const tabsVariants = cva('eg-tabs flex flex-col gap-0 border-0 overflow-visible', {
+  variants: { fill: { true: 'h-full min-h-0' } }
+});
 
 /**
  * v0.4 edge fade for scrollable lists: tabs.css animates the registered fade sizes from the list's own
@@ -138,9 +148,12 @@ export const tabsListVariants = cva('', {
       segmented: 'inline-flex self-start gap-0.5 p-0.75',
       outline: 'inline-flex self-start gap-0.5 p-0.75'
     },
-    fullWidth: { true: '', false: '' }
+    fullWidth: { true: '', false: '' },
+    // Only the non-scrollable list is the fixed flex child; scrollable lists are fixed by the scroll area.
+    fill: { true: '' }
   },
   compoundVariants: [
+    { variant: ['segmented', 'outline'], fullWidth: false, fill: true, class: 'shrink-0' },
     {
       variant: ['segmented', 'outline'],
       fullWidth: true,
@@ -162,7 +175,9 @@ export const tabsListVariants = cva('', {
 });
 
 /** v0.4-A positioning context wrapping a scrollable list and its two internal scroll buttons. */
-export const tabsScrollAreaVariants = cva('relative');
+export const tabsScrollAreaVariants = cva('relative', {
+  variants: { fill: { true: 'shrink-0' } }
+});
 
 /**
  * v0.4-A fine-pointer scroll buttons over the faded edges; IconButton sm (size-8) matches the fade zone.
@@ -255,5 +270,12 @@ export const tabsCountVariants = cva(
 
 /** Panel spacing only: consumers own content surfaces. */
 export const tabsPanelVariants = cva(
-  'pt-4 focus-visible:outline-2 focus-visible:outline-focus-ring focus-visible:outline-offset-2'
+  'pt-4 focus-visible:outline-2 focus-visible:outline-focus-ring focus-visible:outline-offset-2',
+  {
+    variants: {
+      // v0.5 fill: the active panel is the native scroller. The inset ring replaces the base offset through
+      // twMerge (later wins) so an ancestor scroller cannot clip it.
+      fill: { true: 'min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable] focus-visible:-outline-offset-2' }
+    }
+  }
 );

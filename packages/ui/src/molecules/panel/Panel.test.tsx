@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createAccentTheme } from '@egdev/tokens/accent';
@@ -503,7 +504,7 @@ describe('Panel compound contract', () => {
       'data-variant': 'banded'
     } as unknown as PanelProps;
     const { result } = renderHook(() => usePanel(props));
-    expect(result.current.presentation).toEqual({ tone: 'surface-1', variant: 'default' });
+    expect(result.current.presentation).toEqual({ tone: 'surface-1', variant: 'default', fill: false });
     expect(result.current.rootProps).toMatchObject({ 'data-tone': 'surface-1', 'data-variant': 'default' });
     expect(result.current.frameProps).toEqual({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' });
     const overlay = renderHook(() => usePanel({ children: null, tone: 'overlay', variant: 'banded' }));
@@ -808,4 +809,215 @@ describe('Panel compound contract', () => {
       .map((diagnostic) => ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'));
     expect(diagnostics).toEqual([]);
   }, 15000);
+});
+
+describe('Panel fill contract', () => {
+  const edges = [undefined, 'start'] as const;
+  // SHA-256 of JSON [root, header, body, footer] className for each tone/variant/edge, captured on the
+  // base commit (43adb70) before `fill` existed.
+  const defaultFingerprints: Record<string, string> = {
+    'inherit|banded|none': '4923d529f11892e77862c7199cdd0e812b387658a87370cb3788e9e99ed70266',
+    'inherit|banded|start': '2602eee56c9450924c965089e1be8077162a8d7964da5b4badcbd1bfc4195285',
+    'inherit|default|none': 'c74731a82e61e35fac1e9f5a8a371eb62cbc641e93f967b6547b748ff244b028',
+    'inherit|default|start': '5c7e532d7738bbbbe277ca21b73b5a78b53fb5f6853110db8dc777549aa92720',
+    'overlay|banded|none': '59e7815ceea73f83e041901eb96a38a5326a264adfb3fbdb4cd016fe7874ef06',
+    'overlay|banded|start': '199bd787f5ab88f59d48586d9921d333c54aabba7f5c12ea7e87da252b851da1',
+    'overlay|default|none': '6e7166fbf730a4930bff024b8eebfb62f3d0ab01316895f292b970b374e11436',
+    'overlay|default|start': '41140c7e0e68f496c435ce47b517f5135a34009c8fb31a2c888930d7591b252f',
+    'surface-1|banded|none': 'b90bb660ebf4721776f58c7e5d4f33b3db3af79341b74ad986284d66efe43179',
+    'surface-1|banded|start': 'a771e4bf3df1fc5ae40c64e1b30b04f4214b1ada4d96e8a23f68e0d4b3bac176',
+    'surface-1|default|none': '6ccabbaa3670911755301cd9ff4d1a90dca66d1948db0374ac4621720b98233e',
+    'surface-1|default|start': '8e8b42944e9990afbcc161d2e77a1f427035f96eec5cc071cc939f46f569e503'
+  };
+  const rootFill = ['h-full', 'min-h-0', 'flex', 'flex-col'];
+  const bodyFill = ['min-h-0', 'flex-1', 'overflow-y-auto', '[scrollbar-gutter:stable]'];
+  const bodyGutterOverride = 'has-[>[data-fill]]:[scrollbar-gutter:auto]';
+  const bodyFocus = ['focus-visible:outline-none', 'focus-visible:inset-ring-2', 'focus-visible:inset-ring-focus-ring'];
+
+  function zoneClasses(props: Record<string, unknown>) {
+    const { container, unmount } = render(
+      <Panel {...(props as Omit<PanelProps, 'children'>)}>
+        <PanelHeader>Header</PanelHeader>
+        <PanelBody>Body</PanelBody>
+        <PanelFooter>Footer</PanelFooter>
+      </Panel>
+    );
+    const classes = [
+      container.querySelector('.eg-panel')?.className,
+      container.querySelector('.eg-panel__header')?.className,
+      container.querySelector('.eg-panel__body')?.className,
+      container.querySelector('.eg-panel__footer')?.className
+    ] as string[];
+    const attributes = Array.from(container.querySelectorAll('*')).flatMap((node) => node.getAttributeNames());
+    unmount();
+    return { classes, attributes };
+  }
+
+  const fingerprint = (classes: string[]) => createHash('sha256').update(JSON.stringify(classes)).digest('hex');
+
+  it('keeps the default class output of every tone, variant and edge byte-identical to the base commit', () => {
+    for (const { tone, variant } of matrix) {
+      for (const accentEdge of edges) {
+        const key = `${tone}|${variant}|${accentEdge ?? 'none'}`;
+        expect(fingerprint(zoneClasses({ tone, variant, accentEdge }).classes), key).toBe(defaultFingerprints[key]);
+      }
+    }
+  });
+
+  it.each([
+    ['false', false],
+    ['undefined', undefined],
+    ['a string', 'yes'],
+    ['a number', 1],
+    ['null', null]
+  ])('keeps default output and leaks no fill attribute for %s', (_name, fill) => {
+    for (const { tone, variant } of matrix) {
+      const key = `${tone}|${variant}|none`;
+      const { classes, attributes } = zoneClasses({ tone, variant, fill });
+      expect(fingerprint(classes), key).toBe(defaultFingerprints[key]);
+      expect(attributes).not.toContain('fill');
+      expect(attributes).not.toContain('data-fill');
+    }
+  });
+
+  it.each(matrix)('adds only the fill utilities to every zone for $tone / $variant', ({ tone, variant }) => {
+    const base = zoneClasses({ tone, variant }).classes;
+    const filled = zoneClasses({ tone, variant, fill: true }).classes;
+    const [root, header, body, footer] = filled as [string, string, string, string];
+    const tokens = (value: string) => value.split(' ');
+    expect(tokens(root)).toEqual(expect.arrayContaining(rootFill));
+    expect(tokens(header)).toContain('shrink-0');
+    expect(tokens(footer)).toContain('shrink-0');
+    expect(tokens(body)).toEqual(expect.arrayContaining([...bodyFill, bodyGutterOverride, ...bodyFocus]));
+    for (const [index, added] of [
+      ['h-full', 'min-h-0'],
+      ['shrink-0'],
+      [...bodyFill, bodyGutterOverride, ...bodyFocus],
+      ['shrink-0']
+    ].entries()) {
+      const before = new Set(tokens(base[index] as string));
+      const extra = tokens(filled[index] as string).filter((part) => !before.has(part));
+      expect(extra.sort()).toEqual([...added].sort());
+      for (const part of before) {
+        expect(tokens(filled[index] as string), part).toContain(part);
+      }
+    }
+  });
+
+  it('keeps the markers, corner variants and accent edge while filling', () => {
+    const { classes } = zoneClasses({ tone: 'surface-1', variant: 'banded', accentEdge: 'start', fill: true });
+    expect(classes[0]).toContain('before:bg-fg-brand-default');
+    expect(classes[0]).toContain('relative');
+    expect(classes[0]?.split(' ')).toEqual(expect.arrayContaining(['eg-panel', ...rootFill]));
+    expect(classes[1]).toContain(framedTop);
+    expect(classes[3]).toContain(framedBottom);
+    expect(classes[2]).toContain('eg-panel__body');
+  });
+
+  it('keeps fill working when Header and Footer are absent', () => {
+    const { container } = render(
+      <Panel fill={true}>
+        <PanelBody>Only body</PanelBody>
+      </Panel>
+    );
+    expect(container.querySelector('.eg-panel__body')).toHaveClass(...bodyFill);
+  });
+
+  it('leaves the Body passive: no tabIndex, no role', () => {
+    const { container } = render(
+      <Panel fill={true}>
+        <PanelBody {...({ tabIndex: 0, role: 'region' } as unknown as PanelBodyProps)}>Body</PanelBody>
+      </Panel>
+    );
+    const body = container.querySelector('.eg-panel__body');
+    expect(body).not.toHaveAttribute('tabindex');
+    expect(body).not.toHaveAttribute('role');
+  });
+
+  it('keeps the tab order of controls across the zones unchanged in fill mode', async () => {
+    const user = userEvent.setup();
+    render(
+      <Panel fill={true}>
+        <PanelHeader>
+          <button type='button'>One</button>
+        </PanelHeader>
+        <PanelBody>
+          <button type='button'>Two</button>
+        </PanelBody>
+        <PanelFooter>
+          <button type='button'>Three</button>
+        </PanelFooter>
+      </Panel>
+    );
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'One' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Two' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Three' })).toHaveFocus();
+  });
+
+  it('consumes an untyped fill on a part without forwarding it', () => {
+    const { container } = render(
+      <Panel fill={true}>
+        <PanelHeader {...({ fill: true } as unknown as PanelBodyProps)}>Header</PanelHeader>
+        <PanelBody {...({ fill: false } as unknown as PanelBodyProps)}>Body</PanelBody>
+      </Panel>
+    );
+    expect(container.querySelector('.eg-panel__header')).not.toHaveAttribute('fill');
+    expect(container.querySelector('.eg-panel__body')).not.toHaveAttribute('fill');
+    expect(container.querySelector('.eg-panel__body')).toHaveClass(...bodyFill);
+  });
+
+  it('emits the gutter override and stable gutter only for a fill Body', () => {
+    const plain = zoneClasses({}).classes[2] as string;
+    expect(plain).not.toContain(bodyGutterOverride);
+    expect(plain).not.toContain('[scrollbar-gutter:stable]');
+    expect(plain).not.toContain('overflow-y-auto');
+  });
+
+  it('resolves fill from the nearest Panel only', () => {
+    const { container } = render(
+      <Panel fill={true}>
+        <PanelBody>
+          <Panel>
+            <PanelBody>Inner</PanelBody>
+          </Panel>
+        </PanelBody>
+      </Panel>
+    );
+    const [outer, inner] = Array.from(container.querySelectorAll('.eg-panel__body'));
+    expect(outer).toHaveClass(...bodyFill);
+    expect(inner).not.toHaveClass('overflow-y-auto');
+    const reverse = render(
+      <Panel>
+        <PanelBody>
+          <Panel fill={true}>
+            <PanelBody>Inner</PanelBody>
+          </Panel>
+        </PanelBody>
+      </Panel>
+    );
+    const [outerPlain, innerFill] = Array.from(reverse.container.querySelectorAll('.eg-panel__body'));
+    expect(outerPlain).not.toHaveClass('overflow-y-auto');
+    expect(innerFill).toHaveClass(...bodyFill);
+  });
+
+  it('exposes fill through the hook presentation and still throws for orphan zones', () => {
+    const filled = renderHook(() => usePanel({ children: null, fill: true }));
+    expect(filled.result.current.presentation).toEqual({ tone: 'surface-1', variant: 'default', fill: true });
+    const invalid = renderHook(() => usePanel({ children: null, fill: 'yes' as unknown as boolean }));
+    expect(invalid.result.current.presentation.fill).toBe(false);
+    expect(invalid.result.current.rootProps).not.toHaveProperty('fill');
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(() => render(<PanelBody>Orphan</PanelBody>)).toThrow('Panel parts must be rendered inside Panel.');
+    vi.restoreAllMocks();
+  });
+
+  it('rejects non-boolean fill values at the type level', () => {
+    const accepted = <Panel fill={true}>x</Panel>;
+    // @ts-expect-error fill must be a boolean
+    const rejected = <Panel fill='yes'>x</Panel>;
+    expect([accepted, rejected]).toHaveLength(2);
+  });
 });

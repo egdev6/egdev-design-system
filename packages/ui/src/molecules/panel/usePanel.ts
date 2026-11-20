@@ -12,7 +12,7 @@ import {
   panelVariants
 } from './types';
 
-type PanelPresentation = { tone: PanelTone; variant: PanelVariant };
+type PanelPresentation = { tone: PanelTone; variant: PanelVariant; fill: boolean };
 type NativeProps = Omit<PanelBodyProps, 'children'>;
 type ProtectedProps = {
   [Key in
@@ -32,6 +32,7 @@ type ProtectedProps = {
     | 'asChild'
     | 'tone'
     | 'variant'
+    | 'fill'
     | 'padding'
     | 'radius'
     | 'elevation']?: unknown;
@@ -70,6 +71,7 @@ function passiveNativeProps(native: NativeProps): NativeProps {
     asChild: _asChild,
     tone: _tone,
     variant: _variant,
+    fill: _fill,
     padding: _padding,
     radius: _radius,
     elevation: _elevation,
@@ -84,11 +86,13 @@ export function usePanel({
   tone = 'surface-1',
   variant = 'default',
   accentEdge,
+  fill,
   className,
   ...native
 }: PanelProps): PanelResult {
   const effectiveTone = tone === 'overlay' || tone === 'inherit' ? tone : 'surface-1';
   const effectiveVariant = variant === 'banded' ? 'banded' : 'default';
+  const effectiveFill = fill === true;
   const frameProps: FrameProps | undefined =
     effectiveTone === 'inherit'
       ? undefined
@@ -96,7 +100,7 @@ export function usePanel({
         ? { tone: 'overlay', padding: 'none', radius: 'xl' }
         : { tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' };
   return {
-    presentation: { tone: effectiveTone, variant: effectiveVariant },
+    presentation: { tone: effectiveTone, variant: effectiveVariant, fill: effectiveFill },
     unpainted: effectiveTone === 'inherit',
     frameProps,
     rootProps: {
@@ -104,7 +108,11 @@ export function usePanel({
       'data-tone': effectiveTone,
       'data-variant': effectiveVariant,
       className: cn(
-        panelVariants({ tone: effectiveTone, accentEdge: accentEdge === 'start' ? 'start' : undefined }),
+        panelVariants({
+          tone: effectiveTone,
+          accentEdge: accentEdge === 'start' ? 'start' : undefined,
+          fill: effectiveFill || undefined
+        }),
         className
       )
     },
@@ -121,7 +129,7 @@ export function usePanelPart(
   if (presentation === null) {
     throw new Error('Panel parts must be rendered inside Panel.');
   }
-  const { tone, variant } = presentation;
+  const { tone, variant, fill } = presentation;
   const banded = variant === 'banded' && part !== 'body';
   const bandTone =
     part === 'header'
@@ -133,10 +141,10 @@ export function usePanelPart(
         : 'surface-1';
   const recipe =
     part === 'header'
-      ? panelHeaderVariants(presentation)
+      ? panelHeaderVariants({ tone, variant, fill: fill || undefined })
       : part === 'footer'
-        ? panelFooterVariants(presentation)
-        : panelBodyVariants({ tone });
+        ? panelFooterVariants({ tone, variant, fill: fill || undefined })
+        : panelBodyVariants({ tone, fill: fill || undefined });
   return {
     ...passiveNativeProps(native),
     children,

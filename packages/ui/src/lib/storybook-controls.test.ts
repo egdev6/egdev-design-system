@@ -307,7 +307,7 @@ const expected: Record<string, Record<string, string | false>> = {
     max: 'number',
     badgeIcon: 'select'
   },
-  panel: { children: false, variant: 'select', tone: 'select', accentEdge: 'select' },
+  panel: { children: false, variant: 'select', tone: 'select', accentEdge: 'select', fill: 'boolean' },
   panelheader: { children: false },
   panelbody: { children: false },
   panelfooter: { children: false },
@@ -601,7 +601,8 @@ const expected: Record<string, Record<string, string | false>> = {
     variant: 'select',
     size: 'select',
     fullWidth: 'boolean',
-    labelWrap: 'boolean'
+    labelWrap: 'boolean',
+    fill: 'boolean'
   },
   progressbar: {
     value: 'number',
@@ -735,7 +736,7 @@ const ownPropCounts: Record<string, number> = {
   terminalcardlist: 2,
   photoframe: 6,
   indicator: 8,
-  panel: 4,
+  panel: 5,
   panelheader: 1,
   panelbody: 1,
   panelfooter: 1,
@@ -797,7 +798,7 @@ const ownPropCounts: Record<string, number> = {
   switch: 7,
   tooltip: 4,
   menu: 10,
-  tabs: 9,
+  tabs: 10,
   progressbar: 6,
   pullquote: 5,
   textarea: 1,
@@ -1185,13 +1186,13 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.labelWrap?.table?.defaultValue?.summary).toBe('false');
     expect(args).toEqual({});
   });
-  it('maps both Tabs layout flags as optional boolean controls with false defaults', () => {
+  it('maps the Tabs layout flags as optional boolean controls with false defaults', () => {
     const metadata = component('Tabs');
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     const rows: StrictArgTypes = extract(metadata);
     expect(mapJSDocControls(rows, metadata).diagnostics).toEqual([]);
     const composed = story('Tabs');
-    for (const name of ['fullWidth', 'labelWrap']) {
+    for (const name of ['fullWidth', 'labelWrap', 'fill']) {
       expect(composed.argTypes[name]?.control, name).toEqual({ type: 'boolean' });
       expect(composed.argTypes[name]?.type?.required, name).not.toBe(true);
       expect(composed.argTypes[name]?.table?.defaultValue?.summary, name).toBe('false');
@@ -1402,6 +1403,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 
+  it('exposes Panel fill as an optional boolean control with a false default and only on Panel', () => {
+    const { argTypes, args } = story('Panel');
+    expect(argTypes.fill?.control).toEqual({ type: 'boolean' });
+    expect(argTypes.fill?.type?.required).not.toBe(true);
+    expect(argTypes.fill?.table?.defaultValue?.summary).toBe('false');
+    expect(args).not.toHaveProperty('fill');
+    for (const name of ['PanelHeader', 'PanelBody', 'PanelFooter']) {
+      expect(story(name).argTypes.fill, name).toBeUndefined();
+    }
+  });
+
   it.each(components)('%s maps every annotated own prop after real extraction and inference', (name) => {
     const composed = story(name);
     expect(Object.keys(expected[name.toLowerCase()] ?? {})).toHaveLength(ownPropCount(name));
@@ -1449,7 +1461,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
 
   it.each([
     ['Indicator', { variant: '"dot"', tone: '"danger"', size: '"sm"', position: '"top-right"', max: '99' }],
-    ['Panel', { variant: '"default"', tone: '"surface-1"' }],
+    ['Panel', { variant: '"default"', tone: '"surface-1"', fill: 'false' }],
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
     ['CommunityCard', { level: '3' }],
     ['FooterNavigation', { level: '2' }],
