@@ -229,6 +229,8 @@ const fillItems: TabsItem[] = manyItems.map((item) => ({
 /**
  * A fixed 440 × 640 host owns the definite height. The overflowing tab list keeps its fade, buttons and focus
  * reveal inside the fixed region while the active panel scrolls; for a Panel host see Molecules/Panel FillWithTabs.
+ * The scrolling panel clips its content, so content that starts at its edge must keep its own inset (for example
+ * a wrapper with `p-1`) to leave room for the focus rings of the controls inside it.
  */
 export const FillHost: Story = {
   args: { fill: true, variant: 'outline', items: fillItems, label: 'Project views' },
