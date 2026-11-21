@@ -106,7 +106,9 @@ Dry run: nothing written.
 - `init` checks `CONTRIBUTING.md` from the project through the nearest ancestor with a `.git` entry, inclusive. Without
   a repository root it checks only the project. A marked block in any checked file needs no action. If the nearest guide
   is an ancestor without a block, `init` leaves it unchanged and prints a manual next step with its project-relative path.
-  Like other next steps, that guidance is text-only, not a JSON write action.
+  Like other next steps, that guidance is text-only, not a JSON write action. A project `CONTRIBUTING.md` that is a
+  symlink, a hard link or not a regular file is never written: if it already holds the block nothing happens; otherwise
+  `init` prints `Add the consumer requests summary to CONTRIBUTING.md by hand; it is a link or not a regular file.`
 - A project summary is appended with at least one blank line, preserving all existing bytes and any extra blank lines.
   CRLF files keep their line-ending style. Existing content between the markers is never rewritten.
 - With `--json`, `actions` lists `{ verb, path, detail }`, a copy's `detail` has the full sha256, and `result` is

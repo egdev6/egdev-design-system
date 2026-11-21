@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { chmodSync, existsSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, lstatSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { after, test } from 'node:test';
 import { run } from '../src/cli.mjs';
@@ -434,19 +434,37 @@ test('S12 init rollback removes a created block or restores the original file af
   }
 });
 
-test('S12 init refuses a linked CONTRIBUTING.md without reading or writing through it', () => {
+test('S12 init never writes through a linked CONTRIBUTING.md without the block; it names a manual step', () => {
   const fixture = track(freshNpmVite());
   const from = release();
   const target = join(fixture.root, 'user-guide.md');
   writeFileSync(target, '# Keep this guide\n');
-  symlinkSync(target, join(fixture.project, CONTRIBUTING));
-  const before = treeHash(fixture.root);
+  const link = join(fixture.project, CONTRIBUTING);
+  symlinkSync(target, link);
+  const result = runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root);
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, '');
+  assert.ok(
+    result.stdout.includes(
+      '  Add the consumer requests summary to CONTRIBUTING.md by hand; it is a link or not a regular file.\n'
+    )
+  );
+  assert.ok(!result.stdout.includes('consumer requests summary\n'));
+  assert.equal(read(target), '# Keep this guide\n');
+  assert.ok(lstatSync(link).isSymbolicLink());
+});
+
+test('S12 an already-vendored project whose linked CONTRIBUTING.md has the block stays a no-op', () => {
+  const fixture = track(npmViteFixture());
+  const from = release();
+  write(join(fixture.root, 'GUIDE.md'), `${START}\n${END}\n`);
+  symlinkSync('../../GUIDE.md', join(fixture.project, CONTRIBUTING));
+  const header = `egdev-ds init apps/hub (npm, vite, native) from ${from} at ${C7}`;
   assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
-    status: 2,
-    stdout: '',
-    stderr: 'Unsafe target: CONTRIBUTING.md is a symlink, a hard link or not a regular file.\n'
+    status: 0,
+    stdout: `${header}\nAlready at ${C7}; integrities unverified (--no-install); no changes.\n`,
+    stderr: ''
   });
-  assert.equal(treeHash(fixture.root), before);
 });
 
 test('S12 upgrade and upgrade --add leave CONTRIBUTING.md alone, whether it exists or not', () => {

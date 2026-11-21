@@ -371,6 +371,9 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
   needs no action, even if a nearer guide lacks it. Otherwise, if the nearest guide is an ancestor, leave it untouched
   and print `Add the consumer requests summary to <project-relative path>.` as a manual next step; as with other next
   steps, it is text-only and not a JSON write action. This applies to an already-vendored project too.
+  A project guide that is a symlink, a hard link or not a regular file is never written and never refuses the run: with
+  the markers it needs no action; without them `init` prints `Add the consumer requests summary to CONTRIBUTING.md by
+  hand; it is a link or not a regular file.` (verification finding: refusing would turn an existing exit 0 into exit 2).
   Otherwise create or append a short summary in the project between `<!-- egdev-ds:consumer-requests -->` and
   `<!-- /egdev-ds:consumer-requests -->`. It links the [canonical flow](./consumer-requests.md), names the issue,
   mitigation and separate maintainer upgrade, and warns against editing vendored tarballs, `egdev-ds.json` or

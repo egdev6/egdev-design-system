@@ -4,7 +4,8 @@
 
 - `egdev-ds init` checks `CONTRIBUTING.md` up to the repository root for a marked consumer-requests summary. It writes
   only in the project: an unmarked ancestor guide becomes a manual next step. Project writes appear in the plan, preserve
-  existing bytes and user edits, respect dry runs and rollback, and are never changed by `upgrade`.
+  existing bytes and user edits, respect dry runs and rollback, and are never changed by `upgrade`. A linked or
+  irregular project guide is never written and never fails the run; without the block it becomes a manual next step.
 
 ## 0.1.1
 

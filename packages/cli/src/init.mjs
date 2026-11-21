@@ -107,6 +107,15 @@ const isFile = (path) => {
 const toPosix = (path) => path.split(sep).join('/');
 
 /**
+ * True when the ordered S12 marker pair is present.
+ * @param {string} text
+ */
+const hasContributingBlock = (text) => {
+  const start = text.indexOf(CONTRIBUTING_START);
+  return start !== -1 && text.indexOf(CONTRIBUTING_END, start + CONTRIBUTING_START.length) !== -1;
+};
+
+/**
  * The unique vendored files the lockfile must hold: every one for pnpm, the `package.json`
  * dependency specifiers for npm (its `$` overrides are references, not files). Same set as doctor.
  * @param {Record<string, unknown>} manifest
@@ -255,8 +264,22 @@ export function planConfig(project, manifest, localRepo) {
  * @returns {{ action: Action, write: FileWrite } | { nextStep: string } | null}
  */
 function planContributing(project) {
-  assertSafeTarget(project, CONTRIBUTING_FILE);
   const path = join(project, CONTRIBUTING_FILE);
+  try {
+    assertSafeTarget(project, CONTRIBUTING_FILE);
+  } catch (error) {
+    if (!(error instanceof RefusedError)) {
+      throw error;
+    }
+    // A linked or irregular guide is never written. Reading it only decides whether the block exists.
+    const linked = isFile(path) ? readText(path) : null;
+    if (linked !== null && hasContributingBlock(linked)) {
+      return null;
+    }
+    return {
+      nextStep: `  Add the consumer requests summary to ${CONTRIBUTING_FILE} by hand; it is a link or not a regular file.`
+    };
+  }
   const original = existsSync(path) ? readFileSync(path) : null;
   const text = original?.toString('utf8') ?? '';
   const root = findRepoRoot(project) ?? project;
@@ -268,11 +291,8 @@ function planContributing(project) {
       nearest ??= candidate;
       candidateText = readText(candidate);
     }
-    if (candidateText !== null) {
-      const start = candidateText.indexOf(CONTRIBUTING_START);
-      if (start !== -1 && candidateText.indexOf(CONTRIBUTING_END, start + CONTRIBUTING_START.length) !== -1) {
-        return null;
-      }
+    if (candidateText !== null && hasContributingBlock(candidateText)) {
+      return null;
     }
     if (directory === root || dirname(directory) === directory) {
       break;
