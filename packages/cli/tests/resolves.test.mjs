@@ -742,3 +742,12 @@ test('S14 old releases preserve upgrade and doctor output when resolves is absen
   }
   assert.equal(treeHash(fixture.root), before);
 });
+
+test('S14 doctor --from an old release without resolves at another commit prints no DS052', async () => {
+  const fixture = project();
+  const from = release(OTHER_COMMIT);
+  setResolves(from, undefined);
+  const result = await cli(fixture, ['doctor', fixture.argument, '--from', from]);
+  assert.equal(result.stdout.includes('DS052'), false);
+  assert.ok(result.stdout.endsWith('0 errors, 1 warning, 2 skipped.\n'));
+});

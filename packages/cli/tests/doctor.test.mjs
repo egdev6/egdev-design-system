@@ -305,8 +305,7 @@ test('AC17 DS014 mixed commits, and upgrade available with --from', async () => 
   assert.deepEqual(newer.stdout.split('\n').slice(1, -2), [
     'DS014 warning package.json: upgrade available: vendored at e712915, release at b54222c.',
     'DS017 skipped Release check skipped: the vendored commit differs from the release.',
-    'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
-    'DS052 skipped Skipped: vendored set is not at the release commit; upgrade first.'
+    'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.'
   ]);
 });
 

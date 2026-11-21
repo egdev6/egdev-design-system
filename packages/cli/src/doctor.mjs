@@ -798,9 +798,11 @@ export async function runDoctor({ project, release, failOnPending = false }) {
   // DS052: release-dependent notices do not change DS043 or --fail-on-pending.
   if (!release) {
     add('DS052', 'skipped', RELEASE_SKIPPED);
+  } else if (release.resolves.length === 0) {
+    // Nothing to match (including releases older than `resolves`): DS052 adds no finding.
   } else if (!commit || !release.commit.startsWith(commit)) {
     add('DS052', 'skipped', 'Skipped: vendored set is not at the release commit; upgrade first.');
-  } else if (release.resolves.length > 0 && loaded) {
+  } else if (loaded) {
     if ('problem' in loaded) {
       add('DS052', 'skipped', 'Skipped: cannot load the allowlist.', allowlistFile);
     } else {
