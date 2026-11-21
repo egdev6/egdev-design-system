@@ -7,7 +7,8 @@ import { join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
 
 /** @typedef {{ name: string, version: string, file: string, sha256: string }} ReleasePackage */
-/** @typedef {{ schemaVersion: 1, commit: string, dirty: boolean, packages: ReleasePackage[] }} Release */
+/** @typedef {{ issue: number, package: string, version: string }} ResolvedIssue */
+/** @typedef {{ schemaVersion: 1, commit: string, dirty: boolean, packages: ReleasePackage[], resolves: ResolvedIssue[] }} Release */
 
 /** An unreadable or inconsistent release: exit 1 with one stderr line naming the file. */
 export class ReleaseError extends Error {
@@ -160,6 +161,24 @@ export function readRelease(dir) {
   if (!Array.isArray(data.packages)) {
     throw invalid('packages must be an array.');
   }
+  if (data.resolves !== undefined && !Array.isArray(data.resolves)) {
+    throw invalid('resolves must be an array.');
+  }
+  /** @type {ResolvedIssue[]} */
+  const resolves = [];
+  for (const [index, entry] of (data.resolves ?? []).entries()) {
+    if (
+      !isRecord(entry) ||
+      typeof entry.issue !== 'number' ||
+      !Number.isInteger(entry.issue) ||
+      entry.issue <= 0 ||
+      typeof entry.package !== 'string' ||
+      typeof entry.version !== 'string'
+    ) {
+      throw invalid(`resolves[${index}] needs a positive integer issue, package and version strings.`);
+    }
+    resolves.push({ issue: entry.issue, package: entry.package, version: entry.version });
+  }
   /** @type {ReleasePackage[]} */
   const packages = [];
   for (const [index, entry] of data.packages.entries()) {
@@ -179,5 +198,5 @@ export function readRelease(dir) {
     }
     packages.push({ name: entry.name, version: entry.version, file: entry.file, sha256: entry.sha256 });
   }
-  return { schemaVersion: 1, commit: data.commit, dirty: data.dirty, packages };
+  return { schemaVersion: 1, commit: data.commit, dirty: data.dirty, packages, resolves };
 }

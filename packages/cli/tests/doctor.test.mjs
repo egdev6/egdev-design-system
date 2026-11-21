@@ -60,7 +60,8 @@ test('AC17 npm+Vite (Nexo-like) clean project: exit 0, exact stdout, nothing wri
       `DS014 skipped ${skipped}`,
       `DS017 skipped ${skipped}`,
       'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
-      '0 errors, 0 warnings, 3 skipped.',
+      `DS052 skipped ${skipped}`,
+      '0 errors, 0 warnings, 4 skipped.',
       ''
     ].join('\n'),
     stderr: ''
@@ -124,7 +125,7 @@ test('AC17 --json prints exactly one document on stdout, also when errors exit 1
   assert.equal(document.release, null);
   assert.deepEqual(
     document.findings.map(({ code, severity }) => `${code} ${severity}`),
-    ['DS014 skipped', 'DS017 skipped', 'DS051 skipped']
+    ['DS014 skipped', 'DS017 skipped', 'DS051 skipped', 'DS052 skipped']
   );
 });
 
@@ -142,7 +143,8 @@ test('AC17 a failing doctor run prints its findings, the summary and exits 1 wit
       `DS017 skipped ${skipped}`,
       'DS041 error src/view.css:1: DS internal selector .wrapper .eg-button: move it under src/theme/ or add an allowlist entry with an issue.',
       'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
-      '2 errors, 0 warnings, 3 skipped.',
+      `DS052 skipped ${skipped}`,
+      '2 errors, 0 warnings, 4 skipped.',
       ''
     ].join('\n'),
     stderr: ''
@@ -512,7 +514,8 @@ const pendingText = (severity, count = 1) =>
     `DS017 skipped ${skipped}`,
     `DS043 ${severity} src/design-system-allowlist.ts: ${pendingMessage(count)}`,
     'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
-    severity === 'error' ? '1 error, 0 warnings, 3 skipped.' : '0 errors, 1 warning, 3 skipped.',
+    `DS052 skipped ${skipped}`,
+    severity === 'error' ? '1 error, 0 warnings, 4 skipped.' : '0 errors, 1 warning, 4 skipped.',
     ''
   ].join('\n');
 const pendingJson = (severity, count = 1) =>
@@ -539,7 +542,8 @@ const pendingJson = (severity, count = 1) =>
           code: 'DS051',
           severity: 'skipped',
           message: 'Skipped: no design/system.md in the project or up to its repository root.'
-        }
+        },
+        { code: 'DS052', severity: 'skipped', message: skipped }
       ],
       result: severity === 'error' ? 'failed' : 'current'
     },
@@ -638,12 +642,12 @@ test('S13 --fail-on-pending changes only DS043 when other errors and warnings ex
   assert.equal(baseline.stderr, '');
   assert.ok(baseline.stdout.includes('DS040 error src/Raw.tsx:1:'));
   assert.ok(baseline.stdout.includes('DS050 warning '));
-  assert.ok(baseline.stdout.endsWith('1 error, 2 warnings, 3 skipped.\n'));
+  assert.ok(baseline.stdout.endsWith('1 error, 2 warnings, 4 skipped.\n'));
   assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending'], fixture.root), {
     status: 1,
     stdout: baseline.stdout
       .replace('DS043 warning ', 'DS043 error ')
-      .replace('1 error, 2 warnings, 3 skipped.\n', '2 errors, 1 warning, 3 skipped.\n'),
+      .replace('1 error, 2 warnings, 4 skipped.\n', '2 errors, 1 warning, 4 skipped.\n'),
     stderr: ''
   });
   const jsonBaseline = runBin(['doctor', 'apps/hub', '--json'], fixture.root);

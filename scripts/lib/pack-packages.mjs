@@ -13,7 +13,7 @@ import {
 } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readPackedManifest } from '../../packages/cli/src/release.mjs';
+import { readPackedFile, readPackedManifest } from '../../packages/cli/src/release.mjs';
 import { flattenMessage } from '../../packages/cli/src/text.mjs';
 
 // Release set decided by docs/odd/distribution/342-local-tarballs.md (R1), plus `@egdev/cli`, the
@@ -211,6 +211,49 @@ function sha256File(path) {
   return createHash('sha256').update(readFileSync(path)).digest('hex');
 }
 
+// Changelogs are newest-first. Traverse their versioned sections in reverse so the first recorded
+// issue/package pair keeps the oldest version; never inspect Unreleased or the unpacked source.
+function resolvedIssues(packed) {
+  const resolved = [];
+  for (const entry of packed) {
+    const changelog = readPackedFile(entry.path, 'package/CHANGELOG.md');
+    if (!changelog) {
+      continue;
+    }
+    const sections = [];
+    let current = null;
+    for (const line of changelog.toString('utf8').split(/\r?\n/)) {
+      if (/^#{1,2}\s/.test(line)) {
+        const heading = line.match(/^##\s+\[?v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)\]?(?:\s|$)/);
+        current = heading ? { version: heading[1], issues: [] } : null;
+        if (current) {
+          sections.push(current);
+        }
+      }
+      if (current) {
+        for (const [reference] of line.matchAll(/\(#\d+(?:,\s*#\d+)*\)/g)) {
+          for (const [digits] of reference.matchAll(/\d+/g)) {
+            const issue = Number(digits);
+            if (Number.isInteger(issue) && issue > 0) {
+              current.issues.push(issue);
+            }
+          }
+        }
+      }
+    }
+    const seen = new Set();
+    for (const { version, issues } of sections.reverse()) {
+      for (const issue of issues) {
+        if (!seen.has(issue)) {
+          seen.add(issue);
+          resolved.push({ issue, package: entry.name, version });
+        }
+      }
+    }
+  }
+  return resolved.sort((a, b) => a.issue - b.issue || (a.package < b.package ? -1 : a.package > b.package ? 1 : 0));
+}
+
 // Writes `release.json` from the tarballs actually packed, with a fixed key order and no timestamp,
 // so the same tarballs and tree give byte-identical output. The file is written under a temporary
 // name in the same folder and renamed, so a reader never sees a partial record.
@@ -227,7 +270,8 @@ export function writeReleaseManifest({ destination, packed, provenance }) {
       version: entry.version,
       file: entry.file,
       sha256: sha256File(entry.path)
-    }))
+    })),
+    resolves: resolvedIssues(packed)
   };
   const staging = mkdtempSync(join(destination, '.staging-'));
   try {

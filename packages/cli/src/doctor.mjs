@@ -30,6 +30,7 @@ import { satisfies } from './semver.mjs';
 import { flattenMessage } from './text.mjs';
 
 /** @typedef {import('./release.mjs').Release} Release */
+/** @typedef {import('./release.mjs').ResolvedIssue} ResolvedIssue */
 /** @typedef {import('./guard.mjs').GuardAllowlistEntry} GuardAllowlistEntry */
 /** @typedef {import('./guard.mjs').GuardSource} GuardSource */
 /** @typedef {import('./guard.mjs').GuardEngine} GuardEngine */
@@ -263,7 +264,7 @@ function readSources(project, config) {
  * @param {string} file
  * @returns {Promise<{ allowlist: GuardAllowlistEntry[] } | { problem: string }>}
  */
-async function loadAllowlist(project, file) {
+export async function loadAllowlist(project, file) {
   const path = join(project, file);
   const text = readText(path);
   if (text === null) {
@@ -314,6 +315,72 @@ async function loadAllowlist(project, file) {
 }
 
 /**
+ * Match DS issues in the guard allowlist to release metadata. Reuse the guard's source walk to
+ * locate a TODO or pattern when possible; unresolved or unsafe paths still produce a file notice.
+ * @param {{ project: string, config: DoctorConfig, allowlist: GuardAllowlistEntry[], resolves: ResolvedIssue[], usedPackages: ReadonlySet<string> }} input
+ * @returns {{ entry: GuardAllowlistEntry, resolvedIn: string, line?: number }[]}
+ */
+export function resolvedMitigations({ project, config, allowlist, resolves, usedPackages }) {
+  const matches = allowlist.flatMap((entry) => {
+    const reference = entry.issue.match(/^egdev6\/egdev-design-system#(\d+)$/);
+    const issue = reference ? Number(reference[1]) : 0;
+    /** @type {Map<string, ResolvedIssue>} */
+    const packages = new Map();
+    for (const resolution of resolves) {
+      if (
+        issue > 0 &&
+        resolution.issue === issue &&
+        usedPackages.has(resolution.package) &&
+        !packages.has(resolution.package)
+      ) {
+        packages.set(resolution.package, resolution);
+      }
+    }
+    const resolvedIn = [...packages.values()]
+      .sort((a, b) => (a.package < b.package ? -1 : a.package > b.package ? 1 : 0))
+      .map((resolution) => `${resolution.package} ${resolution.version}`)
+      .join(', ');
+    return resolvedIn ? [{ entry, resolvedIn }] : [];
+  });
+  if (matches.length === 0) {
+    return [];
+  }
+  /** @type {GuardSource[]} */
+  let sources = [];
+  try {
+    // A symlinked source root must not make upgrade read outside the consumer project.
+    const projectRoot = realpathSync(project);
+    const sourceRoot = realpathSync(join(project, config.sourceDirectory));
+    const within = relative(projectRoot, sourceRoot);
+    if (!within.startsWith('..') && !isAbsolute(within)) {
+      sources = readSources(project, config);
+    }
+  } catch {
+    // The entry still identifies the file even when its source cannot be read.
+  }
+  const sourceByFile = new Map(sources.map((source) => [source.file, source]));
+  const offsets = new Map();
+  /** @type {Map<GuardAllowlistEntry, number>} */
+  const lines = new Map();
+  // The guard consumes one occurrence per entry. Advance through repeated anchors even for
+  // unmatched entries, so each notice points to its own occurrence rather than the first one.
+  for (const entry of allowlist) {
+    const source = sourceByFile.get(entry.file);
+    const anchor = entry.comment ?? entry.pattern;
+    const key = `${entry.file}\0${anchor}`;
+    const offset = anchor ? (source?.content.indexOf(anchor, offsets.get(key) ?? 0) ?? -1) : -1;
+    if (source && offset >= 0) {
+      offsets.set(key, offset + anchor.length);
+      lines.set(entry, source.content.slice(0, offset).split('\n').length);
+    }
+  }
+  return matches.map(({ entry, resolvedIn }) => {
+    const line = lines.get(entry);
+    return { entry, resolvedIn, ...(line === undefined ? {} : { line }) };
+  });
+}
+
+/**
  * Runs every doctor check against `project` (an absolute path). `release` is the verified
  * `--from` release, or null when no `--from` was passed. `failOnPending` affects DS043 only.
  * @param {{ project: string, release: Release | null, failOnPending?: boolean }} input
@@ -329,9 +396,10 @@ export async function runDoctor({ project, release, failOnPending = false }) {
    * @param {string} message
    * @param {string} [file]
    * @param {number} [line]
+   * @param {number} [entryIndex] distinguish matching allowlist entries with identical locations
    */
-  const add = (code, severity, message, file, line) => {
-    const key = `${code}\0${file ?? ''}\0${line ?? ''}\0${message}`;
+  const add = (code, severity, message, file, line, entryIndex) => {
+    const key = `${code}\0${file ?? ''}\0${line ?? ''}\0${message}\0${entryIndex ?? ''}`;
     if (seen.has(key)) {
       return;
     }
@@ -381,9 +449,10 @@ export async function runDoctor({ project, release, failOnPending = false }) {
 
   // DS010, DS013 (specifiers)
   const workspace = readText(join(project, 'pnpm-workspace.yaml'));
+  const specs = collectSpecifiers(manifest, workspace);
   /** @type {Vendored[]} */
   const vendored = [];
-  for (const { name, spec, source, field: key } of collectSpecifiers(manifest, workspace)) {
+  for (const { name, spec, source, field: key } of specs) {
     const file = safeVendorFile(spec);
     if (/^(?:workspace|link):/.test(spec)) {
       add('DS013', 'error', `${name} uses ${spec}; vendor the tarball instead.`, source);
@@ -478,10 +547,10 @@ export async function runDoctor({ project, release, failOnPending = false }) {
     }
   }
 
-  // DS014, DS017, DS051
+  // DS014, DS017, DS051; DS052 uses the same single-commit gate as DS017.
+  const commits = [...new Set([...files.keys()].map((file) => commitOf(file) ?? 'none'))].sort();
+  const commit = commits.length === 1 && commits[0] !== 'none' ? (commits[0] ?? null) : null;
   if (files.size > 0) {
-    const commits = [...new Set([...files.keys()].map((file) => commitOf(file) ?? 'none'))].sort();
-    const commit = commits.length === 1 && commits[0] !== 'none' ? (commits[0] ?? null) : null;
     const systemMd = findSystemMd(project);
     const systemFile = systemMd ? relative(project, systemMd).split('\\').join('/') : undefined;
     const recorded = systemMd ? systemMdCommit(readText(systemMd) ?? '') : null;
@@ -657,11 +726,14 @@ export async function runDoctor({ project, release, failOnPending = false }) {
   for (const name of missingEngines) {
     add('DS044', 'error', `Cannot resolve ${name} from the project; add it as a devDependency.`);
   }
-  if (missingEngines.length === 0) {
+  const allowlistFile = `${config.sourceDirectory}/${ALLOWLIST_FILE}`;
+  const loaded =
+    missingEngines.length === 0 || (release && release.resolves.length > 0)
+      ? await loadAllowlist(project, allowlistFile)
+      : null;
+  if (missingEngines.length === 0 && loaded) {
     /** @type {GuardEngine} */
     const engine = { ts: require('typescript'), postcss: require('postcss') };
-    const allowlistFile = `${config.sourceDirectory}/${ALLOWLIST_FILE}`;
-    const loaded = await loadAllowlist(project, allowlistFile);
     if ('problem' in loaded) {
       add('DS042', 'error', loaded.problem, allowlistFile);
     } else {
@@ -718,6 +790,36 @@ export async function runDoctor({ project, release, failOnPending = false }) {
             ? `1 allowlist entry uses ${placeholder} placeholders; replace it with a real issue.`
             : `${pending} allowlist entries use ${placeholder} placeholders; replace them with real issues.`,
           allowlistFile
+        );
+      }
+    }
+  }
+
+  // DS052: release-dependent notices do not change DS043 or --fail-on-pending.
+  if (!release) {
+    add('DS052', 'skipped', RELEASE_SKIPPED);
+  } else if (release.resolves.length === 0) {
+    // Nothing to match (including releases older than `resolves`): DS052 adds no finding.
+  } else if (!commit || !release.commit.startsWith(commit)) {
+    add('DS052', 'skipped', 'Skipped: vendored set is not at the release commit; upgrade first.');
+  } else if (loaded) {
+    if ('problem' in loaded) {
+      add('DS052', 'skipped', 'Skipped: cannot load the allowlist.', allowlistFile);
+    } else {
+      for (const [index, { entry, resolvedIn, line }] of resolvedMitigations({
+        project,
+        config,
+        allowlist: loaded.allowlist,
+        resolves: release.resolves,
+        usedPackages: new Set(specs.map(({ name }) => name))
+      }).entries()) {
+        add(
+          'DS052',
+          'warning',
+          `Remove the mitigation for ${entry.issue} (resolved in ${resolvedIn}).`,
+          entry.file,
+          line,
+          index
         );
       }
     }

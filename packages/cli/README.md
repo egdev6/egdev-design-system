@@ -39,7 +39,8 @@ egdev-ds --help | --version
 - `<project>` is the app directory that holds its `package.json`, relative to the current directory.
 - `--from <dir>` is a `release:pack` folder with `release.json`. `init` and `upgrade` default to
   `../egdev-design-system/release`, resolved against the current directory. `doctor` uses it only for the release
-  checks (DS014 commit comparison and DS017 hashes). Without `--from`, those checks are reported as `skipped`.
+  checks (DS014 commit comparison, DS017 hashes and DS052 resolved mitigations). Without `--from`, those checks are
+  reported as `skipped`.
   `status` uses it only to report the release commit and whether an upgrade is available.
 - `--json` prints exactly one JSON document on stdout.
 
@@ -218,8 +219,13 @@ Dry run: nothing written.
   version, up to and including the new one. A legacy name without a commit shows as `unversioned`.
 - A real run ends with `Upgraded to b54222c; <n> vendored integrities verified.`, the next steps and
   `Review the diff before committing.`
+- After a successful text upgrade, the next steps include each guard allowlist mitigation whose DS issue appears in the
+  release's `resolves` for a package the project uses, including packages just added with `--add`. One step per entry
+  lists its relevant resolving packages and first versions in package-name order, and the source line when available.
+  An unloadable allowlist is silently skipped. Older releases without `resolves` still work and have no notices.
 - A run at the release commit verifies and prints `Already at b54222c; <n> vendored integrities verified; no changes.`,
-  with or without an `--add` package the app already declares.
+  with or without an `--add` package the app already declares. Like other next steps, these notices are not printed in
+  `--dry-run` or included in `--json`.
 - With `--json`, the document adds `changelog`: `[{ name, from, to, notes }]`, where `notes` holds the markdown
   sections, `""` for an unchanged version and `null` when the tarball has no `CHANGELOG.md`.
 
@@ -306,7 +312,8 @@ egdev-ds doctor apps/hub (npm, vite, native)
 DS014 skipped Release check skipped: pass --from <dir>.
 DS017 skipped Release check skipped: pass --from <dir>.
 DS051 skipped Skipped: no design/system.md in the project or up to its repository root.
-0 errors, 0 warnings, 3 skipped.
+DS052 skipped Release check skipped: pass --from <dir>.
+0 errors, 0 warnings, 4 skipped.
 ```
 
 Each finding prints as `<code> <severity> [<file>[:<line>]: ]<message>`. With `--json`:
@@ -357,6 +364,7 @@ Codes are stable: a code is never reused for another check.
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
 | DS051 | warning | The nearest `design/system.md`, from the project up to its repository root (the nearest folder with `.git`), records a design system commit in its first line (`<!-- Generated from EGDEV design system <commit>; … -->`) other than the vendored one: regenerate it. Skipped without the file, a recorded commit or a single vendored commit. |
+| DS052 | warning | With `--from` at the same vendored commit, each guard allowlist entry whose `egdev6/egdev-design-system#N` issue occurs in `resolves` for a package the project uses names a mitigation to remove. One warning lists the relevant resolving packages and versions in package-name order, with the source line when available. Skipped without `--from`; with a release whose `resolves` is empty or absent it adds no finding; otherwise skipped when the vendored commit is mixed, absent or differs from the release, or when the allowlist cannot be loaded; `--fail-on-pending` does not change its severity. |
 
 ## Configuration: `egdev-ds.json`
 
@@ -406,5 +414,6 @@ export const designSystemAllowlist: readonly GuardAllowlistEntry[] = [
 TODO `comment`. `DesignSystemAllowlist` is the same array type. The package has no runtime entry: use `import type`,
 which Node strips when doctor loads the file.
 
-**Doctor executes project code.** Loading the allowlist imports a module from the project, and the guard runs the
-project's `typescript` and `postcss`. Run `egdev-ds doctor` only on projects you trust, as you would their tests.
+**Doctor and upgrade execute project code.** Loading the allowlist imports a module from the project, and the guard runs
+the project's `typescript` and `postcss`. After a successful text upgrade, `upgrade` loads the allowlist when the release
+contains resolved issues. Run these commands only on projects you trust, as you would their tests.

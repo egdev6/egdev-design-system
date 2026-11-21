@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `egdev-ds upgrade` reports allowlisted mitigations resolved by a release as next steps; `doctor --from`
+  reports DS052 warnings only at the release commit. Both consider used packages and list their resolving
+  versions once per mitigation. Older releases without `resolves` remain supported. Refs #522.
+
 - `egdev-ds doctor <project> --fail-on-pending` reports pending DS043 placeholders as errors for consumer CI, with
   the same message and exit 1. Without the flag they remain warnings; the local `ds:doctor` script is unchanged.
 
