@@ -65,7 +65,8 @@ lives until the release that resolves the issue.
 allowlist. The placeholder is attributed to the consumer repository because the pending action, filing the
 issue, belongs to the consumer. `doctor` reports it as DS043 (warning). Replace it with the real issue number before
 merging. Consumer CI runs `egdev-ds doctor <project> --fail-on-pending` as the merge check; for example,
-`npx egdev-ds doctor . --fail-on-pending` from the project. Pending placeholders then cause DS043 to fail with exit 1.
+`npx egdev-ds doctor . --fail-on-pending` from the project, after installing its dependencies (before the install,
+npx would look `egdev-ds` up on the registry instead of the vendored `@egdev/cli`). Pending placeholders then cause DS043 to fail with exit 1.
 The local `ds:doctor` script stays warning-only for placeholders, so drafts may hold them.
 
 ## 3. Implement in the DS

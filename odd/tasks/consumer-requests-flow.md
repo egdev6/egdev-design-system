@@ -52,3 +52,4 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 - L16: PR #524 merged as 386ed4a (T2, T6); CI green incl. egdev-ds end to end.
 - L17 (owner, verbatim): "dale" → T4 on branch feat/doctor-fail-on-pending; owner choices recorded in S13.
 - L18: T4 by worker: RED 8 fail → GREEN test:cli 143/143; typecheck, biome green. Parent differential vs origin/main (scratch git archive): doctor/init/status existing flags and outputs identical; only difference is the new flag on init/upgrade/status, now "Unknown argument for <cmd>" (existing convention for known-but-inapplicable flags), exit 2 unchanged.
+- L19: Independent verify (Risk: item 3) PASS for S4, S13 and the risk: no-flag output byte-identical to base, 134 parser cases differ only by the new flag and usage line, init unchanged, test:cli 143/143. Advisory applied: consumer-requests.md says npx runs after installing dependencies.
