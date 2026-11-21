@@ -30,8 +30,8 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 | T4 | S4, S13 | worker | done: `doctor --fail-on-pending` (this commit) |
 | T5 | S6, S14 | worker | done: 4464354 + advisory fixes (next commit) |
 | T6 | S8, S12 | worker | done: init writes the marked block (commit 2) |
-| T7 | S5 | parent | release-preparation skill: comment and close resolved issues (global skill, outside this repo) |
-| T8 | S8 | parent | Nexo CONTRIBUTING links the canonical rule (nexo repo) |
+| T7 | S5 | parent | done: global skill `release-preparation` 1.7 (local-tarball section, outside this repo) |
+| T8 | S8 | parent | done: egdev6/nexo#88, egdev6/egdev-website#42, egdev6/recado#33 |
 
 ## Log
 
@@ -59,3 +59,6 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 - L22: T5 by worker: RED 5 fail → GREEN test:cli 151/151; typecheck, biome green. Parent ran test:package-release (builds the workspace, outside the worker surfaces): 25/25.
 - L23: Independent verify (Risk: items 3 and 5) PASS for S6, S14 and both risks (272-scenario differential; old release.json byte-identical; base CLI reads the new field). Advisories adopted by the parent: A) DS052 warns only when vendored commit equals the release commit, else skipped (would otherwise ask to remove a mitigation before upgrading); 5) resolutions filtered by the packages the project uses; B) one notice per allowlist entry listing every resolving package; C) the CHANGELOG cites the tracking issue as `Refs #522`, since only `(#N)` counts as resolving. Worker: RED 5 then 2 fail → GREEN test:cli 160/160.
 - L24: Focused re-verify of the advisory fixes: A, 5, B, C PASS; D found one unrequested difference: `doctor --from` at another commit added a DS052 skipped line even for an old release.json without `resolves`. Fixed inline: the commit gate applies only when `resolves` is non-empty; an empty or absent list adds no DS052 finding with `--from` (without `--from` it stays skipped, per S14). RED 1 → GREEN test:cli 161/161; DS014 test restored to its base expectation; README and egdev-ds-cli.md DS052 rows updated.
+- L25: PR #526 merged as 464c713 (T5). Owner chose "cli 0.1.1 → 0.2.0 (Recomendado)"; released via #528 (6f6e0c5) and packed clean on main (`resolves` #485, #486, #488 from cli 0.1.1; no #522). #527 made biome respect `.gitignore`.
+- L26: T8 done in the three consumers, each upgraded to 6f6e0c5 with `ds:doctor --fail-on-pending` in CI and the marked CONTRIBUTING block: egdev6/nexo#88 (b28ecf9; block added by hand at the repository root), egdev6/egdev-website#42 (b009d8e; ui 0.3.2 → 0.7.0, Tabs changes not applicable), egdev6/recado#33 (b94a7d2; plus `postcss` devDependency so DS044 does not depend on `pnpm run`). Local checks green; GitHub Actions blocked by account billing, so the PRs merged without remote checks.
+- L27 (owner, verbatim): "si" → T7: the global `release-preparation` skill (1.7) gains a local-tarball section: publication is a clean `release:pack` on the merged main; only `resolves` entries new in the release are commented and closed, with an explicit grant. Checked on cli 0.2.0: no new entries. All tasks done; #522 closes.
