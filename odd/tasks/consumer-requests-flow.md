@@ -22,7 +22,7 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 | T0 | S1–S10 | parent | done: issue #522, linked from #491 |
 | T1 | S3, S5, S7, S8, S10 | inline | done: docs/distribution/consumer-requests.md, CONTRIBUTING, README, README.es (this commit) |
 | T2 | S3 | inline | "Consumer request" issue template |
-| T3 | S9 | inline | blocked: owner decision (see L7) |
+| T3 | S9 | inline | done: no code change; semantics documented in consumer-requests.md (af78929) |
 | T4 | S4 | inline | `#TBD-*` merge check (mechanism decided here) |
 | T5 | S6 | worker? | `release.json` resolves field + upgrade/doctor notice |
 | T6 | S8 | inline | `egdev-ds init` CONTRIBUTING snippet |
@@ -39,3 +39,4 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 - L6 (owner, verbatim): "empecemos" → start T1 and T3 (the agent's recommended first units).
 - L7: T3 premise corrected. Mapping `TODO(egdev-design-system#TBD-x)` to `<localRepo>#TBD-x` is intentional, not a bug: pinned by AC18 tests (`packages/cli/tests/guard.test.mjs:126-145,147-157,179-192`), documented as `<localRepo>#TBD-*` in DS043 (`packages/cli/README.md:339`) and used by consumer allowlists. Changing it is a consumed-contract change. Agent recommendation: keep it and document the semantics (the pending action, filing the issue, belongs to the consumer); T1's doc does so. Owner decision pending.
 - L8: T1 done. Relative links in the new doc resolve; docs-only change, no runnable tests apply.
+- L9 (owner choice): "Mantener y documentar (Recomendado)" → S9 resolved: keep `<localRepo>#TBD-*` attribution; the canonical doc explains it. T3 closed without code changes.
