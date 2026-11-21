@@ -87,6 +87,26 @@ function addMitigations(fixture) {
   return entries;
 }
 
+function addRepeatedMitigations(fixture) {
+  const comment = '// TODO(egdev-design-system#12): Remove the composition.';
+  write(
+    join(fixture.project, 'src/Gap.tsx'),
+    `export function Gap() {\n  ${comment}\n  const first = <Panel>First</Panel>;\n  ${comment}\n  return <Cluster>{first}</Cluster>;\n}\n`
+  );
+  const entries = ['<Panel>', '<Cluster>'].map((pattern) => ({
+    file: 'src/Gap.tsx',
+    pattern,
+    issue: 'egdev6/egdev-design-system#12',
+    reason: 'Waiting for the DS.',
+    kind: 'component-gap',
+    comment
+  }));
+  write(
+    join(fixture.project, 'src/design-system-allowlist.ts'),
+    `export const designSystemAllowlist = ${JSON.stringify(entries)};\n`
+  );
+}
+
 function packedFixture(changelogs) {
   const root = mkdtempSync(join(tmpdir(), 'egdev-resolves-pack-'));
   scratch.push(root);
@@ -129,6 +149,7 @@ test('S14 packed release metadata is cumulative, oldest-first per issue and pack
       '',
       '## 0.7.0',
       '- Repeat (#12); multiple (#34, #56); zero (#0).',
+      '- Partial work: Refs #522.',
       '',
       '## 0.6.0 (#65)',
       '- Added (#12).',
@@ -350,6 +371,356 @@ test('S14 doctor DS052 is a warning per resolved entry, independent of --fail-on
   assert.deepEqual(
     findings.filter(({ code }) => code === 'DS052').map(({ severity }) => severity),
     ['warning', 'warning']
+  );
+});
+
+test('DS052 skips a newer release until the vendored commit matches', async () => {
+  const fixture = project();
+  addMitigations(fixture);
+  const same = release();
+  const newer = release(OTHER_COMMIT);
+  const issue = [{ issue: 12, package: '@egdev/ui', version: '0.7.0' }];
+  setResolves(same, issue);
+  setResolves(newer, issue);
+  const before = [treeHash(fixture.root), treeHash(same), treeHash(newer)];
+  assert.deepEqual(await cli(fixture, ['doctor', fixture.argument, '--from', newer]), {
+    status: 0,
+    stdout: [
+      'egdev-ds doctor apps/hub (npm, vite, native)',
+      'DS014 warning package.json: upgrade available: vendored at e712915, release at b54222c.',
+      'DS017 skipped Release check skipped: the vendored commit differs from the release.',
+      'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
+      'DS052 skipped Skipped: vendored set is not at the release commit; upgrade first.',
+      '0 errors, 1 warning, 3 skipped.',
+      ''
+    ].join('\n'),
+    stderr: ''
+  });
+  assert.deepEqual(await cli(fixture, ['doctor', fixture.argument, '--from', same]), {
+    status: 0,
+    stdout: [
+      'egdev-ds doctor apps/hub (npm, vite, native)',
+      'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
+      'DS052 warning src/Gap.tsx:2: Remove the mitigation for egdev6/egdev-design-system#12 (resolved in @egdev/ui 0.7.0).',
+      '0 errors, 1 warning, 1 skipped.',
+      ''
+    ].join('\n'),
+    stderr: ''
+  });
+  assert.deepEqual(await cli(fixture, ['doctor', fixture.argument, '--from', newer, '--json']), {
+    status: 0,
+    stdout: json({
+      schemaVersion: 1,
+      command: 'doctor',
+      project: fixture.argument,
+      packageManager: 'npm',
+      framework: 'vite',
+      cssMode: 'native',
+      release: { dir: newer, commit: OTHER_COMMIT },
+      actions: [],
+      findings: [
+        {
+          code: 'DS014',
+          severity: 'warning',
+          message: 'upgrade available: vendored at e712915, release at b54222c.',
+          file: 'package.json'
+        },
+        {
+          code: 'DS017',
+          severity: 'skipped',
+          message: 'Release check skipped: the vendored commit differs from the release.'
+        },
+        {
+          code: 'DS051',
+          severity: 'skipped',
+          message: 'Skipped: no design/system.md in the project or up to its repository root.'
+        },
+        {
+          code: 'DS052',
+          severity: 'skipped',
+          message: 'Skipped: vendored set is not at the release commit; upgrade first.'
+        }
+      ],
+      result: 'current'
+    }),
+    stderr: ''
+  });
+  assert.deepEqual([treeHash(fixture.root), treeHash(same), treeHash(newer)], before);
+});
+
+test('DS052 skips mixed and absent vendored commits', async () => {
+  const mixed = project();
+  addMitigations(mixed);
+  const from = release();
+  setResolves(from, [{ issue: 12, package: '@egdev/ui', version: '0.7.0' }]);
+  const oldFile = mixed.vendorName('ui');
+  const newFile = mixed.vendorName('ui', OTHER_COMMIT);
+  write(join(mixed.project, 'vendor', newFile), readFileSync(join(mixed.project, 'vendor', oldFile)));
+  const manifestFile = join(mixed.project, 'package.json');
+  const manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
+  manifest.dependencies['@egdev/ui'] = `file:vendor/${newFile}`;
+  writeFileSync(manifestFile, json(manifest));
+  const lockFile = join(mixed.project, 'package-lock.json');
+  const lock = JSON.parse(readFileSync(lockFile, 'utf8'));
+  lock.packages['node_modules/@egdev/ui'].resolved = `file:vendor/${newFile}`;
+  writeFileSync(lockFile, json(lock));
+  const beforeMixed = treeHash(mixed.root);
+  assert.deepEqual(await cli(mixed, ['doctor', mixed.argument, '--from', from]), {
+    status: 1,
+    stdout: [
+      'egdev-ds doctor apps/hub (npm, vite, native)',
+      'DS014 error package.json: Vendored files do not share one commit: b54222c, e712915.',
+      'DS017 skipped Release check skipped: the vendored set is mixed (DS014).',
+      'DS051 skipped Skipped: the vendored set is mixed (DS014).',
+      'DS052 skipped Skipped: vendored set is not at the release commit; upgrade first.',
+      '1 error, 0 warnings, 3 skipped.',
+      ''
+    ].join('\n'),
+    stderr: ''
+  });
+  assert.equal(treeHash(mixed.root), beforeMixed);
+
+  const absent = project();
+  addMitigations(absent);
+  const absentManifestFile = join(absent.project, 'package.json');
+  const absentManifest = JSON.parse(readFileSync(absentManifestFile, 'utf8'));
+  for (const field of ['dependencies', 'devDependencies', 'overrides']) {
+    for (const name of Object.keys(absentManifest[field] ?? {})) {
+      if (name.startsWith('@egdev/')) {
+        delete absentManifest[field][name];
+      }
+    }
+  }
+  writeFileSync(absentManifestFile, json(absentManifest));
+  const beforeAbsent = treeHash(absent.root);
+  assert.deepEqual(await cli(absent, ['doctor', absent.argument, '--from', from]), {
+    status: 0,
+    stdout: [
+      'egdev-ds doctor apps/hub (npm, vite, native)',
+      'DS052 skipped Skipped: vendored set is not at the release commit; upgrade first.',
+      '0 errors, 0 warnings, 1 skipped.',
+      ''
+    ].join('\n'),
+    stderr: ''
+  });
+  assert.equal(treeHash(absent.root), beforeAbsent);
+});
+
+test('doctor and upgrade ignore resolutions from packages the project does not use', async () => {
+  const fixture = project();
+  addMitigations(fixture);
+  const same = release();
+  const doctorArgs = ['doctor', fixture.argument, '--from', same];
+  const before = treeHash(fixture.root);
+  const baseline = await cli(fixture, doctorArgs);
+  assert.deepEqual(baseline, {
+    status: 0,
+    stdout:
+      'egdev-ds doctor apps/hub (npm, vite, native)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
+    stderr: ''
+  });
+  setResolves(same, [{ issue: 34, package: '@egdev/effects', version: '0.2.2' }]);
+  assert.deepEqual(await cli(fixture, doctorArgs), baseline);
+  assert.equal(treeHash(fixture.root), before);
+
+  const newer = release(OTHER_COMMIT);
+  const first = project();
+  const second = project();
+  addMitigations(first);
+  addMitigations(second);
+  const args = ['upgrade', first.argument, '--from', newer];
+  const previous = await cli(first, args, { runner: fakeInstaller().runner });
+  assert.equal(previous.status, 0);
+  assert.equal(previous.stderr, 'added 4 packages\n');
+  setResolves(newer, [{ issue: 34, package: '@egdev/effects', version: '0.2.2' }]);
+  const allowlist = readFileSync(join(second.project, 'src/design-system-allowlist.ts'), 'utf8');
+  assert.deepEqual(await cli(second, args, { runner: fakeInstaller().runner }), previous);
+  assert.equal(readFileSync(join(second.project, 'src/design-system-allowlist.ts'), 'utf8'), allowlist);
+});
+
+test('doctor lists multiple used resolutions once per allowlist entry in package order', async () => {
+  const fixture = project();
+  addMitigations(fixture);
+  const from = release();
+  setResolves(from, [
+    { issue: 12, package: '@egdev/ui', version: '0.7.0' },
+    { issue: 12, package: '@egdev/effects', version: '0.2.2' },
+    { issue: 12, package: '@egdev/tokens', version: '0.5.1' }
+  ]);
+  const before = [treeHash(fixture.root), treeHash(from)];
+  assert.deepEqual(await cli(fixture, ['doctor', fixture.argument, '--from', from]), {
+    status: 0,
+    stdout: [
+      'egdev-ds doctor apps/hub (npm, vite, native)',
+      'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
+      'DS052 warning src/Gap.tsx:2: Remove the mitigation for egdev6/egdev-design-system#12 (resolved in @egdev/tokens 0.5.1, @egdev/ui 0.7.0).',
+      '0 errors, 1 warning, 1 skipped.',
+      ''
+    ].join('\n'),
+    stderr: ''
+  });
+  assert.deepEqual(await cli(fixture, ['doctor', fixture.argument, '--from', from, '--json', '--fail-on-pending']), {
+    status: 0,
+    stdout: json({
+      schemaVersion: 1,
+      command: 'doctor',
+      project: fixture.argument,
+      packageManager: 'npm',
+      framework: 'vite',
+      cssMode: 'native',
+      release: { dir: from, commit: COMMIT },
+      actions: [],
+      findings: [
+        {
+          code: 'DS051',
+          severity: 'skipped',
+          message: 'Skipped: no design/system.md in the project or up to its repository root.'
+        },
+        {
+          code: 'DS052',
+          severity: 'warning',
+          message:
+            'Remove the mitigation for egdev6/egdev-design-system#12 (resolved in @egdev/tokens 0.5.1, @egdev/ui 0.7.0).',
+          file: 'src/Gap.tsx',
+          line: 2
+        }
+      ],
+      result: 'current'
+    }),
+    stderr: ''
+  });
+  assert.deepEqual([treeHash(fixture.root), treeHash(from)], before);
+});
+
+test('upgrade lists multiple used resolutions once per allowlist entry in package order', async () => {
+  const baseline = project();
+  const fixture = project();
+  addMitigations(baseline);
+  addMitigations(fixture);
+  const from = release(OTHER_COMMIT);
+  const args = ['upgrade', fixture.argument, '--from', from];
+  const previous = await cli(baseline, args, { runner: fakeInstaller().runner });
+  assert.equal(previous.status, 0);
+  assert.equal(previous.stderr, 'added 4 packages\n');
+  setResolves(from, [
+    { issue: 12, package: '@egdev/ui', version: '0.7.0' },
+    { issue: 12, package: '@egdev/effects', version: '0.2.2' },
+    { issue: 12, package: '@egdev/tokens', version: '0.5.1' }
+  ]);
+  const notice =
+    '  Remove the mitigation for egdev6/egdev-design-system#12 in src/Gap.tsx:2 (resolved in @egdev/tokens 0.5.1, @egdev/ui 0.7.0).';
+  const allowlist = readFileSync(join(fixture.project, 'src/design-system-allowlist.ts'), 'utf8');
+  assert.deepEqual(await cli(fixture, args, { runner: fakeInstaller().runner }), {
+    ...previous,
+    stdout: previous.stdout.replace(
+      'Review the diff before committing.',
+      `${notice}\nReview the diff before committing.`
+    )
+  });
+  assert.equal(readFileSync(join(fixture.project, 'src/design-system-allowlist.ts'), 'utf8'), allowlist);
+});
+
+test('doctor reports each allowlist entry separately when TODO text is repeated', async () => {
+  const fixture = project();
+  addRepeatedMitigations(fixture);
+  const from = release();
+  setResolves(from, [
+    { issue: 12, package: '@egdev/ui', version: '0.7.0' },
+    { issue: 12, package: '@egdev/tokens', version: '0.5.1' }
+  ]);
+  const before = [treeHash(fixture.root), treeHash(from)];
+  assert.deepEqual(await cli(fixture, ['doctor', fixture.argument, '--from', from]), {
+    status: 0,
+    stdout: [
+      'egdev-ds doctor apps/hub (npm, vite, native)',
+      'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
+      'DS052 warning src/Gap.tsx:2: Remove the mitigation for egdev6/egdev-design-system#12 (resolved in @egdev/tokens 0.5.1, @egdev/ui 0.7.0).',
+      'DS052 warning src/Gap.tsx:4: Remove the mitigation for egdev6/egdev-design-system#12 (resolved in @egdev/tokens 0.5.1, @egdev/ui 0.7.0).',
+      '0 errors, 2 warnings, 1 skipped.',
+      ''
+    ].join('\n'),
+    stderr: ''
+  });
+  assert.deepEqual([treeHash(fixture.root), treeHash(from)], before);
+});
+
+test('upgrade reports each allowlist entry separately when TODO text is repeated', async () => {
+  const baseline = project();
+  const fixture = project();
+  addRepeatedMitigations(baseline);
+  addRepeatedMitigations(fixture);
+  const from = release(OTHER_COMMIT);
+  const args = ['upgrade', fixture.argument, '--from', from];
+  const previous = await cli(baseline, args, { runner: fakeInstaller().runner });
+  assert.equal(previous.status, 0);
+  assert.equal(previous.stderr, 'added 4 packages\n');
+  setResolves(from, [
+    { issue: 12, package: '@egdev/ui', version: '0.7.0' },
+    { issue: 12, package: '@egdev/tokens', version: '0.5.1' }
+  ]);
+  const notices = [2, 4].map(
+    (line) =>
+      `  Remove the mitigation for egdev6/egdev-design-system#12 in src/Gap.tsx:${line} (resolved in @egdev/tokens 0.5.1, @egdev/ui 0.7.0).`
+  );
+  const allowlist = readFileSync(join(fixture.project, 'src/design-system-allowlist.ts'), 'utf8');
+  assert.deepEqual(await cli(fixture, args, { runner: fakeInstaller().runner }), {
+    ...previous,
+    stdout: previous.stdout.replace(
+      'Review the diff before committing.',
+      `${notices.join('\n')}\nReview the diff before committing.`
+    )
+  });
+  assert.equal(readFileSync(join(fixture.project, 'src/design-system-allowlist.ts'), 'utf8'), allowlist);
+});
+
+test('upgrade --add includes the newly selected package in resolved mitigation notices', async () => {
+  const fixture = project();
+  addMitigations(fixture);
+  const from = release(OTHER_COMMIT);
+  setResolves(from, [{ issue: 12, package: '@egdev/effects', version: '0.2.2' }]);
+  const result = await cli(fixture, ['upgrade', fixture.argument, '--from', from, '--add', 'effects', '--no-install']);
+  assert.equal(result.status, 0);
+  assert.equal(result.stderr, '');
+  assert.equal(
+    result.stdout
+      .split('\n')
+      .filter((line) => line.includes('Remove the mitigation'))
+      .join('\n'),
+    '  Remove the mitigation for egdev6/egdev-design-system#12 in src/Gap.tsx:2 (resolved in @egdev/effects 0.2.2).'
+  );
+  assert.ok(JSON.parse(readFileSync(join(fixture.project, 'package.json'), 'utf8')).dependencies['@egdev/effects']);
+});
+
+test('doctor and upgrade include a package selected only by an override', async () => {
+  const fixture = project();
+  addMitigations(fixture);
+  const manifestFile = join(fixture.project, 'package.json');
+  const manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
+  delete manifest.devDependencies['@egdev/system'];
+  manifest.overrides['@egdev/system'] = fixture.spec('system');
+  writeFileSync(manifestFile, json(manifest));
+  const same = release();
+  const newer = release(OTHER_COMMIT);
+  const issue = [{ issue: 12, package: '@egdev/system', version: '0.4.1' }];
+  setResolves(same, issue);
+  setResolves(newer, issue);
+  const before = treeHash(fixture.root);
+  const doctor = await cli(fixture, ['doctor', fixture.argument, '--from', same]);
+  assert.equal(doctor.status, 0);
+  assert.equal(doctor.stderr, '');
+  assert.ok(
+    doctor.stdout.includes(
+      'DS052 warning src/Gap.tsx:2: Remove the mitigation for egdev6/egdev-design-system#12 (resolved in @egdev/system 0.4.1).\n'
+    )
+  );
+  assert.equal(treeHash(fixture.root), before);
+  const upgrade = await cli(fixture, ['upgrade', fixture.argument, '--from', newer, '--no-install']);
+  assert.equal(upgrade.status, 0);
+  assert.equal(upgrade.stderr, '');
+  assert.ok(
+    upgrade.stdout.includes(
+      '  Remove the mitigation for egdev6/egdev-design-system#12 in src/Gap.tsx:2 (resolved in @egdev/system 0.4.1).\n'
+    )
   );
 });
 

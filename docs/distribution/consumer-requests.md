@@ -80,14 +80,18 @@ each consumer-request issue it resolves and then closes it:
 
 > Available in `@egdev/ui` 0.7.0 (DS commit `abc1234`). Consumers can upgrade with `egdev-ds upgrade`.
 
-Each consumer-request changelog entry must cite the DS issue as `(#N)` (see
-[versioning.md](./versioning.md#changelog-format)). `release:pack` reads all versioned sections
-of the packed changelogs, excluding `Unreleased`, and records resolved issues in `release.json`
-with the package and first version that shipped them. After a successful text upgrade,
-`egdev-ds upgrade` matches those issues to the guard allowlist and prints a removal next step for
-each match, including the source line when available. `doctor --from <release>` reports the same
-matches as DS052 warnings. The notices work offline; neither command runs git or removes mitigations.
-Older release records without `resolves` contain no machine notices; use the release comment.
+Each fully resolved consumer-request changelog entry must cite the DS issue as `(#N)` (see
+[versioning.md](./versioning.md#changelog-format)). Only `(#N)` (or a comma list of such references)
+counts as resolved; use plain `#N` or `Refs #N` for partial work. `release:pack` reads all versioned
+sections of the packed changelogs, excluding `Unreleased`, and records resolved issues in
+`release.json` with the package and first version that shipped them. After a successful text upgrade,
+`egdev-ds upgrade` matches those issues to the guard allowlist, considering only packages the
+consumer uses, including packages just added with `--add`. It prints one removal step per matching
+allowlist entry, listing the relevant resolving packages and the source line when available.
+`doctor --from <release>` reports the same matches as DS052 warnings only when the vendored commit
+matches that release; otherwise DS052 is skipped and the consumer must upgrade first. The notices
+work offline; neither command runs git or removes mitigations. Older release records without
+`resolves` contain no machine notices; use the release comment.
 
 ## 5. Upgrade the consumer
 

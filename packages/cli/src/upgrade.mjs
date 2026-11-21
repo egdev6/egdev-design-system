@@ -659,16 +659,15 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
         const { config } = readConfig(project, manifest);
         const loaded = await loadAllowlist(project, `${config.sourceDirectory}/${ALLOWLIST_FILE}`);
         if ('allowlist' in loaded) {
-          for (const { entry, resolution, line } of resolvedMitigations({
+          for (const { entry, resolvedIn, line } of resolvedMitigations({
             project,
             config,
             allowlist: loaded.allowlist,
-            resolves: release.resolves
+            resolves: release.resolves,
+            usedPackages: new Set(selected.keys())
           })) {
             const location = `${entry.file}${line ? `:${line}` : ''}`;
-            extraSteps.push(
-              `  Remove the mitigation for ${entry.issue} in ${location} (resolved in ${resolution.package} ${resolution.version}).`
-            );
+            extraSteps.push(`  Remove the mitigation for ${entry.issue} in ${location} (resolved in ${resolvedIn}).`);
           }
         }
       } catch {

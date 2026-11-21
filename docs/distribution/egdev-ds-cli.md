@@ -448,10 +448,11 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 9. **On failure** at any step before success: restore `package.json`, the lockfile and `pnpm-workspace.yaml` byte for byte, and remove the tarballs this run copied. Exit 1 [E `assets/ds-vendor.mjs:252-256,365-368`; tests `assets/ds-vendor.test.mjs:246`, `assets/ds-vendor.pnpm.test.mjs:166,173`].
 10. **After success**, remove the previous tarballs that nothing references anymore. A failed removal is reported with exit 1 and `new installation is intact`, and never rolled back [E `assets/ds-vendor.mjs:258-265,370-376`; test `assets/ds-vendor.test.mjs:254`].
 11. **Print** the "Next steps" (§6.7). Amendment `odd/tasks/consumer-requests-flow.md` S14: after a successful text
-    upgrade, load the guard allowlist as doctor does and add a removal step for each entry whose DS issue is in the
-    release's `resolves`, naming its file, source line when available, issue and resolving package/version. An
-    unloadable allowlist is skipped without failing the upgrade. As with existing next steps, these notices are not in
-    `--json`, `--dry-run` or the already-current output. Loading the allowlist executes project code; trust the project.
+    upgrade, load the guard allowlist as doctor does and add one removal step per entry whose DS issue is in the
+    release's `resolves` for a selected package, including packages just added with `--add`. Name its file, source line
+    when available, issue and all relevant resolving packages and versions in package-name order. An unloadable
+    allowlist is skipped without failing the upgrade. As with existing next steps, these notices are not in `--json`,
+    `--dry-run` or the already-current output. Loading the allowlist executes project code; trust the project.
 
 ## 8. `doctor` checks
 
@@ -482,7 +483,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 | DS045 | error | `egdev-ds.json` missing or invalid | [I, Q6] |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in `<project>` or an ancestor has an `egdev-design-system` server whose script path exists | [E `egdev-website/.mcp.json`; `nexo/.mcp.json`] |
 | DS051 | warning | Amendment, `odd/tasks/egdev-ds-485-486.md` S3. With vendored files, the nearest `design/system.md` from `<project>` up to its repository root (the nearest `.git` ancestor; only `<project>` without one) records a design system commit in its first line, `<!-- Generated from EGDEV design system <commit>; … -->`, that differs from the vendored commit (prefix comparison, 7 to 40 hex): `Header records <a>, vendored at <b>: regenerate design/system.md.` `skipped` when the vendored set is mixed, the file is absent, or the first line records no commit | [E the header both apps' sync scripts write: `egdev-website/scripts/design-system-md.mjs:11`, `nexo/apps/hub/scripts/sync-design-system-md.mjs:5`; Nexo keeps the file at its repository root: `nexo/apps/hub/scripts/sync-design-system-md.mjs:8`. `egdev-system-md` itself writes no commit: `packages/system/src/render-system-md.mjs:87-97`] |
-| DS052 | warning | With `--from`, match guard allowlist `egdev6/egdev-design-system#N` entries against `resolves` and name each mitigation and resolving package/version, with a source line when available. Skipped without `--from` or when the allowlist cannot load. `--fail-on-pending` does not change this severity. | [I, amendment `odd/tasks/consumer-requests-flow.md` S14] |
+| DS052 | warning | With `--from` at the same vendored commit, match guard allowlist `egdev6/egdev-design-system#N` entries against `resolves` for packages the project declares or vendors. Warn once per matching entry, naming the mitigation and all relevant resolving packages/versions in package-name order, with a source line when available. Skipped without `--from`, when the vendored commit is absent, mixed or different from the release, or when the allowlist cannot load. `--fail-on-pending` does not change this severity. | [I, amendment `odd/tasks/consumer-requests-flow.md` S14] |
 
 - **Guard parity:** `src/guard.mjs` is the skill's `checkDesignSystem`, moved here unchanged except for its options source [E S3 "one maintained guard implementation"]. Both apps' copies are identical to the asset (see §1). Its existing tests move with it, including the comment-trivia regression [E skill `references/freno.md:33`].
 - **Allowlist file:** `src/design-system-allowlist.ts`, as in both apps [E `nexo/apps/hub/src/design-system-allowlist.ts:1-5`]. It is loaded with Node 24's built-in type stripping, which the file's syntax allows (only `import type` plus an array literal) [I, Q5]. Apps type it with `import type { GuardAllowlistEntry } from '@egdev/cli'` (S6, #488).

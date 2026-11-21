@@ -134,8 +134,9 @@ One `CHANGELOG.md` per package, in English, newest section first:
 - Group entries as `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` or `Security` subsections
   once a section has more than a couple of entries.
 - Describe the effect on a consumer, not the internal refactor.
-- Cite the issue resolved by each entry as `(#N)`; this citation is required for consumer requests,
-  so release metadata can notify consumers when their mitigations can be removed.
+- Cite each fully resolved issue as `(#N)`; this citation is required for consumer requests, so
+  release metadata can notify consumers when their mitigations can be removed. Only `(#N)` (or a
+  comma list of such references) counts as resolved; use plain `#N` or `Refs #N` for partial work.
 
 ## Coupling between packages
 

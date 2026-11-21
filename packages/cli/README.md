@@ -220,8 +220,9 @@ Dry run: nothing written.
 - A real run ends with `Upgraded to b54222c; <n> vendored integrities verified.`, the next steps and
   `Review the diff before committing.`
 - After a successful text upgrade, the next steps include each guard allowlist mitigation whose DS issue appears in the
-  release's `resolves`, with the package and first version that resolved it and the source line when available. An
-  unloadable allowlist is silently skipped. Older releases without `resolves` still work and have no notices.
+  release's `resolves` for a package the project uses, including packages just added with `--add`. One step per entry
+  lists its relevant resolving packages and first versions in package-name order, and the source line when available.
+  An unloadable allowlist is silently skipped. Older releases without `resolves` still work and have no notices.
 - A run at the release commit verifies and prints `Already at b54222c; <n> vendored integrities verified; no changes.`,
   with or without an `--add` package the app already declares. Like other next steps, these notices are not printed in
   `--dry-run` or included in `--json`.
@@ -363,7 +364,7 @@ Codes are stable: a code is never reused for another check.
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
 | DS051 | warning | The nearest `design/system.md`, from the project up to its repository root (the nearest folder with `.git`), records a design system commit in its first line (`<!-- Generated from EGDEV design system <commit>; … -->`) other than the vendored one: regenerate it. Skipped without the file, a recorded commit or a single vendored commit. |
-| DS052 | warning | With `--from`, each guard allowlist entry whose `egdev6/egdev-design-system#N` issue occurs in the release's `resolves` names a mitigation to remove and the resolving package and version. Reports the source line when available. Skipped without `--from` or when the allowlist cannot be loaded; `--fail-on-pending` does not change its severity. |
+| DS052 | warning | With `--from` at the same vendored commit, each guard allowlist entry whose `egdev6/egdev-design-system#N` issue occurs in `resolves` for a package the project uses names a mitigation to remove. One warning lists the relevant resolving packages and versions in package-name order, with the source line when available. Skipped without `--from`, when the vendored commit is mixed, absent or differs from the release, or when the allowlist cannot be loaded; `--fail-on-pending` does not change its severity. |
 
 ## Configuration: `egdev-ds.json`
 

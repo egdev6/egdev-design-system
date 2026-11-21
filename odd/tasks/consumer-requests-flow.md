@@ -28,7 +28,7 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 | T2 | S3, S11 | worker | done: .github/ISSUE_TEMPLATE/consumer_request.yml (commit 1) |
 | T3 | S9 | inline | done: no code change; semantics documented in consumer-requests.md (af78929) |
 | T4 | S4, S13 | worker | done: `doctor --fail-on-pending` (this commit) |
-| T5 | S6, S14 | worker | `release.json` resolved issues + upgrade/doctor notice |
+| T5 | S6, S14 | worker | done: 4464354 + advisory fixes (next commit) |
 | T6 | S8, S12 | worker | done: init writes the marked block (commit 2) |
 | T7 | S5 | parent | release-preparation skill: comment and close resolved issues (global skill, outside this repo) |
 | T8 | S8 | parent | Nexo CONTRIBUTING links the canonical rule (nexo repo) |
@@ -57,3 +57,4 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 - L20: PR #525 merged as 4c33f91 (T4); CI green.
 - L21 (owner, verbatim): "t5" → branch feat/release-resolved-issues; owner choices recorded in S14.
 - L22: T5 by worker: RED 5 fail → GREEN test:cli 151/151; typecheck, biome green. Parent ran test:package-release (builds the workspace, outside the worker surfaces): 25/25.
+- L23: Independent verify (Risk: items 3 and 5) PASS for S6, S14 and both risks (272-scenario differential; old release.json byte-identical; base CLI reads the new field). Advisories adopted by the parent: A) DS052 warns only when vendored commit equals the release commit, else skipped (would otherwise ask to remove a mitigation before upgrading); 5) resolutions filtered by the packages the project uses; B) one notice per allowlist entry listing every resolving package; C) the CHANGELOG cites the tracking issue as `Refs #522`, since only `(#N)` counts as resolving. Worker: RED 5 then 2 fail → GREEN test:cli 160/160.

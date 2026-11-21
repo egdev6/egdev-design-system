@@ -317,16 +317,30 @@ export async function loadAllowlist(project, file) {
 /**
  * Match DS issues in the guard allowlist to release metadata. Reuse the guard's source walk to
  * locate a TODO or pattern when possible; unresolved or unsafe paths still produce a file notice.
- * @param {{ project: string, config: DoctorConfig, allowlist: GuardAllowlistEntry[], resolves: ResolvedIssue[] }} input
- * @returns {{ entry: GuardAllowlistEntry, resolution: ResolvedIssue, line?: number }[]}
+ * @param {{ project: string, config: DoctorConfig, allowlist: GuardAllowlistEntry[], resolves: ResolvedIssue[], usedPackages: ReadonlySet<string> }} input
+ * @returns {{ entry: GuardAllowlistEntry, resolvedIn: string, line?: number }[]}
  */
-export function resolvedMitigations({ project, config, allowlist, resolves }) {
+export function resolvedMitigations({ project, config, allowlist, resolves, usedPackages }) {
   const matches = allowlist.flatMap((entry) => {
     const reference = entry.issue.match(/^egdev6\/egdev-design-system#(\d+)$/);
     const issue = reference ? Number(reference[1]) : 0;
-    return issue > 0
-      ? resolves.filter((resolution) => resolution.issue === issue).map((resolution) => ({ entry, resolution }))
-      : [];
+    /** @type {Map<string, ResolvedIssue>} */
+    const packages = new Map();
+    for (const resolution of resolves) {
+      if (
+        issue > 0 &&
+        resolution.issue === issue &&
+        usedPackages.has(resolution.package) &&
+        !packages.has(resolution.package)
+      ) {
+        packages.set(resolution.package, resolution);
+      }
+    }
+    const resolvedIn = [...packages.values()]
+      .sort((a, b) => (a.package < b.package ? -1 : a.package > b.package ? 1 : 0))
+      .map((resolution) => `${resolution.package} ${resolution.version}`)
+      .join(', ');
+    return resolvedIn ? [{ entry, resolvedIn }] : [];
   });
   if (matches.length === 0) {
     return [];
@@ -344,12 +358,25 @@ export function resolvedMitigations({ project, config, allowlist, resolves }) {
   } catch {
     // The entry still identifies the file even when its source cannot be read.
   }
-  return matches.map(({ entry, resolution }) => {
-    const source = sources.find((item) => item.file === entry.file);
+  const sourceByFile = new Map(sources.map((source) => [source.file, source]));
+  const offsets = new Map();
+  /** @type {Map<GuardAllowlistEntry, number>} */
+  const lines = new Map();
+  // The guard consumes one occurrence per entry. Advance through repeated anchors even for
+  // unmatched entries, so each notice points to its own occurrence rather than the first one.
+  for (const entry of allowlist) {
+    const source = sourceByFile.get(entry.file);
     const anchor = entry.comment ?? entry.pattern;
-    const offset = anchor ? (source?.content.indexOf(anchor) ?? -1) : -1;
-    const line = source && offset >= 0 ? source.content.slice(0, offset).split('\n').length : undefined;
-    return { entry, resolution, ...(line === undefined ? {} : { line }) };
+    const key = `${entry.file}\0${anchor}`;
+    const offset = anchor ? (source?.content.indexOf(anchor, offsets.get(key) ?? 0) ?? -1) : -1;
+    if (source && offset >= 0) {
+      offsets.set(key, offset + anchor.length);
+      lines.set(entry, source.content.slice(0, offset).split('\n').length);
+    }
+  }
+  return matches.map(({ entry, resolvedIn }) => {
+    const line = lines.get(entry);
+    return { entry, resolvedIn, ...(line === undefined ? {} : { line }) };
   });
 }
 
@@ -369,9 +396,10 @@ export async function runDoctor({ project, release, failOnPending = false }) {
    * @param {string} message
    * @param {string} [file]
    * @param {number} [line]
+   * @param {number} [entryIndex] distinguish matching allowlist entries with identical locations
    */
-  const add = (code, severity, message, file, line) => {
-    const key = `${code}\0${file ?? ''}\0${line ?? ''}\0${message}`;
+  const add = (code, severity, message, file, line, entryIndex) => {
+    const key = `${code}\0${file ?? ''}\0${line ?? ''}\0${message}\0${entryIndex ?? ''}`;
     if (seen.has(key)) {
       return;
     }
@@ -421,9 +449,10 @@ export async function runDoctor({ project, release, failOnPending = false }) {
 
   // DS010, DS013 (specifiers)
   const workspace = readText(join(project, 'pnpm-workspace.yaml'));
+  const specs = collectSpecifiers(manifest, workspace);
   /** @type {Vendored[]} */
   const vendored = [];
-  for (const { name, spec, source, field: key } of collectSpecifiers(manifest, workspace)) {
+  for (const { name, spec, source, field: key } of specs) {
     const file = safeVendorFile(spec);
     if (/^(?:workspace|link):/.test(spec)) {
       add('DS013', 'error', `${name} uses ${spec}; vendor the tarball instead.`, source);
@@ -518,10 +547,10 @@ export async function runDoctor({ project, release, failOnPending = false }) {
     }
   }
 
-  // DS014, DS017, DS051
+  // DS014, DS017, DS051; DS052 uses the same single-commit gate as DS017.
+  const commits = [...new Set([...files.keys()].map((file) => commitOf(file) ?? 'none'))].sort();
+  const commit = commits.length === 1 && commits[0] !== 'none' ? (commits[0] ?? null) : null;
   if (files.size > 0) {
-    const commits = [...new Set([...files.keys()].map((file) => commitOf(file) ?? 'none'))].sort();
-    const commit = commits.length === 1 && commits[0] !== 'none' ? (commits[0] ?? null) : null;
     const systemMd = findSystemMd(project);
     const systemFile = systemMd ? relative(project, systemMd).split('\\').join('/') : undefined;
     const recorded = systemMd ? systemMdCommit(readText(systemMd) ?? '') : null;
@@ -769,22 +798,26 @@ export async function runDoctor({ project, release, failOnPending = false }) {
   // DS052: release-dependent notices do not change DS043 or --fail-on-pending.
   if (!release) {
     add('DS052', 'skipped', RELEASE_SKIPPED);
+  } else if (!commit || !release.commit.startsWith(commit)) {
+    add('DS052', 'skipped', 'Skipped: vendored set is not at the release commit; upgrade first.');
   } else if (release.resolves.length > 0 && loaded) {
     if ('problem' in loaded) {
       add('DS052', 'skipped', 'Skipped: cannot load the allowlist.', allowlistFile);
     } else {
-      for (const { entry, resolution, line } of resolvedMitigations({
+      for (const [index, { entry, resolvedIn, line }] of resolvedMitigations({
         project,
         config,
         allowlist: loaded.allowlist,
-        resolves: release.resolves
-      })) {
+        resolves: release.resolves,
+        usedPackages: new Set(specs.map(({ name }) => name))
+      }).entries()) {
         add(
           'DS052',
           'warning',
-          `Remove the mitigation for ${entry.issue} (resolved in ${resolution.package} ${resolution.version}).`,
+          `Remove the mitigation for ${entry.issue} (resolved in ${resolvedIn}).`,
           entry.file,
-          line
+          line,
+          index
         );
       }
     }
