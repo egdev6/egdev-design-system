@@ -2,7 +2,8 @@
 
 What to do when a change in a consumer app needs a change in the design system. This page is the
 canonical rule for **every** app that consumes the DS (Nexo, egdev-website and any future one).
-Each consumer's CONTRIBUTING links here instead of restating it.
+Each consumer's CONTRIBUTING links here instead of restating it; `egdev-ds init` adds that summary
+as a marked block (see the [CLI reference](../../packages/cli/README.md)).
 
 Planning issue: [#522](https://github.com/egdev6/egdev-design-system/issues/522). Steps marked
 **planned** are not implemented yet; until they are, the manual fallback stated next to them
@@ -21,7 +22,9 @@ applies.
 ## 1. Request: the control point
 
 When a consumer change needs something the DS does not offer (a component, a variant, a prop, a
-token), open an issue in `egdev6/egdev-design-system`:
+token), open an issue in `egdev6/egdev-design-system` with the
+[Consumer request](https://github.com/egdev6/egdev-design-system/issues/new?template=consumer_request.yml)
+form:
 
 - Describe the **need**: what the interface must do, in which app, and link the consumer issue.
 - Do **not** propose the solution. The DS decides it with

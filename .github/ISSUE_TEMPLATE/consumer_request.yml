@@ -1,0 +1,52 @@
+name: Consumer request
+description: Request a design system change for a consumer app
+labels: ["enhancement"]
+body:
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and found no duplicate.
+          required: true
+        - label: "I understand that the design system decides the solution using [CATALOGACION.md](https://github.com/egdev6/egdev-design-system/blob/main/docs/CATALOGACION.md)."
+          required: true
+  - type: input
+    id: consumer_app
+    attributes:
+      label: Consumer app
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: Interface outcome
+      description: Describe what the interface must do for the consumer app. Do not propose a component, API, or other solution.
+    validations:
+      required: true
+  - type: input
+    id: consumer_issue
+    attributes:
+      label: Consumer issue link
+      description: Provide a link to the issue in the consumer app's repository.
+    validations:
+      required: true
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Current mitigation
+      description: >-
+        Describe any current mitigation, its code marker, and its allowlist entry.
+        For a filed DS issue, use `TODO(egdev-design-system#N)` in code and
+        `egdev6/egdev-design-system#N` in the allowlist. Before filing the DS
+        issue, a draft may use `TODO(egdev-design-system#TBD-<slug>)` in code
+        and `<localRepo>#TBD-*` in the allowlist; replace both with the real
+        issue before merging.
+  - type: markdown
+    attributes:
+      value: |
+        Only the design-system-dependent part of the work waits at this request;
+        the rest of the consumer PR can continue.
+
+        This issue closes when the release that ships the change is published, not when the PR merges.
+        See the [consumer requests flow](https://github.com/egdev6/egdev-design-system/blob/main/docs/distribution/consumer-requests.md).

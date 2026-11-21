@@ -3,7 +3,7 @@
 - **Status:** Approved — 2026-11-18 by the owner, with every recommended option (a) in §14 (verbatim answer: "si"; [#477](https://github.com/egdev6/egdev-design-system/issues/477); `odd/tasks/egdev-ds-cli.md` L5). The implementation plan needs separate approval.
 - **Package:** `@egdev/cli`, the sixth package in the release set. It ships the `egdev-ds` binary.
 - **Approved inputs:** the owner decisions recorded verbatim in `odd/tasks/egdev-ds-cli.md` S3 (L3): "New @egdev/cli package (Recommended)", "--from, default sibling DS release/ (Recommended)", "Checker inside the CLI (doctor) (Recommended)", "Skill calls the CLI (Recommended)". The owner's original request is S1: "sería interesante crear un comando o mcp que instale en un proyecto toda la infrastructura necesaria para integrar el design system?" then "si" then "vamos con ello ya".
-- **Amendments:** `upgrade --add <list>` in §4 and §7.2, by owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"); the end-to-end test's skip flag in §10.5 (T8).
+- **Amendments:** `upgrade --add <list>` in §4 and §7.2, by owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"); the end-to-end test's skip flag in §10.5 (T8); consumer-request scaffolding by `init` (§6.7), amendment `odd/tasks/consumer-requests-flow.md` S12.
 - **Next step after approval:** a separate implementation plan (T3), approved separately, and then the implementation PRs. This document changes no code and creates no package.
 
 ## How to read this document
@@ -212,6 +212,7 @@ egdev-ds init apps/hub (npm, vite, native) from ../egdev-design-system/release a
   edit    src/styles.css  +@import "@egdev/tokens/tokens.css"
   create  egdev-ds.json  localRepo=nexo
   create  .mcp.json  mcpServers.egdev-design-system
+  create  CONTRIBUTING.md  consumer requests summary
   run     npm install
 Dry run: nothing written.
 ```
@@ -280,7 +281,7 @@ The state is one of:
 
 ## 6. `init` — exact file effects
 
-[I] `init` targets the `none` state. On `vendored@<commit>` equal to the release commit, it verifies the install and exits 0 without changes (idempotency). On any other state it exits 2: `upgrade` handles `vendored@<other>` and `mixed`, and `foreign` needs `--force` (Q8).
+[I] `init` targets the `none` state. On `vendored@<commit>` equal to the release commit, it verifies the install and exits 0 without changes when a marked consumer-request block exists (idempotency). If it is missing, `init` plans and writes the project block without reinstalling, unless an ancestor guide calls for a manual next step (§6.7; amendment `odd/tasks/consumer-requests-flow.md` S12). On any other state it exits 2: `upgrade` handles `vendored@<other>` and `mixed`, and `foreign` needs `--force` (Q8).
 
 ### 6.1 Vendor folder and file names
 
@@ -365,6 +366,21 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
   - Other servers in an existing file are kept.
   - An existing `egdev-design-system` entry with different args is a conflict (§9).
   - Nexo keeps `.mcp.json` at the **repository root**, with `apps/hub/node_modules/…` [E `nexo/.mcp.json`]. The CLI cannot locate a repository root without git. So it writes only `<project>/.mcp.json`, and `doctor` accepts the nearest ancestor `.mcp.json` whose args resolve (DS050) [I].
+- **`CONTRIBUTING.md`**, amendment `odd/tasks/consumer-requests-flow.md` S12: search from `<project>` through the nearest
+  ancestor holding a `.git` entry, inclusive, or only `<project>` without one. An ordered pair of markers in any guide
+  needs no action, even if a nearer guide lacks it. Otherwise, if the nearest guide is an ancestor, leave it untouched
+  and print `Add the consumer requests summary to <project-relative path>.` as a manual next step; as with other next
+  steps, it is text-only and not a JSON write action. This applies to an already-vendored project too.
+  A project guide that is a symlink, a hard link or not a regular file is never written and never refuses the run: with
+  the markers it needs no action; without them `init` prints `Add the consumer requests summary to CONTRIBUTING.md by
+  hand; it is a link or not a regular file.` (verification finding: refusing would turn an existing exit 0 into exit 2).
+  Otherwise create or append a short summary in the project between `<!-- egdev-ds:consumer-requests -->` and
+  `<!-- /egdev-ds:consumer-requests -->`. It links the [canonical flow](./consumer-requests.md), names the issue,
+  mitigation and separate maintainer upgrade, and warns against editing vendored tarballs, `egdev-ds.json` or
+  `@egdev/*` lockfile entries. Preserve existing bytes, adding only the line endings needed for at least one blank line;
+  keep existing extra blank lines and CRLF style. A marked block, including user edits, is untouched and has no plan
+  action. Creation or append appears as `create` or `edit` in text and JSON plans, respects dry runs and rolls back with
+  the other writes. `upgrade`, including `--add`, never touches this file.
 - **Install:**
   - Remove `node_modules/@egdev` inside `<project>` [E parity `assets/ds-vendor.mjs:245,356`].
   - Run `npm install` or `pnpm install --no-frozen-lockfile`, adding `--offline` when that flag is given. pnpm freezes the lockfile when `CI=true`; egdev-ds edits the manifests on purpose and verifies the lockfile itself, so it always lets pnpm update it (found by the AC19 end-to-end run in CI).
@@ -389,6 +405,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 | lockfile | via `npm install` | via `npm install` | via `pnpm install` | via `pnpm install` |
 | CSS entry | entry CSS imported by the `index.html` module | `src/app/globals.css` or `app/globals.css` | as npm + Vite | as npm + Next.js |
 | `egdev-ds.json`, `.mcp.json` | create/edit | create/edit | create/edit | create/edit |
+| `CONTRIBUTING.md` | project create/append or manual ancestor next step | same | same | same |
 | `src/theme/accent-host.ts` | only `--accent` | only `--accent` | only `--accent` | only `--accent` |
 
 ## 7. `upgrade` algorithm
@@ -402,6 +419,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
      - is copied to `<folder>/egdev-<pkg>-<version>-<commit7>.tgz`, where `<folder>` and the `file:` or `file:./` style come from the app's first vendored dependency (§6.1);
      - gets the `init` file effects for that package, through the same code: the `package.json` entry (`tokens`, `ui`, `effects` in `dependencies`; `system`, `mcp`, `cli` in `devDependencies`), the external peers it declares (exact `three` `0.160.0` for effects; an existing react range is kept), the npm `$` override or the pnpm pin (§6.3–§6.4), the CSS entry imports for `ui` and `effects` (§6.5), `scripts.ds:doctor` and `egdev-ds.json` when `cli` is added (its `localRepo` from `--local-repo` or the repository folder default, amendment `odd/tasks/egdev-ds-485-486.md` S2; an existing file keeps its value), and `.mcp.json` when `mcp` is added (§6.7);
      - has no changelog diff in step 6, because there is no installed version.
+   - Amendment `odd/tasks/consumer-requests-flow.md` S12: neither `upgrade` nor `upgrade --add` creates or edits `CONTRIBUTING.md`.
    - When the Vite entry module imports the design system CSS (Nexo), an added stylesheet is code, not an owned key: upgrade edits nothing there and prints `Import <file> in <module>.` among the next steps; `doctor` reports DS030 until it is added.
    - Owned keys with a different value (`three`, `scripts.ds:doctor`, the `.mcp.json` server) are conflicts (§9.7). They are listed, nothing is written, and the command exits 2: `upgrade` has no `--force`.
    - An `--add` package that is already declared adds nothing, so a repeated `upgrade --add` at the same commit prints `Already at …; no changes.` (§9.8). Dry run, rollback and the old-tarball rules are unchanged.
@@ -462,7 +480,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 
 1. **Never run `git`.** The CLI never spawns `git`, reads no `.git` data, and stages or commits nothing. Checking whether a `.git` entry exists, to name the repository folder (`localRepo`, §6.7) and bound the DS051 lookup, reads no data (S2). This also drops the merged-on-`origin/main` check that `ds-vendor.mjs` performs [E `assets/ds-vendor.mjs:175-181`] (Q2).
 2. **Only spawn the detected package manager**, with the documented arguments. No other process.
-3. **Stay inside `<project>`.** Every write target resolves inside `<project>`, with symlinks and multi-link files refused. Precedent: `packages/system/src/cli.mjs:26-47`. Reads outside `<project>` are limited to `--from`, ancestor `.mcp.json` files (read only), the existence of ancestor `.git` entries and ancestor `design/system.md` files up to the repository root (DS051, read only), and the CLI's own files.
+3. **Stay inside `<project>`.** Every write target resolves inside `<project>`, with symlinks and multi-link files refused. Precedent: `packages/system/src/cli.mjs:26-47`. Reads outside `<project>` are limited to `--from`, ancestor `.mcp.json` files (read only), the existence of ancestor `.git` entries and ancestor `design/system.md` files up to the repository root (DS051, read only), ancestor `CONTRIBUTING.md` files up to that root (S12, read only), and the CLI's own files.
 4. **Atomic writes.** Each file is written to a temporary file in the same folder and renamed into place, so a reader never sees a partial file. Precedent: `scripts/lib/pack-packages.mjs:53-60,83-84`.
 5. **Transaction and rollback.** Originals are snapshotted before the first write, and every failure restores them and removes the files the run copied (§7 step 9). Old tarballs are removed only after success.
 6. **Owned keys only.** The CLI owns exactly the keys listed in §6. It never deletes or rewrites anything else. JSON files are re-serialized with 2-space indent and a trailing newline [E parity `assets/ds-vendor.mjs:14`], with key order kept and new keys appended. YAML and CSS are edited as text.

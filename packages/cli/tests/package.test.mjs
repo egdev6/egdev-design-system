@@ -24,10 +24,10 @@ test('AC1 @egdev/cli ships bin egdev-ds, Node 24, no dependencies and a matching
   assert.equal(manifest.dependencies, undefined);
   assert.equal(manifest.devDependencies, undefined);
   assert.equal(manifest.scripts?.build, undefined, 'No build step: pnpm -r run build skips the package');
-  const top = read('../CHANGELOG.md')
+  const headings = read('../CHANGELOG.md')
     .split('\n')
-    .find((line) => /^##\s+\S/.test(line));
-  assert.equal(top, '## 0.1.1');
+    .filter((line) => /^##\s+\S/.test(line));
+  assert.deepEqual(headings.slice(0, 2), ['## Unreleased', '## 0.1.1']);
   const bin = read('../bin/egdev-ds.mjs');
   assert.ok(bin.startsWith('#!/usr/bin/env node\n'));
   assert.ok(statSync(new URL('../bin/egdev-ds.mjs', import.meta.url)).mode & 0o100, 'The bin is executable');

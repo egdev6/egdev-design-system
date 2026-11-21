@@ -13,6 +13,8 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 - S7 (proposal): **Upgrade owner.** The maintainer upgrades the consumer in a separate PR that also removes the resolved mitigations. External contributors never vendor.
 - S8 (proposal): **Extensibility.** The canonical rule lives in the DS (`docs/distribution/consumer-requests.md`); each consumer's CONTRIBUTING links it with a short summary; `egdev-ds init` can scaffold that summary.
 - S9 (proposal): **Guard placeholder fix.** `TODO(egdev-design-system#TBD-x)` is recorded today as `<localRepo>#TBD-x` (`packages/cli/src/guard.mjs:269-273`); a placeholder declared for the DS must stay attributed to the DS. Also document when `<localRepo>#N` applies versus a DS issue.
+- S11 (T2, approved): New GitHub issue form `.github/ISSUE_TEMPLATE/consumer_request.yml` ("Consumer request"), English, same style as `feature_request.yml`: pre-flight checks; consumer app; need described as the interface outcome, explicitly not a proposed solution; link to the consumer issue; optional current mitigation (allowlist entry / `TODO(egdev-design-system#N)` or `<localRepo>#TBD-*`); a note that the issue closes at the release that ships it, not at the PR merge. Links `docs/distribution/consumer-requests.md` and `docs/CATALOGACION.md`.
+- S12 (T6, owner choice verbatim): "Bloque marcado en CONTRIBUTING.md (Recomendado)" ("Crea CONTRIBUTING.md si no existe; si existe, añade al final un bloque entre marcadores <!-- egdev-ds:consumer-requests -->. Idempotente, aparece en el plan, respeta --dry-run. upgrade no lo toca.").
 - S10: Local trial loop, documented in the canonical doc: `pnpm release:pack` in the DS → `egdev-ds upgrade <project> --allow-dirty` (sibling checkout or `--from`) → test → restore the consumer's `vendor/`, `package.json` and lockfile with git and reinstall. Workspace or `link:` specifiers stay forbidden, with the reason. A local `release:pack` is not a release.
 
 ## Tasks
@@ -21,11 +23,11 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 | --- | --- | --- | --- |
 | T0 | S1–S10 | parent | done: issue #522, linked from #491 |
 | T1 | S3, S5, S7, S8, S10 | inline | done: docs/distribution/consumer-requests.md, CONTRIBUTING, README, README.es (this commit) |
-| T2 | S3 | inline | "Consumer request" issue template |
+| T2 | S3, S11 | worker | done: .github/ISSUE_TEMPLATE/consumer_request.yml (commit 1) |
 | T3 | S9 | inline | done: no code change; semantics documented in consumer-requests.md (af78929) |
 | T4 | S4 | inline | `#TBD-*` merge check (mechanism decided here) |
 | T5 | S6 | worker? | `release.json` resolves field + upgrade/doctor notice |
-| T6 | S8 | inline | `egdev-ds init` CONTRIBUTING snippet |
+| T6 | S8, S12 | worker | done: init writes the marked block (commit 2) |
 | T7 | S5 | parent | release-preparation skill: comment and close resolved issues (global skill, outside this repo) |
 | T8 | S8 | parent | Nexo CONTRIBUTING links the canonical rule (nexo repo) |
 
@@ -40,3 +42,9 @@ How a consumer app (Nexo today, every released app that uses the DS later) asks 
 - L7: T3 premise corrected. Mapping `TODO(egdev-design-system#TBD-x)` to `<localRepo>#TBD-x` is intentional, not a bug: pinned by AC18 tests (`packages/cli/tests/guard.test.mjs:126-145,147-157,179-192`), documented as `<localRepo>#TBD-*` in DS043 (`packages/cli/README.md:339`) and used by consumer allowlists. Changing it is a consumed-contract change. Agent recommendation: keep it and document the semantics (the pending action, filing the issue, belongs to the consumer); T1's doc does so. Owner decision pending.
 - L8: T1 done. Relative links in the new doc resolve; docs-only change, no runnable tests apply.
 - L9 (owner choice): "Mantener y documentar (Recomendado)" → S9 resolved: keep `<localRepo>#TBD-*` attribution; the canonical doc explains it. T3 closed without code changes.
+- L10: PR #523 merged as 3446b6e (T1, T3).
+- L11 (owner, verbatim): "si, gestion trabajo paralelo en hasta 3 subagentes" → T2 and T6 on branch feat/consumer-requests-template-init.
+- L12 (owner choices): S12; "Sí, 2 workers en paralelo" (T2 as its own worker).
+- L13: T2 done by worker: issue form parsed with PyYAML, 5 unique ids; consumer-requests.md links it.
+- L14: T6 first pass by worker (RED 12 fail → GREEN 124). Parent resolved a handoff contradiction: preserve every byte, add only the missing blank-line separation. Parent review found a monorepo gap (Nexo project apps/hub, CONTRIBUTING.md at repo root): following the `.mcp.json` precedent, init searches CONTRIBUTING.md from <project> up to the nearest `.git` ancestor; a marked file anywhere → nothing; nearest unmarked file in an ancestor → no write, next step names it; else create/append in <project>. Already-vendored projects get the same backfill. RED 4 fail → GREEN test:cli 131/131; typecheck green; biome formatted. Shared code: `FileWrite` JSDoc type widened to `string | Buffer` (type only; upgrade tests green); findRepoRoot and nextSteps reused unchanged.
+- L15: Independent verify (Risk: item 3) found one blocker: a symlinked or hard-linked project CONTRIBUTING.md made init exit 2 (base exit 0), even when it held the block. Fixed inline: a linked/irregular guide is never written and never refuses; with the markers nothing happens, otherwise a manual next step. RED 2 fail → GREEN test:cli 132/132; upgrade/doctor/status matched base in the verifier's differential check. README, egdev-ds-cli.md, CHANGELOG updated.

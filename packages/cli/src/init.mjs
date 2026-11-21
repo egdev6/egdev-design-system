@@ -2,7 +2,7 @@
 // edit, conflict refusal, and one transaction that copies, writes, installs and verifies.
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, rmSync, statSync } from 'node:fs';
-import { isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { assertSafeTarget, transact } from './apply.mjs';
 import { RefusedError } from './args.mjs';
 import { cssImports, designSystemImports, findCssEntry, insertCssImports } from './css.mjs';
@@ -13,6 +13,7 @@ import {
   detectInitCssMode,
   detectPackageManager,
   field,
+  findRepoRoot,
   PACKAGES,
   safeVendorFile,
   vendorState
@@ -47,6 +48,20 @@ export const VENDOR_DIRECTORY = 'vendor/egdev';
 export const MCP_FILE = '.mcp.json';
 export const MCP_SERVER = 'egdev-design-system';
 export const MCP_ENTRY = { command: 'node', args: ['node_modules/@egdev/mcp/dist/index.js'] };
+const CONTRIBUTING_FILE = 'CONTRIBUTING.md';
+const CONTRIBUTING_START = '<!-- egdev-ds:consumer-requests -->';
+const CONTRIBUTING_END = '<!-- /egdev-ds:consumer-requests -->';
+const CONTRIBUTING_BLOCK = [
+  CONTRIBUTING_START,
+  '## Design system changes',
+  '',
+  'Do not edit vendored tarballs, `egdev-ds.json` or `@egdev/*` lockfile entries.',
+  'Request design system changes with a "Consumer request" issue in `egdev6/egdev-design-system`.',
+  'Optional local mitigations use the guard allowlist tied to the DS issue; the maintainer upgrades the DS in a separate PR.',
+  'See https://github.com/egdev6/egdev-design-system/blob/main/docs/distribution/consumer-requests.md.',
+  CONTRIBUTING_END,
+  ''
+].join('\n');
 export const ACCENT_FILE = 'src/theme/accent-host.ts';
 export const ACCENT_HOST = `// Accent host scaffold from \`egdev-ds init --accent\` (docs/foundation/runtime-accent.md).
 // Wire it in by hand: call applyAccent with an element your app owns, never a DS component.
@@ -90,6 +105,15 @@ const isFile = (path) => {
 
 /** @param {string} path */
 const toPosix = (path) => path.split(sep).join('/');
+
+/**
+ * True when the ordered S12 marker pair is present.
+ * @param {string} text
+ */
+const hasContributingBlock = (text) => {
+  const start = text.indexOf(CONTRIBUTING_START);
+  return start !== -1 && text.indexOf(CONTRIBUTING_END, start + CONTRIBUTING_START.length) !== -1;
+};
 
 /**
  * The unique vendored files the lockfile must hold: every one for pnpm, the `package.json`
@@ -229,6 +253,79 @@ export function planConfig(project, manifest, localRepo) {
   return {
     action: { verb: 'create', path: CONFIG_FILE, detail: `localRepo=${created.localRepo}` },
     write: { path: CONFIG_FILE, content: `${JSON.stringify({ schemaVersion: 1, ...created }, null, 2)}\n` }
+  };
+}
+
+/**
+ * Plan the S12 consumer-request summary. Check each guide up to the nearest repository root for an
+ * existing block. An ancestor guide is read-only and becomes a next step; only the project guide is
+ * written, preserving its original bytes, extra blank lines and newline style.
+ * @param {string} project
+ * @returns {{ action: Action, write: FileWrite } | { nextStep: string } | null}
+ */
+function planContributing(project) {
+  const path = join(project, CONTRIBUTING_FILE);
+  try {
+    assertSafeTarget(project, CONTRIBUTING_FILE);
+  } catch (error) {
+    if (!(error instanceof RefusedError)) {
+      throw error;
+    }
+    // A linked or irregular guide is never written. Reading it only decides whether the block exists.
+    const linked = isFile(path) ? readText(path) : null;
+    if (linked !== null && hasContributingBlock(linked)) {
+      return null;
+    }
+    return {
+      nextStep: `  Add the consumer requests summary to ${CONTRIBUTING_FILE} by hand; it is a link or not a regular file.`
+    };
+  }
+  const original = existsSync(path) ? readFileSync(path) : null;
+  const text = original?.toString('utf8') ?? '';
+  const root = findRepoRoot(project) ?? project;
+  let nearest = original === null ? null : path;
+  for (let directory = project; ; directory = dirname(directory)) {
+    const candidate = join(directory, CONTRIBUTING_FILE);
+    let candidateText = directory === project && original !== null ? text : null;
+    if (directory !== project && isFile(candidate)) {
+      nearest ??= candidate;
+      candidateText = readText(candidate);
+    }
+    if (candidateText !== null && hasContributingBlock(candidateText)) {
+      return null;
+    }
+    if (directory === root || dirname(directory) === directory) {
+      break;
+    }
+  }
+  if (nearest !== null && nearest !== path) {
+    return { nextStep: `  Add the consumer requests summary to ${toPosix(relative(project, nearest))}.` };
+  }
+  const newline = text.includes('\r\n') ? '\r\n' : '\n';
+  let separator = '';
+  if (original && original.length > 0) {
+    if (!text.endsWith('\n')) {
+      separator = newline;
+    }
+    const completed = text + separator;
+    const previousNewline = completed.lastIndexOf('\n', completed.length - 2);
+    if (completed.slice(previousNewline + 1, -1).trim() !== '') {
+      separator += newline;
+    }
+  }
+  return {
+    action: {
+      verb: original === null ? 'create' : 'edit',
+      path: CONTRIBUTING_FILE,
+      detail: 'consumer requests summary'
+    },
+    write: {
+      path: CONTRIBUTING_FILE,
+      content: Buffer.concat([
+        original ?? Buffer.alloc(0),
+        Buffer.from(separator + CONTRIBUTING_BLOCK.replaceAll('\n', newline))
+      ])
+    }
   };
 }
 
@@ -419,7 +516,8 @@ export async function runInit({ argument, project, from, releaseDir, release, op
   };
   const install = installCommand(packageManager, options.offline);
 
-  // Idempotency (spec §6, §9.8): already vendored at the release commit → verify, change nothing.
+  // Already vendored at the release commit: verify first. S12 still scaffolds a missing summary;
+  // once the block exists this remains the original idempotent, no-install short circuit.
   if (vendoredAt && !state.foreign) {
     for (const item of expectedFiles(manifest, workspaceText, 'pnpm')) {
       let packed;
@@ -434,12 +532,46 @@ export async function runInit({ argument, project, from, releaseDir, release, op
       }
     }
     const count = options.noInstall ? null : verifyLock(project, packageManager);
+    const contribution = planContributing(project);
+    if (contribution && 'write' in contribution) {
+      const actions = [contribution.action];
+      if (!options.json) {
+        stdout(`${[formatHeader(header), ...actions.map(formatAction)].join('\n')}\n`);
+      }
+      if (options.dryRun) {
+        stdout(options.json ? formatPlanJson({ header, actions, result: 'planned' }) : 'Dry run: nothing written.\n');
+        return 0;
+      }
+      try {
+        await transact({ project, copies: [], writes: [contribution.write], watch: [], finish: () => count });
+      } catch (error) {
+        if (options.json) {
+          stdout(formatPlanJson({ header, actions, result: 'failed' }));
+        }
+        throw error;
+      }
+      if (options.json) {
+        stdout(formatPlanJson({ header, actions, result: 'applied' }));
+      } else {
+        const verified =
+          count === null ? 'integrities unverified (--no-install)' : `${count} vendored integrities verified`;
+        stdout(
+          [
+            `Initialized at ${short}; ${verified}.`,
+            ...nextSteps({ packageManager, install, noInstall: options.noInstall }),
+            ''
+          ].join('\n')
+        );
+      }
+      return 0;
+    }
     if (options.json) {
       stdout(formatPlanJson({ header, actions: [], result: 'current' }));
     } else {
       const verified =
         count === null ? 'integrities unverified (--no-install)' : `${count} vendored integrities verified`;
-      stdout(`${formatHeader(header)}\nAlready at ${short}; ${verified}; no changes.\n`);
+      const next = contribution && 'nextStep' in contribution ? `Next steps:\n${contribution.nextStep}\n` : '';
+      stdout(`${formatHeader(header)}\nAlready at ${short}; ${verified}; no changes.\n${next}`);
     }
     return 0;
   }
@@ -470,7 +602,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     throw new RefusedError('--accent needs the tokens package; add tokens to --packages.');
   }
 
-  // Plan (spec §6): copies, package.json, pnpm-workspace.yaml, CSS, config, MCP, accent, install.
+  // Plan (spec §6, S12): copies, package.json, workspace, CSS, config, MCP, contribution, accent, install.
   /** @type {Action[]} */
   const actions = [];
   /** @type {Conflict[]} */
@@ -547,6 +679,12 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     if (mcpPlan.write) {
       writes.push(mcpPlan.write);
     }
+  }
+
+  const contribution = planContributing(project);
+  if (contribution && 'write' in contribution) {
+    actions.push(contribution.action);
+    writes.push(contribution.write);
   }
 
   let accentCreated = false;
@@ -626,7 +764,10 @@ export async function runInit({ argument, project, from, releaseDir, release, op
         packageManager,
         install,
         noInstall: options.noInstall,
-        extra: accentCreated ? [`  Call applyAccent from ${ACCENT_FILE} on a host element your app owns.`] : []
+        extra: [
+          ...(contribution && 'nextStep' in contribution ? [contribution.nextStep] : []),
+          ...(accentCreated ? [`  Call applyAccent from ${ACCENT_FILE} on a host element your app owns.`] : [])
+        ]
       }),
       ''
     ].join('\n')
