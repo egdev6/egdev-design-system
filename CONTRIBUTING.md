@@ -10,6 +10,10 @@ Planned work follows ODD. The active roadmap index is issue [#491](https://githu
 - Start work only on an explicit request; assignment is added, read back and rechecked, and is not a lock.
 - Scope changes, commits, pushes, PRs, merges and releases need separate maintainer authorization.
 
+## Requests from consumer apps
+
+When a consumer app (Nexo, egdev-website or any other) needs a DS change, follow [consumer-requests.md](docs/distribution/consumer-requests.md): request issue, optional allowlisted mitigation, release-time closing and the consumer upgrade. It also explains how to try an unreleased DS change inside a consumer locally.
+
 ## Tests and releases
 
 - CI (`.github/workflows/build-and-test.yml`) runs two jobs: `Verify` (lint, prop naming, typecheck, build, `pnpm test`, `pnpm test:cli`, token contract, package exports and packed consumption) and `egdev-ds end to end` (`pnpm test:cli:consumer`, real npm + Vite and pnpm + Next.js installs).

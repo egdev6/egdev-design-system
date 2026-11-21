@@ -144,6 +144,7 @@ Agentes: [AGENTS.md](AGENTS.md) resume las reglas; los flujos detallados están 
 - [Guía de instalación](docs/distribution/install.md): `egdev-ds` y la alternativa manual (en inglés).
 - [Diseño de la CLI egdev-ds](docs/distribution/egdev-ds-cli.md): comandos, opciones, formato del plan y comprobaciones de doctor (en inglés).
 - [Versionado](docs/distribution/versioning.md): versiones, reglas de incremento, changelogs y `release.json` (en inglés).
+- [Peticiones de apps consumidoras](docs/distribution/consumer-requests.md): cómo una app consumidora pide cambios al DS, mitiga mientras tanto y prueba cambios sin publicar en local (en inglés).
 - [system.md](docs/distribution/system-md.md), [artefacto del sistema de diseño](docs/distribution/design-system-artifact.md) y [comprobación de artboards](docs/distribution/artboard-check.md) (en inglés).
 - [Roadmap #491](https://github.com/egdev6/egdev-design-system/issues/491).
 

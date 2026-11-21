@@ -144,6 +144,7 @@ Agents: [AGENTS.md](AGENTS.md) summarizes the rules; the detailed flows live in 
 - [Install guide](docs/distribution/install.md): `egdev-ds` and the manual fallback.
 - [egdev-ds CLI design](docs/distribution/egdev-ds-cli.md): commands, flags, plan format and doctor checks.
 - [Versioning](docs/distribution/versioning.md): versions, bump rules, changelogs and `release.json`.
+- [Consumer requests](docs/distribution/consumer-requests.md): how consumer apps request DS changes, mitigate meanwhile and try unreleased changes locally.
 - [system.md](docs/distribution/system-md.md), [design-system artifact](docs/distribution/design-system-artifact.md) and [artboard check](docs/distribution/artboard-check.md).
 - [Roadmap #491](https://github.com/egdev6/egdev-design-system/issues/491).
 
