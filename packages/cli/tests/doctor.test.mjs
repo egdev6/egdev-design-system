@@ -484,6 +484,183 @@ test('AC17 DS042 stale, malformed or unloadable allowlist; DS043 pending TBD pla
   });
 });
 
+// S13 keeps the ordinary doctor output byte-for-byte; only the pending DS043 severity changes.
+function pendingFixture(count = 1) {
+  const fixture = npm();
+  const entries = [];
+  for (let index = 1; index <= count; index++) {
+    const file = `src/Swatch${index}.tsx`;
+    const pattern = `<input type="color" data-swatch="${index}" />`;
+    write(join(fixture.project, file), `export const Swatch${index} = () => ${pattern};\n`);
+    entries.push({ file, pattern, issue: `nexo#TBD-color-${index}`, reason: 'Awaiting issue.' });
+  }
+  write(
+    join(fixture.project, 'src/design-system-allowlist.ts'),
+    `export const designSystemAllowlist = ${JSON.stringify(entries, null, 2)};\n`
+  );
+  return fixture;
+}
+
+const pendingMessage = (count) =>
+  count === 1
+    ? '1 allowlist entry uses nexo#TBD-* placeholders; replace it with a real issue.'
+    : `${count} allowlist entries use nexo#TBD-* placeholders; replace them with real issues.`;
+const pendingText = (severity, count = 1) =>
+  [
+    'egdev-ds doctor apps/hub (npm, vite, native)',
+    `DS014 skipped ${skipped}`,
+    `DS017 skipped ${skipped}`,
+    `DS043 ${severity} src/design-system-allowlist.ts: ${pendingMessage(count)}`,
+    'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
+    severity === 'error' ? '1 error, 0 warnings, 3 skipped.' : '0 errors, 1 warning, 3 skipped.',
+    ''
+  ].join('\n');
+const pendingJson = (severity, count = 1) =>
+  `${JSON.stringify(
+    {
+      schemaVersion: 1,
+      command: 'doctor',
+      project: 'apps/hub',
+      packageManager: 'npm',
+      framework: 'vite',
+      cssMode: 'native',
+      release: null,
+      actions: [],
+      findings: [
+        { code: 'DS014', severity: 'skipped', message: skipped },
+        { code: 'DS017', severity: 'skipped', message: skipped },
+        {
+          code: 'DS043',
+          severity,
+          message: pendingMessage(count),
+          file: 'src/design-system-allowlist.ts'
+        },
+        {
+          code: 'DS051',
+          severity: 'skipped',
+          message: 'Skipped: no design/system.md in the project or up to its repository root.'
+        }
+      ],
+      result: severity === 'error' ? 'failed' : 'current'
+    },
+    null,
+    2
+  )}\n`;
+
+test('S13 without the flag a pending placeholder retains exact text and JSON outputs and exit 0', () => {
+  const fixture = pendingFixture();
+  const before = treeHash(fixture.root);
+  assert.deepEqual(runBin(['doctor', 'apps/hub'], fixture.root), {
+    status: 0,
+    stdout: pendingText('warning'),
+    stderr: ''
+  });
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--json'], fixture.root), {
+    status: 0,
+    stdout: pendingJson('warning'),
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S13 --fail-on-pending makes a pending DS043 an error in text and exits 1', () => {
+  const fixture = pendingFixture();
+  const before = treeHash(fixture.root);
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending'], fixture.root), {
+    status: 1,
+    stdout: pendingText('error'),
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S13 --fail-on-pending exposes the effective DS043 error and failed result in JSON', () => {
+  const fixture = pendingFixture();
+  const before = treeHash(fixture.root);
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending', '--json'], fixture.root), {
+    status: 1,
+    stdout: pendingJson('error'),
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S13 --fail-on-pending preserves the plural message for multiple placeholders', () => {
+  const fixture = pendingFixture(2);
+  const before = treeHash(fixture.root);
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending'], fixture.root), {
+    status: 1,
+    stdout: pendingText('error', 2),
+    stderr: ''
+  });
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending', '--json'], fixture.root), {
+    status: 1,
+    stdout: pendingJson('error', 2),
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S13 --fail-on-pending with no pending placeholders leaves text and JSON unchanged', () => {
+  const fixture = npm();
+  const before = treeHash(fixture.root);
+  for (const extra of [[], ['--json']]) {
+    const baseline = runBin(['doctor', 'apps/hub', ...extra], fixture.root);
+    assert.equal(baseline.status, 0);
+    assert.equal(baseline.stderr, '');
+    assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending', ...extra], fixture.root), baseline);
+  }
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S13 --fail-on-pending leaves unavailable guard checks and their errors unchanged', () => {
+  const fixture = npm();
+  rmSync(join(fixture.project, 'node_modules/postcss'));
+  const before = treeHash(fixture.root);
+  for (const extra of [[], ['--json']]) {
+    const baseline = runBin(['doctor', 'apps/hub', ...extra], fixture.root);
+    assert.equal(baseline.status, 1);
+    assert.equal(baseline.stderr, '');
+    assert.ok(baseline.stdout.includes('Cannot resolve postcss from the project; add it as a devDependency.'));
+    assert.ok(!baseline.stdout.includes('DS043'));
+    assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending', ...extra], fixture.root), baseline);
+  }
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S13 --fail-on-pending changes only DS043 when other errors and warnings exist', () => {
+  const fixture = pendingFixture();
+  rmSync(join(fixture.root, '.mcp.json'));
+  write(join(fixture.project, 'src/Raw.tsx'), 'export const Raw = () => <button type="button">Go</button>;\n');
+  const before = treeHash(fixture.root);
+  const baseline = runBin(['doctor', 'apps/hub'], fixture.root);
+  assert.equal(baseline.status, 1);
+  assert.equal(baseline.stderr, '');
+  assert.ok(baseline.stdout.includes('DS040 error src/Raw.tsx:1:'));
+  assert.ok(baseline.stdout.includes('DS050 warning '));
+  assert.ok(baseline.stdout.endsWith('1 error, 2 warnings, 3 skipped.\n'));
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending'], fixture.root), {
+    status: 1,
+    stdout: baseline.stdout
+      .replace('DS043 warning ', 'DS043 error ')
+      .replace('1 error, 2 warnings, 3 skipped.\n', '2 errors, 1 warning, 3 skipped.\n'),
+    stderr: ''
+  });
+  const jsonBaseline = runBin(['doctor', 'apps/hub', '--json'], fixture.root);
+  assert.equal(jsonBaseline.status, 1);
+  assert.equal(jsonBaseline.stderr, '');
+  const expected = JSON.parse(jsonBaseline.stdout);
+  const pending = expected.findings.find((finding) => finding.code === 'DS043');
+  assert.equal(pending.severity, 'warning');
+  pending.severity = 'error';
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--fail-on-pending', '--json'], fixture.root), {
+    status: 1,
+    stdout: `${JSON.stringify(expected, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), before);
+});
+
 test('AC17 DS044 guard engine missing from the consumer (Q4)', async () => {
   const fixture = npm();
   rmSync(join(fixture.project, 'node_modules/postcss'));

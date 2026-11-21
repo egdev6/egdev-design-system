@@ -96,7 +96,7 @@ export async function run(args, { cwd, stdout, stderr, runner = spawnRunner }) {
       stdout((options.json ? formatStatusJson : formatStatusText)({ project, report, release: summary }));
       return 0;
     }
-    const report = await runDoctor({ project: resolve(cwd, project), release });
+    const report = await runDoctor({ project: resolve(cwd, project), release, failOnPending: options.failOnPending });
     stdout(
       options.json ? formatDoctorJson({ project, report, release: summary }) : formatDoctorText({ project, report })
     );
