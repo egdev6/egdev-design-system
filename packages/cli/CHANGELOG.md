@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0
 
 - `egdev-ds upgrade` reports allowlisted mitigations resolved by a release as next steps; `doctor --from`
   reports DS052 warnings only at the release commit. Both consider used packages and list their resolving
