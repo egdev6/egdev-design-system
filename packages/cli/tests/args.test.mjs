@@ -129,7 +129,7 @@ test('AC2 bin: --help and --version print on stdout and exit 0', () => {
   const help = runBin(['--help'], cwd);
   assert.deepEqual(help, { status: 0, stdout: USAGE, stderr: '' });
   assert.match(USAGE, /^Usage:\n {2}egdev-ds init {4}<project> \[--from <dir>\]/);
-  assert.match(USAGE, /\n {2}egdev-ds doctor {2}<project> \[--from <dir>\] \[--json\]\n/);
+  assert.match(USAGE, /\n {2}egdev-ds doctor {2}<project> \[--from <dir>\] \[--fail-on-pending\] \[--json\]\n/);
   assert.deepEqual(runBin(['--version'], cwd), { status: 0, stdout: '0.1.1\n', stderr: '' });
 });
 
@@ -146,6 +146,62 @@ test('AC2 bin: misuse exits 2 with one error line plus usage on stderr, empty st
   ]) {
     assert.deepEqual(runBin(args, cwd), { status: 2, stdout: '', stderr: `${message}\n${USAGE_LINE}\n` });
   }
+  assert.equal(treeHash(cwd), before);
+});
+
+test('S13 bin: --fail-on-pending is rejected for other commands and duplicates, without writes', () => {
+  const cwd = temporary();
+  writeFileSync(join(cwd, 'package.json'), '{}\n');
+  const before = treeHash(cwd);
+  for (const command of ['init', 'upgrade', 'status']) {
+    assert.deepEqual(runBin([command, '.', '--fail-on-pending'], cwd), {
+      status: 2,
+      stdout: '',
+      stderr: `Unknown argument for ${command}: --fail-on-pending\n${USAGE_LINE}\n`
+    });
+    assert.equal(treeHash(cwd), before);
+  }
+  assert.deepEqual(runBin(['doctor', '.', '--fail-on-pending', '--fail-on-pending'], cwd), {
+    status: 2,
+    stdout: '',
+    stderr: `Duplicate argument: --fail-on-pending\n${USAGE_LINE}\n`
+  });
+  assert.equal(treeHash(cwd), before);
+});
+
+test('S13 shared parser preserves init --dry-run with --from', () => {
+  const cwd = temporary();
+  writeFileSync(join(cwd, 'package.json'), '{}\n');
+  const before = treeHash(cwd);
+  assert.deepEqual(runBin(['init', '.', '--dry-run', '--from', 'missing-release'], cwd), {
+    status: 2,
+    stdout: '',
+    stderr: 'No release folder: missing-release not found.\n'
+  });
+  assert.equal(treeHash(cwd), before);
+});
+
+test('S13 shared parser preserves upgrade --add with --from', () => {
+  const cwd = temporary();
+  writeFileSync(join(cwd, 'package.json'), '{}\n');
+  const before = treeHash(cwd);
+  assert.deepEqual(runBin(['upgrade', '.', '--add', 'cli', '--from', 'missing-release'], cwd), {
+    status: 2,
+    stdout: '',
+    stderr: 'No release folder: missing-release not found.\n'
+  });
+  assert.equal(treeHash(cwd), before);
+});
+
+test('S13 shared parser preserves the existing status --dry-run rejection', () => {
+  const cwd = temporary();
+  writeFileSync(join(cwd, 'package.json'), '{}\n');
+  const before = treeHash(cwd);
+  assert.deepEqual(runBin(['status', '.', '--dry-run'], cwd), {
+    status: 2,
+    stdout: '',
+    stderr: `Unknown argument for status: --dry-run\n${USAGE_LINE}\n`
+  });
   assert.equal(treeHash(cwd), before);
 });
 

@@ -315,11 +315,11 @@ async function loadAllowlist(project, file) {
 
 /**
  * Runs every doctor check against `project` (an absolute path). `release` is the verified
- * `--from` release, or null when no `--from` was passed.
- * @param {{ project: string, release: Release | null }} input
+ * `--from` release, or null when no `--from` was passed. `failOnPending` affects DS043 only.
+ * @param {{ project: string, release: Release | null, failOnPending?: boolean }} input
  * @returns {Promise<DoctorReport>}
  */
-export async function runDoctor({ project, release }) {
+export async function runDoctor({ project, release, failOnPending = false }) {
   /** @type {Finding[]} */
   const findings = [];
   const seen = new Set();
@@ -713,7 +713,7 @@ export async function runDoctor({ project, release }) {
         const placeholder = `${config.localRepo}#TBD-*`;
         add(
           'DS043',
-          'warning',
+          failOnPending ? 'error' : 'warning',
           pending === 1
             ? `1 allowlist entry uses ${placeholder} placeholders; replace it with a real issue.`
             : `${pending} allowlist entries use ${placeholder} placeholders; replace them with real issues.`,

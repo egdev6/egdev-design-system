@@ -13,7 +13,7 @@ From a design system checkout:
 ```text
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs init <project> [--from <dir>] [--dry-run]
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs upgrade <project> [--from <dir>] [--add <list>] [--dry-run]
-node <ds-repo>/packages/cli/bin/egdev-ds.mjs doctor <project> [--from <dir>] [--json]
+node <ds-repo>/packages/cli/bin/egdev-ds.mjs doctor <project> [--from <dir>] [--fail-on-pending] [--json]
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs status <project> [--from <dir>] [--json]
 ```
 
@@ -31,7 +31,7 @@ egdev-ds init    <project> [--from <dir>] [--packages <list>] [--css tailwind|na
                            [--dry-run] [--json]
 egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--local-repo <name>] [--no-install] [--offline]
                            [--allow-dirty] [--dry-run] [--json]
-egdev-ds doctor  <project> [--from <dir>] [--json]
+egdev-ds doctor  <project> [--from <dir>] [--fail-on-pending] [--json]
 egdev-ds status  <project> [--from <dir>] [--json]
 egdev-ds --help | --version
 ```
@@ -290,12 +290,16 @@ Release check skipped: pass --from <dir>.
 | Code | Meaning |
 | --- | --- |
 | 0 | Success, or already current. `doctor` found no error; warnings and skipped checks do not fail. `status` read a consistent vendored set. |
-| 1 | `doctor` found at least one error; the release folder is unreadable, inconsistent or lacks a selected package; `init` or `upgrade` failed and was rolled back; or an old tarball could not be removed after a successful upgrade. |
+| 1 | `doctor` found at least one error (including pending DS043 with `--fail-on-pending`); the release folder is unreadable, inconsistent or lacks a selected package; `init` or `upgrade` failed and was rolled back; or an old tarball could not be removed after a successful upgrade. |
 | 2 | Misuse (unknown, duplicate or missing-value flag, missing `<project>`), a missing release folder, an ambiguous detection, conflicts without `--force`, or a refused precondition. Nothing is written. |
 
 Results go to stdout. Errors go to stderr, one line each; misuse adds the usage line.
 
 ## Doctor output
+
+| Flag | Effect |
+| --- | --- |
+| `--fail-on-pending` | Reports pending DS043 placeholders as errors (exit 1) instead of warnings. Other findings are unchanged. Intended for the consumer CI merge check; the local `ds:doctor` script remains warning-only for placeholders. |
 
 ```text
 egdev-ds doctor apps/hub (npm, vite, native)
@@ -348,7 +352,7 @@ Codes are stable: a code is never reused for another check.
 | DS040 | error | Guard: raw `<button`, `<input`, `<a`, `<label` in non-test `.tsx` under `sourceDirectory`, unless a sole `asChild` child or allowlisted. |
 | DS041 | error | Guard: `.eg-*` or `[role=tab]` selectors in CSS outside `themeDirectory`, or CSS that does not parse. |
 | DS042 | error | Guard allowlist: invalid issue, empty reason, TODO mismatch, stale entry, or a file that does not load. |
-| DS043 | warning | Guard: `<localRepo>#TBD-*` placeholders pending. |
+| DS043 | warning (error with `--fail-on-pending`) | Guard: `<localRepo>#TBD-*` placeholders pending. |
 | DS044 | error | `typescript` or `postcss` is not resolvable from the project; the guard needs both. |
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `egdev-ds doctor <project> --fail-on-pending` reports pending DS043 placeholders as errors for consumer CI, with
+  the same message and exit 1. Without the flag they remain warnings; the local `ds:doctor` script is unchanged.
+
 - `egdev-ds init` checks `CONTRIBUTING.md` up to the repository root for a marked consumer-requests summary. It writes
   only in the project: an unmarked ancestor guide becomes a manual next step. Project writes appear in the plan, preserve
   existing bytes and user edits, respect dry runs and rollback, and are never changed by `upgrade`. A linked or

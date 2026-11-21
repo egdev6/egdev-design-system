@@ -3,7 +3,7 @@
 - **Status:** Approved — 2026-11-18 by the owner, with every recommended option (a) in §14 (verbatim answer: "si"; [#477](https://github.com/egdev6/egdev-design-system/issues/477); `odd/tasks/egdev-ds-cli.md` L5). The implementation plan needs separate approval.
 - **Package:** `@egdev/cli`, the sixth package in the release set. It ships the `egdev-ds` binary.
 - **Approved inputs:** the owner decisions recorded verbatim in `odd/tasks/egdev-ds-cli.md` S3 (L3): "New @egdev/cli package (Recommended)", "--from, default sibling DS release/ (Recommended)", "Checker inside the CLI (doctor) (Recommended)", "Skill calls the CLI (Recommended)". The owner's original request is S1: "sería interesante crear un comando o mcp que instale en un proyecto toda la infrastructura necesaria para integrar el design system?" then "si" then "vamos con ello ya".
-- **Amendments:** `upgrade --add <list>` in §4 and §7.2, by owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"); the end-to-end test's skip flag in §10.5 (T8); consumer-request scaffolding by `init` (§6.7), amendment `odd/tasks/consumer-requests-flow.md` S12.
+- **Amendments:** `upgrade --add <list>` in §4 and §7.2, by owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"); the end-to-end test's skip flag in §10.5 (T8); consumer-request scaffolding by `init` (§6.7), amendment `odd/tasks/consumer-requests-flow.md` S12; `doctor --fail-on-pending` (§4 and §8), amendment `odd/tasks/consumer-requests-flow.md` S13.
 - **Next step after approval:** a separate implementation plan (T3), approved separately, and then the implementation PRs. This document changes no code and creates no package.
 
 ## How to read this document
@@ -139,7 +139,7 @@ egdev-ds init    <project> [--from <dir>] [--packages <list>] [--css tailwind|na
                            [--dry-run] [--json]
 egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--local-repo <name>] [--no-install] [--offline]
                            [--allow-dirty] [--dry-run] [--json]
-egdev-ds doctor  <project> [--from <dir>] [--json]
+egdev-ds doctor  <project> [--from <dir>] [--fail-on-pending] [--json]
 egdev-ds status  <project> [--from <dir>] [--json]
 egdev-ds --help | --version
 ```
@@ -174,6 +174,7 @@ All entries are [I] except where cited. Flag names follow existing habits: `--dr
 | `--allow-dirty` | init, upgrade | Accepts a release packed from a dirty tree (Q2). |
 | `--force` | init | Replaces conflicting values only in the keys the CLI owns (§9, Q8). It never deletes user content. |
 | `--dry-run` | init, upgrade | Prints the plan and writes nothing, including `node_modules` [E S2]. |
+| `--fail-on-pending` | doctor | Amendment `odd/tasks/consumer-requests-flow.md` S13: pending DS043 placeholders become errors (exit 1), with the same message. Other findings and the default behavior are unchanged; `--json` reports the effective severity and result. Consumer CI runs this flag; the local `ds:doctor` script stays warning-only for placeholders. |
 | `--json` | all | Prints one JSON document on stdout instead of text (justified below). |
 
 There is no `--packages` on `upgrade`. The set is replaced as one unit, and only for packages the app already declares (§7), plus the packages `--add` names explicitly (L11). `ds-vendor.mjs` allows a partial selection [E skill `assets/ds-vendor.test.mjs:169`]. That conflicts with S4 ("replace the set as one unit"), so this is a deliberate parity break (§12).
@@ -391,6 +392,9 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
   - regenerate `design/system.md` with `egdev-system-md --write`;
   - add `pnpm ds:doctor` (or `npm run ds:doctor`) to CI.
 
+  The printed local script stays unchanged. The consumer-request merge check additionally runs
+  `egdev-ds doctor <project> --fail-on-pending` in CI (amendment `odd/tasks/consumer-requests-flow.md` S13).
+
   Wording parity: `assets/ds-vendor.mjs:12` [E].
 
 ### 6.8 Summary matrix
@@ -464,7 +468,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 | DS040 | error | Guard: raw `<button`, `<input`, `<a`, `<label` in non-test `.tsx` under `sourceDirectory`, except a sole `asChild` child or an allowlisted entry | [E skill `references/freno.md:7`; guard asset] |
 | DS041 | error | Guard: `.eg-*` or `[role=tab]` selectors in CSS outside `themeDirectory` | [E skill `references/freno.md:8`] |
 | DS042 | error | Guard allowlist: invalid issue, empty reason, TODO mismatch, stale entry. The entry shape doctor accepts (`file`, `pattern`, `issue`, `reason` strings; optional `kind: 'component-gap'` and `comment` string) is the published `GuardAllowlistEntry` type (§2 Types; amendment S6, #488), pinned by a drift test | [E skill `references/freno.md:9-11`; `assets/guard/design-system-guard.ts:163-174,192-194`] |
-| DS043 | warning | Guard: `<localRepo>#TBD-*` placeholders pending | [E `assets/guard/design-system-guard.ts:195`; `nexo/apps/hub/src/design-system-guard.test.ts:32-35`] |
+| DS043 | warning (error with `--fail-on-pending`) | Guard: `<localRepo>#TBD-*` placeholders pending; the message is unchanged | [E `assets/guard/design-system-guard.ts:195`; `nexo/apps/hub/src/design-system-guard.test.ts:32-35`; amendment `odd/tasks/consumer-requests-flow.md` S13] |
 | DS044 | error | Guard engine unavailable: `typescript` or `postcss` not resolvable from `<project>` (Q4) | [E the guard imports both: `assets/guard/design-system-guard.ts:1-2`] |
 | DS045 | error | `egdev-ds.json` missing or invalid | [I, Q6] |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in `<project>` or an ancestor has an `egdev-design-system` server whose script path exists | [E `egdev-website/.mcp.json`; `nexo/.mcp.json`] |

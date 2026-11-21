@@ -20,6 +20,7 @@ import { REPO_NAME } from './detect.mjs';
  *   allowDirty: boolean,
  *   force: boolean,
  *   dryRun: boolean,
+ *   failOnPending?: boolean,
  *   json: boolean
  * }} Options
  */
@@ -36,7 +37,7 @@ export const USAGE = `Usage:
                              [--dry-run] [--json]
   egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--local-repo <name>] [--no-install] [--offline]
                              [--allow-dirty] [--dry-run] [--json]
-  egdev-ds doctor  <project> [--from <dir>] [--json]
+  egdev-ds doctor  <project> [--from <dir>] [--fail-on-pending] [--json]
   egdev-ds status  <project> [--from <dir>] [--json]
   egdev-ds --help | --version
 `;
@@ -81,13 +82,13 @@ const VALUE_FLAGS = {
 const BOOLEAN_FLAGS = {
   init: ['--accent', '--no-install', '--offline', '--allow-dirty', '--force', '--dry-run', '--json'],
   upgrade: ['--no-install', '--offline', '--allow-dirty', '--dry-run', '--json'],
-  doctor: ['--json'],
+  doctor: ['--fail-on-pending', '--json'],
   status: ['--json']
 };
 
 const KNOWN_FLAGS = new Set([...Object.values(VALUE_FLAGS).flat(), ...Object.values(BOOLEAN_FLAGS).flat()]);
 
-/** @type {Record<string, 'accent' | 'noInstall' | 'offline' | 'allowDirty' | 'force' | 'dryRun' | 'json'>} */
+/** @type {Record<string, 'accent' | 'noInstall' | 'offline' | 'allowDirty' | 'force' | 'dryRun' | 'failOnPending' | 'json'>} */
 const BOOLEAN_KEYS = {
   '--accent': 'accent',
   '--no-install': 'noInstall',
@@ -95,6 +96,7 @@ const BOOLEAN_KEYS = {
   '--allow-dirty': 'allowDirty',
   '--force': 'force',
   '--dry-run': 'dryRun',
+  '--fail-on-pending': 'failOnPending',
   '--json': 'json'
 };
 
