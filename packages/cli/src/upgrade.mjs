@@ -21,7 +21,7 @@ import {
   vendorState,
   workspaceOverrides
 } from './detect.mjs';
-import { findInstalled } from './doctor.mjs';
+import { ALLOWLIST_FILE, findInstalled, loadAllowlist, readConfig, resolvedMitigations } from './doctor.mjs';
 import {
   installCommand,
   localRepoNote,
@@ -652,6 +652,29 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
   if (options.json) {
     stdout(formatPlanJson({ header, actions, result: 'applied', changelog }));
   } else {
+    // Existing next steps appear only after a real, successful text run, never in JSON or dry runs.
+    // A missing or unloadable allowlist must not turn an otherwise successful upgrade into a failure.
+    if (failures.length === 0 && release.resolves.length > 0) {
+      try {
+        const { config } = readConfig(project, manifest);
+        const loaded = await loadAllowlist(project, `${config.sourceDirectory}/${ALLOWLIST_FILE}`);
+        if ('allowlist' in loaded) {
+          for (const { entry, resolution, line } of resolvedMitigations({
+            project,
+            config,
+            allowlist: loaded.allowlist,
+            resolves: release.resolves
+          })) {
+            const location = `${entry.file}${line ? `:${line}` : ''}`;
+            extraSteps.push(
+              `  Remove the mitigation for ${entry.issue} in ${location} (resolved in ${resolution.package} ${resolution.version}).`
+            );
+          }
+        }
+      } catch {
+        // The release was already installed; the optional notice cannot fail the upgrade.
+      }
+    }
     const verified =
       count === null ? 'integrities unverified (--no-install)' : `${count} vendored integrities verified`;
     stdout(

@@ -5,9 +5,7 @@ canonical rule for **every** app that consumes the DS (Nexo, egdev-website and a
 Each consumer's CONTRIBUTING links here instead of restating it; `egdev-ds init` adds that summary
 as a marked block (see the [CLI reference](../../packages/cli/README.md)).
 
-Planning issue: [#522](https://github.com/egdev6/egdev-design-system/issues/522). Steps marked
-**planned** are not implemented yet; until they are, the manual fallback stated next to them
-applies.
+Tracking issue: [#522](https://github.com/egdev6/egdev-design-system/issues/522).
 
 ## The flow at a glance
 
@@ -71,9 +69,9 @@ The local `ds:doctor` script stays warning-only for placeholders, so drafts may 
 
 ## 3. Implement in the DS
 
-The change follows the usual DS workflow ([CONTRIBUTING.md](../../CONTRIBUTING.md), ODD when it is
-planned work). The PR references the issue **without closing it**: use `Refs #123`, not
-`Closes #123`. A merged change is not available to consumers until a release ships it.
+The change follows the usual DS workflow ([CONTRIBUTING.md](../../CONTRIBUTING.md), ODD when
+applicable). The PR references the issue **without closing it**: use `Refs #123`, not `Closes #123`.
+A merged change is not available to consumers until a release ships it.
 
 ## 4. Release and notify
 
@@ -82,15 +80,22 @@ each consumer-request issue it resolves and then closes it:
 
 > Available in `@egdev/ui` 0.7.0 (DS commit `abc1234`). Consumers can upgrade with `egdev-ds upgrade`.
 
-**Planned:** `release.json` lists the issues a release resolves, and `egdev-ds upgrade` and
-`doctor` print which `TODO(egdev-design-system#N)` mitigations in the consumer can be removed.
-Until then the release comment is the notice.
+Each consumer-request changelog entry must cite the DS issue as `(#N)` (see
+[versioning.md](./versioning.md#changelog-format)). `release:pack` reads all versioned sections
+of the packed changelogs, excluding `Unreleased`, and records resolved issues in `release.json`
+with the package and first version that shipped them. After a successful text upgrade,
+`egdev-ds upgrade` matches those issues to the guard allowlist and prints a removal next step for
+each match, including the source line when available. `doctor --from <release>` reports the same
+matches as DS052 warnings. The notices work offline; neither command runs git or removes mitigations.
+Older release records without `resolves` contain no machine notices; use the release comment.
 
 ## 5. Upgrade the consumer
 
 The consumer's maintainer upgrades the vendored set in a separate PR
 ([install.md](./install.md), [egdev-ds](./egdev-ds-cli.md)) and removes the mitigations resolved
-by that release in the same PR. External contributors never vendor tarballs.
+by that release in the same PR, including their TODO comments and allowlist entries. The upgrade
+notices are text-only next steps, not part of `--json` or `--dry-run` output. External contributors
+never vendor tarballs.
 
 ## Try a DS change in a consumer locally
 

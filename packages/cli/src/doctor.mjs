@@ -30,6 +30,7 @@ import { satisfies } from './semver.mjs';
 import { flattenMessage } from './text.mjs';
 
 /** @typedef {import('./release.mjs').Release} Release */
+/** @typedef {import('./release.mjs').ResolvedIssue} ResolvedIssue */
 /** @typedef {import('./guard.mjs').GuardAllowlistEntry} GuardAllowlistEntry */
 /** @typedef {import('./guard.mjs').GuardSource} GuardSource */
 /** @typedef {import('./guard.mjs').GuardEngine} GuardEngine */
@@ -263,7 +264,7 @@ function readSources(project, config) {
  * @param {string} file
  * @returns {Promise<{ allowlist: GuardAllowlistEntry[] } | { problem: string }>}
  */
-async function loadAllowlist(project, file) {
+export async function loadAllowlist(project, file) {
   const path = join(project, file);
   const text = readText(path);
   if (text === null) {
@@ -311,6 +312,45 @@ async function loadAllowlist(project, file) {
     });
   }
   return { allowlist };
+}
+
+/**
+ * Match DS issues in the guard allowlist to release metadata. Reuse the guard's source walk to
+ * locate a TODO or pattern when possible; unresolved or unsafe paths still produce a file notice.
+ * @param {{ project: string, config: DoctorConfig, allowlist: GuardAllowlistEntry[], resolves: ResolvedIssue[] }} input
+ * @returns {{ entry: GuardAllowlistEntry, resolution: ResolvedIssue, line?: number }[]}
+ */
+export function resolvedMitigations({ project, config, allowlist, resolves }) {
+  const matches = allowlist.flatMap((entry) => {
+    const reference = entry.issue.match(/^egdev6\/egdev-design-system#(\d+)$/);
+    const issue = reference ? Number(reference[1]) : 0;
+    return issue > 0
+      ? resolves.filter((resolution) => resolution.issue === issue).map((resolution) => ({ entry, resolution }))
+      : [];
+  });
+  if (matches.length === 0) {
+    return [];
+  }
+  /** @type {GuardSource[]} */
+  let sources = [];
+  try {
+    // A symlinked source root must not make upgrade read outside the consumer project.
+    const projectRoot = realpathSync(project);
+    const sourceRoot = realpathSync(join(project, config.sourceDirectory));
+    const within = relative(projectRoot, sourceRoot);
+    if (!within.startsWith('..') && !isAbsolute(within)) {
+      sources = readSources(project, config);
+    }
+  } catch {
+    // The entry still identifies the file even when its source cannot be read.
+  }
+  return matches.map(({ entry, resolution }) => {
+    const source = sources.find((item) => item.file === entry.file);
+    const anchor = entry.comment ?? entry.pattern;
+    const offset = anchor ? (source?.content.indexOf(anchor) ?? -1) : -1;
+    const line = source && offset >= 0 ? source.content.slice(0, offset).split('\n').length : undefined;
+    return { entry, resolution, ...(line === undefined ? {} : { line }) };
+  });
 }
 
 /**
@@ -657,11 +697,14 @@ export async function runDoctor({ project, release, failOnPending = false }) {
   for (const name of missingEngines) {
     add('DS044', 'error', `Cannot resolve ${name} from the project; add it as a devDependency.`);
   }
-  if (missingEngines.length === 0) {
+  const allowlistFile = `${config.sourceDirectory}/${ALLOWLIST_FILE}`;
+  const loaded =
+    missingEngines.length === 0 || (release && release.resolves.length > 0)
+      ? await loadAllowlist(project, allowlistFile)
+      : null;
+  if (missingEngines.length === 0 && loaded) {
     /** @type {GuardEngine} */
     const engine = { ts: require('typescript'), postcss: require('postcss') };
-    const allowlistFile = `${config.sourceDirectory}/${ALLOWLIST_FILE}`;
-    const loaded = await loadAllowlist(project, allowlistFile);
     if ('problem' in loaded) {
       add('DS042', 'error', loaded.problem, allowlistFile);
     } else {
@@ -718,6 +761,30 @@ export async function runDoctor({ project, release, failOnPending = false }) {
             ? `1 allowlist entry uses ${placeholder} placeholders; replace it with a real issue.`
             : `${pending} allowlist entries use ${placeholder} placeholders; replace them with real issues.`,
           allowlistFile
+        );
+      }
+    }
+  }
+
+  // DS052: release-dependent notices do not change DS043 or --fail-on-pending.
+  if (!release) {
+    add('DS052', 'skipped', RELEASE_SKIPPED);
+  } else if (release.resolves.length > 0 && loaded) {
+    if ('problem' in loaded) {
+      add('DS052', 'skipped', 'Skipped: cannot load the allowlist.', allowlistFile);
+    } else {
+      for (const { entry, resolution, line } of resolvedMitigations({
+        project,
+        config,
+        allowlist: loaded.allowlist,
+        resolves: release.resolves
+      })) {
+        add(
+          'DS052',
+          'warning',
+          `Remove the mitigation for ${entry.issue} (resolved in ${resolution.package} ${resolution.version}).`,
+          entry.file,
+          line
         );
       }
     }

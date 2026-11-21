@@ -3,7 +3,7 @@
 - **Status:** Approved — 2026-11-18 by the owner, with every recommended option (a) in §14 (verbatim answer: "si"; [#477](https://github.com/egdev6/egdev-design-system/issues/477); `odd/tasks/egdev-ds-cli.md` L5). The implementation plan needs separate approval.
 - **Package:** `@egdev/cli`, the sixth package in the release set. It ships the `egdev-ds` binary.
 - **Approved inputs:** the owner decisions recorded verbatim in `odd/tasks/egdev-ds-cli.md` S3 (L3): "New @egdev/cli package (Recommended)", "--from, default sibling DS release/ (Recommended)", "Checker inside the CLI (doctor) (Recommended)", "Skill calls the CLI (Recommended)". The owner's original request is S1: "sería interesante crear un comando o mcp que instale en un proyecto toda la infrastructura necesaria para integrar el design system?" then "si" then "vamos con ello ya".
-- **Amendments:** `upgrade --add <list>` in §4 and §7.2, by owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"); the end-to-end test's skip flag in §10.5 (T8); consumer-request scaffolding by `init` (§6.7), amendment `odd/tasks/consumer-requests-flow.md` S12; `doctor --fail-on-pending` (§4 and §8), amendment `odd/tasks/consumer-requests-flow.md` S13.
+- **Amendments:** `upgrade --add <list>` in §4 and §7.2, by owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"); the end-to-end test's skip flag in §10.5 (T8); consumer-request scaffolding by `init` (§6.7), amendment `odd/tasks/consumer-requests-flow.md` S12; `doctor --fail-on-pending` (§4 and §8), amendment `odd/tasks/consumer-requests-flow.md` S13; resolved-issue notices in `release.json`, `upgrade` and `doctor --from` (§3, §7 and §8), amendment `odd/tasks/consumer-requests-flow.md` S14.
 - **Next step after approval:** a separate implementation plan (T3), approved separately, and then the implementation PRs. This document changes no code and creates no package.
 
 ## How to read this document
@@ -123,11 +123,16 @@ Two inputs the CLI needs are missing from the evidence today:
   "dirty": false,
   "packages": [
     { "name": "@egdev/ui", "version": "0.3.1", "file": "egdev-ui-0.3.1.tgz", "sha256": "<64-hex>" }
-  ]
+  ],
+  "resolves": [{ "issue": 123, "package": "@egdev/ui", "version": "0.3.1" }]
 }
 ```
 
 - `release:pack` runs `git` **in the design system repository**, at pack time. The "CLI never runs git" rule in §9 applies to the CLI.
+- Amendment `odd/tasks/consumer-requests-flow.md` S14: `resolves` is additive in schema version 1. It collects
+  issue citations from every versioned packed changelog section, using the oldest version per issue/package, sorted by
+  issue and package; `Unreleased` is ignored. A release without `resolves` means an empty list. A present field must be
+  an array of objects with a positive integer `issue` and string `package` and `version`.
 - The CLI refuses a release with `dirty: true` unless `--allow-dirty` is passed (Q2).
 - A release without `release.json`, or one whose files or hashes disagree with it, is refused with exit 1 and a single stderr line that names the file.
 
@@ -162,7 +167,7 @@ All entries are [I] except where cited. Flag names follow existing habits: `--dr
 
 | Flag | Commands | Meaning |
 | --- | --- | --- |
-| `--from <dir>` | all | Release folder (§3). `doctor` uses it only for release-dependent checks (DS014, DS017). Without a release, those checks are skipped and reported as `skipped`. `status` uses it only to report the release commit and whether an upgrade is available (S3). |
+| `--from <dir>` | all | Release folder (§3). `doctor` uses it only for release-dependent checks (DS014, DS017, DS052). Without a release, those checks are skipped and reported as `skipped`. `status` uses it only to report the release commit and whether an upgrade is available (S3). |
 | `--packages <list>` | init | Comma-separated names from `tokens,ui,effects,system,mcp`. Default: `tokens,ui,system,mcp` (Q13). `cli` is always added. Same value syntax and validation message as `ds-vendor.mjs` [E `assets/ds-vendor.mjs:36-42`]. Selecting `effects` also adds the exact `three` peer. |
 | `--add <list>` | upgrade | Amendment, owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"). Comma-separated names from `tokens,ui,effects,system,mcp,cli`; an unknown or repeated name exits 2 with `Invalid --add: choose from tokens,ui,effects,system,mcp,cli.` Each named package the app does not declare yet is added with the file effects `init` gives it (§7.2). A named package the app already declares is just upgraded. A name the release does not list exits 1 (`Release lacks @egdev/<pkg>: …`). |
 | `--css tailwind\|native` | init | Overrides CSS mode detection (§5.3). |
@@ -442,7 +447,11 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 8. **Refresh the lockfile.** Remove `node_modules/@egdev`, then run `npm install` or `pnpm install --no-frozen-lockfile` (with `--offline` when given). Then verify every vendored integrity and that the installed specifiers point at the new commit [E `assets/ds-vendor.mjs:244-251,357-364`].
 9. **On failure** at any step before success: restore `package.json`, the lockfile and `pnpm-workspace.yaml` byte for byte, and remove the tarballs this run copied. Exit 1 [E `assets/ds-vendor.mjs:252-256,365-368`; tests `assets/ds-vendor.test.mjs:246`, `assets/ds-vendor.pnpm.test.mjs:166,173`].
 10. **After success**, remove the previous tarballs that nothing references anymore. A failed removal is reported with exit 1 and `new installation is intact`, and never rolled back [E `assets/ds-vendor.mjs:258-265,370-376`; test `assets/ds-vendor.test.mjs:254`].
-11. **Print** the "Next steps" (§6.7).
+11. **Print** the "Next steps" (§6.7). Amendment `odd/tasks/consumer-requests-flow.md` S14: after a successful text
+    upgrade, load the guard allowlist as doctor does and add a removal step for each entry whose DS issue is in the
+    release's `resolves`, naming its file, source line when available, issue and resolving package/version. An
+    unloadable allowlist is skipped without failing the upgrade. As with existing next steps, these notices are not in
+    `--json`, `--dry-run` or the already-current output. Loading the allowlist executes project code; trust the project.
 
 ## 8. `doctor` checks
 
@@ -473,6 +482,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 | DS045 | error | `egdev-ds.json` missing or invalid | [I, Q6] |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in `<project>` or an ancestor has an `egdev-design-system` server whose script path exists | [E `egdev-website/.mcp.json`; `nexo/.mcp.json`] |
 | DS051 | warning | Amendment, `odd/tasks/egdev-ds-485-486.md` S3. With vendored files, the nearest `design/system.md` from `<project>` up to its repository root (the nearest `.git` ancestor; only `<project>` without one) records a design system commit in its first line, `<!-- Generated from EGDEV design system <commit>; … -->`, that differs from the vendored commit (prefix comparison, 7 to 40 hex): `Header records <a>, vendored at <b>: regenerate design/system.md.` `skipped` when the vendored set is mixed, the file is absent, or the first line records no commit | [E the header both apps' sync scripts write: `egdev-website/scripts/design-system-md.mjs:11`, `nexo/apps/hub/scripts/sync-design-system-md.mjs:5`; Nexo keeps the file at its repository root: `nexo/apps/hub/scripts/sync-design-system-md.mjs:8`. `egdev-system-md` itself writes no commit: `packages/system/src/render-system-md.mjs:87-97`] |
+| DS052 | warning | With `--from`, match guard allowlist `egdev6/egdev-design-system#N` entries against `resolves` and name each mitigation and resolving package/version, with a source line when available. Skipped without `--from` or when the allowlist cannot load. `--fail-on-pending` does not change this severity. | [I, amendment `odd/tasks/consumer-requests-flow.md` S14] |
 
 - **Guard parity:** `src/guard.mjs` is the skill's `checkDesignSystem`, moved here unchanged except for its options source [E S3 "one maintained guard implementation"]. Both apps' copies are identical to the asset (see §1). Its existing tests move with it, including the comment-trivia regression [E skill `references/freno.md:33`].
 - **Allowlist file:** `src/design-system-allowlist.ts`, as in both apps [E `nexo/apps/hub/src/design-system-allowlist.ts:1-5`]. It is loaded with Node 24's built-in type stripping, which the file's syntax allows (only `import type` plus an array literal) [I, Q5]. Apps type it with `import type { GuardAllowlistEntry } from '@egdev/cli'` (S6, #488).

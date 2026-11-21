@@ -137,7 +137,8 @@ test('pnpm release:pack writes the versioned release set', async (t) => {
 
   await t.test('release.json records the commit, the dirty flag and the sha256 of every tarball', () => {
     const manifest = JSON.parse(readFileSync(join(releaseDir, 'release.json'), 'utf8'));
-    assert.deepEqual(Object.keys(manifest), ['schemaVersion', 'commit', 'dirty', 'packages']);
+    assert.deepEqual(Object.keys(manifest), ['schemaVersion', 'commit', 'dirty', 'packages', 'resolves']);
+    assert.ok(Array.isArray(manifest.resolves));
     assert.equal(manifest.schemaVersion, 1);
     assert.match(manifest.commit, /^[0-9a-f]{40}$/);
     assert.equal(manifest.commit, git(root, ['rev-parse', 'HEAD']), 'commit must be the HEAD that was packed');
@@ -375,7 +376,8 @@ test('writeReleaseManifest writes the release.json schema with the real sha256 v
         version: entry.version,
         file: entry.file,
         sha256: sha256Of(entry.path)
-      }))
+      })),
+      resolves: []
     };
     assert.deepEqual(written, expected);
     const bytes = readFileSync(path, 'utf8');
@@ -389,6 +391,50 @@ test('writeReleaseManifest writes the release.json schema with the real sha256 v
     assert.equal(readFileSync(path, 'utf8'), bytes, 'The same tarballs and tree must give byte-identical output');
     writeReleaseManifest({ destination, packed, provenance: { ...fixtureProvenance, dirty: true } });
     assert.equal(JSON.parse(readFileSync(path, 'utf8')).dirty, true, 'release:pack records a dirty tree as-is');
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+test('release.json resolves uses packed versioned changelogs cumulatively and stays deterministic', () => {
+  const fixture = mkdtempSync(join(tmpdir(), 'egdev-release-resolves-'));
+  try {
+    const packed = fixtureRelease(fixture);
+    const [tokens, ui] = packed;
+    writeTarball(
+      tokens.path,
+      { name: tokens.name, version: tokens.version },
+      '# Changelog\n\n## Unreleased\n- Pending (#42).\n\n## 0.0.1\n- Repeat (#12).\n\n## 0.0.0\n- Original (#12).\n'
+    );
+    writeTarball(
+      ui.path,
+      { name: ui.name, version: ui.version },
+      '# Changelog\n\n## 0.0.1\n- Shared (#12) and list (#9, #34).\n'
+    );
+    writeFileSync(join(fixture, 'CHANGELOG.md'), '# Changelog\n\n## 0.0.1\n\n- Source only (#99).\n');
+    const destination = join(fixture, 'release');
+    const lines = [];
+    const errors = [];
+    const run = () =>
+      completeReleasePack(packed, {
+        destination,
+        provenance: fixtureProvenance,
+        log: (line) => lines.push(line),
+        error: (line) => errors.push(line)
+      });
+    assert.equal(run(), 0);
+    assert.deepEqual(errors, []);
+    assert.deepEqual(lines, [...packed.map(formatPackedLine), `release.json: ${'a'.repeat(40)}`]);
+    const path = join(destination, 'release.json');
+    const bytes = readFileSync(path, 'utf8');
+    assert.deepEqual(JSON.parse(bytes).resolves, [
+      { issue: 9, package: '@egdev/ui', version: '0.0.1' },
+      { issue: 12, package: '@egdev/tokens', version: '0.0.0' },
+      { issue: 12, package: '@egdev/ui', version: '0.0.1' },
+      { issue: 34, package: '@egdev/ui', version: '0.0.1' }
+    ]);
+    assert.equal(run(), 0);
+    assert.equal(readFileSync(path, 'utf8'), bytes);
   } finally {
     rmSync(fixture, { recursive: true, force: true });
   }
@@ -493,33 +539,33 @@ function manifestVersion(directoryName) {
 
 // Minimal ustar writer for fixtures only: the verification path must reject a packed manifest that
 // still carries `workspace:`, which a real `pnpm pack` rewrites and can therefore never produce.
-function writeTarball(path, manifest) {
-  const content = Buffer.from(JSON.stringify(manifest), 'utf8');
-  const header = Buffer.alloc(512);
-  header.write('package/package.json', 0, 100, 'utf8');
-  header.write('0000644\0', 100, 8, 'utf8');
-  header.write('0000000\0', 108, 8, 'utf8');
-  header.write('0000000\0', 116, 8, 'utf8');
-  header.write(`${content.length.toString(8).padStart(11, '0')}\0`, 124, 12, 'utf8');
-  header.write(
-    `${Math.floor(Date.now() / 1000)
-      .toString(8)
-      .padStart(11, '0')}\0`,
-    136,
-    12,
-    'utf8'
-  );
-  header.write('        ', 148, 8, 'utf8');
-  header.write('0', 156, 1, 'utf8');
-  header.write('ustar\0', 257, 6, 'utf8');
-  header.write('00', 263, 2, 'utf8');
-  let checksum = 0;
-  for (const byte of header) {
-    checksum += byte;
-  }
-  header.write(`${checksum.toString(8).padStart(6, '0')}\0 `, 148, 8, 'utf8');
-  const padding = Buffer.alloc(Math.ceil(content.length / 512) * 512 - content.length);
-  writeFileSync(path, gzipSync(Buffer.concat([header, content, padding, Buffer.alloc(1024)])));
+function writeTarball(path, manifest, changelog) {
+  const files = [
+    ['package/package.json', JSON.stringify(manifest)],
+    ...(changelog === undefined ? [] : [['package/CHANGELOG.md', changelog]])
+  ];
+  const parts = files.flatMap(([name, text]) => {
+    const content = Buffer.from(text, 'utf8');
+    const header = Buffer.alloc(512);
+    header.write(name, 0, 100, 'utf8');
+    header.write('0000644\0', 100, 8, 'utf8');
+    header.write('0000000\0', 108, 8, 'utf8');
+    header.write('0000000\0', 116, 8, 'utf8');
+    header.write(`${content.length.toString(8).padStart(11, '0')}\0`, 124, 12, 'utf8');
+    header.write('00000000000\0', 136, 12, 'utf8');
+    header.write('        ', 148, 8, 'utf8');
+    header.write('0', 156, 1, 'utf8');
+    header.write('ustar\0', 257, 6, 'utf8');
+    header.write('00', 263, 2, 'utf8');
+    let checksum = 0;
+    for (const byte of header) {
+      checksum += byte;
+    }
+    header.write(`${checksum.toString(8).padStart(6, '0')}\0 `, 148, 8, 'utf8');
+    const padding = Buffer.alloc(Math.ceil(content.length / 512) * 512 - content.length);
+    return [header, content, padding];
+  });
+  writeFileSync(path, gzipSync(Buffer.concat([...parts, Buffer.alloc(1024)])));
 }
 
 test('release:pack rejects a packed workspace specifier and keeps the tarballs it wrote', () => {

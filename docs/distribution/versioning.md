@@ -41,6 +41,9 @@ the tarballs. A failed verification writes no `release.json`.
   "dirty": false,
   "packages": [
     { "name": "@egdev/ui", "version": "0.3.1", "file": "egdev-ui-0.3.1.tgz", "sha256": "<64-hex>" }
+  ],
+  "resolves": [
+    { "issue": 123, "package": "@egdev/ui", "version": "0.3.1" }
   ]
 }
 ```
@@ -51,6 +54,11 @@ the tarballs. A failed verification writes no `release.json`.
   consumers refuse a dirty release unless they opt in explicitly.
 - `packages` lists every tarball written by the run, in release-set order, with the sha256 of the
   file on disk. `@egdev/cli` is the last entry.
+- `resolves` collects `(#N)` issue references from every versioned section of each packed
+  `CHANGELOG.md`, including earlier versions but never `## Unreleased`. Comma lists such as
+  `(#12, #34)` also work. It records each issue and package once, at the oldest section where the
+  pair appears, sorted by issue number and then package name. With no references it is `[]`.
+  The field is additive: older `schemaVersion: 1` releases may omit it.
 - The file has no timestamp and a fixed key order, so the same tarballs and tree give byte-identical
   output. It is written under a temporary name and renamed into place.
 
@@ -117,7 +125,7 @@ One `CHANGELOG.md` per package, in English, newest section first:
 
 ## <version>
 
-- <Change, in the imperative or past tense, one line per user-visible change.>
+- <Change, in the imperative or past tense, one line per user-visible change.> (#123)
 ```
 
 - The top `##` heading must carry the version currently in that package's manifest:
@@ -126,6 +134,8 @@ One `CHANGELOG.md` per package, in English, newest section first:
 - Group entries as `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` or `Security` subsections
   once a section has more than a couple of entries.
 - Describe the effect on a consumer, not the internal refactor.
+- Cite the issue resolved by each entry as `(#N)`; this citation is required for consumer requests,
+  so release metadata can notify consumers when their mitigations can be removed.
 
 ## Coupling between packages
 
