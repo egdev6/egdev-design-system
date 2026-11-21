@@ -17,7 +17,7 @@ import { basename, dirname, join } from 'node:path';
 import { RefusedError } from './args.mjs';
 import { sha256 } from './release.mjs';
 
-/** @typedef {{ path: string, content: string }} FileWrite */
+/** @typedef {{ path: string, content: string | Buffer }} FileWrite */
 /** @typedef {{ path: string, source: string, sha256: string }} FileCopy */
 
 /** The run failed and was rolled back: exit 1. */

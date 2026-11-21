@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { chmodSync, existsSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import { after, test } from 'node:test';
 import { run } from '../src/cli.mjs';
 import { planWorkspace } from '../src/pnpm-workspace.mjs';
@@ -84,8 +84,401 @@ const npmPlan = (fixture, from) => [
   line('edit', 'src/index.css', '+@import "@egdev/tokens/tokens.css"'),
   line('edit', 'src/index.css', '+@import "@egdev/ui/styles.css"'),
   line('create', 'egdev-ds.json', 'localRepo=hub'),
-  line('create', '.mcp.json', 'mcpServers.egdev-design-system')
+  line('create', '.mcp.json', 'mcpServers.egdev-design-system'),
+  line('create', 'CONTRIBUTING.md', 'consumer requests summary')
 ];
+
+const CONTRIBUTING = 'CONTRIBUTING.md';
+const START = '<!-- egdev-ds:consumer-requests -->';
+const END = '<!-- /egdev-ds:consumer-requests -->';
+const BLOCK = [
+  START,
+  '## Design system changes',
+  '',
+  'Do not edit vendored tarballs, `egdev-ds.json` or `@egdev/*` lockfile entries.',
+  'Request design system changes with a "Consumer request" issue in `egdev6/egdev-design-system`.',
+  'Optional local mitigations use the guard allowlist tied to the DS issue; the maintainer upgrades the DS in a separate PR.',
+  'See https://github.com/egdev6/egdev-design-system/blob/main/docs/distribution/consumer-requests.md.',
+  END,
+  ''
+].join('\n');
+
+const contributingPlan = (fixture, from, verb = 'create') =>
+  npmPlan(fixture, from).flatMap((entry) =>
+    entry === line('create', CONTRIBUTING, 'consumer requests summary')
+      ? verb === null
+        ? []
+        : [line(verb, CONTRIBUTING, 'consumer requests summary')]
+      : [entry]
+  );
+const noInstallOutput = (fixture, from, verb = 'create') =>
+  [
+    ...contributingPlan(fixture, from, verb),
+    `Initialized at ${C7}; integrities unverified (--no-install).`,
+    'Next steps:',
+    '  Run npm install.',
+    ...nextSteps('npm run ds:doctor').slice(1),
+    ''
+  ].join('\n');
+
+// The mocked .git entry bounds lookups without reading git data or invoking git.
+function markRepository(fixture, directory = fixture.root) {
+  write(join(directory, '.git'), 'gitdir: fixture\n');
+  return fixture;
+}
+
+function nestedOutput(fixture, from, verb, note = '') {
+  return noInstallOutput(fixture, from, verb)
+    .replace('localRepo=hub', `localRepo=${basename(fixture.root)}`)
+    .replace('Review the diff before committing.', `${note}Review the diff before committing.`);
+}
+
+test('S12 an unmarked ancestor guide stays untouched; init names the nearest one as a next step', () => {
+  const fixture = markRepository(track(freshNpmVite()));
+  const from = release();
+  const rootGuide = join(fixture.root, CONTRIBUTING);
+  const parentGuide = join(fixture.root, 'apps', CONTRIBUTING);
+  write(rootGuide, '# Repository guide\n');
+  write(parentGuide, '# Apps guide\r\n');
+  const before = treeHash(fixture.root);
+  const dry = runBin(['init', fixture.argument, '--from', from, '--no-install', '--dry-run', '--json'], fixture.root);
+  assert.equal(dry.status, 0);
+  assert.equal(dry.stderr, '');
+  const document = JSON.parse(dry.stdout);
+  assert.equal(dry.stdout, `${JSON.stringify(document, null, 2)}\n`);
+  assert.equal(document.result, 'planned');
+  assert.deepEqual(
+    document.actions.filter((action) => action.path.endsWith(CONTRIBUTING)),
+    []
+  );
+  assert.equal(treeHash(fixture.root), before);
+
+  const rootBefore = treeHash(rootGuide);
+  const parentBefore = treeHash(parentGuide);
+  const note = '  Add the consumer requests summary to ../CONTRIBUTING.md.\n';
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
+    status: 0,
+    stdout: nestedOutput(fixture, from, null, note),
+    stderr: ''
+  });
+  assert.equal(existsSync(join(fixture.project, CONTRIBUTING)), false);
+  assert.equal(treeHash(rootGuide), rootBefore);
+  assert.equal(treeHash(parentGuide), parentBefore);
+});
+
+test('S12 a marked ancestor suppresses all changes even when nearer guides have no block', () => {
+  const fixture = markRepository(track(freshNpmVite()));
+  const from = release();
+  const rootGuide = join(fixture.root, CONTRIBUTING);
+  const parentGuide = join(fixture.root, 'apps', CONTRIBUTING);
+  const projectGuide = join(fixture.project, CONTRIBUTING);
+  write(rootGuide, `# Repository guide\n\n${START}\nUser edits.\n${END}\n`);
+  write(parentGuide, '# Apps guide\n');
+  write(projectGuide, '# Project guide\n');
+  const before = [rootGuide, parentGuide, projectGuide].map(treeHash);
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
+    status: 0,
+    stdout: nestedOutput(fixture, from, null),
+    stderr: ''
+  });
+  assert.deepEqual([rootGuide, parentGuide, projectGuide].map(treeHash), before);
+});
+
+test('S12 no guide within the nearest repository creates one in the project, ignoring higher ancestors', () => {
+  const fixture = track(freshNpmVite());
+  markRepository(fixture, join(fixture.root, 'apps'));
+  const outside = join(fixture.root, CONTRIBUTING);
+  write(outside, `# Outside the repository\n\n${START}\n${END}\n`);
+  const outsideBefore = treeHash(outside);
+  const from = release();
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
+    status: 0,
+    stdout: noInstallOutput(fixture, from).replace('localRepo=hub', 'localRepo=apps'),
+    stderr: ''
+  });
+  assert.equal(read(join(fixture.project, CONTRIBUTING)), BLOCK);
+  assert.equal(treeHash(outside), outsideBefore);
+});
+
+test('S12 without a repository root only the project guide is considered', () => {
+  const fixture = track(freshNpmVite());
+  const from = release();
+  const outside = join(fixture.root, CONTRIBUTING);
+  write(outside, `# Outside\n\n${START}\n${END}\n`);
+  const outsideBefore = treeHash(outside);
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
+    status: 0,
+    stdout: noInstallOutput(fixture, from),
+    stderr: ''
+  });
+  assert.equal(read(join(fixture.project, CONTRIBUTING)), BLOCK);
+  assert.equal(treeHash(outside), outsideBefore);
+});
+
+test('S12 with no marked guide, a project guide takes precedence over an unmarked ancestor', () => {
+  const fixture = markRepository(track(freshNpmVite()));
+  const from = release();
+  const rootGuide = join(fixture.root, CONTRIBUTING);
+  const projectGuide = join(fixture.project, CONTRIBUTING);
+  write(rootGuide, '# Repository guide\n');
+  write(projectGuide, '# Project guide\n');
+  const before = treeHash(rootGuide);
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
+    status: 0,
+    stdout: nestedOutput(fixture, from, 'edit'),
+    stderr: ''
+  });
+  assert.equal(read(projectGuide), `# Project guide\n\n${BLOCK}`);
+  assert.equal(treeHash(rootGuide), before);
+});
+
+test('S12 already-vendored init reports an unmarked ancestor without writing, in text and JSON', () => {
+  const fixture = markRepository(track(npmViteFixture()));
+  const from = release();
+  const ancestor = join(fixture.root, CONTRIBUTING);
+  write(ancestor, '# Existing repository guide\n');
+  const before = treeHash(fixture.root);
+  const header = `egdev-ds init apps/hub (npm, vite, native) from ${from} at ${C7}`;
+  const current = `Already at ${C7}; integrities unverified (--no-install); no changes.`;
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
+    status: 0,
+    stdout: `${header}\n${current}\nNext steps:\n  Add the consumer requests summary to ../../CONTRIBUTING.md.\n`,
+    stderr: ''
+  });
+  const expected = {
+    schemaVersion: 1,
+    command: 'init',
+    project: fixture.argument,
+    packageManager: 'npm',
+    framework: 'vite',
+    cssMode: 'native',
+    release: { dir: from, commit: COMMIT },
+    actions: [],
+    findings: [],
+    result: 'current'
+  };
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install', '--json'], fixture.root), {
+    status: 0,
+    stdout: `${JSON.stringify(expected, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S12 already-vendored init recognizes a marked ancestor and stays a no-op', () => {
+  const fixture = markRepository(track(npmViteFixture()));
+  const from = release();
+  const ancestor = join(fixture.root, CONTRIBUTING);
+  write(ancestor, `${START}\nAlready customized.\n${END}\n`);
+  const before = treeHash(fixture.root);
+  const header = `egdev-ds init apps/hub (npm, vite, native) from ${from} at ${C7}`;
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
+    status: 0,
+    stdout: `${header}\nAlready at ${C7}; integrities unverified (--no-install); no changes.\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S8 S12 init creates only the marked consumer-requests block and lists the action', () => {
+  const fixture = track(freshNpmVite());
+  const from = release();
+  const result = runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root);
+  assert.deepEqual(result, { status: 0, stdout: noInstallOutput(fixture, from), stderr: '' });
+  assert.equal(read(join(fixture.project, CONTRIBUTING)), BLOCK);
+});
+
+test('S12 init appends with at least one blank line, preserving every original byte and CRLF style', () => {
+  const from = release();
+  const cases = [
+    { original: '', prefix: '', eol: '\n' },
+    { original: '# Guide', prefix: '# Guide\n\n', eol: '\n' },
+    { original: '# Guide\n', prefix: '# Guide\n\n', eol: '\n' },
+    { original: '# Guide\n\n', prefix: '# Guide\n\n', eol: '\n' },
+    { original: '# Guide\n\n\n', prefix: '# Guide\n\n\n', eol: '\n' },
+    { original: '# Guide\n \t\n', prefix: '# Guide\n \t\n', eol: '\n' },
+    { original: '# Guide\r\n', prefix: '# Guide\r\n\r\n', eol: '\r\n' },
+    { original: '# Guide\r\n\r\n', prefix: '# Guide\r\n\r\n', eol: '\r\n' },
+    { original: Buffer.from([0x23, 0x20, 0xff]), prefix: Buffer.from([0x23, 0x20, 0xff, 0x0a, 0x0a]), eol: '\n' }
+  ];
+  for (const { original, prefix, eol } of cases) {
+    const fixture = track(freshNpmVite());
+    const path = join(fixture.project, CONTRIBUTING);
+    writeFileSync(path, original);
+    const result = runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root);
+    assert.deepEqual(result, { status: 0, stdout: noInstallOutput(fixture, from, 'edit'), stderr: '' });
+    assert.deepEqual(
+      readFileSync(path),
+      Buffer.concat([Buffer.from(prefix), Buffer.from(BLOCK.replaceAll('\n', eol))])
+    );
+  }
+});
+
+test('S12 init leaves an existing marked block and user edits byte-for-byte untouched, without an action', () => {
+  const fixture = track(freshNpmVite());
+  const from = release();
+  const path = join(fixture.project, CONTRIBUTING);
+  const original = `# Guide\r\n\r\n${START}\r\nUser-edited text.\r\n${END}\r\nMore user text.\r\n`;
+  writeFileSync(path, original);
+  const before = treeHash(path);
+  const result = runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root);
+  assert.deepEqual(result, { status: 0, stdout: noInstallOutput(fixture, from, null), stderr: '' });
+  assert.equal(read(path), original);
+  assert.equal(treeHash(path), before, 'the existing file is not rewritten');
+});
+
+test('S12 a start marker without a following end marker is not an existing block', () => {
+  const fixture = track(freshNpmVite());
+  const from = release();
+  const path = join(fixture.project, CONTRIBUTING);
+  const original = `${END}\n${START}\nUnfinished text.\n`;
+  writeFileSync(path, original);
+  const result = runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root);
+  assert.deepEqual(result, { status: 0, stdout: noInstallOutput(fixture, from, 'edit'), stderr: '' });
+  assert.equal(read(path), `${original}\n${BLOCK}`);
+});
+
+test('S12 --dry-run --json plans create or edit and changes nothing', () => {
+  const from = release();
+  for (const verb of ['create', 'edit']) {
+    const fixture = track(freshNpmVite());
+    if (verb === 'edit') {
+      writeFileSync(join(fixture.project, CONTRIBUTING), '# Guide\r\n');
+    }
+    const before = [treeHash(fixture.root), treeHash(from)];
+    const result = runBin(
+      ['init', fixture.argument, '--from', from, '--no-install', '--dry-run', '--json'],
+      fixture.root
+    );
+    assert.equal(result.status, 0);
+    assert.equal(result.stderr, '');
+    const document = JSON.parse(result.stdout);
+    assert.equal(result.stdout, `${JSON.stringify(document, null, 2)}\n`);
+    assert.equal(document.result, 'planned');
+    assert.deepEqual(
+      document.actions.filter((action) => action.path === CONTRIBUTING),
+      [{ verb, path: CONTRIBUTING, detail: 'consumer requests summary' }]
+    );
+    assert.deepEqual([treeHash(fixture.root), treeHash(from)], before);
+  }
+});
+
+test('S12 init at the same vendored release can plan and write a missing block, then is a no-op', () => {
+  const fixture = track(npmViteFixture());
+  const from = release();
+  const args = ['init', fixture.argument, '--from', from, '--no-install', '--json'];
+  const before = treeHash(fixture.root);
+  const expected = {
+    schemaVersion: 1,
+    command: 'init',
+    project: fixture.argument,
+    packageManager: 'npm',
+    framework: 'vite',
+    cssMode: 'native',
+    release: { dir: from, commit: COMMIT },
+    actions: [{ verb: 'create', path: CONTRIBUTING, detail: 'consumer requests summary' }],
+    findings: [],
+    result: 'planned'
+  };
+  assert.deepEqual(runBin([...args, '--dry-run'], fixture.root), {
+    status: 0,
+    stdout: `${JSON.stringify(expected, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), before);
+  assert.deepEqual(runBin(args, fixture.root), {
+    status: 0,
+    stdout: `${JSON.stringify({ ...expected, result: 'applied' }, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(read(join(fixture.project, CONTRIBUTING)), BLOCK);
+  const settled = treeHash(fixture.root);
+  assert.deepEqual(runBin(args, fixture.root), {
+    status: 0,
+    stdout: `${JSON.stringify({ ...expected, actions: [], result: 'current' }, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(fixture.root), settled);
+});
+
+test('S12 init rollback removes a created block or restores the original file after an install failure', async () => {
+  const from = release();
+  for (const original of [null, Buffer.from('# User guide\r\nKeep these bytes.\r\n')]) {
+    const fixture = track(freshNpmVite());
+    const path = join(fixture.project, CONTRIBUTING);
+    if (original !== null) {
+      writeFileSync(path, original);
+    }
+    const before = treeContents(fixture.project);
+    let installerCalled = false;
+    const result = await init(fixture, ['--from', from], (command, args, cwd) => {
+      installerCalled = true;
+      assert.ok(read(path).includes(START), 'the contribution was written before the failed install');
+      return fakeInstaller({ fail: true }).runner(command, args, cwd);
+    });
+    assert.deepEqual(result, {
+      status: 1,
+      stdout: [
+        ...contributingPlan(fixture, from, original === null ? 'create' : 'edit'),
+        line('run', 'npm install'),
+        ''
+      ].join('\n'),
+      stderr: 'npm ERR! install failed\nnpm install failed (exit 1); rolled back.\n'
+    });
+    assert.equal(installerCalled, true);
+    assert.deepEqual(changed(before, treeContents(fixture.project)), []);
+    assert.equal(existsSync(path), original !== null);
+    if (original !== null) {
+      assert.deepEqual(readFileSync(path), original);
+    }
+  }
+});
+
+test('S12 init refuses a linked CONTRIBUTING.md without reading or writing through it', () => {
+  const fixture = track(freshNpmVite());
+  const from = release();
+  const target = join(fixture.root, 'user-guide.md');
+  writeFileSync(target, '# Keep this guide\n');
+  symlinkSync(target, join(fixture.project, CONTRIBUTING));
+  const before = treeHash(fixture.root);
+  assert.deepEqual(runBin(['init', fixture.argument, '--from', from, '--no-install'], fixture.root), {
+    status: 2,
+    stdout: '',
+    stderr: 'Unsafe target: CONTRIBUTING.md is a symlink, a hard link or not a regular file.\n'
+  });
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S12 upgrade and upgrade --add leave CONTRIBUTING.md alone, whether it exists or not', () => {
+  const from = release(FULL_SET, OTHER_COMMIT);
+  for (const add of [[], ['--add', 'cli']]) {
+    for (const existing of [false, true]) {
+      const fixture = track(npmViteFixture());
+      const path = join(fixture.project, CONTRIBUTING);
+      if (existing) {
+        writeFileSync(path, `# User guide\r\n\r\n${START}\r\nMy edits.\r\n${END}\r\n`);
+      }
+      const before = existing ? treeHash(path) : null;
+      const result = runBin(
+        ['upgrade', fixture.argument, '--from', from, ...add, '--no-install', '--json'],
+        fixture.root
+      );
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(result.stderr, '');
+      const document = JSON.parse(result.stdout);
+      assert.equal(result.stdout, `${JSON.stringify(document, null, 2)}\n`);
+      assert.equal(document.result, 'applied');
+      assert.deepEqual(
+        document.actions.filter((action) => action.path === CONTRIBUTING),
+        []
+      );
+      assert.equal(existsSync(path), existing);
+      if (existing) {
+        assert.equal(treeHash(path), before);
+      }
+    }
+  }
+});
 
 test('AC3 AC6 npm+Vite+native --dry-run prints the exact plan and writes nothing anywhere', async () => {
   const fixture = track(freshNpmVite());
@@ -156,6 +549,7 @@ test('AC6 AC16 npm+Vite+native init writes exactly the §6 effects, runs only np
   }
   assert.deepEqual(changed(before, treeContents(project)), [
     './.mcp.json',
+    './CONTRIBUTING.md',
     './egdev-ds.json',
     './package-lock.json',
     './package.json',
@@ -176,6 +570,7 @@ test('AC7 a second init at the same commit is a no-op: Already at, exit 0, files
   const fixture = track(freshNpmVite());
   const from = release();
   assert.equal((await init(fixture, ['--from', from], fakeInstaller().runner)).status, 0);
+  writeFileSync(join(fixture.project, CONTRIBUTING), `${START}\nUser-edited text.\n${END}\n`);
   const before = treeHash(fixture.root);
   const { calls, runner } = fakeInstaller();
   const header = `egdev-ds init apps/hub (npm, vite, native) from ${from} at ${C7}`;
@@ -226,6 +621,7 @@ test('AC6 pnpm+Next.js+tailwind init with effects: workspace overrides, packageM
       line('edit', 'src/app/globals.css', '+@import "@egdev/effects/styles.css"'),
       line('create', 'egdev-ds.json', 'localRepo=site'),
       line('create', '.mcp.json', 'mcpServers.egdev-design-system'),
+      line('create', 'CONTRIBUTING.md', 'consumer requests summary'),
       line('run', 'pnpm install --no-frozen-lockfile'),
       `Initialized at ${C7}; 6 vendored integrities verified.`,
       ...nextSteps('pnpm ds:doctor'),
@@ -675,7 +1071,7 @@ test('--json prints exactly one document on stdout for the plan', async () => {
       framework: 'vite',
       cssMode: 'native',
       release: { dir: from, commit: COMMIT },
-      actions: 19,
+      actions: 20,
       findings: [],
       result: 'planned'
     }
