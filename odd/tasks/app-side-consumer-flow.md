@@ -36,7 +36,7 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 | T1 | S3, S4, S5 | worker | done: 4bf4c02 + verification amendments (next commit) |
 | T2 | S4, S6 | worker | done: 91f2c1e + 38f74c6 |
 | T3 | S4, S7 | worker | done: d7b864d + follow-up (next commit) |
-| T5 | S4, S8 | worker | pending |
+| T5 | S4, S8 | worker | done: fd572a1 |
 | T7 | S8 | parent | CLI minor release with DS046–DS048 and the AGENTS block; validate on Recado |
 | T4, T6, T8 | #530 | — | deferred (T4 hand-written values as warning; T6 MCP tooling); each needs owner approval |
 
@@ -61,3 +61,4 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 - L17: PR #533 merged as e030b0e (T3), CI green.
 - L18 (owner choice): S8 → T5 on branch feat/init-agents-block, then the CLI minor release; T4 deferred.
 - L19: T5 by worker: shared guide planner for CONTRIBUTING.md and AGENTS.md; RED 10 → GREEN test:cli 236/236; typecheck and biome green. Documented divergence: an unmarked linked project guide with a marked ancestor is a no-op for AGENTS.md (S8 rule order) while CONTRIBUTING.md keeps its released manual-step behavior. Dry runs against 6f6e0c5: Recado and egdev-website append to their root AGENTS.md; Nexo has none, so it is created in apps/hub.
+- L20: Independent verify of fd572a1 (Risk: item 3) PASS for S8, S4 and the risk in 469 scenarios: CONTRIBUTING.md byte-identical to base in 180/180, upgrade untouched in 36/36, doctor/status identical, rollback restores both guides; consumer dry runs match L19. Advisories: the linked-guide divergence (A1) needs the owner's explicit OK; Nexo's block lands in apps/hub/AGENTS.md because the repository root has none (A2).
