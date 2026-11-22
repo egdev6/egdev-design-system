@@ -224,13 +224,15 @@ export function findInstalled(from, name, root) {
 }
 
 /**
- * Walks the guarded tree: `.tsx` and `.css` files, sorted by name, skipping symlinks, `node_modules`
- * and excluded paths.
+ * Walks the guarded tree: `.tsx` and `.css` files, plus `.ts` for DS048 when requested, sorted by
+ * name, skipping symlinks, `node_modules` and excluded paths. Existing mitigation notices keep their
+ * previous `.tsx`/`.css` source set.
  * @param {string} project
  * @param {DoctorConfig} config
+ * @param {boolean} [includeTs]
  * @returns {GuardSource[]}
  */
-function readSources(project, config) {
+function readSources(project, config, includeTs = false) {
   /** @param {string} directory */
   const visit = (directory) => {
     /** @type {GuardSource[]} */
@@ -249,7 +251,7 @@ function readSources(project, config) {
       }
       if (entry.isDirectory() && entry.name !== 'node_modules') {
         sources.push(...visit(file));
-      } else if (entry.isFile() && /\.(?:tsx|css)$/.test(entry.name)) {
+      } else if (entry.isFile() && (/\.(?:tsx|css)$/.test(entry.name) || (includeTs && entry.name.endsWith('.ts')))) {
         sources.push({ file, content: readFileSync(join(project, file), 'utf8') });
       }
     }
@@ -709,7 +711,7 @@ export async function runDoctor({ project, release, failOnPending = false }) {
     }
   }
 
-  // DS045, DS044, DS040-DS043, DS046, DS047
+  // DS045, DS044, DS040-DS043, DS046-DS048
   const { config, problem } = readConfig(project, manifest);
   if (problem) {
     add('DS045', 'error', problem, CONFIG_FILE);
@@ -737,7 +739,7 @@ export async function runDoctor({ project, release, failOnPending = false }) {
     if ('problem' in loaded) {
       add('DS042', 'error', loaded.problem, allowlistFile);
     } else {
-      const sources = readSources(project, config).filter((source) => {
+      const sources = readSources(project, config, true).filter((source) => {
         if (!source.file.endsWith('.css')) {
           return true;
         }
@@ -790,6 +792,16 @@ export async function runDoctor({ project, release, failOnPending = false }) {
           'DS047',
           'error',
           `${selectors.join(', ')} reaches into ${component} internals: use the component API or add an allowlist entry with an issue.`,
+          file,
+          line,
+          index
+        );
+      }
+      for (const [index, { file, line, call, marker }] of (result.domViolations ?? []).entries()) {
+        add(
+          'DS048',
+          'error',
+          `${call} depends on DS markup (${marker}): use a ref or an app-owned wrapper, or add an allowlist entry with an issue.`,
           file,
           line,
           index

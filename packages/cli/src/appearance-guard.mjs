@@ -86,7 +86,7 @@ function isPlacement(property, value) {
  * @param {number} start
  * @returns {{ value: string, end: number }}
  */
-function cssIdentifier(text, start) {
+export function cssIdentifier(text, start) {
   let value = '';
   let i = start;
   while (i < text.length) {
@@ -445,6 +445,22 @@ function positivePseudos(text) {
 }
 
 /**
+ * Extract only literal text from a string or template, leaving template expressions to the caller.
+ * @param {import('./guard.mjs').TypeScript} ts
+ * @param {import('typescript').Node} node
+ * @returns {(import('typescript').StringLiteral | import('typescript').TemplateLiteralLikeNode)[]}
+ */
+export function staticStringParts(ts, node) {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return [node];
+  }
+  if (ts.isTemplateExpression(node)) {
+    return [node.head, ...node.templateSpans.map((span) => span.literal)];
+  }
+  return [];
+}
+
+/**
  * @param {GuardEngine} engine
  * @param {(sourceDirectory: string) => SourcePatterns} patterns
  * @param {(text: string) => string} normalize
@@ -453,22 +469,23 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
   /**
    * @param {readonly GuardSource[]} files
    * @param {string} sourceDirectory
+   * @param {Map<GuardSource, import('typescript').SourceFile>} sourceFiles
    * @returns {{ classes: Map<string, string>, appClasses: Set<string> }}
    */
-  function collectClasses(files, sourceDirectory) {
+  function collectClasses(files, sourceDirectory, sourceFiles) {
     /** @type {Map<string, string>} */
     const classes = new Map();
     /** @type {Set<string>} */
     const appClasses = new Set();
     const pattern = patterns(sourceDirectory);
-    const sources = new Map(
-      files
-        .filter(({ file }) => pattern.tsx.test(file) && !pattern.test.test(file))
-        .map(({ file, content }) => {
-          const name = `/${file}`;
-          return [name, ts.createSourceFile(name, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)];
-        })
-    );
+    /** @type {Map<string, import('typescript').SourceFile>} */
+    const sources = new Map();
+    for (const input of files) {
+      const parsed = sourceFiles.get(input);
+      if (parsed && pattern.tsx.test(input.file) && !pattern.test.test(input.file)) {
+        sources.set(`/${input.file}`, parsed);
+      }
+    }
     if (sources.size === 0) {
       return { classes, appClasses };
     }
@@ -537,14 +554,15 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
         if (ts.isComputedPropertyName(node) || ts.isTypeNode(node)) {
           return;
         }
-        if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
-          add(node.text, component);
-        } else if (ts.isTemplateExpression(node)) {
-          add(node.head.text, component);
-          for (const span of node.templateSpans) {
+        const parts = staticStringParts(ts, node);
+        if (ts.isTemplateExpression(node)) {
+          add(parts[0]?.text ?? '', component);
+          for (const [index, span] of node.templateSpans.entries()) {
             addStatic(span.expression, component);
-            add(span.literal.text, component);
+            add(parts[index + 1]?.text ?? '', component);
           }
+        } else if (parts.length) {
+          add(parts[0]?.text ?? '', component);
         } else if (ts.isObjectLiteralExpression(node)) {
           for (const property of node.properties) {
             if ('name' in property && property.name && ts.isIdentifier(property.name)) {

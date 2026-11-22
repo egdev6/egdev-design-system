@@ -20,6 +20,12 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
   - **Any declaration counts,** placement included: the problem is the dependency on markup the DS does not promise, not the property.
   - **Finding:** one per rule: `DS047 error src/styles.css:66: .note-detail > footer reaches into DialogContent internals: use the component API or add an allowlist entry with an issue.`
   - **Allowlist:** same shape as DS041 and DS046 (`file` = CSS file, `pattern` = selector); on a DS047 rule, only an entry for the full rule selector covers DS046/DS047 (and the rule's DS041 parts); DS041 part entries keep their previous matching and never cover DS046/DS047. (Corrected after verification: on DS041+DS046 comma rules each check still needs its own entry, as before T2.)
+- S7 (T3, agent design choices, open to owner review): new doctor check **DS048** (error), "app code depends on DS markup".
+  - **Where:** non-test `.ts` and `.tsx` files under `sourceDirectory`, honoring `exclude` (same test-file rule as the guard).
+  - **Trigger:** a call whose callee is a property named `querySelector`, `querySelectorAll`, `closest` or `matches` (any receiver) with a static first argument (string literal, no-substitution template, or the static parts of a template literal) containing a DS class token `.eg-<name>`; and `getElementsByClassName(...)` or `classList.contains|add|remove|toggle(...)` with a static argument holding an `eg-<name>` class. Only `.eg-*` counts: it is the DS's public marker, while attribute selectors such as `[data-state]` are too ambiguous to attribute to the DS.
+  - **Finding:** one per call: `DS048 error src/components/CompactNote.tsx:52: closest('[data-recado-appearance] > .eg-panel') depends on DS markup (.eg-panel): use a ref or an app-owned wrapper, or add an allowlist entry with an issue.`
+  - **Allowlist:** `file` is the `.ts`/`.tsx` file and `pattern` is the static selector or class string exactly as written (whitespace-normalized). Stale-entry, DS042 and DS043 rules apply.
+  - Dynamic arguments are ignored. Tests and stories follow the guard's existing test-file pattern.
 - S4: Same CLI rules as the rest of `egdev-ds`: Node stdlib plus the project's own `typescript` and `postcss` (as the guard already resolves them), never run git, stable exit codes and `--json`, no `\s*X\s*` regexes on untrusted strings. Doctor codes are never reused.
 
 ## Tasks
@@ -28,7 +34,8 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 | --- | --- | --- | --- |
 | T1 | S3, S4, S5 | worker | done: 4bf4c02 + verification amendments (next commit) |
 | T2 | S4, S6 | worker | done: 91f2c1e + 38f74c6 |
-| T3–T8 | #530 | — | not started; each needs owner approval |
+| T3 | S4, S7 | worker | done: d7b864d + follow-up (next commit) |
+| T4–T8 | #530 | — | not started; each needs owner approval |
 
 ## Log
 
@@ -44,3 +51,7 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 - L10: T2 by worker: RED 7+ → GREEN test:cli 195/195; typecheck and biome green. Consumers: Recado 9e49d75 → 8 DS047 (the five `.note-detail > footer|button|header|div…` rules, `.note-detail h2`, `.note-detail button`, and `.compact-note__eye svg`, an unclassed app child of IconButton, flagged per S6), egdev-website 0, Nexo 0 (its 8 DS046 unchanged).
 - L11: Independent verify of 91f2c1e: S6 detection PASS (all 8 Recado DS047 true positives against Dialog.tsx:43-59; DS040–DS046 byte-identical to base; no performance change) but one blocker: on a rule that triggers DS047, an allowlist entry for one DS041 comma-list part covered the whole rule (guard.mjs:350-353), silently suppressing other DS041 parts and the DS047 and marking valid entries stale. Fixed by worker: DS046/DS047 are covered only by a full-selector entry; DS041 part entries keep base matching. RED 6 → GREEN test:cli 203/203.
 - L12: Focused re-verify of 38f74c6 PASS: blocker cases fixed; DS041-only and DS046-only allowlist behavior byte-identical to base in 88 runs; consumers unchanged (Recado 8/5, website 0/0, Nexo 0/8); test:cli 203/203. S6 allowlist sentence corrected to match the real behavior.
+- L13: PR #532 merged as 0a0d22b (T2), CI green.
+- L14 (owner, verbatim): "si" → T3 (DS048, DS markup in app code) on branch feat/guard-ds048-dom-queries. Design choices in S7 are the agent's, recorded for review.
+- L15: T3 by worker: RED 10 (+3) → GREEN test:cli 216/216; typecheck and biome green; literal element access (`el['closest'](…)`) supported. Consumers: Recado 629f261 → 3 DS048 (CompactNote.tsx:54, ProjectsView.tsx:54, AppearanceProvider.tsx:194), matching an independent grep of those calls; egdev-website 0; Nexo 0. DS046/DS047 counts unchanged (Recado 5/8, Nexo 8/0).
+- L16: Independent verify of d7b864d (Risk: item 3) PASS for S7, S4 and the risk: 22 trigger and 26 exclusion cases; zero diffs vs base for DS040–DS047, status and init, including unusual `.ts` files (DS040/DS046/DS047 still ignore `.ts`); Recado's 3 findings are true positives, Nexo's ~80 `.eg-*` queries are all in tests. Advisories adopted: each source is parsed once and shared across checks (Nexo doctor median ~413 → ~614 ms before, 442 → 551 ms after on origin/main), and DS048 messages render canonically as `closest('…')` without type arguments or line breaks. Worker: RED 6 → GREEN test:cli 220/220. Kept as documented: `.ts` allowlist entries get no source line in upgrade/DS052 notices; escapes in patterns are written as in source.
