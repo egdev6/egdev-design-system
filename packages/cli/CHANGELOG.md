@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0
 
 - `doctor` DS046 accepts each component's additional `classNameAllows` properties from the project's vendored
   `@egdev/system` artifact, falling back silently to the base list when unavailable or invalid. Refs #530.
