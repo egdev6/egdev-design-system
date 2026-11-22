@@ -3047,6 +3047,7 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     const heading = docs.find((item) => item.displayName === 'Heading')?.props;
     expect(heading?.asChild).toBeUndefined();
+    expect(heading?.truncate).toBeUndefined();
     expect((heading?.level?.type.value ?? []).map((item: { value: string }) => item.value)).toEqual([
       '1',
       '2',
@@ -3066,6 +3067,12 @@ describe('Storybook TypeScript docgen contract', () => {
     ).toEqual(['danger', 'default', 'inherit', 'muted', 'on-flood', 'secondary', 'warning']);
     const text = docs.find((item) => item.displayName === 'Text')?.props;
     expect(text?.level).toBeUndefined();
+    expect(text?.truncate).toMatchObject({
+      required: false,
+      type: { name: 'boolean' },
+      defaultValue: { value: 'false' },
+      tags: { control: 'boolean' }
+    });
     expect(text?.foreground).toMatchObject({
       required: false,
       tags: { control: expect.stringMatching(/^select(?:\nselect)*$/) }
@@ -3093,10 +3100,20 @@ describe('Storybook TypeScript docgen contract', () => {
       accentBreak: 'boolean',
       asChild: 'boolean',
       children: 'false',
-      level: 'select'
+      level: 'select',
+      truncate: 'boolean'
     };
     // All Text/Heading union branches and shared accent declarations are annotated.
-    expect(properties).toHaveLength(33);
+    expect(properties).toHaveLength(34);
+    const truncation = properties.filter((property) => property.name.getText(file) === 'truncate');
+    expect(truncation).toHaveLength(1);
+    const declaration = truncation[0];
+    if (!declaration) {
+      throw new Error('Missing Text.truncate declaration');
+    }
+    expect(declaration.questionToken).toBeDefined();
+    expect(declaration.type?.getText(file)).toBe('boolean');
+    expect(ts.getJSDocTags(declaration).find(({ tagName }) => tagName.text === 'default')?.comment).toBe('false');
     for (const property of properties) {
       const name = property.name.getText(file);
       const tags = ts.getJSDocTags(property);

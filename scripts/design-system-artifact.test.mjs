@@ -384,6 +384,28 @@ test('typography roles resolve representative source recipes to tokens', () => {
   assert.equal(role('ProjectCard code').family, '--font-mono');
 });
 
+test('Text truncation is optional, defaults false and does not widen Heading or layout permissions', () => {
+  const artifact = read('packages/system/design-system.json');
+  const text = artifact.components.find(({ name }) => name === 'Text');
+  const heading = artifact.components.find(({ name }) => name === 'Heading');
+  assert.ok(text);
+  assert.ok(heading);
+  const prop = text.props.find(({ name }) => name === 'truncate');
+  assert.ok(prop);
+  assert.equal(prop.type, 'boolean');
+  assert.equal(prop.required, false);
+  assert.equal(prop.default, 'false');
+  assert.ok(!heading.props.some(({ name }) => name === 'truncate'));
+  const widths = ['inline-size', 'max-inline-size', 'max-width', 'min-inline-size', 'min-width', 'width'];
+  assert.deepEqual(text.classNameAllows, widths);
+  assert.deepEqual(heading.classNameAllows, widths);
+  const naming = artifact.propNaming.find(({ id }) => id === 'single-line-text-truncation');
+  assert.ok(naming);
+  assert.equal(naming.name, 'truncate');
+  assert.equal(naming.status, 'approved');
+  assert.ok(naming.components.includes('Text'));
+});
+
 test('factored Text body recipes retain their classes in the artifact', () => {
   const artifact = read('packages/system/design-system.json');
   const text = artifact.components.find(({ name }) => name === 'Text');

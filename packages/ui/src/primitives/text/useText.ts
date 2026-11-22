@@ -42,7 +42,8 @@ const foregroundNames: readonly TextForeground[] = [
 /**
  * Resolve body or title classes, the eyebrow default and optional trailing accent.
  * Body foreground defaults to inherit. Blank accents are omitted; non-empty text is kept verbatim. An untyped
- * dangerouslySetInnerHTML is discarded so it never reaches the paragraph or Slot.
+ * dangerouslySetInnerHTML is discarded so it never reaches the paragraph or Slot. Only literal true
+ * enables truncation; the prop is consumed before forwarding and the accent joins the clipped line.
  */
 export function useText({
   variant: requestedVariant,
@@ -51,6 +52,7 @@ export function useText({
   accent,
   accentBreak = true,
   asChild = false,
+  truncate = false,
   className,
   children,
   ...native
@@ -58,6 +60,7 @@ export function useText({
   const { dangerouslySetInnerHTML: _discarded, ...rootProps } = native as typeof native & {
     dangerouslySetInnerHTML?: unknown;
   };
+  const isTruncated = truncate === true;
   const variant = requestedVariant && textVariantNames.includes(requestedVariant) ? requestedVariant : 'eyebrow';
   const isBody = variant === 'body' || variant === 'body-large' || variant === 'lede';
   const resolvedForeground = foreground && foregroundNames.includes(foreground) ? foreground : 'inherit';
@@ -76,13 +79,15 @@ export function useText({
               part: 'text',
               tone: accentTone,
               glow: variant === 'hero' && accentTone === 'canvas',
-              accentBreak: accentBreak !== false
+              accentBreak: !isTruncated && accentBreak !== false
             })
           },
     rootProps: {
       ...rootProps,
       className: cn(
-        isBody ? textBodyVariants({ variant, foreground: resolvedForeground }) : textVariants({ variant }),
+        isBody
+          ? textBodyVariants({ variant, foreground: resolvedForeground, truncate: isTruncated })
+          : textVariants({ variant, truncate: isTruncated }),
         className
       )
     }

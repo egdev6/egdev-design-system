@@ -3,11 +3,21 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ReactNode } from 'react';
+import { createRef, type ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
+import {
+  ListItem,
+  ListItemBody,
+  ListItemContent,
+  ListItemMeta,
+  type ListItemPartProps,
+  type ListItemProps,
+  ListItemTitle,
+  type ListItemTitleProps
+} from '../../molecules/list-item';
 import { Heading } from './Heading';
 import { Text } from './Text';
-import { type TextForeground, type TextProps, textVariants } from './types';
+import { type HeadingProps, type TextForeground, type TextProps, textVariants } from './types';
 import { useText } from './useText';
 
 const theme = readFileSync(resolve(import.meta.dirname, '../../../../tokens/src/theme.css'), 'utf8');
@@ -37,6 +47,301 @@ describe('useText', () => {
     } as unknown as TextProps;
     const { result } = renderHook(() => useText(untyped));
     expect(Object.hasOwn(result.current.rootProps, 'dangerouslySetInnerHTML')).toBe(false);
+  });
+});
+
+describe('Text single-line truncation', () => {
+  it.each([
+    ['omitted', undefined, false],
+    ['false', false, false],
+    ['true', true, true],
+    ['string', 'true', false],
+    ['number', 1, false],
+    ['null', null, false]
+  ] as const)('consumes %s input for native and Slot roots', (_label, input, enabled) => {
+    for (const asChild of [false, true]) {
+      const children = asChild ? <span data-origin='child'>Complete text</span> : 'Complete text';
+      const props = { children, asChild, truncate: input } as unknown as TextProps;
+      const { result } = renderHook(() => useText(props));
+      expect(Object.hasOwn(result.current.rootProps, 'truncate')).toBe(false);
+      const { container, unmount } = render(<Text {...props} />);
+      const root = container.firstElementChild;
+      expect(root?.tagName).toBe(asChild ? 'SPAN' : 'P');
+      expect(root).not.toHaveAttribute('truncate');
+      expect(root?.textContent).toBe('Complete text');
+      if (enabled) {
+        expect(root).toHaveClass('block', 'min-w-0', 'truncate');
+        expect(root).not.toHaveClass('inline-flex');
+      } else {
+        expect(root).toHaveClass('inline-flex');
+        expect(root).not.toHaveClass('truncate', 'block');
+      }
+      unmount();
+    }
+  });
+
+  it.each(['eyebrow', 'display', 'hero', 'section', 'show', 'inverse', 'body', 'body-large', 'lede'] as const)(
+    'supports truncation on the %s recipe',
+    (variant) => {
+      render(
+        <Text variant={variant} truncate={true}>
+          Complete copy
+        </Text>
+      );
+      const root = screen.getByText('Complete copy');
+      expect(root).toHaveClass('eg-text', 'block', 'min-w-0', 'truncate');
+      expect(root).not.toHaveAttribute('truncate');
+      expect(root).not.toHaveAttribute('title');
+      expect(root.textContent).toBe('Complete copy');
+    }
+  );
+
+  it('switches the eyebrow diamond into the block line and restores its previous layout', () => {
+    const { rerender } = render(<Text truncate={true}>Eyebrow</Text>);
+    const root = screen.getByText('Eyebrow');
+    expect(root).toHaveClass(
+      'block',
+      'truncate',
+      'before:inline-block',
+      'before:me-2.5',
+      "before:content-['']",
+      'before:size-2',
+      'before:rotate-45',
+      'before:bg-fg-brand-default'
+    );
+    expect(root).not.toHaveClass('inline-flex');
+    rerender(<Text truncate={false}>Eyebrow</Text>);
+    expect(root).toHaveClass('inline-flex', 'items-center', 'gap-2.5');
+    expect(root).not.toHaveClass('truncate', 'block', 'before:inline-block', 'before:me-2.5');
+  });
+
+  it.each([undefined, true, false] as const)(
+    'keeps the hero accent inline while truncated and restores accentBreak %s',
+    (accentBreak) => {
+      const { rerender } = render(
+        <Text variant='hero' accent='glow' accentBreak={accentBreak} truncate={true}>
+          Hero{' '}
+        </Text>
+      );
+      const accent = screen.getByText('glow');
+      const root = accent.parentElement;
+      expect(root?.textContent).toBe('Hero glow');
+      expect(accent).toHaveClass(
+        'eg-text__accent',
+        'inline',
+        'text-fg-brand-default',
+        '[text-shadow:var(--text-shadow-title-hero)]'
+      );
+      expect(accent).not.toHaveClass('block');
+      expect(accent).not.toHaveAttribute('aria-hidden');
+      rerender(
+        <Text variant='hero' accent='glow' accentBreak={accentBreak} truncate={false}>
+          Hero{' '}
+        </Text>
+      );
+      expect(root).not.toHaveClass('truncate');
+      expect(accent).toHaveClass(accentBreak === false ? 'inline' : 'block');
+      expect(accent).not.toHaveClass(accentBreak === false ? 'block' : 'inline');
+      expect(root?.textContent).toBe('Hero glow');
+    }
+  );
+
+  it('preserves foreground, tone, full semantic content and supported layout merges', () => {
+    const { rerender } = render(
+      <Text variant='body-large' foreground='muted' truncate={true} className='mt-4 mt-2 max-w-64'>
+        Before <strong>important</strong> after
+      </Text>
+    );
+    const strong = screen.getByText('important');
+    const root = strong.parentElement;
+    expect(root?.tagName).toBe('P');
+    expect(root?.textContent).toBe('Before important after');
+    expect(root?.childNodes).toHaveLength(3);
+    expect(root).toHaveClass('text-body-large', 'text-fg-muted', 'mt-2', 'max-w-64', 'truncate');
+    expect(root).not.toHaveClass('mt-4');
+    for (const attribute of ['title', 'role', 'tabindex', 'aria-label', 'aria-live']) {
+      expect(root).not.toHaveAttribute(attribute);
+    }
+    rerender(
+      <Text variant='hero' tone='raised' accent='accent' truncate={true}>
+        Full{' '}
+      </Text>
+    );
+    const accent = screen.getByText('accent');
+    expect(accent).toHaveClass('inline', 'text-fg-brand-raised', '[text-shadow:none]');
+    expect(accent.parentElement?.textContent).toBe('Full accent');
+  });
+
+  it('keeps a slotted child, its ref, attributes and accent without adding a wrapper', () => {
+    const ref = createRef<HTMLSpanElement>();
+    const { container, rerender } = render(
+      <Text
+        asChild={true}
+        variant='section'
+        truncate={true}
+        accent='accent'
+        id='slotted'
+        lang='ar'
+        dir='rtl'
+        title='Full title'
+      >
+        <span ref={ref} className='consumer-span' data-origin='child'>
+          Complete{' '}
+        </span>
+      </Text>
+    );
+    const root = container.firstElementChild;
+    expect(root?.tagName).toBe('SPAN');
+    expect(ref.current).toBe(root);
+    expect(root).toHaveAttribute('id', 'slotted');
+    expect(root).toHaveAttribute('lang', 'ar');
+    expect(root).toHaveAttribute('dir', 'rtl');
+    expect(root).toHaveAttribute('title', 'Full title');
+    expect(root).toHaveAttribute('data-origin', 'child');
+    expect(root).toHaveClass('consumer-span', 'eg-text', 'block', 'min-w-0', 'truncate');
+    expect(root?.textContent).toBe('Complete accent');
+    expect(root?.lastElementChild).toHaveClass('eg-text__accent', 'inline');
+    expect(container.children).toHaveLength(1);
+    rerender(
+      <Text
+        asChild={true}
+        variant='section'
+        truncate={false}
+        accent='accent'
+        id='slotted'
+        lang='ar'
+        dir='rtl'
+        title='Full title'
+      >
+        <span ref={ref} className='consumer-span' data-origin='child'>
+          Complete{' '}
+        </span>
+      </Text>
+    );
+    expect(ref.current).toBe(root);
+    expect(root).not.toHaveClass('truncate');
+    expect(root?.lastElementChild).toHaveClass('block');
+    expect(root?.textContent).toBe('Complete accent');
+  });
+
+  it('retains complete text in native heading and ancestor-link names', () => {
+    render(
+      <>
+        <h3>
+          <Text asChild={true} variant='section' truncate={true} accent='accent'>
+            <span>Heading </span>
+          </Text>
+        </h3>
+        <a href='#details'>
+          <Text asChild={true} variant='body' truncate={true}>
+            <span>
+              Link <strong>complete</strong> value
+            </span>
+          </Text>
+        </a>
+      </>
+    );
+    const heading = screen.getByRole('heading', { level: 3, name: 'Heading accent' });
+    const link = screen.getByRole('link', { name: 'Link complete value' });
+    expect(heading.querySelector('.eg-text')?.textContent).toBe('Heading accent');
+    expect(link.querySelector('.eg-text')?.textContent).toBe('Link complete value');
+    expect(link.querySelector('strong')).toHaveTextContent('complete');
+    expect(link.querySelector('.eg-text')).not.toHaveAttribute('aria-label');
+    expect(link.querySelector('.eg-text')).not.toHaveAttribute('tabindex');
+  });
+
+  it('preserves ListItem content and composes both supported truncation patterns', () => {
+    render(
+      <>
+        <ListItem>
+          <ListItemContent>Unclamped default content</ListItemContent>
+        </ListItem>
+        <ListItem variant='compact'>
+          <ListItemContent>
+            <Text variant='body' truncate={true}>
+              Complete compact copy
+            </Text>
+          </ListItemContent>
+        </ListItem>
+        <ListItem variant='editorial'>
+          <ListItemBody>
+            <ListItemTitle level={3} className='self-stretch'>
+              <Text asChild={true} variant='body-large' truncate={true}>
+                <span>Complete editorial title</span>
+              </Text>
+            </ListItemTitle>
+            <ListItemMeta className='self-stretch'>
+              <Text asChild={true} variant='body' foreground='muted' truncate={true}>
+                <span>Complete project name</span>
+              </Text>
+            </ListItemMeta>
+          </ListItemBody>
+        </ListItem>
+      </>
+    );
+    const normal = screen.getByText('Unclamped default content');
+    expect(normal).toHaveClass('eg-list-item__content', 'min-w-0');
+    expect(normal).not.toHaveClass('truncate', 'overflow-hidden', 'whitespace-nowrap');
+    const compact = screen.getByText('Complete compact copy');
+    expect(compact.tagName).toBe('P');
+    expect(compact).toHaveClass('truncate');
+    expect(compact.parentElement).toHaveClass('eg-list-item__content', 'min-w-0');
+    const heading = screen.getByRole('heading', { level: 3, name: 'Complete editorial title' });
+    expect(heading).toHaveClass('self-stretch', 'min-w-0');
+    expect(heading.firstElementChild?.tagName).toBe('SPAN');
+    expect(heading.firstElementChild).toHaveClass('truncate');
+    const meta = screen.getByText('Complete project name');
+    expect(meta.tagName).toBe('SPAN');
+    expect(meta).toHaveClass('truncate', 'text-fg-muted');
+    expect(meta.parentElement).toHaveClass('eg-list-item__meta', 'self-stretch', 'min-w-0');
+  });
+
+  it('leaves independent ancestor and sibling actions keyboard and pointer operable', async () => {
+    const user = userEvent.setup();
+    const follow = vi.fn((event: React.MouseEvent<HTMLAnchorElement>) => event.preventDefault());
+    const action = vi.fn();
+    render(
+      <>
+        <a href='#details' onClick={follow}>
+          <Text asChild={true} variant='body' truncate={true}>
+            <span>Full linked value</span>
+          </Text>
+        </a>
+        <button type='button' onClick={action}>
+          More actions
+        </button>
+      </>
+    );
+    const link = screen.getByRole('link', { name: 'Full linked value' });
+    const button = screen.getByRole('button', { name: 'More actions' });
+    await user.tab();
+    expect(link).toHaveFocus();
+    await user.keyboard('{Enter}');
+    await user.tab();
+    expect(button).toHaveFocus();
+    await user.keyboard(' ');
+    await user.click(link);
+    await user.click(button);
+    expect(follow).toHaveBeenCalledTimes(2);
+    expect(action).toHaveBeenCalledTimes(2);
+  });
+
+  it('accepts only a boolean on Text without widening Heading or ListItem props', () => {
+    const valid: TextProps[] = [
+      { children: 'Copy', truncate: true },
+      { variant: 'body', children: 'Copy', truncate: false }
+    ];
+    // @ts-expect-error Truncation accepts a boolean, not a string.
+    const text: TextProps = { children: 'Copy', truncate: 'true' };
+    // @ts-expect-error Truncation is not a Heading prop.
+    const heading: HeadingProps = { children: 'Heading', truncate: true };
+    // @ts-expect-error Truncation is not a ListItem prop.
+    const item: ListItemProps = { children: 'Item', truncate: true };
+    // @ts-expect-error Truncation is not a ListItem part prop.
+    const part: ListItemPartProps = { children: 'Part', truncate: true };
+    // @ts-expect-error Truncation is not a ListItemTitle prop.
+    const title: ListItemTitleProps = { children: 'Title', truncate: true };
+    expect([valid, text, heading, item, part, title]).toHaveLength(6);
   });
 });
 

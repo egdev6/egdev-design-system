@@ -511,7 +511,8 @@ const expected: Record<string, Record<string, string | false>> = {
     accent: 'text',
     accentBreak: 'boolean',
     children: false,
-    asChild: 'boolean'
+    asChild: 'boolean',
+    truncate: 'boolean'
   },
   heading: {
     variant: 'select',
@@ -810,7 +811,7 @@ const ownPropCounts: Record<string, number> = {
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
-  text: 7,
+  text: 8,
   heading: 7,
   surface: 5
 };
@@ -1500,7 +1501,14 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
     [
       'Text',
-      { variant: '"eyebrow"', foreground: '"inherit"', tone: '"canvas"', accentBreak: 'true', asChild: 'false' }
+      {
+        variant: '"eyebrow"',
+        foreground: '"inherit"',
+        tone: '"canvas"',
+        accentBreak: 'true',
+        asChild: 'false',
+        truncate: 'false'
+      }
     ],
     ['Heading', { variant: '"section"', foreground: '"inherit"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
@@ -1603,6 +1611,18 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(jsdocControlsEnhancer.secondPass).toBeUndefined();
     expect(preview.parameters?.backgrounds).toEqual({ disable: true });
     expect(preview.parameters?.layout).toBe('padded');
+  });
+
+  it('maps Text truncation to an optional boolean without injecting an argument or widening Heading', () => {
+    const metadata = component('Text');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const { argTypes, args } = story('Text');
+    expect(argTypes.truncate?.control).toEqual({ type: 'boolean' });
+    expect(argTypes.truncate?.type?.required).not.toBe(true);
+    expect(argTypes.truncate?.table?.defaultValue?.summary).toBe('false');
+    expect(args).not.toHaveProperty('truncate');
+    expect(story('Heading').argTypes.truncate).toBeUndefined();
   });
 
   it('maps Text and compact Heading foreground to seven choices without injecting arguments', () => {

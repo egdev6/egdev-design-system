@@ -1192,7 +1192,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -1202,7 +1202,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -1470,7 +1470,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -1480,7 +1480,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -2970,7 +2970,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -5433,7 +5433,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -6111,7 +6111,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -6121,7 +6121,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -6326,7 +6326,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       },
       {
@@ -6336,7 +6336,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       }
     ]
@@ -8728,6 +8728,33 @@
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
           "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
+        }
+      }
+    ]
+  },
+  {
+    "id": "single-line-text-truncation",
+    "name": "truncate",
+    "meaning": "Opt in to visually eliding overflowing text to one line without removing its underlying content.",
+    "whenToUse": "Opt passive text into a single-line ellipsis in a bounded, shrinkable host with a visible route to the complete content.",
+    "avoid": "Multi-line clamping, data mutation, inline prose, or clipping interactive content.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/text/v0.3/prop-naming-approval.json",
+      "scope": "convention:single-line-text-truncation",
+      "contentHash": "sha256:e1a37b7e62e7f378b59f1aeaf05c5a1bdc73377c3e09aed41b9cabb6e0bf5872"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Text",
+        "type": "boolean (optional; default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "TextProps.truncate",
+          "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
         }
       }
     ]

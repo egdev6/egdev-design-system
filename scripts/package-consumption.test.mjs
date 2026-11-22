@@ -2572,6 +2572,14 @@ const eyebrowForeground: TextProps = { variant: 'eyebrow', foreground: 'warning'
 // @ts-expect-error Foreground is body-only, not an inverse title option.
 const inverseForeground: TextProps = { variant: 'inverse', foreground: 'warning', children: 'Copy' };
 export type TextBodyNegatives = [typeof bodyTone, typeof bodyAccent, typeof bodyAccentBreak, typeof sectionForeground, typeof eyebrowForeground, typeof inverseForeground];
+export const truncatedText: TextProps = { variant: 'body', children: 'Full content', truncate: true };
+export const untruncatedText: TextProps = { variant: 'body', children: 'Full content', truncate: false };
+export const textTruncatedChildRef = createRef<HTMLSpanElement>();
+// @ts-expect-error Text truncation is boolean, not a string.
+const invalidTruncation: TextProps = { children: 'Copy', truncate: 'true' };
+// @ts-expect-error Heading does not expose Text truncation.
+const headingTruncation: HeadingProps = { children: 'Heading', truncate: true };
+export type TextTruncationNegatives = [typeof invalidTruncation, typeof headingTruncation];
 type TypographySampleProps = { headingLevel?: HeadingLevel };
 export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
   return createElement('section', { 'aria-labelledby': 'title-hero' },
@@ -2584,6 +2592,10 @@ export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
     createElement(Text, { ...bodyText, id: 'text-body', lang: 'en', children: ['Read ', createElement('strong', { key: 'strong' }, 'important'), ' copy.'] }),
     createElement(Text, { ...ledeText, id: 'text-lede', asChild: true, children: createElement('span', { lang: 'fr' }, 'Before ', createElement('strong', null, 'important'), ' after') }),
     createElement(Text, { variant: 'body', id: 'text-inherit', children: 'Inherited copy' }),
+    createElement(Text, { ...truncatedText, id: 'text-truncated', title: 'Full important content', children: ['Full ', createElement('strong', { key: 'strong' }, 'important'), ' content'] }),
+    createElement(Text, { id: 'text-truncated-eyebrow', truncate: true, children: 'Complete eyebrow copy' }),
+    createElement(Text, { variant: 'hero', accent: 'glow', truncate: true, asChild: true,
+      children: createElement('span', { id: 'text-truncated-slot', className: 'consumer-span', ref: textTruncatedChildRef }, 'Complete ') }),
     createElement(Text, { variant: 'section', accent: 'inline', accentBreak: false, asChild: true,
       children: createElement('span', { id: 'title-slotted', className: 'consumer-span' }, 'Slotted ') }));
 }
@@ -5645,6 +5657,15 @@ for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-s
 for (const utility of ['.text-body-default', '.text-body-large', '.text-body-muted', '.text-status-warning', '.text-status-danger', '.text-fg-on-flood']) {
   assert.ok(shippedStyles.includes(utility), 'Packed styles must retain body utility ' + utility);
 }
+for (const name of ['block', 'min-w-0', 'truncate', 'before:inline-block', 'before:me-2.5']) {
+  const selector = '.' + name.replace(/[^a-zA-Z0-9_-]/g, (char) => String.fromCharCode(92) + char);
+  assert.ok(shippedStyles.includes(selector), 'Packed styles must include Text truncation utility ' + name);
+}
+const truncationStart = shippedStyles.indexOf('.truncate');
+const truncationRule = shippedStyles.slice(truncationStart, truncationStart + 200).replaceAll(' ', '').replaceAll(String.fromCharCode(10), '');
+for (const declaration of ['overflow:hidden', 'text-overflow:ellipsis', 'white-space:nowrap']) {
+  assert.ok(truncationRule.includes(declaration), 'Packed truncation rule must include ' + declaration);
+}
 const compactRule = shippedStyles.match(/\\.text-heading-small\\s*\\{([^}]*)\\}/);
 assert.ok(compactRule, 'Packed CSS must include compact heading metrics');
 for (const [property, token] of [['font-size', '--text-heading-small'], ['line-height', '--text-heading-small--line-height'], ['font-weight', '--text-heading-small--font-weight'], ['letter-spacing', '--text-heading-small--letter-spacing']]) {
@@ -8013,6 +8034,24 @@ for (const frame of [square, wide]) {
   for (const node of [body, bodySlot, inherited]) {
     for (const attribute of ['foreground', 'role', 'tabindex', 'aria-live']) assert.equal(node.hasAttribute(attribute), false);
   }
+  const truncated = document.getElementById('text-truncated');
+  assert.equal(truncated.tagName, 'P');
+  assert.equal(truncated.getAttribute('title'), 'Full important content');
+  assert.equal(truncated.textContent, 'Full important content');
+  assert.equal(truncated.querySelector('strong').textContent, 'important');
+  const truncatedSlot = document.getElementById('text-truncated-slot');
+  assert.equal(truncatedSlot.tagName, 'SPAN');
+  assert.equal(truncatedSlot.textContent, 'Complete glow');
+  assert.ok(truncatedSlot.classList.contains('consumer-span'));
+  assert.ok(truncatedSlot.lastElementChild.classList.contains('inline'));
+  const truncatedEyebrow = document.getElementById('text-truncated-eyebrow');
+  assert.ok(truncatedEyebrow.classList.contains('before:inline-block'));
+  assert.ok(truncatedEyebrow.classList.contains('before:me-2.5'));
+  assert.equal(truncatedEyebrow.classList.contains('inline-flex'), false);
+  for (const node of [truncated, truncatedSlot, truncatedEyebrow]) {
+    for (const name of ['block', 'min-w-0', 'truncate']) assert.ok(node.classList.contains(name));
+    for (const attr of ['truncate', 'role', 'tabindex', 'aria-label', 'aria-live']) assert.equal(node.hasAttribute(attr), false);
+  }
   const slotted = document.getElementById('title-slotted');
   assert.equal(slotted.tagName, 'SPAN', 'asChild must render the single slotted element');
   assert.ok(slotted.classList.contains('eg-text') && slotted.classList.contains('consumer-span'));
@@ -8197,6 +8236,14 @@ const { App, AttachmentFieldSamples, attachmentChanges, attachmentRejections, Bu
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
+  const { TypographySamples, textTruncatedChildRef } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(TypographySamples)));
+  const truncatedSlot = document.getElementById('text-truncated-slot');
+  assert.equal(textTruncatedChildRef.current, truncatedSlot);
+  assert.equal(truncatedSlot.textContent, 'Complete glow');
+  assert.ok(truncatedSlot.classList.contains('truncate'));
+  await act(async () => root.render(null));
+  assert.equal(textTruncatedChildRef.current, null);
   const { IndicatorConsumerSamples, indicatorConsumerChanges } = await import('./consumer.ts');
   const { readFileSync: readWaveFile } = await import('node:fs');
   const { hydrateRoot } = await import('react-dom/client');

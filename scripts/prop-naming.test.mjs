@@ -72,6 +72,10 @@ const postReceiptUsages = [
     conventionId: 'transient-feedback-reset-key',
     source: 'packages/ui/src/molecules/attachment-field/types.ts#AttachmentFieldProps'
   },
+  {
+    conventionId: 'single-line-text-truncation',
+    source: 'packages/ui/src/primitives/text/types.ts#TextProps.truncate'
+  },
   // ColorSwatchGroup records reviewed own props after the existing convention receipts.
   ...[
     ['accessible-name', 'ColorSwatchGroupProps.label'],
@@ -833,7 +837,7 @@ const postReceiptUsages = [
     source: `packages/ui/src/templates/web-template/types.ts#WebTemplateProps.${prop}`
   }))
 ];
-// These newly proposed conventions are not part of any immutable approval receipt.
+// These proposed or independently approved conventions postdate the immutable historical receipts.
 const postReceiptProposals = [
   'field-message-content',
   'field-guidance-tone',
@@ -870,7 +874,9 @@ const postReceiptProposals = [
   // PhotoFrame fit adds one approved convention with its own approval record (docs/decisions/prop-naming-photo-frame-fit-approval.json).
   'image-fit',
   // AttachmentField v0.2 adds its independently approved reset token after the frozen receipts.
-  'transient-feedback-reset-key'
+  'transient-feedback-reset-key',
+  // Text v0.3 records a separately approved convention after the frozen receipts.
+  'single-line-text-truncation'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1565,6 +1571,61 @@ test('Popover binds the approved close auto-focus convention and reviewed usage'
   validate(registry);
 });
 
+test('Text truncation binds its scoped owner approval and reviewed source', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
+  assert.ok(fs.existsSync(resolve(root, reference)), 'Text truncation approval receipt must be recorded');
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'single-line-text-truncation');
+  assert.ok(entry);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.date, '2026-11-22');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar `truncate` (Recomendado)');
+  assert.equal(receipt.evidence.amendmentPath, 'docs/components/text/v0.3/truncate-amendment.md');
+  assert.equal(
+    receipt.evidence.amendmentPayloadSHA256,
+    'sha256:fd8f0fdebc2bfd898a51cee69f94685cc64a9f877045f151fea609b202fcd799'
+  );
+  const bytes = fs.readFileSync(resolve(root, receipt.evidence.amendmentPath));
+  const heading = /^## 1\. Purpose and scope\n/m.exec(bytes.toString('utf8'));
+  assert.ok(heading);
+  assert.equal(
+    digest(Buffer.from(bytes.toString('utf8').slice(heading.index))),
+    receipt.evidence.amendmentPayloadSHA256
+  );
+  assert.ok(bytes.toString('utf8').includes(receipt.evidence.ownerChoice));
+  const { approval, usages, ...convention } = entry;
+  assert.equal(entry.status, 'approved');
+  assert.equal(entry.name, 'truncate');
+  assert.deepEqual(approval, {
+    reference,
+    scope: 'convention:single-line-text-truncation',
+    contentHash: props.conventionHash(entry)
+  });
+  const path = 'packages/ui/src/primitives/text/types.ts';
+  const source = {
+    path,
+    symbol: 'TextProps.truncate',
+    revision: 'sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc'
+  };
+  assert.deepEqual(receipt.entries, [{ scope: approval.scope, contentHash: approval.contentHash, convention, source }]);
+  assert.deepEqual(usages, [
+    {
+      component: 'Text',
+      type: 'boolean (optional; default false)',
+      status: 'existing',
+      source: { ...source, revision: digest(fs.readFileSync(resolve(root, path))) }
+    }
+  ]);
+  assert.deepEqual(historicalRegistry([entry]), []);
+  validate(registry);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
 test('Text binds its body foreground exception and reviewed Text and Heading sources', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.2/foreground-exception-approval.json';
@@ -1608,10 +1669,10 @@ test('Text binds its body foreground exception and reviewed Text and Heading sou
     /body\|body-large\|lede/
   );
   const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
-  assert.equal(own.length, 10);
+  assert.equal(own.length, 11);
   for (const usage of own) {
     assert.equal(usage.source.revision, revision);
-    assert.ok(['TextProps', 'HeadingProps'].includes(usage.source.symbol));
+    assert.ok(['TextProps', 'HeadingProps', 'TextProps.truncate'].includes(usage.source.symbol));
   }
   for (const prior of receipt.priorReceipts) {
     assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
@@ -2051,9 +2112,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // AttachmentField adds four approved file-intake conventions.
   // Panel and Tabs fill add one approved shared convention (host-fill).
   // PhotoFrame fit adds one approved convention (image-fit).
-  // AttachmentField v0.2 adds the approved transient-feedback reset token.
-  assert.equal(actual.length, 180);
-  assert.equal(beforeIndicatorConventions(actual).length, 177);
+  // AttachmentField v0.2 adds the approved reset token; Text v0.3 adds truncation.
+  assert.equal(actual.length, 181);
+  assert.equal(beforeIndicatorConventions(actual).length, 178);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

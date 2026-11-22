@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { ListItem, ListItemBody, ListItemContent, ListItemMeta, ListItemTitle } from '../../molecules/list-item';
 import { Heading } from './Heading';
 import { Text } from './Text';
 
@@ -8,7 +9,8 @@ import { Text } from './Text';
  * trailing accents, and body, body-large or lede copy with native strong emphasis.
  *
  * ## Dependencies
- * Radix Slot/Slottable for `asChild`; no interactive primitive, focus or state.
+ * Radix Slot/Slottable for `asChild`; no interactive primitive, focus or state. The ListItem
+ * example composes its existing parts without changing their default behavior.
  *
  * ## Usage guidelines
  * Use Heading for document hierarchy; Text never takes a heading role. Supply whitespace in
@@ -19,6 +21,13 @@ import { Text } from './Text';
  * default. Check contrast against actual pixels for translucent hosts. Status copy needs meaningful
  * words and a non-color cue; it does not announce itself. The consumer owns the host and contrast.
  * className supports outer layout only (margins, width constraints, flex/grid placement).
+ * `truncate` opts into a block-level clipping root, even for a slotted span; do not use it for
+ * inline prose. The host bounds the width, makes every flex/grid item and grid track along the
+ * shrinking path shrinkable, and provides a visible keyboard- and touch-operable route to every
+ * full value. Native title and Tooltip are supplementary only. A truncating root must be passive
+ * and non-focusable; do not put focusable descendants, hard breaks or nested block boxes inside it.
+ * An ancestor link may own its focus.
+ * Display, whitespace, overflow and ellipsis remain owned by `truncate`, not className overrides.
  * Host panels in these examples are illustrative consumer content, not Text parts.
  */
 const meta: Meta<typeof Text> = {
@@ -122,6 +131,125 @@ export const LongText: Story = {
   render: (args) => (
     <div className='max-w-[calc(var(--space-24)*4)]'>
       <Text {...args} />
+    </div>
+  )
+};
+
+const fullTitle = 'A complete project note title that can overflow a narrow list item';
+const fullProject = 'A complete project and workspace name that can also overflow';
+
+/** A bounded flex item truncates only when needed; the separate disclosure retains visual access. */
+export const Truncate: Story = {
+  args: { children: fullTitle, variant: 'body', truncate: true },
+  render: (args) => (
+    <div className='flex flex-col gap-4'>
+      <div className='flex w-full max-w-[calc(var(--space-24)*3)] gap-2'>
+        <div className='min-w-0 flex-1'>
+          <Text variant='body' truncate={true}>
+            Fits
+          </Text>
+          <Text {...args} />
+        </div>
+        <span className='shrink-0'>More</span>
+      </div>
+      <Text variant='body' truncate={true} className='w-max'>
+        {fullTitle}
+      </Text>
+      <details>
+        <summary>View complete text</summary>
+        <p>{fullTitle}</p>
+      </details>
+    </div>
+  )
+};
+
+/** Editorial heading/meta spans and compact paragraphs each keep a separate full-value disclosure. */
+export const TruncateListItem: Story = {
+  args: { children: fullTitle },
+  render: () => (
+    <div className='flex flex-col gap-4'>
+      <div className='w-full max-w-[calc(var(--space-24)*3)]'>
+        <ListItem variant='editorial'>
+          <ListItemBody>
+            <ListItemTitle level={3} className='self-stretch'>
+              <Text asChild={true} variant='body-large' truncate={true} title={fullTitle}>
+                <span>{fullTitle}</span>
+              </Text>
+            </ListItemTitle>
+            <ListItemMeta className='self-stretch'>
+              <Text asChild={true} variant='body' foreground='muted' truncate={true} title={fullProject}>
+                <span>{fullProject}</span>
+              </Text>
+            </ListItemMeta>
+          </ListItemBody>
+        </ListItem>
+        <details>
+          <summary>View the full editorial note</summary>
+          <p>{fullTitle}</p>
+          <p>{fullProject}</p>
+        </details>
+      </div>
+      <div className='w-full max-w-[calc(var(--space-24)*3)]'>
+        <ListItem variant='compact'>
+          <ListItemContent>
+            <Text variant='body-large' truncate={true}>
+              {fullTitle}
+            </Text>
+            <Text variant='body' foreground='muted' truncate={true}>
+              {fullProject}
+            </Text>
+          </ListItemContent>
+        </ListItem>
+        <details>
+          <summary>View the full compact note</summary>
+          <p>{fullTitle}</p>
+          <p>{fullProject}</p>
+        </details>
+      </div>
+    </div>
+  )
+};
+
+/** A shrinkable grid track shows direction, long tokens, eyebrow, inline accent and a zero-width limit. */
+export const TruncateDirections: Story = {
+  args: { children: 'LongUnbrokenTextWithoutNaturalWrapOpportunities', variant: 'body', truncate: true },
+  render: (args) => (
+    <div className='flex flex-col gap-4'>
+      <div className='grid w-full max-w-[calc(var(--space-24)*3)] grid-cols-[minmax(0,1fr)] gap-2'>
+        <div className='min-w-0'>
+          <Text {...args} />
+          <Text variant='body' dir='rtl' truncate={true}>
+            A long right-to-left paragraph with the ellipsis at the inline end
+          </Text>
+          <Text variant='body' dir='ltr' truncate={true}>
+            Mixed direction: <bdi dir='rtl'>a right-to-left segment 123</bdi> with surrounding text
+          </Text>
+          <Text truncate={true}>A long eyebrow with its decorative diamond</Text>
+          <Text variant='hero' accent='glow' truncate={true}>
+            A long title with{' '}
+          </Text>
+          <Text variant='body' truncate={true} className='max-w-0'>
+            No room for the marker
+          </Text>
+          <a href='https://example.com/'>
+            <Text asChild={true} variant='body' truncate={true}>
+              <span>A complete link name that can overflow the grid</span>
+            </Text>
+          </a>
+        </div>
+      </div>
+      <details>
+        <summary>View complete examples</summary>
+        <p>LongUnbrokenTextWithoutNaturalWrapOpportunities</p>
+        <p dir='rtl'>A long right-to-left paragraph with the ellipsis at the inline end</p>
+        <p>
+          Mixed direction: <bdi dir='rtl'>a right-to-left segment 123</bdi> with surrounding text
+        </p>
+        <p>A long eyebrow with its decorative diamond</p>
+        <p>A long title with glow</p>
+        <p>No room for the marker</p>
+        <p>A complete link name that can overflow the grid</p>
+      </details>
     </div>
   )
 };

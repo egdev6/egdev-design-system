@@ -6,6 +6,7 @@ import { build } from 'vite';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buttonVariants } from '../atoms/button/types';
 import { gaugeCircleVariants } from '../atoms/gauge/types';
+import { textBodyVariants, textVariants } from '../primitives/text/types';
 
 let css: string;
 
@@ -176,6 +177,30 @@ describe('Storybook preview CSS', () => {
       /strong[\s\S]*font-weight:\s*var\(--text-heading-small--font-weight\)/
     );
   });
+  it('compiles Text truncation and eyebrow utilities from the static Text recipes', () => {
+    expect(rule('.block')).toMatch(/display:\s*block/);
+    expect(rule('.min-w-0')).toMatch(/min-width:\s*var\(--space-0[,)]/);
+    const truncate = rule('.truncate');
+    expect(truncate).toMatch(/overflow:\s*hidden/);
+    expect(truncate).toMatch(/text-overflow:\s*ellipsis/);
+    expect(truncate).toMatch(/white-space:\s*nowrap/);
+    for (const [selector, declaration] of [
+      [String.raw`.before\:inline-block`, /display:\s*inline-block/],
+      [String.raw`.before\:me-2\.5`, /margin-inline-end:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/]
+    ] as const) {
+      const index = css.indexOf(selector);
+      expect(index, selector).toBeGreaterThanOrEqual(0);
+      expect(css.slice(index, index + 500)).toMatch(declaration);
+    }
+    for (const name of ['block', 'min-w-0', 'truncate']) {
+      expect(textVariants({ variant: 'eyebrow', truncate: true }).split(/\s+/)).toContain(name);
+      expect(textBodyVariants({ variant: 'body', truncate: true }).split(/\s+/)).toContain(name);
+    }
+    for (const name of ['before:inline-block', 'before:me-2.5']) {
+      expect(textVariants({ variant: 'eyebrow', truncate: true }).split(/\s+/)).toContain(name);
+    }
+  });
+
   it('compiles Collapsible retained presence, spacing and motion reset selectors', () => {
     expect(rule('.p-2')).toMatch(/padding:\s*var\(--space-2[,)]/);
     const transitionReset = css.indexOf(String.raw`.\[transition-property\:none\]`);
