@@ -1,7 +1,7 @@
 // The design-system guard, moved from the egdev-design-system skill (assets/guard/
-// design-system-guard.ts) unchanged except for its options source (spec §8 "Guard parity"):
-// `typescript` and `postcss` are injected, resolved from the consumer project (Q4), and the guarded
-// tree follows `sourceDirectory` (default `src`, as before).
+// design-system-guard.ts) with DS040–DS045 parity, and extended for DS046. `typescript` and
+// `postcss` are injected from the consumer project (Q4); the tree follows `sourceDirectory`.
+import { createAppearanceGuard } from './appearance-guard.mjs';
 
 /** @typedef {typeof import('typescript')} TypeScript */
 /** @typedef {import('typescript').Node} TsNode */
@@ -9,10 +9,15 @@
 
 /**
  * The part of the postcss API the guard uses, typed here so the CLI needs no postcss types.
+ * @typedef {{ type: string, parent?: PostcssContainer }} PostcssContainer
+ * @typedef {{ type: string, name?: string, prop?: string, value?: string, nodes?: PostcssNode[] }} PostcssNode
  * @typedef {{
+ *   type: string,
  *   selector: string,
  *   raws: { selector?: { raw?: string } },
- *   source?: { start?: { offset?: number } }
+ *   source?: { start?: { offset?: number } },
+ *   parent?: PostcssContainer,
+ *   nodes?: PostcssNode[]
  * }} PostcssRule
  * @typedef {{
  *   parse: (css: string, options: { from: string }) => { walkRules: (callback: (rule: PostcssRule) => void) => unknown },
@@ -29,7 +34,7 @@
  * @typedef {import('../types/index.d.ts').GuardAllowlistEntry} GuardAllowlistEntry
  */
 /** @typedef {{ file: string, line: number, snippet: string }} GuardViolation */
-/** @typedef {{ violations: GuardViolation[], errors: string[], pendingIssueCount: number }} GuardResult */
+/** @typedef {{ violations: GuardViolation[], appearanceViolations: import('./appearance-guard.mjs').AppearanceViolation[], errors: string[], pendingIssueCount: number }} GuardResult */
 /**
  * `localRepo`: repository name used for local issue references (`<localRepo>#N`, `<localRepo>#TBD-slug`).
  * `themeDirectory`: app theme layer, the only place where CSS may target DS internals.
@@ -140,6 +145,8 @@ export function createGuard({ ts, postcss }) {
       test: /(?:^|\/)__tests__\/|\.(?:test|spec)\.tsx$/
     };
   };
+
+  const { collectClasses, findAppearanceViolations } = createAppearanceGuard({ ts, postcss }, patterns, normalize);
 
   /**
    * @param {GuardSource} source
@@ -257,6 +264,21 @@ export function createGuard({ ts, postcss }) {
     /** @type {string[]} */
     const errors = [];
     const used = allowlist.map(() => false);
+    /** @param {{ file: string, snippet: string }} violation */
+    const consumeAllowlistEntry = (violation) => {
+      const index = allowlist.findIndex(
+        (entry, i) =>
+          !used[i] &&
+          entry.kind !== 'component-gap' &&
+          entry.file === violation.file &&
+          entry.pattern === violation.snippet
+      );
+      if (index === -1) {
+        return false;
+      }
+      used[index] = true;
+      return true;
+    };
     for (const entry of allowlist) {
       if (!issuePattern.test(entry.issue)) {
         errors.push(`${entry.file}: invalid issue for allowlist entry ${entry.pattern}`);
@@ -277,7 +299,14 @@ export function createGuard({ ts, postcss }) {
     }
     /** @type {GuardViolation[]} */
     const violations = [];
+    /** @type {import('./appearance-guard.mjs').AppearanceViolation[]} */
+    const appearanceViolations = [];
+    const classes = collectClasses(files, sourceDirectory);
     for (const source of files) {
+      // One existing CSS exception also covers DS046 on the same selector occurrence.
+      const allowedSelectors = new Map();
+      /** @param {{ file: string, line: number, snippet: string }} item */
+      const selectorKey = (item) => JSON.stringify([item.file, item.line, item.snippet]);
       if (allowlist.some((entry) => entry.kind === 'component-gap' && entry.file === source.file)) {
         const { tags, comments } = componentGapAnchors(source, sourceDirectory);
         allowlist.forEach((entry, i) => {
@@ -294,17 +323,22 @@ export function createGuard({ ts, postcss }) {
         });
       }
       for (const violation of findViolations(source, themeDirectory, sourceDirectory)) {
-        const index = allowlist.findIndex(
-          (entry, i) =>
-            !used[i] &&
-            entry.kind !== 'component-gap' &&
-            entry.file === violation.file &&
-            entry.pattern === violation.snippet
-        );
-        if (index === -1) {
+        if (!consumeAllowlistEntry(violation)) {
           violations.push(violation);
-        } else {
-          used[index] = true;
+        } else if (source.file.endsWith('.css')) {
+          const key = selectorKey(violation);
+          allowedSelectors.set(key, (allowedSelectors.get(key) ?? 0) + 1);
+        }
+      }
+      for (const violation of findAppearanceViolations(source, themeDirectory, sourceDirectory, classes)) {
+        const key = selectorKey(violation);
+        const alreadyAllowed = allowedSelectors.get(key) ?? 0;
+        if (alreadyAllowed > 0) {
+          allowedSelectors.set(key, alreadyAllowed - 1);
+          continue;
+        }
+        if (!consumeAllowlistEntry(violation)) {
+          appearanceViolations.push(violation);
         }
       }
     }
@@ -315,6 +349,7 @@ export function createGuard({ ts, postcss }) {
     });
     return {
       violations,
+      appearanceViolations,
       errors,
       pendingIssueCount: allowlist.filter((entry) => pendingIssuePattern.test(entry.issue)).length
     };

@@ -396,7 +396,7 @@ export async function runDoctor({ project, release, failOnPending = false }) {
    * @param {string} message
    * @param {string} [file]
    * @param {number} [line]
-   * @param {number} [entryIndex] distinguish matching allowlist entries with identical locations
+   * @param {number} [entryIndex] distinguish matching occurrences with identical locations
    */
   const add = (code, severity, message, file, line, entryIndex) => {
     const key = `${code}\0${file ?? ''}\0${line ?? ''}\0${message}\0${entryIndex ?? ''}`;
@@ -709,7 +709,7 @@ export async function runDoctor({ project, release, failOnPending = false }) {
     }
   }
 
-  // DS045, DS044, DS040-DS043
+  // DS045, DS044, DS040-DS043, DS046
   const { config, problem } = readConfig(project, manifest);
   if (problem) {
     add('DS045', 'error', problem, CONFIG_FILE);
@@ -774,6 +774,16 @@ export async function runDoctor({ project, release, failOnPending = false }) {
             line
           );
         }
+      }
+      for (const [index, { file, line, snippet, component, properties }] of result.appearanceViolations.entries()) {
+        add(
+          'DS046',
+          'error',
+          `${snippet} on ${component} sets ${properties.join(', ')}: use the component API or add an allowlist entry with an issue.`,
+          file,
+          line,
+          index
+        );
       }
       for (const error of result.errors) {
         const split = error.indexOf(': ');

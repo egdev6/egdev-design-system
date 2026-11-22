@@ -4,7 +4,7 @@
 
 /**
  * One entry of `<sourceDirectory>/design-system-allowlist.ts`: an exact, whitespace-normalized opening
- * tag or individual CSS selector, not a regex. Non-guarded markup awaiting a DS capability is tracked
+ * tag, individual CSS selector, or DS046 rule selector, not a regex. Non-guarded markup awaiting a DS capability is tracked
  * by its opening tag and TODO comment with `kind: 'component-gap'`.
  */
 export type GuardAllowlistEntry = {
