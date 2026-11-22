@@ -27,6 +27,7 @@ type ListItemNativeProps = Omit<
  * explanatory content; failed also needs failure detail. No status announcements are synthesized.
  * className supports outer margin, width and parent placement only, merged last through cn.
  * No ref API. A slotted child may retain its own ref, but must not conflict with owned data props.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type ListItemProps = ListItemNativeProps &
   (
@@ -125,6 +126,7 @@ export type ListItemProps = ListItemNativeProps &
 /**
  * Compound div attributes. className supports local alignment, placement and width constraints,
  * not appearance, hidden content or reordering. No ref, own role or tab stop is exposed.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type ListItemPartProps = Omit<
   ComponentPropsWithoutRef<'div'>,

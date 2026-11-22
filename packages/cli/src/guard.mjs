@@ -40,7 +40,8 @@ import { createDomGuard } from './dom-guard.mjs';
  * `localRepo`: repository name used for local issue references (`<localRepo>#N`, `<localRepo>#TBD-slug`).
  * `themeDirectory`: app theme layer, the only place where CSS may target DS internals.
  * `sourceDirectory`: guarded tree, without a trailing slash.
- * @typedef {{ localRepo?: string, themeDirectory?: string, sourceDirectory?: string }} GuardOptions
+ * `classNameAllows`: per-export properties supplied by the consumer's installed system artifact.
+ * @typedef {{ localRepo?: string, themeDirectory?: string, sourceDirectory?: string, classNameAllows?: ReadonlyMap<string, ReadonlySet<string>> }} GuardOptions
  */
 
 /** @param {string} text */
@@ -271,7 +272,7 @@ export function createGuard({ ts, postcss }) {
   function checkDesignSystem(
     files,
     allowlist,
-    { localRepo = 'nexo', themeDirectory = 'src/theme/', sourceDirectory = 'src' } = {}
+    { localRepo = 'nexo', themeDirectory = 'src/theme/', sourceDirectory = 'src', classNameAllows = new Map() } = {}
   ) {
     const local = escapeRegExp(localRepo);
     const issuePattern = new RegExp(
@@ -341,7 +342,7 @@ export function createGuard({ ts, postcss }) {
         );
       }
     }
-    const { classes, appClasses } = collectClasses(files, sourceDirectory, sourceFiles);
+    const { classes, owners, appClasses } = collectClasses(files, sourceDirectory, sourceFiles);
     for (const source of files) {
       // Preserve the existing DS041/DS046 matching, and share any DS047 exception only with
       // checks on the exact same rule offset (not another identical rule on the same line).
@@ -396,7 +397,13 @@ export function createGuard({ ts, postcss }) {
           allowedSelectors.set(key, (allowedSelectors.get(key) ?? 0) + 1);
         }
       }
-      for (const violation of findAppearanceViolations(source, themeDirectory, sourceDirectory, classes)) {
+      for (const violation of findAppearanceViolations(
+        source,
+        themeDirectory,
+        sourceDirectory,
+        owners,
+        classNameAllows
+      )) {
         const offset = ruleOffsets.get(violation);
         if (allowedRules.has(offset)) {
           continue;

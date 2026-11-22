@@ -1328,7 +1328,8 @@ test('PageHeader binds its scoped leading-action exception, lede usage and revie
     scope: exception.approval.scope,
     contentHash: props.exceptionHash(exception),
     exception: exceptionPayload,
-    source
+    // The immutable receipt records the source reviewed at approval, not later working-tree revisions.
+    source: { ...source, revision: 'sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24' }
   });
   const { approval, usages, ...convention } = entry;
   assert.deepEqual(approval, {
@@ -1658,9 +1659,16 @@ test('Heading binds its compact foreground exception and preserves the Text rece
     scope: exception.approval.scope,
     contentHash: exception.approval.contentHash,
     exception: exceptionPayload,
-    source: { path, symbol: 'HeadingProps', revision: digest(fs.readFileSync(resolve(root, path))) }
+    // The immutable receipt records the source reviewed at approval, not later working-tree revisions.
+    source: {
+      path,
+      symbol: 'HeadingProps',
+      revision: 'sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c'
+    }
   });
-  assert.match(usages.find(({ component }) => component === 'Heading').type, /TextTone.*TextForeground.*compact/);
+  const headingUsage = usages.find(({ component }) => component === 'Heading');
+  assert.equal(headingUsage.source.revision, digest(fs.readFileSync(resolve(root, path))));
+  assert.match(headingUsage.type, /TextTone.*TextForeground.*compact/);
   assert.match(
     registry.find(({ id }) => id === 'visual-treatment').usages.find(({ component }) => component === 'Heading').type,
     /compact/

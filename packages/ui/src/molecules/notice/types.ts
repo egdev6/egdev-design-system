@@ -13,6 +13,7 @@ export type NoticeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger';
  * initial populated status insertion does not promise speech. No ref or asChild API.
  * className supports outer margin, width and self-alignment only, merged last with cn;
  * tone, size and Material overrides are unsupported, not guaranteed by utility ordering.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type NoticeProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'role'> & {
   /**

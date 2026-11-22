@@ -1,7 +1,9 @@
 import { cva } from 'class-variance-authority';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
-/** Passive named group. className supports outer margin, width and parent placement only. */
+/** Passive named group. className supports outer margin, width and parent placement only.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type NowStripProps = Omit<
   ComponentPropsWithoutRef<'div'>,
   | 'children'

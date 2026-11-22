@@ -151,7 +151,9 @@ export type NavListCollapsibleGroup = NavListGroupBase & {
 /** Ordered in-flow navigation entry schema, not menu or tree data. */
 export type NavListEntry = NavListLink | NavListStaticGroup | NavListCollapsibleGroup;
 
-/** Named navigation landmark. className supports outer width, margin, placement and alignment only. No ref or asChild. */
+/** Named navigation landmark. className supports outer width, margin, placement and alignment only. No ref or asChild.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type NavListProps = Omit<
   ComponentPropsWithoutRef<'nav'>,
   'children' | 'aria-label' | 'aria-labelledby' | 'role'

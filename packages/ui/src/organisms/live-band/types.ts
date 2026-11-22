@@ -15,7 +15,9 @@ type Protected =
   | 'aria-selected'
   | 'aria-disabled';
 type PassiveNative<T> = Omit<T, Protected | Extract<keyof T, `on${string}`>>;
-/** Passive field; className is for outer width, margin and placement only. */
+/** Passive field; className is for outer width, margin and placement only.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type LiveBandFieldProps = PassiveNative<ComponentPropsWithoutRef<'div'>> & {
   /** Text and framed photo in source order.
    * @control false

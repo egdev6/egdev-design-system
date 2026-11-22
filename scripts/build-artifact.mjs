@@ -21,6 +21,17 @@ const program = ts.createProgram(
   parsed.options
 );
 const checker = program.getTypeChecker();
+// React's installed CSS typings provide the hyphenated standard, logical and SVG property list.
+// Reuse the declaration already loaded by this program rather than a versioned pnpm store path.
+const cssSource = program.getSourceFiles().find((source) => /[/\\]csstype[/\\]index\.d\.ts$/.test(source.fileName));
+const cssModule = cssSource && checker.getSymbolAtLocation(cssSource);
+const cssType = cssModule && checker.getExportsOfModule(cssModule).find((item) => item.name === 'PropertiesHyphen');
+if (!cssType) {
+  throw new Error('Cannot find the installed csstype PropertiesHyphen CSS property list');
+}
+const cssProperties = new Set(
+  checker.getPropertiesOfType(checker.getDeclaredTypeOfSymbol(cssType)).map((item) => item.name)
+);
 const publicValues = [];
 for (const barrel of barrels) {
   const source = program.getSourceFile(resolve(root, barrel));
@@ -80,6 +91,45 @@ for (const statement of propProgram.getSourceFile(virtualPath).statements) {
     propsByIndex.set(index, parser.getPropsInfo(propChecker.getSymbolAtLocation(declaration.name)));
   }
 }
+// Each export gets its own props type; shared part types are resolved from their FC annotation.
+function classNameAllows(entry) {
+  const source = entry.types && program.getSourceFile(entry.types);
+  const module = source && checker.getSymbolAtLocation(source);
+  let symbol = module && checker.getExportsOfModule(module).find((item) => item.name === `${entry.name}Props`);
+  if (!symbol) {
+    const annotation = entry.declaration?.type;
+    const argument = annotation && ts.isTypeReferenceNode(annotation) && annotation.typeArguments?.[0];
+    symbol = argument && ts.isTypeReferenceNode(argument) && checker.getSymbolAtLocation(argument.typeName);
+  }
+  if (symbol?.flags & ts.SymbolFlags.Alias) {
+    symbol = checker.getAliasedSymbol(symbol);
+  }
+  const declaration = symbol?.declarations?.find(ts.isTypeAliasDeclaration);
+  if (!declaration || declaration.getSourceFile() !== source) {
+    return undefined;
+  }
+  const tags = ts.getJSDocTags(declaration).filter((tag) => tag.tagName.text === 'classNameAllows');
+  const location = `${pathOf(source.fileName)}:${source.getLineAndCharacterOfPosition(declaration.getStart()).line + 1} ${declaration.name.text}`;
+  if (tags.length > 1) {
+    throw new Error(`Duplicate @classNameAllows on ${location}`);
+  }
+  if (!tags.length) {
+    return undefined;
+  }
+  const comment = tags[0].comment;
+  const text = (typeof comment === 'string' ? comment : ts.displayPartsToString(comment ?? [])).trim();
+  if (!text) {
+    throw new Error(`Empty @classNameAllows on ${location}`);
+  }
+  const properties = text.split(/\s+/);
+  for (const property of properties) {
+    if (!/^-?[a-z][a-z0-9-]*$/.test(property) || !cssProperties.has(property)) {
+      throw new Error(`Unknown CSS property ${property} in @classNameAllows on ${location}`);
+    }
+  }
+  return [...new Set(properties)].sort(compare);
+}
+
 // Read Storybook's hidden-own-prop table from its source, without evaluating its config.
 const storybook = ts.createSourceFile(
   '.storybook/main.ts',
@@ -690,10 +740,12 @@ const components = publicValues
         deprecated: Boolean(prop.tags?.deprecated)
       }))
       .sort((a, b) => compare(a.name, b.name));
+    const allowed = classNameAllows(entry);
     return {
       name: entry.name,
       package: entry.package,
       source: pathOf(entry.types ?? entry.file),
+      ...(allowed ? { classNameAllows: allowed } : {}),
       props,
       variants: variants(entry.types),
       parts: compoundParts(entry),

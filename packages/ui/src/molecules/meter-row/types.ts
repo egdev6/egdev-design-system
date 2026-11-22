@@ -41,6 +41,7 @@ type MeterRowNativeProps = Omit<
  * ProgressBar alone owns semantics. No ref, asChild, children, actions or live announcements.
  * className merges last for outer margins, width/min/max-width and parent flex/grid placement
  * only; internal appearance overrides are unsupported. Compatible native metadata reaches the div.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type MeterRowProps = MeterRowNativeProps & {
   /**

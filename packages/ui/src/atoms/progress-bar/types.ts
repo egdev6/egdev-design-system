@@ -53,6 +53,7 @@ type ProgressBarNativeProps = Omit<
  * role and its value attributes; label decides between an announced and a decorative bar.
  * className supports outer layout only (width, margin, positioning when not edge).
  * No children, ref or asChild; edge is only available with the sm size.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type ProgressBarProps = ProgressBarNativeProps &
   ProgressBarSizeProps & {

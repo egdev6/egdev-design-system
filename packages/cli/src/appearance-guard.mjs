@@ -8,6 +8,7 @@
 /** @typedef {{ file: string, line: number, snippet: string, component: string, selectors: string[] }} StructuralViolation */
 /** @typedef {{ tsx: RegExp, css: RegExp, test: RegExp }} SourcePatterns */
 /** @typedef {{ component?: string, ancestor?: string, owned: boolean, internal: boolean }} SelectorState */
+/** @typedef {{ component: string, exportName: string }} ClassOwner */
 
 /** @type {WeakMap<object, number>} */
 export const ruleOffsets = new WeakMap();
@@ -470,11 +471,13 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
    * @param {readonly GuardSource[]} files
    * @param {string} sourceDirectory
    * @param {Map<GuardSource, import('typescript').SourceFile>} sourceFiles
-   * @returns {{ classes: Map<string, string>, appClasses: Set<string> }}
+   * @returns {{ classes: Map<string, string>, owners: Map<string, ClassOwner[]>, appClasses: Set<string> }}
    */
   function collectClasses(files, sourceDirectory, sourceFiles) {
     /** @type {Map<string, string>} */
     const classes = new Map();
+    /** @type {Map<string, ClassOwner[]>} */
+    const owners = new Map();
     /** @type {Set<string>} */
     const appClasses = new Set();
     const pattern = patterns(sourceDirectory);
@@ -487,7 +490,7 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       }
     }
     if (sources.size === 0) {
-      return { classes, appClasses };
+      return { classes, owners, appClasses };
     }
     // An in-memory, no-resolution program distinguishes imports from local shadowing. It cannot
     // read the consumer's filesystem or load its types, and uses the source files already parsed.
@@ -510,8 +513,8 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
     const program = ts.createProgram([...sources.keys()], { noLib: true, noResolve: true, types: [] }, host);
     const checker = program.getTypeChecker();
     for (const source of sources.values()) {
-      /** @type {Set<import('typescript').Symbol>} */
-      const named = new Set();
+      /** @type {Map<import('typescript').Symbol, string>} */
+      const named = new Map();
       /** @type {Set<import('typescript').Symbol>} */
       const namespaces = new Set();
       for (const statement of source.statements) {
@@ -533,45 +536,54 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
           for (const binding of bindings.elements) {
             const symbol = checker.getSymbolAtLocation(binding.name);
             if (!binding.isTypeOnly && symbol) {
-              named.add(symbol);
+              named.set(symbol, (binding.propertyName ?? binding.name).text);
             }
           }
         }
       }
-      /** @param {string} text @param {string | undefined} component */
-      const add = (text, component) => {
+      /** @param {string} text @param {ClassOwner | undefined} owner */
+      const add = (text, owner) => {
         for (const name of text.split(/\s+/)) {
           if (name) {
             appClasses.add(name);
-            if (component && !classes.has(name)) {
-              classes.set(name, component);
+            if (owner) {
+              if (!classes.has(name)) {
+                classes.set(name, owner.component);
+              }
+              const existing = owners.get(name) ?? [];
+              if (
+                !existing.some((item) => item.component === owner.component && item.exportName === owner.exportName)
+              ) {
+                existing.push(owner);
+                owners.set(name, existing);
+              }
             }
           }
         }
       };
-      /** @param {import('typescript').Node} node @param {string | undefined} component */
-      const addStatic = (node, component) => {
+      /** @param {import('typescript').Node} node @param {ClassOwner | undefined} owner */
+      const addStatic = (node, owner) => {
         if (ts.isComputedPropertyName(node) || ts.isTypeNode(node)) {
           return;
         }
         const parts = staticStringParts(ts, node);
         if (ts.isTemplateExpression(node)) {
-          add(parts[0]?.text ?? '', component);
+          add(parts[0]?.text ?? '', owner);
           for (const [index, span] of node.templateSpans.entries()) {
-            addStatic(span.expression, component);
-            add(parts[index + 1]?.text ?? '', component);
+            addStatic(span.expression, owner);
+            add(parts[index + 1]?.text ?? '', owner);
           }
         } else if (parts.length) {
-          add(parts[0]?.text ?? '', component);
+          add(parts[0]?.text ?? '', owner);
         } else if (ts.isObjectLiteralExpression(node)) {
           for (const property of node.properties) {
             if ('name' in property && property.name && ts.isIdentifier(property.name)) {
-              add(property.name.text, component);
+              add(property.name.text, owner);
             }
-            ts.forEachChild(property, (child) => addStatic(child, component));
+            ts.forEachChild(property, (child) => addStatic(child, owner));
           }
         } else {
-          ts.forEachChild(node, (child) => addStatic(child, component));
+          ts.forEachChild(node, (child) => addStatic(child, owner));
         }
       };
       /** @param {import('typescript').Node} node */
@@ -585,13 +597,19 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
               ? tag.expression
               : undefined;
           const symbol = identifier ? checker.getSymbolAtLocation(identifier) : undefined;
-          const imported = symbol && (ts.isIdentifier(tag) ? named.has(symbol) : namespaces.has(symbol));
+          const exportName = symbol
+            ? ts.isIdentifier(tag)
+              ? named.get(symbol)
+              : ts.isPropertyAccessExpression(tag) && namespaces.has(symbol)
+                ? tag.name.text
+                : undefined
+            : undefined;
+          const owner = exportName ? { component, exportName } : undefined;
           for (const attribute of node.attributes.properties) {
             if (!ts.isJsxAttribute(attribute) || attribute.name.getText(source) !== 'className') {
               continue;
             }
             const value = attribute.initializer;
-            const owner = imported ? component : undefined;
             if (value && ts.isStringLiteral(value)) {
               add(value.text, owner);
             } else if (value && ts.isJsxExpression(value) && value.expression) {
@@ -603,15 +621,21 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       };
       visit(source);
     }
-    return { classes, appClasses };
+    return { classes, owners, appClasses };
   }
 
   /**
+   * Follow all matched owners when extensions exist: the same class or selector list can target
+   * another component whose contract does not allow the property. Without extensions retain the
+   * original first-match behavior and its exact diagnostics.
    * @param {PostcssRule} rule
-   * @param {Map<string, string>} classes
-   * @returns {string | undefined}
+   * @param {Map<string, ClassOwner[]>} owners
+   * @param {boolean} firstOnly
+   * @returns {ClassOwner[]}
    */
-  function matchedComponent(rule, classes) {
+  function matchedOwners(rule, owners, firstOnly) {
+    /** @type {ClassOwner[]} */
+    const matches = [];
     /** @type {PostcssRule | undefined} */
     let current = rule;
     while (current) {
@@ -619,15 +643,19 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       for (const selector of postcss.list.comma(current.selector)) {
         const compound = lastCompound(selector);
         for (const name of compound.classes) {
-          const component = classes.get(name);
-          if (component) {
-            return component;
+          for (const owner of owners.get(name) ?? []) {
+            if (!matches.some((item) => item.component === owner.component && item.exportName === owner.exportName)) {
+              matches.push(owner);
+              if (firstOnly) {
+                return matches;
+              }
+            }
           }
         }
         usesParent ||= compound.parent;
       }
       if (!usesParent) {
-        return undefined;
+        break;
       }
       /** @type {import('./guard.mjs').PostcssContainer | undefined} */
       let parent = current.parent;
@@ -636,16 +664,17 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       }
       current = parent?.type === 'rule' ? /** @type {PostcssRule} */ (parent) : undefined;
     }
-    return undefined;
+    return matches;
   }
 
   /**
    * Include declarations inside conditional at-rules belonging to this rule, but not declarations
    * of nested selectors: each nested selector is checked independently by postcss.walkRules.
    * @param {PostcssRule} rule
+   * @param {ReadonlySet<string> | undefined} additional
    * @returns {string[]}
    */
-  function offendingProperties(rule) {
+  function offendingProperties(rule, additional) {
     /** @type {Set<string>} */
     const properties = new Set();
     const pending = [...(rule.nodes ?? [])].reverse();
@@ -654,7 +683,12 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       if (!node) {
         continue;
       }
-      if (node.type === 'decl' && typeof node.prop === 'string' && !isPlacement(node.prop, node.value ?? '')) {
+      if (
+        node.type === 'decl' &&
+        typeof node.prop === 'string' &&
+        !additional?.has(node.prop.toLowerCase()) &&
+        !isPlacement(node.prop, node.value ?? '')
+      ) {
         properties.add(node.prop);
       } else if (node.type === 'atrule' && CONDITIONAL_RULES.has(node.name?.toLowerCase() ?? '')) {
         pending.push(...[...(node.nodes ?? [])].reverse());
@@ -667,32 +701,32 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
    * @param {GuardSource} source
    * @param {string} themeDirectory
    * @param {string} sourceDirectory
-   * @param {Map<string, string>} classes
+   * @param {Map<string, ClassOwner[]>} owners
+   * @param {ReadonlyMap<string, ReadonlySet<string>>} classNameAllows
    * @returns {AppearanceViolation[]}
    */
-  function findAppearanceViolations({ file, content }, themeDirectory, sourceDirectory, classes) {
-    if (classes.size === 0 || !patterns(sourceDirectory).css.test(file) || file.startsWith(themeDirectory)) {
+  function findAppearanceViolations({ file, content }, themeDirectory, sourceDirectory, owners, classNameAllows) {
+    if (owners.size === 0 || !patterns(sourceDirectory).css.test(file) || file.startsWith(themeDirectory)) {
       return [];
     }
     /** @type {AppearanceViolation[]} */
     const found = [];
     postcss.parse(content, { from: file }).walkRules((rule) => {
-      const properties = offendingProperties(rule);
-      if (!properties.length) {
-        return;
-      }
-      const component = matchedComponent(rule, classes);
-      if (component) {
-        const offset = rule.source?.start?.offset ?? 0;
-        const violation = {
-          file,
-          line: content.slice(0, offset).split('\n').length,
-          snippet: normalize(rule.raws.selector?.raw ?? rule.selector),
-          component,
-          properties
-        };
-        ruleOffsets.set(violation, offset);
-        found.push(violation);
+      for (const { component, exportName } of matchedOwners(rule, owners, classNameAllows.size === 0)) {
+        const properties = offendingProperties(rule, classNameAllows.get(exportName));
+        if (properties.length) {
+          const offset = rule.source?.start?.offset ?? 0;
+          const violation = {
+            file,
+            line: content.slice(0, offset).split('\n').length,
+            snippet: normalize(rule.raws.selector?.raw ?? rule.selector),
+            component,
+            properties
+          };
+          ruleOffsets.set(violation, offset);
+          found.push(violation);
+          break;
+        }
       }
     });
     return found;

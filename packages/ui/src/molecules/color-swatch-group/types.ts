@@ -41,6 +41,7 @@ type ColorSwatchGroupNativeProps = Omit<
  * localization, persistence, normalization, reset and form serialization. Root className
  * merges last for margins, width and parent placement only, not appearance or part overrides.
  * There is no uncontrolled state, ref, asChild, custom renderer or native form API.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type ColorSwatchGroupProps = ColorSwatchGroupNativeProps & {
   /**

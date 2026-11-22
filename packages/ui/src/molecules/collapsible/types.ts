@@ -53,6 +53,7 @@ type UncontrolledDisclosure = {
  * One in-flow disclosure. Supply one Trigger/Content pair, optionally with a heading.
  * className supports outer margin, width/max-width and grid/flex placement, merged last.
  * Paint, padding, state and presence overrides are unsupported; no Root ref or asChild API.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type CollapsibleProps = Omit<ComponentPropsWithoutRef<'div'>, OwnedNativeProps | 'role' | 'tabIndex'> &
   (ControlledDisclosure | UncontrolledDisclosure) & {
@@ -73,6 +74,7 @@ export type CollapsibleProps = Omit<ComponentPropsWithoutRef<'div'>, OwnedNative
 /**
  * Optional unpainted row. className supports outer margin, width and parent placement only,
  * merged last; no ref, role, tabIndex, inline appearance or asChild API.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type CollapsibleHeaderProps = Omit<
   ComponentPropsWithoutRef<'div'>,

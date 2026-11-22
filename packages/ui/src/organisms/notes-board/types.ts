@@ -6,7 +6,9 @@ type NotesBoardNativeProps = Omit<
   'children' | 'role' | 'style' | 'dangerouslySetInnerHTML'
 >;
 
-/** Passive editorial layout. className supports outer margin, width and parent placement only. */
+/** Passive editorial layout. className supports outer margin, width and parent placement only.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type NotesBoardProps = NotesBoardNativeProps & {
   /**
    * One NotesBoardSide followed by one NotesBoardList; the consumer owns their contents.

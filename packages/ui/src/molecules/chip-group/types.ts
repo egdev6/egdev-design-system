@@ -75,6 +75,7 @@ type ChipGroupCommonProps = ChipGroupNativeProps & {
  * use RadioGroup for mandatory form choices. No ref, asChild, children or form submission API.
  * className supports root margins, width and parent flex/grid placement only, merged last by cn.
  * Do not switch mode or controlledness during a mount. Array values follow activation order.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type ChipGroupProps = ChipGroupCommonProps &
   (

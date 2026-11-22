@@ -25,6 +25,7 @@ type CommunityCardNativeProps = Omit<
 /** Passive named community card with a banded Material header. className supports outer layout
  * only (grid placement, width, margin, equal-height stretching), merged last; appearance, spacing
  * and parts remain owned. The heading names the article; no ref, asChild or whole-card activation.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type CommunityCardProps = CommunityCardNativeProps & {
   /**
@@ -60,7 +61,9 @@ export type CommunityCardProps = CommunityCardNativeProps & {
   className?: string;
 };
 
-/** Decorative consumer mark slot on the trailing edge of the header band's top row. */
+/** Decorative consumer mark slot on the trailing edge of the header band's top row.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type CommunityCardMarkProps = {
   /**
    * Exactly one consumer-supplied, non-interactive mark element: no anchor, button or tab stop.
@@ -80,7 +83,9 @@ export type CommunityCardMarkProps = {
   className?: string;
 };
 
-/** Bottom-edge zone for the card's single supplied action; the card itself stays passive. */
+/** Bottom-edge zone for the card's single supplied action; the card itself stays passive.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type CommunityCardActionProps = {
   /**
    * Exactly one consumer `Button` (optionally `asChild` with an anchor) or `Link`. Two competing

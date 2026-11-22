@@ -8,6 +8,7 @@ export type ButtonSize = 'lg' | 'md' | 'sm';
  * One labelled action. className supports root layout only (margin, alignment, placement,
  * width), merged last with cn; appearance overrides are unsupported. A slotted child must
  * spread props and forward its ref to a compatible link or button, without overriding state.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type ButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'children'> & {
   /**

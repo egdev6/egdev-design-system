@@ -123,6 +123,7 @@ type TimelineNativeProps = Omit<
 /** Read-only bounded collection. className supports outer width, margin and placement only.
  * No ref, asChild, viewport props, height clipping or internal appearance overrides.
  * Root listeners target the root, not the native scrolling viewport.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type TimelineProps = TimelineNativeProps & {
   /** Required non-empty accessible name, including ordering context. @control text */

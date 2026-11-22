@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import { rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { after, test } from 'node:test';
 import { createGuard } from '../src/guard.mjs';
-import { engine, json, npmViteFixture, runBin, treeHash, write } from './helpers.mjs';
+import { engine, freshNpmVite, json, npmViteFixture, runBin, treeHash, write } from './helpers.mjs';
 
 const { checkDesignSystem } = createGuard(engine);
 const scratch = [];
@@ -653,6 +653,217 @@ test('S3 doctor reports each same-line rule even when findings have identical te
     stderr: ''
   });
   assert.equal(treeHash(app.root), before);
+});
+
+// S9 checks are exercised through doctor, including exact output, exit status and read-only behavior.
+const artifact = (components) => json({ components });
+const selectTile = { name: 'SelectTile', package: '@egdev/ui', classNameAllows: ['grid-template-columns', 'width'] };
+const artifactPath = (project) => join(project, 'node_modules/@egdev/system/design-system.json');
+const doctorBaseline = (app) => ({
+  text: runBin(['doctor', app.argument], app.root),
+  json: runBin(['doctor', app.argument, '--json'], app.root)
+});
+const assertDoctor = (app, baseline, extra) => {
+  assert.equal(baseline.text.status, 0);
+  assert.equal(baseline.json.status, 0);
+  assert.equal(baseline.text.stderr, '');
+  assert.equal(baseline.json.stderr, '');
+  const rows = extra.map(({ code, file, line, message }) => `${code} error ${file}:${line}: ${message}\n`).join('');
+  const errors = extra.length === 1 ? '1 error' : `${extra.length} errors`;
+  const text = baseline.text.stdout.replace('DS051 skipped', `${rows}DS051 skipped`).replace('0 errors,', `${errors},`);
+  const before = treeHash(app.root);
+  assert.deepEqual(runBin(['doctor', app.argument], app.root), {
+    status: extra.length ? 1 : 0,
+    stdout: text,
+    stderr: ''
+  });
+  // Compare the full JSON document without changing its property order.
+  const expectedJson = JSON.parse(baseline.json.stdout);
+  expectedJson.findings.splice(
+    2,
+    0,
+    ...extra.map(({ code, message, file, line }) => ({ code, severity: 'error', message, file, line }))
+  );
+  expectedJson.result = extra.length ? 'failed' : 'current';
+  assert.deepEqual(runBin(['doctor', app.argument, '--json'], app.root), {
+    status: extra.length ? 1 : 0,
+    stdout: `${JSON.stringify(expectedJson, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(app.root), before);
+};
+const ds046 = (line, selector, component, properties) => ({
+  code: 'DS046',
+  message: `${selector} on ${component} sets ${properties}: use the component API or add an allowlist entry with an issue.`,
+  file: 'src/styles.css',
+  line
+});
+
+test('S9 vendored component allowances extend DS046 for direct, aliased and namespace imports only', () => {
+  const app = fixture();
+  const baseline = doctorBaseline(app);
+  write(
+    artifactPath(app.project),
+    artifact([
+      selectTile,
+      { name: 'Button', package: '@egdev/ui' },
+      { name: 'Field', package: '@egdev/ui', classNameAllows: ['min-width'] }
+    ])
+  );
+  const markup = [
+    "import { SelectTile, SelectTile as Tiles, Button, Field } from '@egdev/ui';",
+    "import * as UI from '@egdev/ui';",
+    'const a = <SelectTile className="tiles mixed" />;',
+    'const b = <Tiles className="alias alias-mixed" />;',
+    'const c = <UI.SelectTile className="namespace ns-mixed" />;',
+    'const d = <Button className="button" />;',
+    'const e = <Field className="field" />;',
+    ''
+  ].join('\n');
+  write(join(app.project, 'src/Example.tsx'), markup);
+  write(join(app.project, 'src/styles.css'), '.tiles { grid-template-columns: 1fr; width: 100%; }\n');
+  assertDoctor(app, baseline, []);
+  write(join(app.project, 'src/Example.tsx'), `${markup}el.closest('.eg-panel');\n`);
+  const dom = {
+    code: 'DS048',
+    message:
+      "closest('.eg-panel') depends on DS markup (.eg-panel): use a ref or an app-owned wrapper, or add an allowlist entry with an issue.",
+    file: 'src/Example.tsx',
+    line: 8
+  };
+  assertDoctor(app, baseline, [dom]);
+  write(
+    join(app.project, 'src/styles.css'),
+    [
+      '.tiles { grid-template-columns: 1fr; width: 100%; }',
+      '.mixed { grid-template-columns: 1fr; width: 100%; color: red; }',
+      '.alias { grid-template-columns: 1fr; width: 100%; }',
+      '.alias-mixed { width: 100%; color: red; }',
+      '.namespace { grid-template-columns: 1fr; width: 100%; }',
+      '.ns-mixed { width: 100%; color: red; }',
+      '.button { grid-template-columns: 1fr; width: 100%; }',
+      '.tiles > footer { width: 100%; }',
+      '.field { MIN-WIDTH: 20px; max-width: 20px; }',
+      ''
+    ].join('\n')
+  );
+  assertDoctor(app, baseline, [
+    ds046(2, '.mixed', 'SelectTile', 'color'),
+    ds046(4, '.alias-mixed', 'Tiles', 'color'),
+    ds046(6, '.ns-mixed', 'UI.SelectTile', 'color'),
+    ds046(7, '.button', 'Button', 'grid-template-columns, width'),
+    ds046(9, '.field', 'Field', 'max-width'),
+    {
+      code: 'DS047',
+      message:
+        '.tiles > footer reaches into SelectTile internals: use the component API or add an allowlist entry with an issue.',
+      file: 'src/styles.css',
+      line: 8
+    },
+    dom
+  ]);
+});
+
+test('S9 missing, malformed, unreadable, invalid or untagged artifacts silently retain base output', () => {
+  const cases = [
+    ['missing', null],
+    ['malformed JSON', '{not json'],
+    ['invalid root', json({ components: {} })],
+    ['invalid property array', artifact([{ ...selectTile, classNameAllows: ['width', 42] }])],
+    ['unreadable file', 'directory'],
+    ['no entry', artifact([{ name: 'Button', package: '@egdev/ui' }])],
+    ['no classNameAllows anywhere', artifact([{ name: 'SelectTile', package: '@egdev/ui' }])],
+    ['wrong package', artifact([{ ...selectTile, package: '@egdev/effects' }])]
+  ];
+  for (const [label, contents] of cases) {
+    const app = fixture();
+    const baseline = doctorBaseline(app);
+    write(
+      join(app.project, 'src/Example.tsx'),
+      'import { SelectTile as Tiles } from \'@egdev/ui\'; const view = <Tiles className="tiles" />;\n'
+    );
+    write(join(app.project, 'src/styles.css'), '.tiles { grid-template-columns: 1fr; width: 100%; }\n');
+    if (contents === 'directory') {
+      mkdirSync(artifactPath(app.project));
+    } else if (contents !== null) {
+      write(artifactPath(app.project), contents);
+    }
+    assert.doesNotThrow(
+      () => assertDoctor(app, baseline, [ds046(1, '.tiles', 'Tiles', 'grid-template-columns, width')]),
+      label
+    );
+  }
+});
+
+test('S9 shared classes, selector lists and nesting do not borrow another component allowance', () => {
+  const app = fixture();
+  const baseline = doctorBaseline(app);
+  write(artifactPath(app.project), artifact([selectTile]));
+  write(
+    join(app.project, 'src/Example.tsx'),
+    [
+      "import { SelectTile, Button } from '@egdev/ui';",
+      'const a = <SelectTile className="tiles shared" />;',
+      'const b = <Button className="button shared" />;',
+      ''
+    ].join('\n')
+  );
+  write(
+    join(app.project, 'src/styles.css'),
+    [
+      '.shared { width: 100%; }',
+      '.tiles, .button { width: 100%; }',
+      '.tiles { &:hover { width: 100%; } }',
+      '.button { &:hover { width: 100%; } }',
+      ''
+    ].join('\n')
+  );
+  assertDoctor(app, baseline, [
+    ds046(1, '.shared', 'Button', 'width'),
+    ds046(2, '.tiles, .button', 'Button', 'width'),
+    ds046(4, '&:hover', 'Button', 'width')
+  ]);
+});
+
+test('S9 resolves the artifact from the project using Node lookup, including a hoisted package', () => {
+  const app = freshNpmVite();
+  scratch.push(app.root);
+  write(join(app.project, 'egdev-ds.json'), json({ schemaVersion: 1, localRepo: 'nexo' }));
+  const baseline = doctorBaseline(app);
+  write(join(app.root, 'node_modules/@egdev/system/package.json'), json({ name: '@egdev/system' }));
+  write(artifactPath(app.root), artifact([selectTile]));
+  write(
+    join(app.project, 'src/Example.tsx'),
+    'import { SelectTile } from \'@egdev/ui\'; const view = <SelectTile className="tiles" />;\n'
+  );
+  write(join(app.project, 'src/styles.css'), '.tiles { width: 100%; }\n');
+  // This fresh fixture has no vendored-set DS051 row; compare the complete output directly.
+  const before = treeHash(app.root);
+  assert.deepEqual(doctorBaseline(app), baseline);
+  assert.equal(treeHash(app.root), before);
+  write(join(app.project, 'node_modules/@egdev/system/package.json'), json({ name: '@egdev/system' }));
+  write(artifactPath(app.project), artifact([{ name: 'SelectTile', package: '@egdev/ui' }]));
+  const localBefore = treeHash(app.root);
+  const finding = ds046(1, '.tiles', 'SelectTile', 'width');
+  const line = `DS046 error ${finding.file}:${finding.line}: ${finding.message}\n`;
+  const expectedJson = JSON.parse(baseline.json.stdout);
+  expectedJson.findings.unshift({
+    code: finding.code,
+    severity: 'error',
+    message: finding.message,
+    file: finding.file,
+    line: finding.line
+  });
+  expectedJson.result = 'failed';
+  assert.deepEqual(doctorBaseline(app), {
+    text: {
+      status: 1,
+      stdout: baseline.text.stdout.replace('DS052 skipped', `${line}DS052 skipped`).replace('0 errors,', '1 error,'),
+      stderr: ''
+    },
+    json: { status: 1, stdout: `${JSON.stringify(expectedJson, null, 2)}\n`, stderr: '' }
+  });
+  assert.equal(treeHash(app.root), localBefore);
 });
 
 test('S3 doctor honors excluded paths and a pending allowlisted DS046, including --fail-on-pending', () => {

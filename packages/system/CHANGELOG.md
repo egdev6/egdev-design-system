@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- The artifact exposes each component's explicitly permitted additional `className` CSS properties
+  as optional `classNameAllows` metadata. Refs #530
+
 ## 0.8.0
 
 ### Added

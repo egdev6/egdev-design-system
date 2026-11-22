@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- `doctor` DS046 accepts each component's additional `classNameAllows` properties from the project's vendored
+  `@egdev/system` artifact, falling back silently to the base list when unavailable or invalid. Refs #530.
+- New `init` agent blocks describe the DS046 `className` contract and provide stdio MCP and `design/system.md`
+  fallbacks when the MCP server is unavailable; existing marked blocks are left unchanged and can be edited by hand.
+  Refs #530.
+
 ## 0.3.0
 
 - `egdev-ds init` creates or appends marked design system agent rules in `AGENTS.md`, or names an unmarked ancestor

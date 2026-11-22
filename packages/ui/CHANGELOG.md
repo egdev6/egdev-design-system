@@ -4,6 +4,13 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## Unreleased
+
+### Changed
+
+- Published props types include `@classNameAllows` metadata for explicitly documented additional
+  `className` CSS properties; runtime behavior and existing prose are unchanged. Refs #530
+
 ## 0.7.0
 
 ### Added

@@ -53,6 +53,7 @@ type SocialLinksNativeProps = Omit<
  * Ordered social destinations with optional visible context, not a navigation landmark.
  * className supports outer margin, width/min/max width and parent placement only.
  * No ref, asChild, free children, per-part styling or item rendering callback is exposed.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type SocialLinksProps = SocialLinksNativeProps & {
   /**

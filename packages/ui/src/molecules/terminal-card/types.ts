@@ -52,6 +52,7 @@ type TerminalCardNativeProps = Omit<
 /**
  * Passive named key/value terminal card: a `role="group"` region with a title bar and a
  * definition list. className supports outer layout only; no ref or asChild API.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type TerminalCardProps = TerminalCardNativeProps & {
   /**
