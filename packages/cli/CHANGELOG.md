@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0
 
 - `egdev-ds init` creates or appends marked design system agent rules in `AGENTS.md`, or names an unmarked ancestor
   as a manual next step. It backfills already-vendored projects, preserves existing bytes and user edits, and includes
