@@ -24,6 +24,7 @@ export type FieldCounter = {
  * for token-backed font family, size, weight and line-height; not colors, geometry or control parts.
  * CSS layer and specificity determine precedence for scoped rules; cn only merges utilities.
  * No Field ref or asChild API; the child keeps its own ref through Radix Slot.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type FieldProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
   /** Required control name, even when visually hidden.

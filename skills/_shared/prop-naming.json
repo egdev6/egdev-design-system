@@ -314,7 +314,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupProps.value",
-          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
+          "revision": "sha256:2d388517b084716cfb50c655d4ee8369454c608c192573f545b8fc3f4fed20d8"
         }
       },
       {
@@ -324,7 +324,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupOption.value",
-          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
+          "revision": "sha256:2d388517b084716cfb50c655d4ee8369454c608c192573f545b8fc3f4fed20d8"
         }
       },
       {
@@ -354,7 +354,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -364,7 +364,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -374,7 +374,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       },
       {
@@ -384,7 +384,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupOption",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       },
       {
@@ -414,7 +414,7 @@
         "source": {
           "path": "packages/ui/src/atoms/progress-bar/types.ts",
           "symbol": "ProgressBarProps",
-          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+          "revision": "sha256:4ba5e628565e5162a4aa1b1ecb4538210cf8c5c3f1d29119e42f07ef40a1e3e5"
         }
       },
       {
@@ -454,7 +454,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       },
       {
@@ -464,7 +464,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselItem",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       },
       {
@@ -474,7 +474,7 @@
         "source": {
           "path": "packages/ui/src/molecules/meter-row/types.ts",
           "symbol": "MeterRowProps",
-          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+          "revision": "sha256:a651426d3d5e24be0f153bdf62a86e97237851416c90644cb843902bac80e816"
         }
       },
       {
@@ -484,7 +484,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -504,7 +504,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -531,7 +531,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -541,7 +541,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       },
       {
@@ -581,7 +581,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       },
       {
@@ -591,7 +591,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -611,7 +611,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -638,7 +638,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupProps.onValueChange",
-          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
+          "revision": "sha256:2d388517b084716cfb50c655d4ee8369454c608c192573f545b8fc3f4fed20d8"
         }
       },
       {
@@ -648,7 +648,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -658,7 +658,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       },
       {
@@ -698,7 +698,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       },
       {
@@ -708,7 +708,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -728,7 +728,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -785,7 +785,7 @@
         "source": {
           "path": "packages/ui/src/molecules/timeline/types.ts",
           "symbol": "TimelineProps",
-          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+          "revision": "sha256:6567448b327ab77cbca128197ad838042bc59242201a24250fdbddc42fcb6edd"
         }
       },
       {
@@ -795,7 +795,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinksProps",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -805,7 +805,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
+          "revision": "sha256:a93291f466c581af8160099e1ca872d8d0b8825ad9b095bc9e97c0670b0d617a"
         }
       },
       {
@@ -825,7 +825,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
+          "revision": "sha256:26547d7d24fb9a9e8f5a3850d09ef9e010dce123f62c8fcc3db7c9ccf16cb11e"
         }
       },
       {
@@ -875,7 +875,7 @@
         "source": {
           "path": "packages/ui/src/atoms/progress-bar/types.ts",
           "symbol": "ProgressBarProps",
-          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+          "revision": "sha256:4ba5e628565e5162a4aa1b1ecb4538210cf8c5c3f1d29119e42f07ef40a1e3e5"
         }
       },
       {
@@ -955,7 +955,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -985,7 +985,7 @@
         "source": {
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemProps",
-          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
+          "revision": "sha256:86f20d54760b2e74e6283dc69c346d8d93a18d6410e6ed13d1547ee95846355b"
         }
       },
       {
@@ -995,7 +995,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       },
       {
@@ -1005,7 +1005,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:1167b088ff52237fa4d7e3bd92b93c302466e0b1d0bc8f016c08a7aa6d0db3d1"
+          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
         }
       }
     ]
@@ -1062,7 +1062,7 @@
         "source": {
           "path": "packages/ui/src/molecules/timeline/types.ts",
           "symbol": "TimelineProps",
-          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+          "revision": "sha256:6567448b327ab77cbca128197ad838042bc59242201a24250fdbddc42fcb6edd"
         }
       },
       {
@@ -1072,7 +1072,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinksProps",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -1082,7 +1082,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       },
       {
@@ -1092,7 +1092,7 @@
         "source": {
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemProps",
-          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
+          "revision": "sha256:86f20d54760b2e74e6283dc69c346d8d93a18d6410e6ed13d1547ee95846355b"
         }
       },
       {
@@ -1112,7 +1112,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
+          "revision": "sha256:26547d7d24fb9a9e8f5a3850d09ef9e010dce123f62c8fcc3db7c9ccf16cb11e"
         }
       },
       {
@@ -1152,7 +1152,7 @@
         "source": {
           "path": "packages/ui/src/atoms/progress-bar/types.ts",
           "symbol": "ProgressBarProps",
-          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+          "revision": "sha256:4ba5e628565e5162a4aa1b1ecb4538210cf8c5c3f1d29119e42f07ef40a1e3e5"
         }
       },
       {
@@ -1192,7 +1192,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -1202,7 +1202,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -1222,7 +1222,7 @@
         "source": {
           "path": "packages/ui/src/atoms/dropzone/types.ts",
           "symbol": "DropzoneProps",
-          "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
+          "revision": "sha256:039ddd0b4c3147bdb44aece52cc9e21e0ed57f5cb42991b787f8fe494206cef8"
         }
       },
       {
@@ -1242,7 +1242,7 @@
         "source": {
           "path": "packages/ui/src/molecules/meter-row/types.ts",
           "symbol": "MeterRowProps",
-          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+          "revision": "sha256:a651426d3d5e24be0f153bdf62a86e97237851416c90644cb843902bac80e816"
         }
       },
       {
@@ -1252,7 +1252,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -1312,7 +1312,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       },
       {
@@ -1332,7 +1332,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       }
     ]
@@ -1410,7 +1410,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListTag",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -1420,7 +1420,7 @@
         "source": {
           "path": "packages/ui/src/molecules/timeline/types.ts",
           "symbol": "TimelineEvent",
-          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+          "revision": "sha256:6567448b327ab77cbca128197ad838042bc59242201a24250fdbddc42fcb6edd"
         }
       },
       {
@@ -1430,7 +1430,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       },
       {
@@ -1450,7 +1450,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
+          "revision": "sha256:a93291f466c581af8160099e1ca872d8d0b8825ad9b095bc9e97c0670b0d617a"
         }
       },
       {
@@ -1470,7 +1470,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -1480,7 +1480,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -1520,7 +1520,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsItem",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -1570,7 +1570,7 @@
         "source": {
           "path": "packages/ui/src/molecules/terminal-card/types.ts",
           "symbol": "TerminalCardRow",
-          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
+          "revision": "sha256:8f38012a58012acd15571c9150980195448da25fcb21c6dc2da8ec3a6ce4b0d1"
         }
       }
     ]
@@ -1655,7 +1655,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupProps.label",
-          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
+          "revision": "sha256:2d388517b084716cfb50c655d4ee8369454c608c192573f545b8fc3f4fed20d8"
         }
       },
       {
@@ -1665,7 +1665,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupOption.label",
-          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
+          "revision": "sha256:2d388517b084716cfb50c655d4ee8369454c608c192573f545b8fc3f4fed20d8"
         }
       },
       {
@@ -1695,7 +1695,7 @@
         "source": {
           "path": "packages/ui/src/organisms/now-strip/types.ts",
           "symbol": "NowStripProps",
-          "revision": "sha256:1713d7a33c2810d71a554b2d42b60e2c95298647883bbc81e58d1c500f835bcb"
+          "revision": "sha256:189044bc9ae26eb8f1c7726b8fa2ecca6e12edc32e6a7e3b466653495097eaf2"
         }
       },
       {
@@ -1715,7 +1715,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -1725,7 +1725,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteItem",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -1765,7 +1765,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListProps",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -1775,7 +1775,7 @@
         "source": {
           "path": "packages/ui/src/molecules/timeline/types.ts",
           "symbol": "TimelineProps",
-          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+          "revision": "sha256:6567448b327ab77cbca128197ad838042bc59242201a24250fdbddc42fcb6edd"
         }
       },
       {
@@ -1785,7 +1785,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -1795,7 +1795,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -1805,7 +1805,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinksProps",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -1815,7 +1815,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinkItem",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -1825,7 +1825,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       },
       {
@@ -1835,7 +1835,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupOption",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       },
       {
@@ -1915,7 +1915,7 @@
         "source": {
           "path": "packages/ui/src/atoms/progress-bar/types.ts",
           "symbol": "ProgressBarProps",
-          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+          "revision": "sha256:4ba5e628565e5162a4aa1b1ecb4538210cf8c5c3f1d29119e42f07ef40a1e3e5"
         }
       },
       {
@@ -1965,7 +1965,7 @@
         "source": {
           "path": "packages/ui/src/atoms/dropzone/types.ts",
           "symbol": "DropzoneProps",
-          "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
+          "revision": "sha256:039ddd0b4c3147bdb44aece52cc9e21e0ed57f5cb42991b787f8fe494206cef8"
         }
       },
       {
@@ -1975,7 +1975,7 @@
         "source": {
           "path": "packages/ui/src/atoms/search-trigger/types.ts",
           "symbol": "SearchTriggerProps",
-          "revision": "sha256:9a76354705a1c45a873d56a457fe0c07843e6a001420ff0390be8e865b753950"
+          "revision": "sha256:8693780b389b36731128f8016630c7cb3f7a1b138b948051aeff7867a04b11f5"
         }
       },
       {
@@ -2005,7 +2005,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:d3063aa01a586589b96c01922d6d0993c2162cad756e793cca3a1c4264d6fe5e"
+          "revision": "sha256:c997f2c6ebad779ae8be50769c94a75df2981f4f830d6fc5ef17e71ee0fcb1a1"
         }
       },
       {
@@ -2025,7 +2025,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       },
       {
@@ -2035,7 +2035,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselItem",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       },
       {
@@ -2045,7 +2045,7 @@
         "source": {
           "path": "packages/ui/src/molecules/meter-row/types.ts",
           "symbol": "MeterRowProps",
-          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+          "revision": "sha256:a651426d3d5e24be0f153bdf62a86e97237851416c90644cb843902bac80e816"
         }
       },
       {
@@ -2055,7 +2055,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -2105,7 +2105,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardCodeProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       },
       {
@@ -2115,7 +2115,7 @@
         "source": {
           "path": "packages/ui/src/molecules/terminal-card/types.ts",
           "symbol": "TerminalCardProps",
-          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
+          "revision": "sha256:8f38012a58012acd15571c9150980195448da25fcb21c6dc2da8ec3a6ce4b0d1"
         }
       },
       {
@@ -2145,7 +2145,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
+          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
         }
       },
       {
@@ -2155,7 +2155,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -2296,7 +2296,7 @@
         "source": {
           "path": "packages/ui/src/atoms/progress-bar/types.ts",
           "symbol": "ProgressBarProps",
-          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+          "revision": "sha256:4ba5e628565e5162a4aa1b1ecb4538210cf8c5c3f1d29119e42f07ef40a1e3e5"
         }
       },
       {
@@ -2316,7 +2316,7 @@
         "source": {
           "path": "packages/ui/src/molecules/meter-row/types.ts",
           "symbol": "MeterRowProps",
-          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+          "revision": "sha256:a651426d3d5e24be0f153bdf62a86e97237851416c90644cb843902bac80e816"
         }
       }
     ]
@@ -2619,7 +2619,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteItem",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -2649,7 +2649,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListLink",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -2659,7 +2659,7 @@
         "source": {
           "path": "packages/ui/src/molecules/timeline/types.ts",
           "symbol": "TimelineEvent",
-          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+          "revision": "sha256:6567448b327ab77cbca128197ad838042bc59242201a24250fdbddc42fcb6edd"
         }
       },
       {
@@ -2669,7 +2669,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinkItem",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -2689,7 +2689,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupOption",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       },
       {
@@ -2699,7 +2699,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
+          "revision": "sha256:a93291f466c581af8160099e1ca872d8d0b8825ad9b095bc9e97c0670b0d617a"
         }
       },
       {
@@ -2709,7 +2709,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
+          "revision": "sha256:26547d7d24fb9a9e8f5a3850d09ef9e010dce123f62c8fcc3db7c9ccf16cb11e"
         }
       },
       {
@@ -2806,7 +2806,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
+          "revision": "sha256:26547d7d24fb9a9e8f5a3850d09ef9e010dce123f62c8fcc3db7c9ccf16cb11e"
         }
       }
     ]
@@ -2833,7 +2833,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
+          "revision": "sha256:26547d7d24fb9a9e8f5a3850d09ef9e010dce123f62c8fcc3db7c9ccf16cb11e"
         }
       },
       {
@@ -2920,7 +2920,7 @@
         "source": {
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemProps",
-          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
+          "revision": "sha256:86f20d54760b2e74e6283dc69c346d8d93a18d6410e6ed13d1547ee95846355b"
         }
       },
       {
@@ -2930,7 +2930,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
+          "revision": "sha256:26547d7d24fb9a9e8f5a3850d09ef9e010dce123f62c8fcc3db7c9ccf16cb11e"
         }
       },
       {
@@ -2970,7 +2970,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -3030,7 +3030,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       },
       {
@@ -3215,7 +3215,7 @@
         "source": {
           "path": "packages/ui/src/atoms/dropzone/types.ts",
           "symbol": "DropzoneProps",
-          "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
+          "revision": "sha256:039ddd0b4c3147bdb44aece52cc9e21e0ed57f5cb42991b787f8fe494206cef8"
         }
       }
     ]
@@ -3242,7 +3242,7 @@
         "source": {
           "path": "packages/ui/src/atoms/dropzone/types.ts",
           "symbol": "DropzoneProps",
-          "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
+          "revision": "sha256:039ddd0b4c3147bdb44aece52cc9e21e0ed57f5cb42991b787f8fe494206cef8"
         }
       }
     ]
@@ -3323,7 +3323,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinkItem",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -3370,7 +3370,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinksProps",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -3514,7 +3514,7 @@
         "source": {
           "path": "packages/ui/src/atoms/progress-bar/types.ts",
           "symbol": "ProgressBarProps",
-          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+          "revision": "sha256:4ba5e628565e5162a4aa1b1ecb4538210cf8c5c3f1d29119e42f07ef40a1e3e5"
         }
       }
     ]
@@ -3541,7 +3541,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupProps.options",
-          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
+          "revision": "sha256:2d388517b084716cfb50c655d4ee8369454c608c192573f545b8fc3f4fed20d8"
         }
       },
       {
@@ -3551,7 +3551,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -3561,7 +3561,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       },
       {
@@ -3726,7 +3726,7 @@
         "source": {
           "path": "packages/ui/src/molecules/timeline/types.ts",
           "symbol": "TimelineEvent",
-          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+          "revision": "sha256:6567448b327ab77cbca128197ad838042bc59242201a24250fdbddc42fcb6edd"
         }
       },
       {
@@ -3894,7 +3894,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -3961,7 +3961,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -3981,7 +3981,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListProps",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -3991,7 +3991,7 @@
         "source": {
           "path": "packages/ui/src/molecules/timeline/types.ts",
           "symbol": "TimelineProps",
-          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+          "revision": "sha256:6567448b327ab77cbca128197ad838042bc59242201a24250fdbddc42fcb6edd"
         }
       },
       {
@@ -4001,7 +4001,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       },
       {
@@ -4011,7 +4011,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinksProps",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -4041,7 +4041,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -4071,7 +4071,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardTagsProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       },
       {
@@ -4081,7 +4081,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardCodeProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       },
       {
@@ -4091,7 +4091,7 @@
         "source": {
           "path": "packages/ui/src/molecules/terminal-card/types.ts",
           "symbol": "TerminalCardListProps",
-          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
+          "revision": "sha256:8f38012a58012acd15571c9150980195448da25fcb21c6dc2da8ec3a6ce4b0d1"
         }
       },
       {
@@ -4111,7 +4111,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
+          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
         }
       }
     ]
@@ -4158,7 +4158,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -4178,7 +4178,7 @@
         "source": {
           "path": "packages/ui/src/molecules/timeline/types.ts",
           "symbol": "TimelineProps",
-          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+          "revision": "sha256:6567448b327ab77cbca128197ad838042bc59242201a24250fdbddc42fcb6edd"
         }
       },
       {
@@ -4188,7 +4188,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       },
       {
@@ -4198,7 +4198,7 @@
         "source": {
           "path": "packages/ui/src/molecules/meter-row/types.ts",
           "symbol": "MeterRowProps",
-          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+          "revision": "sha256:a651426d3d5e24be0f153bdf62a86e97237851416c90644cb843902bac80e816"
         }
       },
       {
@@ -4248,7 +4248,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -4275,7 +4275,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       },
       {
@@ -4285,7 +4285,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
+          "revision": "sha256:10f3f34096de24a00ab5ff9d03801a0f2915a2e04959cf34150ebc6e5fab6637"
         }
       }
     ]
@@ -4501,7 +4501,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:d3063aa01a586589b96c01922d6d0993c2162cad756e793cca3a1c4264d6fe5e"
+          "revision": "sha256:c997f2c6ebad779ae8be50769c94a75df2981f4f830d6fc5ef17e71ee0fcb1a1"
         }
       }
     ]
@@ -4528,7 +4528,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:d3063aa01a586589b96c01922d6d0993c2162cad756e793cca3a1c4264d6fe5e"
+          "revision": "sha256:c997f2c6ebad779ae8be50769c94a75df2981f4f830d6fc5ef17e71ee0fcb1a1"
         }
       }
     ]
@@ -4555,7 +4555,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:d3063aa01a586589b96c01922d6d0993c2162cad756e793cca3a1c4264d6fe5e"
+          "revision": "sha256:c997f2c6ebad779ae8be50769c94a75df2981f4f830d6fc5ef17e71ee0fcb1a1"
         }
       }
     ]
@@ -4582,7 +4582,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:d3063aa01a586589b96c01922d6d0993c2162cad756e793cca3a1c4264d6fe5e"
+          "revision": "sha256:c997f2c6ebad779ae8be50769c94a75df2981f4f830d6fc5ef17e71ee0fcb1a1"
         }
       }
     ]
@@ -4609,7 +4609,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:d3063aa01a586589b96c01922d6d0993c2162cad756e793cca3a1c4264d6fe5e"
+          "revision": "sha256:c997f2c6ebad779ae8be50769c94a75df2981f4f830d6fc5ef17e71ee0fcb1a1"
         }
       },
       {
@@ -4646,7 +4646,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:d3063aa01a586589b96c01922d6d0993c2162cad756e793cca3a1c4264d6fe5e"
+          "revision": "sha256:c997f2c6ebad779ae8be50769c94a75df2981f4f830d6fc5ef17e71ee0fcb1a1"
         }
       }
     ]
@@ -4730,7 +4730,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -4750,7 +4750,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListCollapsibleGroup",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -4780,7 +4780,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
         }
       }
     ]
@@ -4827,7 +4827,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -4847,7 +4847,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListCollapsibleGroup",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -4877,7 +4877,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
         }
       }
     ]
@@ -4924,7 +4924,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -4944,7 +4944,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListCollapsibleGroup",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -4974,7 +4974,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
         }
       }
     ]
@@ -5011,7 +5011,7 @@
         "source": {
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemProps",
-          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
+          "revision": "sha256:86f20d54760b2e74e6283dc69c346d8d93a18d6410e6ed13d1547ee95846355b"
         }
       },
       {
@@ -5048,7 +5048,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListEntry",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -5152,7 +5152,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListProps",
-          "revision": "sha256:054e06bcdd400664a5b5fcc31bbbdc4157e50b54d374c9bd2f18616421dc3851"
+          "revision": "sha256:fe91e935beaa07a39f43cea29b4b1211bfe6c3196ed7c3dad6a0d263c5cd91b3"
         }
       },
       {
@@ -5192,7 +5192,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
+          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
         }
       }
     ]
@@ -5219,7 +5219,7 @@
         "source": {
           "path": "packages/ui/src/molecules/meter-row/types.ts",
           "symbol": "MeterRowProps",
-          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+          "revision": "sha256:a651426d3d5e24be0f153bdf62a86e97237851416c90644cb843902bac80e816"
         }
       }
     ]
@@ -5276,7 +5276,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
+          "revision": "sha256:d143e8c03a1a9552081f2ce2e01db6f4f6f1905bb40366738bf3a77536cf49d5"
         }
       },
       {
@@ -5296,7 +5296,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       },
       {
@@ -5306,7 +5306,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       },
       {
@@ -5316,7 +5316,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tip-card/types.ts",
           "symbol": "TipCardProps",
-          "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
+          "revision": "sha256:52f98142773c41abd44c12076e57e1f821235a0cd78cacba20667119a4da9ce6"
         }
       },
       {
@@ -5326,7 +5326,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:1167b088ff52237fa4d7e3bd92b93c302466e0b1d0bc8f016c08a7aa6d0db3d1"
+          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
         }
       },
       {
@@ -5336,7 +5336,7 @@
         "source": {
           "path": "packages/ui/src/molecules/community-card/types.ts",
           "symbol": "CommunityCardProps",
-          "revision": "sha256:c18425b2578ea41176a6b06376e4990bbb43d6af3fcf15e969fb3aab87917b21"
+          "revision": "sha256:f001e74ec0adbb10a144b034f878a2ee2a50cb51e6fc2c92f1ceb0205357b66e"
         }
       },
       {
@@ -5346,7 +5346,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       },
       {
@@ -5423,7 +5423,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       },
       {
@@ -5433,7 +5433,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -5443,7 +5443,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
+          "revision": "sha256:d143e8c03a1a9552081f2ce2e01db6f4f6f1905bb40366738bf3a77536cf49d5"
         }
       },
       {
@@ -5463,7 +5463,7 @@
         "source": {
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemTitleProps",
-          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
+          "revision": "sha256:86f20d54760b2e74e6283dc69c346d8d93a18d6410e6ed13d1547ee95846355b"
         }
       },
       {
@@ -5473,7 +5473,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       },
       {
@@ -5483,7 +5483,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tip-card/types.ts",
           "symbol": "TipCardProps",
-          "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
+          "revision": "sha256:52f98142773c41abd44c12076e57e1f821235a0cd78cacba20667119a4da9ce6"
         }
       },
       {
@@ -5493,7 +5493,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:1167b088ff52237fa4d7e3bd92b93c302466e0b1d0bc8f016c08a7aa6d0db3d1"
+          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
         }
       },
       {
@@ -5503,7 +5503,7 @@
         "source": {
           "path": "packages/ui/src/molecules/community-card/types.ts",
           "symbol": "CommunityCardProps",
-          "revision": "sha256:c18425b2578ea41176a6b06376e4990bbb43d6af3fcf15e969fb3aab87917b21"
+          "revision": "sha256:f001e74ec0adbb10a144b034f878a2ee2a50cb51e6fc2c92f1ceb0205357b66e"
         }
       },
       {
@@ -5513,7 +5513,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       },
       {
@@ -5591,7 +5591,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleHeaderProps",
-          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
         }
       },
       {
@@ -5641,7 +5641,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
+          "revision": "sha256:d143e8c03a1a9552081f2ce2e01db6f4f6f1905bb40366738bf3a77536cf49d5"
         }
       },
       {
@@ -5661,7 +5661,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
+          "revision": "sha256:a93291f466c581af8160099e1ca872d8d0b8825ad9b095bc9e97c0670b0d617a"
         }
       },
       {
@@ -5765,7 +5765,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
+          "revision": "sha256:a93291f466c581af8160099e1ca872d8d0b8825ad9b095bc9e97c0670b0d617a"
         }
       }
     ]
@@ -5802,7 +5802,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
+          "revision": "sha256:d143e8c03a1a9552081f2ce2e01db6f4f6f1905bb40366738bf3a77536cf49d5"
         }
       },
       {
@@ -5812,7 +5812,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       },
       {
@@ -5822,7 +5822,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       },
       {
@@ -5832,7 +5832,7 @@
         "source": {
           "path": "packages/ui/src/molecules/community-card/types.ts",
           "symbol": "CommunityCardProps",
-          "revision": "sha256:c18425b2578ea41176a6b06376e4990bbb43d6af3fcf15e969fb3aab87917b21"
+          "revision": "sha256:f001e74ec0adbb10a144b034f878a2ee2a50cb51e6fc2c92f1ceb0205357b66e"
         }
       },
       {
@@ -5842,7 +5842,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       },
       {
@@ -5936,7 +5936,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tip-card/types.ts",
           "symbol": "TipCardProps",
-          "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
+          "revision": "sha256:52f98142773c41abd44c12076e57e1f821235a0cd78cacba20667119a4da9ce6"
         }
       }
     ]
@@ -6101,7 +6101,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       },
       {
@@ -6111,7 +6111,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -6121,7 +6121,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -6242,7 +6242,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteItem",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -6262,7 +6262,7 @@
         "source": {
           "path": "packages/ui/src/atoms/search-trigger/types.ts",
           "symbol": "SearchTriggerProps",
-          "revision": "sha256:9a76354705a1c45a873d56a457fe0c07843e6a001420ff0390be8e865b753950"
+          "revision": "sha256:8693780b389b36731128f8016630c7cb3f7a1b138b948051aeff7867a04b11f5"
         }
       }
     ]
@@ -6289,7 +6289,7 @@
         "source": {
           "path": "packages/ui/src/atoms/search-trigger/types.ts",
           "symbol": "SearchTriggerProps",
-          "revision": "sha256:9a76354705a1c45a873d56a457fe0c07843e6a001420ff0390be8e865b753950"
+          "revision": "sha256:8693780b389b36731128f8016630c7cb3f7a1b138b948051aeff7867a04b11f5"
         }
       }
     ]
@@ -6316,7 +6316,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       },
       {
@@ -6326,7 +6326,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       },
       {
@@ -6336,7 +6336,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
+          "revision": "sha256:5ef0768327e1ad973783f0907b8a0f5f3a0b0975507bdc94499cda219f6a0b7e"
         }
       }
     ]
@@ -6373,7 +6373,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       },
       {
@@ -6413,7 +6413,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
+          "revision": "sha256:d143e8c03a1a9552081f2ce2e01db6f4f6f1905bb40366738bf3a77536cf49d5"
         }
       }
     ]
@@ -6440,7 +6440,7 @@
         "source": {
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
-          "revision": "sha256:1bec5751a44134ad8e93a40b98d264aaa557b399fcfe9df25cba46aa329a87a8"
+          "revision": "sha256:5361e1762d1bce918f9c55fe6e2ca28bd9b182ba9ead9b2fcfbdfc55b11cb4e6"
         }
       }
     ]
@@ -6467,7 +6467,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       }
     ]
@@ -6494,7 +6494,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       }
     ]
@@ -6521,7 +6521,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       }
     ]
@@ -6548,7 +6548,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+          "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
         }
       }
     ]
@@ -6575,7 +6575,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinksProps",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       },
       {
@@ -6622,7 +6622,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinksProps",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       }
     ]
@@ -6649,7 +6649,7 @@
         "source": {
           "path": "packages/ui/src/molecules/social-links/types.ts",
           "symbol": "SocialLinksProps",
-          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+          "revision": "sha256:8be51d9b5a34bd503dd9f35ddc99088de9294980763bdd17f47f6b7db57bf277"
         }
       }
     ]
@@ -6761,7 +6761,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleContentProps",
-          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
         }
       },
       {
@@ -6808,7 +6808,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleContentProps",
-          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
         }
       }
     ]
@@ -6835,7 +6835,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleTriggerProps",
-          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
         }
       }
     ]
@@ -6916,7 +6916,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       },
       {
@@ -7037,7 +7037,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       }
     ]
@@ -7091,7 +7091,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       }
     ]
@@ -7118,7 +7118,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       }
     ]
@@ -7145,7 +7145,7 @@
         "source": {
           "path": "packages/ui/src/molecules/command-palette/types.ts",
           "symbol": "CommandPaletteProps",
-          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+          "revision": "sha256:b31b27cb49732de296d732686d0f18224608b326542d117481d53ff48a3f747f"
         }
       }
     ]
@@ -7778,7 +7778,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:d3063aa01a586589b96c01922d6d0993c2162cad756e793cca3a1c4264d6fe5e"
+          "revision": "sha256:c997f2c6ebad779ae8be50769c94a75df2981f4f830d6fc5ef17e71ee0fcb1a1"
         }
       }
     ]
@@ -8032,7 +8032,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:28068049ada7cd13137b911542b5f078c4a43921e45b5c7f1474b9495ae8943e"
+          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
         }
       }
     ]
@@ -8059,7 +8059,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:1167b088ff52237fa4d7e3bd92b93c302466e0b1d0bc8f016c08a7aa6d0db3d1"
+          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
         }
       }
     ]
@@ -8086,7 +8086,7 @@
         "source": {
           "path": "packages/ui/src/molecules/terminal-card/types.ts",
           "symbol": "TerminalCardBarProps",
-          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
+          "revision": "sha256:8f38012a58012acd15571c9150980195448da25fcb21c6dc2da8ec3a6ce4b0d1"
         }
       }
     ]
@@ -8113,7 +8113,7 @@
         "source": {
           "path": "packages/ui/src/molecules/terminal-card/types.ts",
           "symbol": "TerminalCardRow",
-          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
+          "revision": "sha256:8f38012a58012acd15571c9150980195448da25fcb21c6dc2da8ec3a6ce4b0d1"
         }
       }
     ]
@@ -8161,7 +8161,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tip-card/types.ts",
           "symbol": "TipCardProps",
-          "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
+          "revision": "sha256:52f98142773c41abd44c12076e57e1f821235a0cd78cacba20667119a4da9ce6"
         }
       },
       {
@@ -8171,7 +8171,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureCoverProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       }
     ]
@@ -8198,7 +8198,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       }
     ]
@@ -8225,7 +8225,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       }
     ]
@@ -8252,7 +8252,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureCoverProps",
-          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
+          "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
         }
       }
     ]
@@ -8333,7 +8333,7 @@
         "source": {
           "path": "packages/ui/src/organisms/notes-board/types.ts",
           "symbol": "NotesBoardProps",
-          "revision": "sha256:aa1cffd9c322ef3c4ea675c29da235c72b98e185d80dcc7854399105cbfde2e3"
+          "revision": "sha256:0a21e19183504558e9b43bcfc202056721ff18c3393f566d97a604553678a724"
         }
       }
     ]
@@ -8387,7 +8387,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
+          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
         }
       }
     ]
@@ -8414,7 +8414,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
+          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
         }
       }
     ]
@@ -8441,7 +8441,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       }
     ]
@@ -8468,7 +8468,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       },
       {
@@ -8478,7 +8478,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
+          "revision": "sha256:26547d7d24fb9a9e8f5a3850d09ef9e010dce123f62c8fcc3db7c9ccf16cb11e"
         }
       }
     ]
@@ -8505,7 +8505,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+          "revision": "sha256:ffcb146586c0b87582270c787634b398d1864d482f9c0295a7e55e35238ab06f"
         }
       }
     ]
@@ -8555,7 +8555,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -8582,7 +8582,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -8609,7 +8609,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -8636,7 +8636,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]
@@ -8673,7 +8673,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:baf94967d3efc24a1cfb4f06d72fb32569e47a0c6acbe2852cd0f327b4747645"
+          "revision": "sha256:78c2b7fc322a8e0e4004e724815be8f098e6e643ee1a724fdba08f87206303f5"
         }
       }
     ]
@@ -8727,7 +8727,7 @@
         "source": {
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
-          "revision": "sha256:f109fbc50f09cfc65510487dc7cdddbfd1856a3b18a6d02ff80f477bf6a9b832"
+          "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
       }
     ]

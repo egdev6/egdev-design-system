@@ -147,6 +147,7 @@ type AttachmentFieldUncontrolledProps = {
  * className supports outer layout only (grid placement, margin, width), merged last with cn().
  * Appearance overrides are unsupported; twMerge does not resolve arbitrary CSS selectors.
  * Consumers own the Textarea and its label, upload, storage and deduplication.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type AttachmentFieldProps = AttachmentFieldNativeProps &
   AttachmentFieldOwnProps &

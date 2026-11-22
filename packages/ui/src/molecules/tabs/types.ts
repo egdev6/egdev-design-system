@@ -50,6 +50,7 @@ export type TabsItem = {
  * appearance and internal-part overrides are unsupported. No ref, asChild or children API.
  * Right to left needs a Radix DirectionProvider ancestor: Radix writes dir on the root, so a bare dir
  * attribute on an ancestor is ignored.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type TabsProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defaultValue' | 'dir' | 'onChange'> & {
   /**

@@ -43,6 +43,7 @@ type ProjectCardNativeProps = Omit<
 /** Passive named project card. className supports external layout only, merged last;
  * appearance, spacing and parts remain owned. Use className for grid placement, margin and width.
  * No ref, asChild or whole-card activation API.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type ProjectCardProps = ProjectCardNativeProps & {
   /**
@@ -92,7 +93,9 @@ export type ProjectCardProps = ProjectCardNativeProps & {
   className?: string;
 };
 
-/** Ordered technology labels rendered as one static Chip per list item. */
+/** Ordered technology labels rendered as one static Chip per list item.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type ProjectCardTagsProps = {
   /**
    * Technology labels; empty arrays render an empty list, so omit the part instead.
@@ -107,7 +110,9 @@ export type ProjectCardTagsProps = {
   className?: string;
 };
 
-/** Sample command block in a labelled mono well; passive text, never executable or focusable. */
+/** Sample command block in a labelled mono well; passive text, never executable or focusable.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type ProjectCardCodeProps = {
   /**
    * Accessible name of the block and the only description assistive technology receives.
@@ -127,7 +132,9 @@ export type ProjectCardCodeProps = {
   className?: string;
 };
 
-/** Footer zone for the card's single action; the consumer supplies exactly one Link or Button. */
+/** Footer zone for the card's single action; the consumer supplies exactly one Link or Button.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type ProjectCardFooterProps = {
   /**
    * One supplied action; the card itself stays passive and adds no tab stop of its own.

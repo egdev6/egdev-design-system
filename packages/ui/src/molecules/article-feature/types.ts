@@ -138,12 +138,15 @@ export type ArticleFeatureSlottedProps = Omit<
  * Whole-card featured-article link: one anchor (native or the consumer's through asChild) around
  * a reserved 16:8 cover, an optional context row, a generated heading and a paint-only action
  * label. No ref API; the card is the single tab stop.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 // Slotted branch first keeps docgen's union merge on the required-href native branch, mirroring
 // the Chip union arrangement; branch order does not change assignability.
 export type ArticleFeatureProps = ArticleFeatureSlottedProps | ArticleFeatureLinkProps;
 
-/** Cover region props: one generative plate or exactly one `PhotoFrame ratio="auto"`. */
+/** Cover region props: one generative plate or exactly one `PhotoFrame ratio="auto"`.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type ArticleFeatureCoverProps = {
   /**
    * Oversized decorative word of the generative plate, for example /src. aria-hidden and never

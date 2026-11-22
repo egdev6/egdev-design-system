@@ -28,6 +28,7 @@ type TipCardNativeProps = Omit<
  * appearance, spacing and parts remain owned. Use className for grid placement, margin and width.
  * The poster carries no children: every content slot (cover, badge, heading) is prop-driven.
  * No ref, asChild or activation API.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type TipCardProps = TipCardNativeProps & {
   /**

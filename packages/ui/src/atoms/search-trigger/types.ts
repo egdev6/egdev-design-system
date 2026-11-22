@@ -5,6 +5,7 @@ import type { ComponentPropsWithoutRef } from 'react';
  * Native search launcher. Activation only requests search: the host owns the palette, its
  * shortcut registration and its dialog lifecycle. className supports root width, margins and
  * parent layout only, merged last with cn; appearance overrides are unsupported.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type SearchTriggerProps = Omit<
   ComponentPropsWithoutRef<'button'>,

@@ -65,6 +65,7 @@ export type CarouselMessages = {
  * Manual sequential navigation of read-only slides. Never drive periodic value changes to simulate
  * autoplay. className supports root width, margins and layout placement only, not internal paint.
  * No ref, asChild or imperative navigation API; do not switch control modes during an instance.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type CarouselProps = Omit<
   ComponentPropsWithoutRef<'div'>,

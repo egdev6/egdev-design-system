@@ -28,6 +28,7 @@ type NowCardNativeProps = Omit<
  * Passive current-status article named by its generated heading. className supports outer margin,
  * width and parent-grid placement only, merged last through cn. No ref, asChild, whole-card
  * activation, hover motion or nested interactive controls.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type NowCardProps = NowCardNativeProps & {
   /**
@@ -64,7 +65,9 @@ export type NowCardProps = NowCardNativeProps & {
   children?: ReactNode;
 };
 
-/** Padded growing zone for the consumer-supplied copy; no interactive content, no badge slot. */
+/** Padded growing zone for the consumer-supplied copy; no interactive content, no badge slot.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type NowCardBodyProps = {
   /**
    * One or two short paragraphs. No controls, no links, no status badge: the card renders the
@@ -84,6 +87,7 @@ export type NowCardBodyProps = {
 /**
  * Lower band for one supporting detail and/or one action (a Link or a labelled IconButton);
  * never two competing actions.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type NowCardFooterProps = {
   /**
@@ -100,7 +104,9 @@ export type NowCardFooterProps = {
   className?: string;
 };
 
-/** Supporting date or context line with an emphasized value; no controls. */
+/** Supporting date or context line with an emphasized value; no controls.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type NowCardDetailProps = {
   /**
    * One short visible sentence; mark the value with <b> (for example a real <time dateTime> inside it).

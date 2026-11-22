@@ -121,6 +121,7 @@ type SelectTileCommonProps = SelectTileNativeProps & {
  * Visual choices coordinated through Radix. Do not change type or controlledness during a mount.
  * Root className supports margins, width, column count and parent layout only; it merges last
  * through cn, not a universal appearance override. No ref, asChild or custom card renderer.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size grid-template-columns
  */
 export type SelectTileProps = SelectTileCommonProps &
   (

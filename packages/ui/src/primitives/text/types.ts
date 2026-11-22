@@ -278,6 +278,7 @@ type HeadingVisualProps =
 /**
  * Non-heading display, eyebrow or body copy. className supports outer layout only (margins, width
  * constraints, flex/grid placement); typography, color, glow and accent layout follow the contract.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type TextProps = Omit<ComponentPropsWithoutRef<'p'>, 'children' | 'role' | 'dangerouslySetInnerHTML'> &
   TextVisualProps & {
@@ -298,6 +299,7 @@ export type TextProps = Omit<ComponentPropsWithoutRef<'p'>, 'children' | 'role' 
 /**
  * Native h1–h6 display heading. className supports outer layout only (margins, width constraints,
  * flex/grid placement); typography, color, glow and accent layout follow the contract.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type HeadingProps = Omit<
   ComponentPropsWithoutRef<'h2'>,

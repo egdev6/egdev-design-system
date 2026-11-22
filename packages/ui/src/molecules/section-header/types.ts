@@ -21,6 +21,7 @@ type SectionHeaderNativeProps = Omit<
  * Passive editorial introduction. className supports outer margins, width constraints and parent
  * flex/grid placement only, merged last with cn. Inner layout and typography are contract-owned;
  * arbitrary selector/layer precedence and appearance overrides are not supported.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type SectionHeaderProps = SectionHeaderNativeProps & {
   /**

@@ -13,7 +13,9 @@ export type TopBarItem = {
   'aria-current'?: 'page';
 };
 
-/** A fixed site header; className supports outer placement and stacking only. */
+/** A fixed site header; className supports outer placement and stacking only.
+ * @classNameAllows z-index
+ */
 export type TopBarProps = Omit<
   ComponentPropsWithoutRef<'header'>,
   'children' | 'role' | 'dangerouslySetInnerHTML' | 'label' | 'items' | 'onNavigate'

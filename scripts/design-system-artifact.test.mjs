@@ -11,6 +11,227 @@ import { extractGroupedDeclarations } from '../packages/tokens/scripts/token-css
 
 const read = (path) => JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'));
 
+// Override only type-level JSDoc in memory; the generator's output is captured, never written.
+function artifactWithTags(entries) {
+  const files = new Map();
+  for (const { path, alias, tags } of entries) {
+    const text = files.get(path) ?? readFileSync(path, 'utf8');
+    const source = ts.createSourceFile(path, text, ts.ScriptTarget.Latest, true);
+    const declaration = source.statements.find((item) => ts.isTypeAliasDeclaration(item) && item.name.text === alias);
+    const jsDoc = declaration?.jsDoc?.at(-1);
+    assert.ok(jsDoc, `${path}: ${alias} must have type-level JSDoc`);
+    const comment = ['/** Fixture type description.', ...tags.map((tag) => ` * ${tag}`), ' */'].join('\n');
+    files.set(path, text.slice(0, jsDoc.getStart(source)) + comment + text.slice(jsDoc.getEnd()));
+  }
+  const loader = `
+    import fs from 'node:fs';
+    import { syncBuiltinESMExports } from 'node:module';
+    import { resolve } from 'node:path';
+    const read = fs.readFileSync;
+    const write = fs.writeFileSync;
+    const changes = new Map(Object.entries(${JSON.stringify(Object.fromEntries(files))}).map(([path, text]) => [resolve(path), text]));
+    const target = resolve('packages/system/design-system.json');
+    fs.readFileSync = function (path, options) {
+      const value = read.call(this, path, options);
+      const text = typeof path === 'string' && changes.get(resolve(path));
+      return text === undefined || text === false ? value : typeof value === 'string' ? text : Buffer.from(text);
+    };
+    fs.writeFileSync = function (path, value, ...rest) {
+      if (typeof path === 'string' && resolve(path) === target) { process.stdout.write(value); return; }
+      return write.call(this, path, value, ...rest);
+    };
+    syncBuiltinESMExports();
+  `;
+  const before = readFileSync('packages/system/design-system.json', 'utf8');
+  const result = spawnSync(
+    process.execPath,
+    [
+      '--import',
+      `data:text/javascript;base64,${Buffer.from(loader).toString('base64')}`,
+      'scripts/build-artifact.mjs',
+      '--write'
+    ],
+    { encoding: 'utf8', timeout: 120_000, maxBuffer: 4_000_000 }
+  );
+  assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
+  return result;
+}
+
+const buttonFixture = { path: 'packages/ui/src/atoms/button/types.ts', alias: 'ButtonProps' };
+
+test('classNameAllows publishes sorted unique CSS properties on roots and their own or shared parts', () => {
+  const result = artifactWithTags([
+    {
+      ...buttonFixture,
+      tags: [
+        '@classNameAllows z-index width max-width width inline-size inset-inline-start grid-template-columns scroll-margin-top'
+      ]
+    },
+    {
+      path: 'packages/ui/src/molecules/collapsible/types.ts',
+      alias: 'CollapsibleHeaderProps',
+      tags: ['@classNameAllows min-width']
+    },
+    {
+      path: 'packages/ui/src/molecules/list-item/types.ts',
+      alias: 'ListItemPartProps',
+      tags: ['@classNameAllows grid-template-columns']
+    }
+  ]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, '');
+  const { components } = JSON.parse(result.stdout);
+  const component = (name) => components.find((item) => item.name === name);
+  assert.deepEqual(component('Button').classNameAllows, [
+    'grid-template-columns',
+    'inline-size',
+    'inset-inline-start',
+    'max-width',
+    'scroll-margin-top',
+    'width',
+    'z-index'
+  ]);
+  assert.deepEqual(component('CollapsibleHeader').classNameAllows, ['min-width']);
+  for (const name of [
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemLeading',
+    'ListItemMedia',
+    'ListItemMeta',
+    'ListItemTrailing'
+  ]) {
+    assert.deepEqual(component(name).classNameAllows, ['grid-template-columns'], name);
+  }
+  assert.ok(!Object.hasOwn(component('ListItemTitle'), 'classNameAllows'));
+  for (const item of components) {
+    assert.ok(!JSON.stringify(item.props).includes('@classNameAllows'), item.name);
+    assert.ok(!JSON.stringify(item.parts).includes('@classNameAllows'), item.name);
+  }
+});
+
+test('classNameAllows is omitted when a props type has no tag', () => {
+  const result = artifactWithTags([{ ...buttonFixture, tags: [] }]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, '');
+  assert.ok(
+    !Object.hasOwn(
+      JSON.parse(result.stdout).components.find(({ name }) => name === 'Button'),
+      'classNameAllows'
+    )
+  );
+});
+
+for (const [label, tags, diagnostic] of [
+  [
+    'unknown property',
+    ['@classNameAllows width definitely-not-a-property'],
+    /Unknown CSS property.*definitely-not-a-property/
+  ],
+  ['non-lowercase property', ['@classNameAllows Width'], /Unknown CSS property.*Width/],
+  ['empty tag', ['@classNameAllows'], /Empty @classNameAllows/],
+  ['duplicate tags', ['@classNameAllows width', '@classNameAllows max-width'], /Duplicate @classNameAllows/]
+]) {
+  test(`classNameAllows rejects ${label} without writing`, () => {
+    const result = artifactWithTags([{ ...buttonFixture, tags }]);
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, '');
+    assert.match(result.stderr, diagnostic);
+    assert.match(result.stderr, /ButtonProps/);
+  });
+}
+
+test('classNameAllows publishes the complete SelectTile width and column contract', () => {
+  const { components } = read('packages/system/design-system.json');
+  assert.deepEqual(components.find(({ name }) => name === 'SelectTile').classNameAllows, [
+    'grid-template-columns',
+    'inline-size',
+    'max-inline-size',
+    'max-width',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
+});
+
+test('classNameAllows preserves the reviewed component and part inventory', () => {
+  const { components } = read('packages/system/design-system.json');
+  const widths = ['inline-size', 'max-inline-size', 'max-width', 'min-inline-size', 'min-width', 'width'];
+  const widthComponents = [
+    'ArticleFeature',
+    'ArticleFeatureCover',
+    'AttachmentField',
+    'Button',
+    'Carousel',
+    'ChipGroup',
+    'Collapsible',
+    'CollapsibleHeader',
+    'ColorSwatchGroup',
+    'CommandPalette',
+    'CommunityCard',
+    'CommunityCardAction',
+    'CommunityCardMark',
+    'Dropzone',
+    'Field',
+    'Heading',
+    'ListItem',
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemLeading',
+    'ListItemMedia',
+    'ListItemMeta',
+    'ListItemTrailing',
+    'LiveBandField',
+    'MeterRow',
+    'NavList',
+    'NotesBoard',
+    'Notice',
+    'NowCard',
+    'NowCardBody',
+    'NowCardDetail',
+    'NowCardFooter',
+    'NowStrip',
+    'PageHeader',
+    'ProgressBar',
+    'ProjectCard',
+    'ProjectCardCode',
+    'ProjectCardFooter',
+    'ProjectCardTags',
+    'SearchTrigger',
+    'SectionHeader',
+    'SocialLinks',
+    'Tabs',
+    'TerminalCard',
+    'Text',
+    'Timeline',
+    'TipCard'
+  ];
+  const expected = new Map(widthComponents.map((name) => [name, widths]));
+  expected.set('SelectTile', ['grid-template-columns', ...widths]);
+  expected.set('TopBar', ['z-index']);
+  const tagged = components.filter((item) => Object.hasOwn(item, 'classNameAllows'));
+  assert.deepEqual(
+    tagged.map(({ name }) => name),
+    [...expected.keys()].sort()
+  );
+  for (const { name, classNameAllows } of tagged) {
+    assert.deepEqual(classNameAllows, expected.get(name), name);
+  }
+  for (const name of ['ListItemTitle', 'Menu', 'PopoverContent', 'Tooltip', 'Icon']) {
+    assert.ok(
+      !Object.hasOwn(
+        components.find((item) => item.name === name),
+        'classNameAllows'
+      ),
+      name
+    );
+  }
+  assert.ok(!expected.get('ProgressBar').includes('position'));
+});
+
 test('Logo assets preserve both source variants and token-backed SVGs', () => {
   const artifact = read('packages/system/design-system.json');
   assert.deepEqual(
@@ -645,10 +866,17 @@ test('artifact schema and total ordering match the contract', () => {
   ]) {
     sorted(artifact[field], key);
     for (const item of artifact[field]) {
-      keys(item, fields);
+      keys(
+        item,
+        field === 'components' && Object.hasOwn(item, 'classNameAllows') ? [...fields, 'classNameAllows'] : fields
+      );
     }
   }
   for (const item of artifact.components) {
+    if (Object.hasOwn(item, 'classNameAllows')) {
+      assert.ok(item.classNameAllows.length > 0);
+      assert.deepEqual(item.classNameAllows, [...new Set(item.classNameAllows)].sort());
+    }
     sorted(item.parts, 'name');
     for (const part of item.parts) {
       keys(part, ['name', 'source', 'description', 'children']);

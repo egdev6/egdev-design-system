@@ -20,7 +20,9 @@ export type CommandPaletteMessages = {
   loading: string;
   count: (count: number) => string;
 };
-/** Modal command search; className supports panel width and max-width only. */
+/** Modal command search; className supports panel width and max-width only.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
+ */
 export type CommandPaletteProps = {
   /** Ordered commands. @control false
    * @controlReason Command arrays are not serializable; see Default. */

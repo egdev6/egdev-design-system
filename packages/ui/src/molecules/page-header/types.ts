@@ -17,6 +17,7 @@ type PageHeaderNativeProps = Omit<ComponentPropsWithoutRef<'header'>, 'children'
  * className supports external margins, width/min/max sizing and parent placement only;
  * internal spacing, reflow, typography and paint are not override surfaces.
  * No public ref, asChild, rich title, children or part-class API.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type PageHeaderProps = PageHeaderNativeProps & {
   /**

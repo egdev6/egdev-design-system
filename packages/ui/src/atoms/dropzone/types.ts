@@ -12,6 +12,7 @@ type DropzoneNativeProps = Omit<
  * className supports outer layout only (margin, grid placement, width), merged last with cn().
  * Appearance overrides are unsupported; twMerge does not resolve arbitrary CSS selectors.
  * Consumers own validation, upload, previews and live announcements. No form file participation.
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type DropzoneProps = DropzoneNativeProps & {
   /**
