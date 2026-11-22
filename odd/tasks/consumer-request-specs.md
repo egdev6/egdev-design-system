@@ -19,9 +19,9 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 | T2 | S3, S4 | worker | drafted: docs/components/icon-button/v0.4/hit-area-amendment.md (this commit) |
 | T3 | S2, S3 | parent | done: both amendments approved (efe3477, PR #545) |
 | T4 | S2, S4, S5 | worker | drafted: docs/components/text/v0.3/implementation-plan.md (this commit) |
-| T5 | S3, S4, S5 | worker | blocked until T7 is approved; then the v0.4 plan assumes no press scale |
+| T5 | S3, S4, S5 | worker | unblocked: v0.4 implementation plan on the v0.5 base (no press scale) |
 | T6 | S2, S5, S6 | worker | done: dd033c5; independent verify PASS |
-| T7 | S3, S4, S6 | worker | drafted (commit 2); owner decisions pending |
+| T7 | S3, S4, S6 | worker | done: v0.5 approved (this commit) |
 
 ## Log
 
@@ -39,3 +39,4 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 - L12: T7 drafted: v0.5 removes the active `scale-94` (supersedes that v0.2 promise; v0.2 no-hover-lift stays); open owner decisions: ghost/outline press cue would be tone-only (non-color state-cue requirement), and secondary's pressed background uses `--color-alpha-red-15`, documented for shadows only. contentSHA256 b89c575da69b6ab4ce059efa1d80b379819bf0a7760f82fd32a07710e17c9f97 (draft).
 - L13: Convention approval provenance, verbatim. Question put to the owner on 2026-11-22: "¿Apruebas la convención de nombre nueva `single-line-text-truncation` con el prop `truncate` en el registro de prop-naming?" Owner answer: "Aprobar `truncate` (Recomendado)" (option text: "Nombre corto y habitual (Tailwind, otras librerías); se registra al implementar."). This is an explicit convention approval, separate from the spec approval. It supersedes the draft-time "Status `proposed`, `approval: null`" wording in the amendment's §3, as resolved decision 3 records. The approved registry entry and docs/components/text/v0.3/prop-naming-approval.json are therefore backed by owner text.
 - L14: Independent verify of dd033c5 (Risk: item 3) PASS: implementation matches the amendment and plan; default rendering is byte-identical to base across 24,384 Text/Heading renders (truncate omitted, false or untyped); headless Chrome 148 confirmed ellipsis, RTL, long tokens, inline accent and ListItem rows (the trailing action stays visible but wraps under the text, an advisory for Recado's card); registry, artifact and package checks green (package-exports 137/137 after a fresh build). Unverified: real screen reader (AC-06), interactive keyboard/touch (AC-07), packed React 18/19 consumer (AC-10, CI). Follow-up: the artifact generator attaches Text-only recipes (textBodyVariants, now also the truncate axis) to Heading's anatomy; this predates the change. MCP serves only system.md, whose Heading section is unchanged, so agents are not misled. Fixing it needs a generator change outside this scope.
+- L15 (owner choices, verbatim): ghost/outline "surface-3 + shadow-btn-pressed (Recomendado)"; secondary "Excepción documentada (Recomendado)"; captures "Sí, sin capturas (Recomendado)"; delivery "Un PR con todo (Recomendado)". IconButton v0.5 approved with these resolved decisions, contentSHA256 c0f0a7dc66d67339807e8ec3e512508a8d718063a3fe17d37dbfa4da2d1f6d3a. Next: the v0.4 implementation plan (T5) on the v0.5 base.
