@@ -28,7 +28,7 @@ type SocialLinksResult = {
   layoutProps: StackProps | ClusterProps;
   rootProps: ComponentPropsWithoutRef<'div'>;
   listProps: ComponentPropsWithoutRef<'ul'>;
-  gap: 1 | 2;
+  gap: 3 | 5;
   caption: string | undefined;
   captionClassName: string;
   itemClassName: string;
@@ -130,7 +130,7 @@ export function useSocialLinks(props: SocialLinksProps): SocialLinksResult {
     layoutProps: { asChild: true, gap: inline ? 4 : 3, ...(inline ? { alignItems: 'center' as const } : {}) },
     rootProps: { ...rest, className: cn(socialLinksVariants(), className) },
     listProps: { role: 'list', 'aria-label': listName, className: cn(socialLinksListVariants()) },
-    gap,
+    gap: size === 'md' ? 5 : gap === 1 || gap === 2 ? 3 : gap,
     caption: caption?.trim() ? caption : undefined,
     captionClassName: cn(socialLinksCaptionVariants()),
     itemClassName: cn(socialLinksItemVariants()),

@@ -87,7 +87,9 @@ const ValidationSamples = () => {
  * controlled: `onValueChange` is then a request and the list changes only when a new `value` arrives. Rejections are shown as
  * visible errors, and `onFilesRejected` runs once per intake after `onValueChange`. Additions and removals are announced in
  * a polite status region; override the text and formatters through `messages` for other languages. The Remove button
- * is a small 25.6 px target (a known limitation on touch screens), and the corner button partly covers the 64 px thumbnail.
+ * has a 25.6px visible box and an extended 44.8px target under default tokens; it partly covers the 64px thumbnail.
+ * The field uses a 12.8px root gap and the wrapping strip a 9.6px gap under default tokens. Avoid clipping or overlays,
+ * and keep other interactive controls clear; browsers can adjust touch targeting near adjacent controls.
  * Paste a screenshot (Ctrl+V) while a Textarea inside the field is focused to add it. className supports outer layout only
  * (grid placement, margin, width), not appearance overrides.
  */

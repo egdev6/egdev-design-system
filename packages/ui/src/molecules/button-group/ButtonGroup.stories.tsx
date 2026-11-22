@@ -15,8 +15,10 @@ import { ButtonGroup } from './ButtonGroup';
  * Icon supplies the decorative chevron in split-action examples.
  *
  * ## Usage guidelines
- * Pass direct element children. Match Button md with IconButton lg (48px), or Button
- * sm with IconButton md (40px). className supports outer margins and parent alignment.
+ * Pass direct element children. Match Button md with IconButton lg (38.4px), or Button
+ * sm with IconButton md (32px), under default tokens. Both group variants suppress IconButton's
+ * extended target for compactness, so these controls remain below 44px; use another composition
+ * when larger targets are required. className supports outer margins and parent alignment.
  * A popup remains consumer-owned: compose its trigger asChild onto the IconButton.
  * Menu is not available on this base, so SplitButton demonstrates only the action pair,
  * not popup opening, ARIA or focus management. No built-in menu is promised.
@@ -43,7 +45,7 @@ export const Spaced: Story = {
   }
 };
 
-/** A 48px action pair; the host supplies the real popup, its trigger ARIA and lifecycle. */
+/** A 38.4px action pair; the host supplies the real popup, its trigger ARIA and lifecycle. */
 export const SplitButton: Story = {
   args: {
     variant: 'attached',
@@ -64,7 +66,7 @@ export const SplitButton: Story = {
   }
 };
 
-/** The compact 40px pairing uses independent size scales, not a group size prop. */
+/** The compact 32px pairing uses independent size scales, not a group size prop. */
 export const SmallSplitButton: Story = {
   args: {
     variant: 'attached',

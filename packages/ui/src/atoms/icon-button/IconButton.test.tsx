@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { createRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Icon } from '../icon';
+import { Tooltip } from '../tooltip';
 import { IconButton } from './index';
 import { useIconButton } from './useIconButton.js';
 
@@ -202,13 +203,93 @@ describe('IconButton public contract', () => {
     expect(classes.filter((value) => value.includes('alpha-red-65'))).toEqual([]);
   });
 
-  it('limits interactive geometry to motion-safe states and keeps focus out of state-shadow competition', () => {
-    render(<IconButton {...base} variant='outline' />);
+  it.each(['sm', 'md', 'lg'] as const)('uses a centered invisible target for every %s treatment and host', (size) => {
+    for (const variant of ['ghost', 'outline', 'primary', 'secondary'] as const) {
+      const { rerender, unmount } = render(<IconButton {...base} size={size} variant={variant} />);
+      const check = (root: HTMLElement) => {
+        expect(root).toHaveClass(
+          'relative',
+          "after:content-['']",
+          'after:absolute',
+          'after:left-[calc(50%_-_var(--space-14)_/_2)]',
+          'after:top-[calc(50%_-_var(--space-14)_/_2)]',
+          'after:size-14',
+          '[[data-icon-button-target=compact]>&]:after:content-none',
+          'data-disabled:pointer-events-none',
+          'focus-visible:shadow-focus',
+          'transform-none',
+          'translate-none',
+          'scale-100',
+          'motion-reduce:transition-none'
+        );
+        expect(root.className).not.toMatch(/active\]:scale|active:scale|after:pointer-events-auto/);
+        const transition = root.className.split(/\s+/).find((value) => value.startsWith('[transition:'));
+        expect(transition).toBeDefined();
+        expect(transition).not.toMatch(/transform|translate|scale|ease-spring/);
+      };
+      check(screen.getByRole('button', { name: 'Search' }));
+      rerender(
+        <IconButton {...base} size={size} variant={variant} asChild={true}>
+          <a href='#search' />
+        </IconButton>
+      );
+      check(screen.getByRole('link', { name: 'Search' }));
+      unmount();
+    }
+  });
+
+  it.each(['ghost', 'outline', 'primary', 'secondary'] as const)(
+    'keeps %s pressed paint subordinate to visible focus',
+    (variant) => {
+      render(<IconButton {...base} variant={variant} />);
+      const button = screen.getByRole('button');
+      expect(button).toHaveClass(
+        '[&:not([data-disabled]):active:not(:focus-visible)]:shadow-btn-pressed',
+        'focus-visible:shadow-focus'
+      );
+      expect(button).toHaveClass(
+        variant === 'ghost' || variant === 'outline'
+          ? '[&:not([data-disabled]):active]:bg-surface-3'
+          : variant === 'primary'
+            ? '[&:not([data-disabled]):active]:bg-action-primary-solid-bg'
+            : '[&:not([data-disabled]):active]:bg-alpha-red-15'
+      );
+      expect(button.className).toContain('motion-safe:[&:not([data-disabled]):active]:[transition:');
+    }
+  );
+
+  it('preserves a supported absolute host positioning context', () => {
+    render(<IconButton {...base} className='absolute end-0' />);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('motion-safe:[&:not([data-disabled]):active]:scale-94');
-    expect(button).toHaveClass(
-      '[&:not([data-disabled]):hover:not(:focus-visible)]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)]'
+    expect(button).toHaveClass('absolute', 'end-0', 'after:absolute');
+    expect(button).not.toHaveClass('relative');
+  });
+
+  it('preserves Tooltip description and one native focus stop', async () => {
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe = vi.fn();
+        unobserve = vi.fn();
+        disconnect = vi.fn();
+      }
     );
+    try {
+      const user = userEvent.setup();
+      render(
+        <Tooltip content='Search the catalog'>
+          <IconButton {...base} />
+        </Tooltip>
+      );
+      await user.tab();
+      const button = screen.getByRole('button', { name: 'Search' });
+      expect(button).toHaveFocus();
+      expect(await screen.findByRole('tooltip')).toHaveTextContent('Search the catalog');
+      expect(button).toHaveAccessibleDescription('Search the catalog');
+      expect(screen.getAllByRole('button')).toHaveLength(1);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it('supports raw SVG and merges the existing icon layout class without adding a public part marker', () => {
@@ -231,11 +312,13 @@ describe('IconButton public contract', () => {
   });
 });
 
-describe('IconButton hover motion (owner visual review)', () => {
-  it.each(['ghost', 'outline', 'primary', 'secondary'] as const)('keeps the %s root still on hover', (variant) => {
-    render(<IconButton {...base} variant={variant} />);
-    const classes = screen.getByRole('button').className.split(/\s+/);
-    expect(classes.filter((value) => /hover[^:]*:(?:-?translate|scale)/.test(value))).toEqual([]);
-    expect(screen.getByRole('button')).toHaveClass('motion-safe:[&:not([data-disabled]):active]:scale-94');
-  });
+describe('IconButton hover and press motion', () => {
+  it.each(['ghost', 'outline', 'primary', 'secondary'] as const)(
+    'keeps the %s root still on hover and press',
+    (variant) => {
+      render(<IconButton {...base} variant={variant} />);
+      const classes = screen.getByRole('button').className.split(/\s+/);
+      expect(classes.filter((value) => /(?:hover|active)[^:]*:(?:-?translate|scale)/.test(value))).toEqual([]);
+    }
+  );
 });

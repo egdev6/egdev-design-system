@@ -74,6 +74,44 @@ describe('ButtonGroup v0.1 public contract', () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it('suppresses IconButton extensions in both group variants without changing the child', async () => {
+    const user = userEvent.setup();
+    const click = vi.fn();
+    const child = <IconButton label='More' icon={<Icon name='chevron-down' />} onClick={click} />;
+    const standaloneRender = render(child);
+    const standalone = standaloneRender.container.innerHTML;
+    standaloneRender.unmount();
+    const { rerender } = render(<ButtonGroup variant='attached'>{child}</ButtonGroup>);
+    const group = screen.getByRole('group');
+    const button = screen.getByRole('button', { name: 'More' });
+    expect(group).toHaveAttribute('data-icon-button-target', 'compact');
+    expect(group).not.toHaveClass('[&>.eg-icon-btn]:after:content-none');
+    expect(button.parentElement).toBe(group);
+    expect(button).toHaveClass('[[data-icon-button-target=compact]>&]:after:content-none');
+    expect(group.innerHTML).toBe(standalone);
+    await user.click(button);
+    expect(click).toHaveBeenCalledOnce();
+    rerender(<ButtonGroup variant='spaced'>{child}</ButtonGroup>);
+    expect(group).toHaveAttribute('data-icon-button-target', 'compact');
+    expect(group).toHaveClass('gap-3');
+    expect(group.innerHTML).toBe(standalone);
+  });
+
+  it('owns its compact coordination attribute without changing direct-child structure', () => {
+    render(
+      <ButtonGroup data-icon-button-target='extended'>
+        <IconButton label='Direct' icon={<Icon name='search' />} />
+        <span>
+          <IconButton label='Nested' icon={<Icon name='search' />} />
+        </span>
+      </ButtonGroup>
+    );
+    const group = screen.getByRole('group');
+    expect(group).toHaveAttribute('data-icon-button-target', 'compact');
+    expect(screen.getByRole('button', { name: 'Direct' }).parentElement).toBe(group);
+    expect(screen.getByRole('button', { name: 'Nested' }).parentElement).not.toBe(group);
+  });
+
   it('attaches three actions using logical direct-child corners and focus stacking, without injecting child classes', () => {
     const children = ['First', 'Middle', 'Last'].map((text) => (
       <Button key={text} variant='secondary'>

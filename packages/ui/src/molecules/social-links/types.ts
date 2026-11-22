@@ -3,7 +3,7 @@ import type { ComponentPropsWithoutRef, ReactElement } from 'react';
 
 /** IconButton treatments supported by the collection. */
 export type SocialLinksVariant = 'outline' | 'ghost';
-/** lg is touch-sized (48px); md is dense desktop only (40px). */
+/** Visible IconButton presets; supported targets extend to 44.8px under default tokens. */
 export type SocialLinksSize = 'md' | 'lg';
 /** Existing spacing-token keys, not pixel lengths. */
 export type SocialLinksGap = 1 | 2;
@@ -88,13 +88,14 @@ export type SocialLinksProps = SocialLinksNativeProps & {
    */
   variant?: SocialLinksVariant;
   /**
-   * Delegated IconButton size; lg is 48px, md is 40px for dense desktop use only.
+   * Delegated visible IconButton size: lg is 38.4px and md is 32px under default tokens.
    * @default lg
    * @control select
    */
   size?: SocialLinksSize;
   /**
-   * Token-key list spacing: 1 is 4px and 2 is 8px, including wrapped rows.
+   * Requested token-key minimum list spacing, including wrapped rows. Effective spacing is at least
+   * gap-5 (16px) for md and gap-3 (9.6px) for lg under default tokens; 1 and 2 keep those minima.
    * @default 2
    * @control select
    */

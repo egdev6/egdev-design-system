@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
+import { ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemMeta } from '../../molecules/list-item';
 import { Icon } from '../icon';
 import { IconButton } from './IconButton';
 
@@ -17,7 +18,13 @@ import { IconButton } from './IconButton';
  * Supply a non-empty label and a decorative icon without its own label. Refs reach the native button or
  * slotted host. Disabled links are removed from tab order and activation is prevented. Consumers own
  * target/rel and tooltips. className supports only root margin, alignment and placement; appearance
- * overrides are unsupported. Small controls are desktop-only; touch layouts provide a ≥44px hit area.
+ * overrides are unsupported. Enabled standalone controls extend to a 44.8px square under default tokens.
+ * Reserve an unclipped visible gap at least one spacing token above the sum of adjacent target outsets.
+ * With default tokens use gap-7 for sm/sm, gap-6 for sm/md, gap-5 for sm/lg or md/md, gap-4 for md/lg,
+ * and gap-3 for lg/lg. Adjacent row centers need at least 48px or equivalent clearance with a token margin.
+ * Avoid overlays; hover and Tooltip entry can occur outside the visible box. A slotted host
+ * must spread props, forward its ref and avoid a competing ::after, clipping, overlays and ancestor scaling.
+ * ButtonGroup and Tabs scroll controls suppress the extension; local token overrides can make targets smaller.
  */
 const meta: Meta<typeof IconButton> = {
   title: 'Atoms/IconButton',
@@ -34,7 +41,7 @@ export const Default: Story = {};
 /** All four approved treatments, without legacy modifier classes or local appearance overrides. */
 export const Variants: Story = {
   render: (args) => (
-    <div className='flex gap-4'>
+    <div className='flex flex-wrap gap-7'>
       {(['ghost', 'outline', 'primary', 'secondary'] as const).map((variant) => (
         <IconButton {...args} key={variant} variant={variant} label={`${variant} action`} />
       ))}
@@ -43,16 +50,61 @@ export const Variants: Story = {
 };
 
 /**
- * Fixed 32/40/48px controls; glyphs use 16px at sm and the 20px icon token otherwise. The outline cell is
- * the round treatment the web social rows use at lg.
+ * Visible boxes are 25.6/32/38.4px under default tokens; glyphs are 12.8px at sm and 16px otherwise.
+ * The outline cell is the round treatment the web social rows use at lg.
  */
 export const Sizes: Story = {
   render: (args) => (
-    <div className='flex items-center gap-4'>
+    <div className='flex flex-wrap items-center gap-7'>
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <IconButton {...args} key={size} size={size} />
       ))}
       <IconButton {...args} key='outline-lg' size='lg' variant='outline' label='outline social action' />
+    </div>
+  )
+};
+
+/** Equal and mixed-size neighbors use gap-7, including when the pairs wrap into multiple rows. */
+export const AdjacentTargets: Story = {
+  render: (args) => (
+    <div className='flex flex-wrap gap-7'>
+      {(
+        [
+          ['sm', 'sm'],
+          ['md', 'md'],
+          ['lg', 'lg'],
+          ['sm', 'md'],
+          ['md', 'lg']
+        ] as const
+      ).map(([first, second]) => (
+        <div className='flex gap-7' key={`${first}-${second}`}>
+          <IconButton {...args} size={first} label={`${first} first action`} />
+          <IconButton {...args} size={second} label={`${second} second action`} />
+        </div>
+      ))}
+    </div>
+  )
+};
+
+/** Two-line rows keep a single independent trailing action and reserve space between neighboring rows. */
+export const CompactListItem: Story = {
+  render: (args) => (
+    <div className='flex w-full flex-col gap-6'>
+      {['Release notes', 'Review checklist'].map((title) => (
+        <ListItem key={title} variant='row'>
+          <ListItemBody>
+            <ListItemContent>
+              {title}
+              <br />
+              Details remain readable in the row.
+            </ListItemContent>
+          </ListItemBody>
+          <ListItemMeta>Draft</ListItemMeta>
+          <ListItemActions>
+            <IconButton {...args} label={`Edit ${title}`} />
+          </ListItemActions>
+        </ListItem>
+      ))}
     </div>
   )
 };

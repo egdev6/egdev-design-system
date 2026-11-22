@@ -175,14 +175,15 @@ export const tabsListVariants = cva('', {
   defaultVariants: { variant: 'underline' }
 });
 
-/** v0.4-A positioning context wrapping a scrollable list and its two internal scroll buttons. */
+/** Position the list; IconButton owns compact-target styling for direct scroll-button children. */
 export const tabsScrollAreaVariants = cva('relative', {
   variants: { fill: { true: 'shrink-0' } }
 });
 
 /**
- * v0.4-A fine-pointer scroll buttons over the faded edges; IconButton sm (size-8) matches the fade zone.
- * Never rendered on coarse pointers; visibility follows the hook-owned data-state (visible, inert, hidden).
+ * Fine-hover primary-pointer scroll buttons over the faded edges; IconButton sm matches the fade zone.
+ * A touch-capable hybrid can still touch their approximately 25.6px visible boxes under default tokens;
+ * the list also scrolls by dragging. Visibility follows the hook-owned visible, inert or hidden state.
  */
 export const tabsScrollButtonVariants = cva(
   [

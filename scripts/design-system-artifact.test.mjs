@@ -59,6 +59,42 @@ function artifactWithTags(entries) {
 
 const buttonFixture = { path: 'packages/ui/src/atoms/button/types.ts', alias: 'ButtonProps' };
 
+test('IconButton hit-area facts and composition spacing are source-derived without new public props', () => {
+  const artifact = read('packages/system/design-system.json');
+  const component = (name) => {
+    const item = artifact.components.find((entry) => entry.name === name);
+    assert.ok(item, name);
+    return item;
+  };
+  const recipe = (name, recipeName) => {
+    const item = component(name).variants.find((entry) => entry.name === recipeName);
+    assert.ok(item, recipeName);
+    return item.classes.join(' ');
+  };
+  const icon = component('IconButton');
+  assert.deepEqual(icon.props.map(({ name }) => name).sort(), [
+    'asChild',
+    'children',
+    'icon',
+    'label',
+    'size',
+    'variant'
+  ]);
+  assert.match(icon.props.find(({ name }) => name === 'size').description, /one spacing token above the sum/);
+  const root = recipe('IconButton', 'iconButtonVariants');
+  assert.match(root, /after:size-14/);
+  assert.match(root, /after:left-\[calc\(50%_-_var\(--space-14\)_\/_2\)\]/);
+  assert.match(root, /\[\[data-icon-button-target=compact\]>&\]:after:content-none/);
+  assert.doesNotMatch(root, /scale-94|ease-spring/);
+  assert.doesNotMatch(recipe('ButtonGroup', 'buttonGroupVariants'), /\[&>\.eg-icon-btn\]/);
+  assert.doesNotMatch(recipe('Tabs', 'tabsScrollAreaVariants'), /\[&>\.eg-icon-btn\]/);
+  assert.match(recipe('ListItem', 'listItemPartVariants'), /eg-list-item__acts[^']*gap-5/);
+  assert.match(recipe('Carousel', 'carouselControlsVariants'), /gap-3/);
+  const gap = component('SocialLinks').props.find(({ name }) => name === 'gap');
+  assert.equal(gap.default, '2');
+  assert.match(gap.description, /gap-5 \(16px\).*gap-3 \(9\.6px\)/s);
+});
+
 test('classNameAllows publishes sorted unique CSS properties on roots and their own or shared parts', () => {
   const result = artifactWithTags([
     {

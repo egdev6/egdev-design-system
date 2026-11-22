@@ -66,6 +66,33 @@ afterEach(() => {
 });
 
 describe('Carousel public contract v0.1', () => {
+  it.each(['default', 'full-width'] as const)(
+    'reserves target spacing between native controls with the %s track',
+    (trackLayout) => {
+      render(<Carousel label='Highlights' items={items} defaultValue='b' trackLayout={trackLayout} />);
+      const previous = screen.getByRole('button', { name: 'Previous slide' });
+      const next = screen.getByRole('button', { name: 'Next slide' });
+      const controls = previous.parentElement;
+      expect(controls).toBe(next.parentElement);
+      expect(controls).toHaveClass('gap-3');
+      expect(controls).not.toHaveClass('gap-2');
+      expect(previous).toBeEnabled();
+      expect(next).toBeEnabled();
+      expect(previous).toHaveClass('after:size-14');
+      expect(next).toHaveClass('after:size-14');
+    }
+  );
+
+  it('preserves one request from each native control in the controlled middle state', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<Carousel label='Highlights' items={items} value='b' onValueChange={onValueChange} />);
+    await user.click(screen.getByRole('button', { name: 'Previous slide' }));
+    await user.click(screen.getByRole('button', { name: 'Next slide' }));
+    expect(onValueChange.mock.calls).toEqual([['a'], ['c']]);
+    expect(current()).toHaveAccessibleName('2 of 3: Beta');
+  });
+
   it('derives hook defaults without a fabricated initial identity', () => {
     const { result } = renderHook(() => useCarousel({ label: 'Highlights', items }));
     expect(result.current.rootProps['data-state']).toBe('idle');

@@ -3914,25 +3914,34 @@ function assertIconButtonCSS(css) {
   ]) {
     assert.ok(css.includes(selector), 'Missing IconButton selector ' + selector);
   }
-  for (const token of [
-    '--gradient-btn-primary-hover',
-    '--gradient-btn-secondary-hover',
-    '--gradient-sheen',
-    '--color-border-brand',
-    '--duration-press',
-    '--ease-spring'
-  ]) {
-    assert.ok(css.includes('var(' + token), 'IconButton must consume ' + token);
+  const rule = (token) => {
+    const selector = '.' + token.replace(/([^a-zA-Z0-9_-])/g, '\\$1');
+    const start = css.indexOf(selector);
+    assert.ok(start >= 0, 'Missing IconButton selector ' + token);
+    const end = css.indexOf('}', css.indexOf('{', start));
+    assert.ok(end > start, 'Unclosed IconButton selector ' + token);
+    return css.slice(start, end + 1);
+  };
+  const size = rule('after:size-14');
+  assert.match(size, /:after/);
+  assert.match(size, /width:\s*var\(--space-14\)/);
+  assert.match(size, /height:\s*var\(--space-14\)/);
+  for (const axis of ['left', 'top']) {
+    assert.match(
+      rule('after:' + axis + '-[calc(50%_-_var(--space-14)_/_2)]'),
+      /calc\(50%\s*-\s*var\(--space-14\)\s*\/\s*2\)/
+    );
   }
-  assert.ok(
-    /--tw-scale-x:\s*94%/.test(css) && /--tw-scale-y:\s*94%/.test(css),
-    'Pressed icon actions must scale to .94 on both axes'
-  );
-  assert.ok(/scale:\s*var\(--tw-scale-x\) var\(--tw-scale-y\)/.test(css), 'Tailwind composes individual scale axes');
-  assert.match(css, /prefers-reduced-motion:\s*no-preference/, 'Transforms only run when motion is safe');
-  assert.match(css, /prefers-reduced-motion:\s*reduce/, 'Reduced motion has explicit resets');
+  assert.match(rule('[&:not([data-disabled]):active]:bg-surface-3'), /background-color:\s*var\(--color-surface-3/);
+  assert.match(rule('[&:not([data-disabled]):active:not(:focus-visible)]:shadow-btn-pressed'), /--tw-shadow:/);
+  assert.match(rule('focus-visible:shadow-focus'), /--tw-shadow:/);
+  assert.match(rule('motion-reduce:transition-none'), /transition-property:\s*none/);
+  for (const reset of ['transform-none', 'translate-none', 'scale-100']) {
+    assert.ok(rule(reset), 'IconButton must ship legacy reset ' + reset);
+  }
+  assert.match(css, /prefers-reduced-motion:\s*no-preference/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.ok(css.includes('data-disabled'), 'Disabled styles must follow the attribute');
-  assert.ok(css.includes('focus-visible'), 'Icon actions ship a visible focus treatment');
 }
 
 function assertIconCSS(css) {

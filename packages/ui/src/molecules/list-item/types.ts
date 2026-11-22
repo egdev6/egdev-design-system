@@ -216,7 +216,7 @@ export const listItemPartVariants = cva('', {
         'group-data-[variant=editorial-divided]/list-item:font-display group-data-[variant=editorial-divided]/list-item:uppercase group-data-[variant=editorial-divided]/list-item:tabular-nums group-data-[variant=editorial-divided]/list-item:text-label-eyebrow group-data-[variant=editorial-divided]/list-item:text-fg-secondary',
         '[&_b]:text-fg-brand-raised'
       ],
-      actions: 'eg-list-item__acts flex flex-wrap items-center gap-1 ms-auto text-fg-default'
+      actions: 'eg-list-item__acts flex flex-wrap items-center gap-5 ms-auto text-fg-default'
     }
   }
 });

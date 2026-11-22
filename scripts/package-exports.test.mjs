@@ -4617,25 +4617,39 @@ test('UI ships every static IconButton CVA utility, native resets and scoped sta
     const escaped = '.' + token.replace(/([^a-zA-Z0-9_-])/g, '\\$1');
     assert.ok(utilities.includes(escaped), `Missing IconButton utility ${token}`);
   }
-  for (const token of [
-    '--gradient-btn-primary-hover',
-    '--gradient-btn-secondary-hover',
-    '--color-border-brand',
-    '--duration-press',
-    '--ease-spring'
-  ]) {
-    assert.ok(utilities.includes(`var(${token}`), `IconButton must consume ${token}`);
+  const emittedRule = (token) => {
+    assert.ok(classes.has(token), `IconButton recipe must use ${token}`);
+    const escaped = '.' + token.replace(/([^a-zA-Z0-9_-])/g, '\\$1');
+    const start = utilities.indexOf(escaped);
+    assert.ok(start >= 0, `Missing emitted IconButton selector ${token}`);
+    const end = utilities.indexOf('}', utilities.indexOf('{', start));
+    assert.ok(end > start, `Unclosed emitted IconButton selector ${token}`);
+    return utilities.slice(start, end + 1);
+  };
+  const size = emittedRule('after:size-14');
+  assert.match(size, /::after/);
+  assert.match(size, /width:\s*var\(--space-14\)/);
+  assert.match(size, /height:\s*var\(--space-14\)/);
+  for (const axis of ['left', 'top']) {
+    assert.match(
+      emittedRule(`after:${axis}-[calc(50%_-_var(--space-14)_/_2)]`),
+      /calc\(50%\s*-\s*var\(--space-14\)\s*\/\s*2\)/
+    );
   }
-  assert.match(utilities, /box-sizing:\s*border-box/);
-  assert.match(utilities, /border-style:\s*solid/);
-  for (const axis of ['x', 'y']) {
-    assert.ok(new RegExp(`--tw-scale-${axis}:\\s*94%`).test(utilities), `Pressed ${axis} scale must be .94`);
+  assert.match(
+    emittedRule('[&:not([data-disabled]):active]:bg-surface-3'),
+    /background-color:\s*var\(--color-surface-3/
+  );
+  assert.match(emittedRule('[&:not([data-disabled]):active:not(:focus-visible)]:shadow-btn-pressed'), /--tw-shadow:/);
+  assert.match(emittedRule('focus-visible:shadow-focus'), /--tw-shadow:/);
+  assert.match(emittedRule('motion-reduce:transition-none'), /transition-property:\s*none/);
+  for (const reset of ['transform-none', 'translate-none', 'scale-100']) {
+    assert.ok(classes.has(reset), `IconButton must keep legacy reset ${reset}`);
   }
-  assert.ok(/scale:\s*var\(--tw-scale-x\) var\(--tw-scale-y\)/.test(utilities));
+  assert.ok(![...classes].some((token) => /active.*scale-94|ease-spring/.test(token)));
+  assert.ok([...classes].some((token) => token.includes('--duration-press') && token.includes('transition:')));
   assert.match(utilities, /prefers-reduced-motion:\s*no-preference/);
   assert.match(utilities, /prefers-reduced-motion:\s*reduce/);
-  assert.match(utilities, /transition:\s*color var\(--duration-fast\) var\(--ease-out\)/);
-  assert.match(utilities, /translate:\s*var\(--tw-translate-x\)/, 'Tailwind v4 lift uses translate, not transform');
   assert.doesNotMatch(utilities, /\.eg-icon-btn[^a-z-]/, 'No new marker recipe or stylesheet');
   const { IconButton, Icon } = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
