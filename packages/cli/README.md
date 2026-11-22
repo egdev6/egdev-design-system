@@ -392,8 +392,10 @@ file is an empty allowlist. The guard resolves `typescript` and `postcss` from t
 own copies.
 
 DS046 checks static classes on JSX components imported from `@egdev/ui` in non-test `.tsx` files under
-`sourceDirectory`, including aliased and namespace imports. It collects string literals, static template parts and
-string-literal call arguments; dynamic values are ignored. It checks CSS rules under `sourceDirectory` outside
+`sourceDirectory`, including aliased and namespace imports. It collects string literals and static template parts
+anywhere in the `className` expression, including conditional branches, logical operands, array elements and values,
+and non-computed string or identifier object keys. It never evaluates variables and ignores computed object keys
+(verification amendment, `odd/tasks/app-side-consumer-flow.md` T1). It checks CSS rules under `sourceDirectory` outside
 `themeDirectory`, honoring `exclude`. A class must occur in the selector's last compound; a class only on an ancestor
 is not checked by DS046. Media and nested rules are checked. One finding per rule names the selector, component and
 non-placement properties. An exception uses the CSS file and the exact whitespace-normalized rule selector as its
@@ -401,10 +403,12 @@ non-placement properties. An exception uses the CSS file and the exact whitespac
 
 The permitted declarations are custom properties (`--*`), `margin` and `margin-*`, `align-self`, `justify-self`,
 `place-self`, `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `order`, `grid-area`, `grid-column*` and `grid-row*`.
-`min-width` and `min-height` are also permitted only as literal `0`, with or without a unit (such as `0px` or `0%`,
-case-insensitive), including with `!important`. Other values, including `auto`, `min-content`, `calc()` and `var()`,
-are findings; `width`, `max-width`, `height` and `max-height` remain findings even at zero. An allowlist entry for a
-now-permitted rule becomes stale unless the rule still has another offending declaration.
+`min-width` and `min-height` are also permitted only as literal `0`, optionally followed by `%` or a CSS length unit,
+case-insensitively and including with `!important`. The accepted units are `px`, `em`, `rem`, `ex`, `ch`, `cap`, `ic`,
+`lh`, `rlh`, `vw`, `vh`, `vi`, `vb`, `vmin`, `vmax`, `svw`, `svh`, `lvw`, `lvh`, `dvw`, `dvh`, `cqw`, `cqh`, `cqi`,
+`cqb`, `cqmin`, `cqmax`, `cm`, `mm`, `q`, `in`, `pt` and `pc`. Other values, including `0foo`, `auto`, `min-content`,
+`calc()` and `var()`, are findings; `width`, `max-width`, `height` and `max-height` remain findings even at zero. An
+allowlist entry for a now-permitted rule becomes stale unless the rule still has another offending declaration.
 
 Everything else requires the component API or an issue-backed exception. DS046 does not inspect Tailwind utilities,
 inline `style` or structural selectors whose DS class occurs only in an earlier compound.

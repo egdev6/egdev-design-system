@@ -20,7 +20,7 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 
 | ID | Specs | Route | Commit |
 | --- | --- | --- | --- |
-| T1 | S3, S4, S5 | worker | pending |
+| T1 | S3, S4, S5 | worker | done: 4bf4c02 + verification amendments (next commit) |
 | T2–T8 | #530 | — | not started; each needs owner approval |
 
 ## Log
@@ -31,3 +31,4 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 - L4: T1 first pass by worker: RED 9 → GREEN test:cli 173/173. Parent ran the new doctor on clean copies of the consumers' origin/main: Recado 7cd65e1 → exactly the six audited className overrides (ListItemTitle/Meta typography, IconButton size, DialogContent width) plus `min-width: 0` on ListItemContent; egdev-website b009d8e → none; Nexo 2e74b33 → nine real overrides (Tabs padding, SelectTile grid-template-columns, Button width, Icon transform, Text white-space/overflow-wrap, …) plus `min-width: 0` on Field.
 - L5 (owner choice): S5.
 - L6: S5 by worker: RED 4 → GREEN test:cli 177/177; typecheck and biome green. Re-run on the consumers: Recado 5 DS046, egdev-website 0, Nexo 8 (the two `min-width: 0` findings are gone).
+- L7: Independent verify (Risk: item 3) PASS for S3, S4, S5 and the risk: DS040–DS045 byte-identical to base on 19 fixtures × 3 flag sets; all 13 consumer findings true positives (no Button full-width, Text wrap, Tabs padding, Icon rotate, SelectTile columns or ListItem truncate API); ~+90 ms on Nexo. Advisories adopted: string literals anywhere in a className expression count (conditionals, &&/||/??, arrays, object keys), closing the `cn(on && 'x')` dodge; zero minimums only with real CSS length units. Worker: RED 3 → GREEN test:cli 181/181. Consumers unchanged: Recado 5, egdev-website 0, Nexo 8.

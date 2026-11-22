@@ -8,6 +8,42 @@
 /** @typedef {{ tsx: RegExp, css: RegExp, test: RegExp }} SourcePatterns */
 
 const CONDITIONAL_RULES = new Set(['media', 'supports', 'container', 'layer', 'scope', 'starting-style']);
+const CSS_LENGTH_UNITS = new Set([
+  'px',
+  'em',
+  'rem',
+  'ex',
+  'ch',
+  'cap',
+  'ic',
+  'lh',
+  'rlh',
+  'vw',
+  'vh',
+  'vi',
+  'vb',
+  'vmin',
+  'vmax',
+  'svw',
+  'svh',
+  'lvw',
+  'lvh',
+  'dvw',
+  'dvh',
+  'cqw',
+  'cqh',
+  'cqi',
+  'cqb',
+  'cqmin',
+  'cqmax',
+  'cm',
+  'mm',
+  'q',
+  'in',
+  'pt',
+  'pc',
+  '%'
+]);
 const PLACEMENT = new Set([
   'margin',
   'align-self',
@@ -25,8 +61,9 @@ const PLACEMENT = new Set([
 function isPlacement(property, value) {
   const name = property.toLowerCase();
   if (name === 'min-width' || name === 'min-height') {
-    // PostCSS removes !important from the value; accept only a literal zero and optional unit.
-    return /^0(?:[a-z]+|%)?$/i.test(value.trim());
+    // PostCSS removes !important from the value; accept only a literal zero and a real length unit or %.
+    const zero = value.trim().toLowerCase();
+    return zero === '0' || (zero.startsWith('0') && CSS_LENGTH_UNITS.has(zero.slice(1)));
   }
   return (
     name.startsWith('--') ||
@@ -247,26 +284,28 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
           }
         }
       };
-      /** @param {import('typescript').Expression} expression @param {string} component */
-      const addStatic = (expression, component) => {
-        if (ts.isStringLiteral(expression) || ts.isNoSubstitutionTemplateLiteral(expression)) {
-          add(expression.text, component);
-        } else if (ts.isTemplateExpression(expression)) {
-          add(expression.head.text, component);
-          for (const span of expression.templateSpans) {
+      /** @param {import('typescript').Node} node @param {string} component */
+      const addStatic = (node, component) => {
+        if (ts.isComputedPropertyName(node) || ts.isTypeNode(node)) {
+          return;
+        }
+        if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+          add(node.text, component);
+        } else if (ts.isTemplateExpression(node)) {
+          add(node.head.text, component);
+          for (const span of node.templateSpans) {
+            addStatic(span.expression, component);
             add(span.literal.text, component);
           }
-        } else if (ts.isCallExpression(expression)) {
-          for (const argument of expression.arguments) {
-            addStatic(argument, component);
+        } else if (ts.isObjectLiteralExpression(node)) {
+          for (const property of node.properties) {
+            if ('name' in property && property.name && ts.isIdentifier(property.name)) {
+              add(property.name.text, component);
+            }
+            ts.forEachChild(property, (child) => addStatic(child, component));
           }
-        } else if (
-          ts.isParenthesizedExpression(expression) ||
-          ts.isAsExpression(expression) ||
-          ts.isSatisfiesExpression(expression) ||
-          ts.isNonNullExpression(expression)
-        ) {
-          addStatic(expression.expression, component);
+        } else {
+          ts.forEachChild(node, (child) => addStatic(child, component));
         }
       };
       /** @param {import('typescript').Node} node */

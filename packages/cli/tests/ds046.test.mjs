@@ -72,6 +72,57 @@ test('S3 DS046 collects static classes only on named, aliased and namespace UI i
   ]);
 });
 
+test('T1 verification collects literals throughout className expressions but ignores computed object keys', () => {
+  const names = [
+    'cond',
+    'tern',
+    'other',
+    'obj-key',
+    'plain',
+    'shorthand',
+    'obj-value',
+    'array-class',
+    'or-class',
+    'nullish-class',
+    'direct-a',
+    'direct-b',
+    'head',
+    'inner-yes',
+    'inner-template',
+    'tail',
+    'bare-template',
+    'condition-lit'
+  ];
+  const ignored = ['dynamic', 'computed-key', 'computed-template', 'computed-yes', 'computed-no'];
+  const files = [
+    view(
+      [
+        "import { Button } from '@egdev/ui';",
+        'const a = <Button className={cn(',
+        "  on && 'cond', on ? 'tern' : 'other',",
+        "  { 'obj-key': on, plain: on, shorthand, ['computed-key']: 'obj-value',",
+        "    [`computed-template`]: on, [on ? 'computed-yes' : 'computed-no']: on },",
+        "  [on && 'array-class', on || 'or-class', on ?? 'nullish-class']",
+        ')} />;',
+        "const b = <Button className={on ? 'direct-a' : 'direct-b'} />;",
+        "const c = <Button className={`head ${on ? 'inner-yes' : `inner-template`} tail`} />;",
+        'const d = <Button className={`bare-template`} />;',
+        "const e = <Button className={mode === 'condition-lit' ? dynamic : dynamic} />;",
+        'const f = <Button className={dynamic} />;'
+      ].join('\n')
+    ),
+    css([...names, ...ignored].map((name) => `.${name} { color: red; }`).join('\n'))
+  ];
+  const result = checkDesignSystem(files, []);
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.pendingIssueCount, 0);
+  assert.deepEqual(
+    result.appearanceViolations,
+    names.map((name, index) => finding(index + 1, `.${name}`, 'Button', ['color']))
+  );
+});
+
 test('S3 DS046 ignores locally shadowed names instead of treating them as UI imports', () => {
   const result = checkDesignSystem(
     [
@@ -227,6 +278,78 @@ test('S5 DS046 reports nonzero and dynamic minimums, preserves other dimensions 
   ]);
 });
 
+test('T1 verification S5 accepts only the specified zero length units and percentages', () => {
+  const units = [
+    'px',
+    'em',
+    'rem',
+    'ex',
+    'ch',
+    'cap',
+    'ic',
+    'lh',
+    'rlh',
+    'vw',
+    'vh',
+    'vi',
+    'vb',
+    'vmin',
+    'vmax',
+    'svw',
+    'svh',
+    'lvw',
+    'lvh',
+    'dvw',
+    'dvh',
+    'cqw',
+    'cqh',
+    'cqi',
+    'cqb',
+    'cqmin',
+    'cqmax',
+    'cm',
+    'mm',
+    'q',
+    'in',
+    'pt',
+    'pc',
+    '%'
+  ];
+  const allowed = ['', ...units]
+    .flatMap((unit) => [`min-width: 0${unit.toUpperCase()} !IMPORTANT;`, `min-height: 0${unit};`])
+    .join(' ');
+  const invalid = [
+    ['fake-width', 'min-width', '0foo'],
+    ['fake-height', 'min-height', '0s'],
+    ['angle', 'min-width', '0deg'],
+    ['grid', 'min-height', '0fr'],
+    ['compound', 'min-width', '0pxx'],
+    ['decimal', 'min-height', '0.0px'],
+    ['negative', 'min-width', '-0px'],
+    ['nonzero', 'min-height', '0.5px']
+  ];
+  const names = ['safe', ...invalid.map(([name]) => name)].join(' ');
+  const result = checkDesignSystem(
+    [
+      view(`import { Field } from '@egdev/ui'; const x = <Field className="${names}" />;`),
+      css(
+        [
+          `.safe { ${allowed} }`,
+          ...invalid.map(([name, property, value]) => `.${name} { ${property}: ${value}; }`)
+        ].join('\n')
+      )
+    ],
+    []
+  );
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.pendingIssueCount, 0);
+  assert.deepEqual(
+    result.appearanceViolations,
+    invalid.map(([name, property], index) => finding(index + 2, `.${name}`, 'Field', [property]))
+  );
+});
+
 test('S5 an allowlist entry for a now-allowed zero minimum becomes stale', () => {
   const result = checkDesignSystem(
     [
@@ -324,6 +447,24 @@ test('S3 DS046 uses the guard allowlist once per rule and marks unused entries s
   assert.deepEqual(result.appearanceViolations, [finding(2, '.title', 'ListItemTitle', ['font-weight'])]);
   assert.deepEqual(result.errors, ['src/styles.css: stale allowlist entry .gone; remove it']);
   assert.equal(result.pendingIssueCount, 0);
+});
+
+test('T1 verification uses normalized selectors and marks placement-only allowlist entries stale', () => {
+  const files = [
+    view('import { Button } from \'@egdev/ui\'; const x = <Button className="target placement" />;'),
+    css('.layout\n  >  .target:hover { color: red; }\n.placement { margin: 0; min-width: 0px; }')
+  ];
+  const entry = { file: 'src/styles.css', issue: 'nexo#12', reason: 'Temporary.' };
+  const result = checkDesignSystem(files, [
+    { ...entry, pattern: '.layout > .target:hover' },
+    { ...entry, pattern: '.placement' }
+  ]);
+  assert.deepEqual(result, {
+    violations: [],
+    appearanceViolations: [],
+    errors: ['src/styles.css: stale allowlist entry .placement; remove it'],
+    pendingIssueCount: 0
+  });
 });
 
 test('S3 one allowlist entry covers both DS041 and DS046 on the same rule', () => {
@@ -431,6 +572,56 @@ test('S5 doctor reports only the offending declarations in text and JSON without
       line: index + 3
     }))
   );
+  expected.result = 'failed';
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--json'], app.root), {
+    status: 1,
+    stdout: `${JSON.stringify(expected, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(app.root), before);
+});
+
+test('T1 verification doctor skips src/gen, test sources and theme CSS while reporting live classes', () => {
+  const app = fixture();
+  writeFileSync(
+    join(app.project, 'egdev-ds.json'),
+    json({ schemaVersion: 1, localRepo: 'nexo', exclude: ['src/gen'] })
+  );
+  const baselineText = runBin(['doctor', 'apps/hub'], app.root);
+  const baselineJson = runBin(['doctor', 'apps/hub', '--json'], app.root);
+  assert.equal(baselineText.status, 0);
+  assert.equal(baselineText.stderr, '');
+  assert.equal(baselineJson.status, 0);
+  assert.equal(baselineJson.stderr, '');
+  write(
+    join(app.project, 'src/Live.tsx'),
+    "import { Button } from '@egdev/ui'; const x = <Button className={cn(on && 'live')} />;\n"
+  );
+  write(
+    join(app.project, 'src/gen/Generated.tsx'),
+    'import { Button } from \'@egdev/ui\'; const x = <Button className="generated-only" />;\n'
+  );
+  write(
+    join(app.project, 'src/Live.test.tsx'),
+    'import { Button } from \'@egdev/ui\'; const x = <Button className="test-only" />;\n'
+  );
+  write(join(app.project, 'src/gen/generated.css'), '.live { width: 2px; }\n');
+  write(join(app.project, 'src/theme/extra.css'), '.live { font-size: 1rem; }\n');
+  write(
+    join(app.project, 'src/styles.css'),
+    '.live { color: red; }\n.generated-only { color: red; }\n.test-only { color: red; }\n'
+  );
+  const before = treeHash(app.root);
+  const message = '.live on Button sets color: use the component API or add an allowlist entry with an issue.';
+  assert.deepEqual(runBin(['doctor', 'apps/hub'], app.root), {
+    status: 1,
+    stdout: baselineText.stdout
+      .replace('DS051 skipped', `DS046 error src/styles.css:1: ${message}\nDS051 skipped`)
+      .replace('0 errors, 0 warnings, 4 skipped.', '1 error, 0 warnings, 4 skipped.'),
+    stderr: ''
+  });
+  const expected = JSON.parse(baselineJson.stdout);
+  expected.findings.splice(2, 0, { code: 'DS046', severity: 'error', message, file: 'src/styles.css', line: 1 });
   expected.result = 'failed';
   assert.deepEqual(runBin(['doctor', 'apps/hub', '--json'], app.root), {
     status: 1,

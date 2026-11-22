@@ -42,8 +42,8 @@ Going beyond a DS component's API needs an issue-backed guard allowlist entry as
 an app class that changes a DS component's appearance or layout goes beyond the API. The guard reports DS046 when its
 CSS sets anything other than custom properties or placement-only declarations (`margin` and `margin-*`, `align-self`,
 `justify-self`, `place-self`, `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `order`, `grid-area`, `grid-column*`
-and `grid-row*`). `min-width` and `min-height` are also allowed at literal zero, with an optional unit and optional
-`!important`; other values remain findings. It checks static classes on imported `@egdev/ui` JSX components and
+and `grid-row*`). `min-width` and `min-height` are also allowed at literal zero, optionally followed by `%` or a CSS
+length unit, and with optional `!important`; other values remain findings. It checks static classes on imported `@egdev/ui` JSX components and
 matching rules outside the theme folder; it does not yet cover Tailwind utilities, inline styles or structural selectors. See the
 [guard reference](../../packages/cli/README.md#guard-allowlist).
 
