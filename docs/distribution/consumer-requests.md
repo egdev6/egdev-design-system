@@ -38,9 +38,18 @@ to work around a missing piece.
 A consumer may ship a temporary mitigation while the DS issue is open. It has **no expiry**: it
 lives until the release that resolves the issue.
 
+Going beyond a DS component's API needs an issue-backed guard allowlist entry as a temporary mitigation. For example,
+an app class that changes a DS component's appearance or layout goes beyond the API. The guard reports DS046 when its
+CSS sets anything other than custom properties or placement-only declarations (`margin` and `margin-*`, `align-self`,
+`justify-self`, `place-self`, `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `order`, `grid-area`, `grid-column*`
+and `grid-row*`). `min-width` and `min-height` are also allowed at literal zero, with an optional unit and optional
+`!important`; other values remain findings. It checks static classes on imported `@egdev/ui` JSX components and
+matching rules outside the theme folder; it does not yet cover Tailwind utilities, inline styles or structural selectors. See the
+[guard reference](../../packages/cli/README.md#guard-allowlist).
+
 **Allowed**
 
-- Local composition of existing DS components and tokens.
+- Local composition of existing DS components and tokens, within their APIs and the placement-only allowance.
 - A guard allowlist entry in `<sourceDirectory>/design-system-allowlist.ts` that names the DS
   issue, with a reason. For a missing component use `kind: 'component-gap'` and the matching
   comment in code:

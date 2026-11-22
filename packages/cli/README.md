@@ -1,7 +1,7 @@
 # @egdev/cli
 
-`egdev-ds` installs, upgrades and checks the EGDEV design system in a consumer app. It uses the Node 24 standard
-library only and has no dependencies. The approved spec is
+`egdev-ds` installs, upgrades and checks the EGDEV design system in a consumer app. It has no package dependencies;
+its guard resolves `typescript` and `postcss` from the project. The approved spec is
 [docs/distribution/egdev-ds-cli.md](../../docs/distribution/egdev-ds-cli.md).
 
 This release ships `init`, `upgrade`, `doctor` and `status`.
@@ -362,6 +362,7 @@ Codes are stable: a code is never reused for another check.
 | DS043 | warning (error with `--fail-on-pending`) | Guard: `<localRepo>#TBD-*` placeholders pending. |
 | DS044 | error | `typescript` or `postcss` is not resolvable from the project; the guard needs both. |
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
+| DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` component to set non-placement properties. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
 | DS051 | warning | The nearest `design/system.md`, from the project up to its repository root (the nearest folder with `.git`), records a design system commit in its first line (`<!-- Generated from EGDEV design system <commit>; … -->`) other than the vendored one: regenerate it. Skipped without the file, a recorded commit or a single vendored commit. |
 | DS052 | warning | With `--from` at the same vendored commit, each guard allowlist entry whose `egdev6/egdev-design-system#N` issue occurs in `resolves` for a package the project uses names a mitigation to remove. One warning lists the relevant resolving packages and versions in package-name order, with the source line when available. Skipped without `--from`; with a release whose `resolves` is empty or absent it adds no finding; otherwise skipped when the vendored commit is mixed, absent or differs from the release, or when the allowlist cannot be loaded; `--fail-on-pending` does not change its severity. |
@@ -389,6 +390,24 @@ The guard reads `<sourceDirectory>/design-system-allowlist.ts`, which exports `d
 with Node's built-in type stripping, so the file may hold only `import type` lines and the array literal. A missing
 file is an empty allowlist. The guard resolves `typescript` and `postcss` from the project; doctor runs the project's
 own copies.
+
+DS046 checks static classes on JSX components imported from `@egdev/ui` in non-test `.tsx` files under
+`sourceDirectory`, including aliased and namespace imports. It collects string literals, static template parts and
+string-literal call arguments; dynamic values are ignored. It checks CSS rules under `sourceDirectory` outside
+`themeDirectory`, honoring `exclude`. A class must occur in the selector's last compound; a class only on an ancestor
+is not checked by DS046. Media and nested rules are checked. One finding per rule names the selector, component and
+non-placement properties. An exception uses the CSS file and the exact whitespace-normalized rule selector as its
+`file` and `pattern`; duplicate rules need separate entries. An entry also covering a DS041 selector is used once.
+
+The permitted declarations are custom properties (`--*`), `margin` and `margin-*`, `align-self`, `justify-self`,
+`place-self`, `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `order`, `grid-area`, `grid-column*` and `grid-row*`.
+`min-width` and `min-height` are also permitted only as literal `0`, with or without a unit (such as `0px` or `0%`,
+case-insensitive), including with `!important`. Other values, including `auto`, `min-content`, `calc()` and `var()`,
+are findings; `width`, `max-width`, `height` and `max-height` remain findings even at zero. An allowlist entry for a
+now-permitted rule becomes stale unless the rule still has another offending declaration.
+
+Everything else requires the component API or an issue-backed exception. DS046 does not inspect Tailwind utilities,
+inline `style` or structural selectors whose DS class occurs only in an earlier compound.
 
 `@egdev/cli` publishes a type-only entry (`types/index.d.ts`) with the entry shape doctor validates (DS042), so the
 allowlist is checked at compile time:

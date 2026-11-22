@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- `doctor` DS046 reports app CSS classes that change the appearance or layout of an `@egdev/ui` component outside the
+  placement-only allowance, unless the selector has an issue-backed guard exception. `min-width` and `min-height` are
+  allowed only at literal zero, with an optional unit and optional `!important`. Refs #530.
+
 ## 0.2.0
 
 - `egdev-ds upgrade` reports allowlisted mitigations resolved by a release as next steps; `doctor --from`
