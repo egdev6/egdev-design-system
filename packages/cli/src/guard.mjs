@@ -157,12 +157,14 @@ export function createGuard({ ts, postcss }) {
   const { findDomViolations } = createDomGuard(ts, patterns, normalize);
 
   /**
-   * @param {GuardSource} source
+   * @param {GuardSource} input
    * @param {string} themeDirectory
    * @param {string} sourceDirectory
+   * @param {import('typescript').SourceFile | undefined} source
    * @returns {GuardViolation[]}
    */
-  function findViolations({ file, content }, themeDirectory, sourceDirectory) {
+  function findViolations(input, themeDirectory, sourceDirectory, source) {
+    const { file, content } = input;
     /** @type {GuardViolation[]} */
     const found = [];
     /**
@@ -182,8 +184,7 @@ export function createGuard({ ts, postcss }) {
       found.push(violation);
     };
     const pattern = patterns(sourceDirectory);
-    if (pattern.tsx.test(file) && !pattern.test.test(file)) {
-      const source = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    if (source && pattern.tsx.test(file) && !pattern.test.test(file)) {
       /** @param {TsNode} node */
       const visit = (node) => {
         if (
@@ -215,16 +216,17 @@ export function createGuard({ ts, postcss }) {
   }
 
   /**
-   * @param {GuardSource} source
+   * @param {GuardSource} input
    * @param {string} sourceDirectory
+   * @param {import('typescript').SourceFile | undefined} source
    * @returns {{ tags: string[], comments: string[] }}
    */
-  function componentGapAnchors({ file, content }, sourceDirectory) {
+  function componentGapAnchors(input, sourceDirectory, source) {
+    const { file, content } = input;
     const pattern = patterns(sourceDirectory);
-    if (!pattern.tsx.test(file) || pattern.test.test(file)) {
+    if (!source || !pattern.tsx.test(file) || pattern.test.test(file)) {
       return { tags: [], comments: [] };
     }
-    const source = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
     /** @type {string[]} */
     const tags = [];
     /** @param {TsNode} node */
@@ -320,7 +322,26 @@ export function createGuard({ ts, postcss }) {
     const structuralViolations = [];
     /** @type {import('./dom-guard.mjs').DomViolation[]} */
     const domViolations = [];
-    const { classes, appClasses } = collectClasses(files, sourceDirectory);
+    // All checks share the same parsed node tree. Key by input object to preserve independent
+    // occurrences even if a caller supplies two entries with the same file name.
+    /** @type {Map<GuardSource, import('typescript').SourceFile>} */
+    const sourceFiles = new Map();
+    const pattern = patterns(sourceDirectory);
+    for (const input of files) {
+      if (pattern.code.test(input.file) && !pattern.codeTest.test(input.file) && !sourceFiles.has(input)) {
+        sourceFiles.set(
+          input,
+          ts.createSourceFile(
+            `/${input.file}`,
+            input.content,
+            ts.ScriptTarget.Latest,
+            true,
+            input.file.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS
+          )
+        );
+      }
+    }
+    const { classes, appClasses } = collectClasses(files, sourceDirectory, sourceFiles);
     for (const source of files) {
       // Preserve the existing DS041/DS046 matching, and share any DS047 exception only with
       // checks on the exact same rule offset (not another identical rule on the same line).
@@ -332,7 +353,7 @@ export function createGuard({ ts, postcss }) {
       /** @param {{ file: string, line: number, snippet: string }} item */
       const selectorKey = (item) => JSON.stringify([item.file, item.line, item.snippet]);
       if (allowlist.some((entry) => entry.kind === 'component-gap' && entry.file === source.file)) {
-        const { tags, comments } = componentGapAnchors(source, sourceDirectory);
+        const { tags, comments } = componentGapAnchors(source, sourceDirectory, sourceFiles.get(source));
         allowlist.forEach((entry, i) => {
           if (used[i] || entry.kind !== 'component-gap' || entry.file !== source.file) {
             return;
@@ -346,7 +367,7 @@ export function createGuard({ ts, postcss }) {
           }
         });
       }
-      const rawViolations = findViolations(source, themeDirectory, sourceDirectory);
+      const rawViolations = findViolations(source, themeDirectory, sourceDirectory, sourceFiles.get(source));
       for (const violation of rawViolations) {
         const offset = ruleOffsets.get(violation);
         const structuralRule = structuralByOffset.get(offset);
@@ -403,7 +424,7 @@ export function createGuard({ ts, postcss }) {
           structuralViolations.push(violation);
         }
       }
-      for (const violation of findDomViolations(source, sourceDirectory)) {
+      for (const violation of findDomViolations(source, sourceDirectory, sourceFiles.get(source))) {
         if (!consumeAllowlistEntry(violation)) {
           domViolations.push(violation);
         }

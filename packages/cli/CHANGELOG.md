@@ -3,7 +3,8 @@
 ## Unreleased
 
 - `doctor` DS048 reports static DOM selector and class queries that depend on DS `.eg-*` markup in non-test `.ts` and
-  `.tsx` files, unless an issue-backed guard exception covers the call. Refs #530.
+  `.tsx` files, unless an issue-backed guard exception covers the call. Its message uses the normalized matched string
+  with the original quote style; the guard reuses parsed TypeScript sources across checks. Refs #530.
 
 - `doctor` DS047 reports app selectors that reach into an `@egdev/ui` component's internal structure, including
   placement-only declarations, unless an issue-backed guard exception covers the rule. Refs #530.

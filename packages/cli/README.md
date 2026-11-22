@@ -434,7 +434,9 @@ contains a `.eg-*` class selector. It also checks static arguments to `getElemen
 `el['closest'](...)` and optional chaining are supported. Attribute selectors alone, other class names and dynamic
 arguments are ignored. String literals, no-substitution templates and the static parts of interpolated templates are
 checked; interpolated expressions are not evaluated. For a template, the first static part containing a marker is the
-exception pattern. The guard's test-file rule excludes `__tests__/`, `.test.ts`, `.spec.ts`, `.test.tsx` and
+exception pattern. Findings render the method with that same normalized static string, retaining its original single,
+double or backtick delimiter, and omit type arguments, other arguments and template substitutions. Formatting around
+an argument does not change the message. The guard's test-file rule excludes `__tests__/`, `.test.ts`, `.spec.ts`, `.test.tsx` and
 `.spec.tsx`; story files are scanned unless they match that rule. Use a ref or app-owned wrapper instead, or an
 issue-backed entry whose `file` is the source file and `pattern` is the exact whitespace-normalized static selector
 or class string as written (without quotes or template delimiters). Duplicate calls need separate entries. DS042

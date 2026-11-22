@@ -469,22 +469,23 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
   /**
    * @param {readonly GuardSource[]} files
    * @param {string} sourceDirectory
+   * @param {Map<GuardSource, import('typescript').SourceFile>} sourceFiles
    * @returns {{ classes: Map<string, string>, appClasses: Set<string> }}
    */
-  function collectClasses(files, sourceDirectory) {
+  function collectClasses(files, sourceDirectory, sourceFiles) {
     /** @type {Map<string, string>} */
     const classes = new Map();
     /** @type {Set<string>} */
     const appClasses = new Set();
     const pattern = patterns(sourceDirectory);
-    const sources = new Map(
-      files
-        .filter(({ file }) => pattern.tsx.test(file) && !pattern.test.test(file))
-        .map(({ file, content }) => {
-          const name = `/${file}`;
-          return [name, ts.createSourceFile(name, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)];
-        })
-    );
+    /** @type {Map<string, import('typescript').SourceFile>} */
+    const sources = new Map();
+    for (const input of files) {
+      const parsed = sourceFiles.get(input);
+      if (parsed && pattern.tsx.test(input.file) && !pattern.test.test(input.file)) {
+        sources.set(`/${input.file}`, parsed);
+      }
+    }
     if (sources.size === 0) {
       return { classes, appClasses };
     }

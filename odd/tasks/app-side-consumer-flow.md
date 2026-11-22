@@ -34,7 +34,7 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 | --- | --- | --- | --- |
 | T1 | S3, S4, S5 | worker | done: 4bf4c02 + verification amendments (next commit) |
 | T2 | S4, S6 | worker | done: 91f2c1e + 38f74c6 |
-| T3 | S4, S7 | worker | pending |
+| T3 | S4, S7 | worker | done: d7b864d + follow-up (next commit) |
 | T4–T8 | #530 | — | not started; each needs owner approval |
 
 ## Log
@@ -54,3 +54,4 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 - L13: PR #532 merged as 0a0d22b (T2), CI green.
 - L14 (owner, verbatim): "si" → T3 (DS048, DS markup in app code) on branch feat/guard-ds048-dom-queries. Design choices in S7 are the agent's, recorded for review.
 - L15: T3 by worker: RED 10 (+3) → GREEN test:cli 216/216; typecheck and biome green; literal element access (`el['closest'](…)`) supported. Consumers: Recado 629f261 → 3 DS048 (CompactNote.tsx:54, ProjectsView.tsx:54, AppearanceProvider.tsx:194), matching an independent grep of those calls; egdev-website 0; Nexo 0. DS046/DS047 counts unchanged (Recado 5/8, Nexo 8/0).
+- L16: Independent verify of d7b864d (Risk: item 3) PASS for S7, S4 and the risk: 22 trigger and 26 exclusion cases; zero diffs vs base for DS040–DS047, status and init, including unusual `.ts` files (DS040/DS046/DS047 still ignore `.ts`); Recado's 3 findings are true positives, Nexo's ~80 `.eg-*` queries are all in tests. Advisories adopted: each source is parsed once and shared across checks (Nexo doctor median ~413 → ~614 ms before, 442 → 551 ms after on origin/main), and DS048 messages render canonically as `closest('…')` without type arguments or line breaks. Worker: RED 6 → GREEN test:cli 220/220. Kept as documented: `.ts` allowlist entries get no source line in upgrade/DS052 notices; escapes in patterns are written as in source.

@@ -83,20 +83,14 @@ export function createDomGuard(ts, patterns, normalize) {
   /**
    * @param {GuardSource} input
    * @param {string} sourceDirectory
+   * @param {import('typescript').SourceFile | undefined} source
    * @returns {DomViolation[]}
    */
-  function findDomViolations({ file, content }, sourceDirectory) {
+  function findDomViolations({ file }, sourceDirectory, source) {
     const pattern = patterns(sourceDirectory);
-    if (!pattern.code.test(file) || pattern.codeTest.test(file)) {
+    if (!source || !pattern.code.test(file) || pattern.codeTest.test(file)) {
       return [];
     }
-    const source = ts.createSourceFile(
-      file,
-      content,
-      ts.ScriptTarget.Latest,
-      true,
-      file.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS
-    );
     /** @type {DomViolation[]} */
     const found = [];
     /** @param {import('typescript').Node} node */
@@ -123,7 +117,11 @@ export function createDomGuard(ts, patterns, normalize) {
                 const raw = part.getText(source);
                 const end =
                   part.kind === ts.SyntaxKind.TemplateHead || part.kind === ts.SyntaxKind.TemplateMiddle ? -2 : -1;
-                match = { marker, snippet: normalize(raw.slice(1, end)) };
+                match = {
+                  marker,
+                  snippet: normalize(raw.slice(1, end)),
+                  quote: source.text[argument.getStart(source)] ?? "'"
+                };
                 break;
               }
             }
@@ -136,7 +134,7 @@ export function createDomGuard(ts, patterns, normalize) {
               file,
               line: source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1,
               snippet: match.snippet,
-              call: normalize(method + content.slice(expression.end, node.end)),
+              call: `${method}(${match.quote}${match.snippet}${match.quote})`,
               marker: match.marker
             });
           }

@@ -84,10 +84,10 @@ test('S7 selector methods match any receiver, optional and literal element acces
     dom(file, 4, '.eg-optional', "closest('.eg-optional')", '.eg-optional'),
     dom(file, 5, '.eg-indexed', "closest('.eg-indexed')", '.eg-indexed'),
     dom(file, 6, '.eg-template', 'closest(`.eg-template`)', '.eg-template'),
-    dom(file, 7, '.eg-static > [data-', 'matches(`.eg-static > [data-${state}]`)', '.eg-static'),
+    dom(file, 7, '.eg-static > [data-', 'matches(`.eg-static > [data-`)', '.eg-static'),
     dom(file, 8, '.eg-any-receiver', "querySelector('.eg-any-receiver')", '.eg-any-receiver'),
     dom(file, 9, '.eg-first, .eg-second', "closest('.eg-first, .eg-second')", '.eg-first'),
-    dom(file, 10, '"] > .eg-template-tail', 'closest(`[data-kind="${kind}"] > .eg-template-tail`)', '.eg-template-tail')
+    dom(file, 10, '"] > .eg-template-tail', 'closest(`"] > .eg-template-tail`)', '.eg-template-tail')
   ]);
 });
 
@@ -98,7 +98,7 @@ test('S7 preserves literal escapes and selects the matching static template part
   const result = checkDesignSystem([source(file, `${escaped}\n${tail}`)], []);
   assert.deepEqual(found(result), [
     dom(file, 1, String.raw`\x2eeg-panel`, String.raw`closest('\x2eeg-panel')`, '.eg-panel'),
-    dom(file, 2, '> .eg-tail', 'closest(`${scope} > .eg-tail`)', '.eg-tail')
+    dom(file, 2, '> .eg-tail', 'closest(`> .eg-tail`)', '.eg-tail')
   ]);
   const allowed = checkDesignSystem(
     [source(file, `${escaped}\n${tail}`)],
@@ -124,11 +124,11 @@ test('S7 class lookups check class tokens and all static classList arguments onc
   assert.deepEqual(found(result), [
     dom(file, 1, 'app eg-panel', "getElementsByClassName('app eg-panel')", '.eg-panel'),
     dom(file, 2, 'eg-panel', "contains('eg-panel')", '.eg-panel'),
-    dom(file, 3, 'eg-added', "add('app', 'eg-added', 'eg-other')", '.eg-added'),
+    dom(file, 3, 'eg-added', "add('eg-added')", '.eg-added'),
     dom(file, 4, 'eg-removed', "remove('eg-removed')", '.eg-removed'),
-    dom(file, 5, 'eg-toggled', "toggle('eg-toggled', active)", '.eg-toggled'),
+    dom(file, 5, 'eg-toggled', "toggle('eg-toggled')", '.eg-toggled'),
     dom(file, 6, 'eg-indexed', "add('eg-indexed')", '.eg-indexed'),
-    dom(file, 7, 'eg-static', 'add(`${prefix} eg-static`)', '.eg-static')
+    dom(file, 7, 'eg-static', 'add(`eg-static`)', '.eg-static')
   ]);
 });
 
@@ -199,13 +199,179 @@ test('S7 consumes normalized selector and class exceptions once per call and val
     ]
   );
   assert.deepEqual(found(result), [
-    dom(file, 2, '[data-a] > .eg-panel', "closest(' [data-a] > .eg-panel ')", '.eg-panel')
+    dom(file, 2, '[data-a] > .eg-panel', "closest('[data-a] > .eg-panel')", '.eg-panel')
   ]);
   assert.deepEqual(result.errors, [
     'src/panel.ts: invalid issue for allowlist entry eg-panel',
     'src/elsewhere.ts: stale allowlist entry [data-a] > .eg-panel; remove it'
   ]);
   assert.equal(result.pendingIssueCount, 1);
+});
+
+test('S7 reuses each parsed TSX and TS source for every guard check', () => {
+  const parsed = [];
+  const ts = {
+    ...engine.ts,
+    createSourceFile: (...args) => {
+      parsed.push(args[0].replace(/^\//, ''));
+      return engine.ts.createSourceFile(...args);
+    }
+  };
+  const file = 'src/View.tsx';
+  const comment = '// TODO(egdev-design-system#530): Replace the temporary component.';
+  const tag = '<Button className="on-ds" />';
+  const files = [
+    source(
+      file,
+      [
+        "import { Button } from '@egdev/ui';",
+        comment,
+        `const v = <><button />${tag}</>;`,
+        "el.closest('.eg-panel');"
+      ].join('\n')
+    ),
+    source('src/query.ts', "el.closest('.eg-ts');"),
+    source('src/styles.css', '.on-ds { padding: 1px; }\n.on-ds > footer { margin: 0; }'),
+    source('src/view.test.tsx', "el.closest('.eg-test');"),
+    source('outside/view.tsx', "el.closest('.eg-outside');")
+  ];
+  const result = createGuard({ ...engine, ts }).checkDesignSystem(files, [
+    { ...entry(file, tag), kind: 'component-gap', comment }
+  ]);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.violations, [{ file, line: 3, snippet: '<button />' }]);
+  assert.deepEqual(result.appearanceViolations, [
+    { file: 'src/styles.css', line: 1, snippet: '.on-ds', component: 'Button', properties: ['padding'] }
+  ]);
+  assert.deepEqual(result.structuralViolations, [
+    { file: 'src/styles.css', line: 2, snippet: '.on-ds > footer', component: 'Button', selectors: ['.on-ds > footer'] }
+  ]);
+  assert.deepEqual(found(result), [
+    dom(file, 4, '.eg-panel', "closest('.eg-panel')", '.eg-panel'),
+    dom('src/query.ts', 1, '.eg-ts', "closest('.eg-ts')", '.eg-ts')
+  ]);
+  assert.deepEqual(parsed.sort(), ['src/View.tsx', 'src/query.ts']);
+});
+
+test('S7 TS source never feeds JSX checks and a TS component-gap entry remains stale', () => {
+  const file = 'src/query.ts';
+  const comment = '// TODO(egdev-design-system#530): Replace the temporary control.';
+  const content = [
+    "el.closest('.eg-panel');",
+    "import { Button } from '@egdev/ui';",
+    comment,
+    'const raw = <button />;',
+    'const view = <Button className="only-ts" />;'
+  ].join('\n');
+  const result = checkDesignSystem(
+    [source(file, content), source('src/styles.css', '.only-ts { padding: 0; }\n.only-ts > footer { margin: 0; }')],
+    [{ ...entry(file, '<button />'), kind: 'component-gap', comment }]
+  );
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.appearanceViolations, []);
+  assert.deepEqual(result.structuralViolations ?? [], []);
+  assert.deepEqual(result.errors, ['src/query.ts: stale allowlist entry <button />; remove it']);
+  assert.deepEqual(found(result), [dom(file, 1, '.eg-panel', "closest('.eg-panel')", '.eg-panel')]);
+  assert.equal(result.pendingIssueCount, 0);
+});
+
+test('S7 canonical calls omit type arguments and layout while preserving literal quote style', () => {
+  const app = fixture();
+  const baselineText = runBin(['doctor', 'apps/hub'], app.root);
+  const baselineJson = runBin(['doctor', 'apps/hub', '--json'], app.root);
+  assert.equal(baselineText.status, 0);
+  assert.equal(baselineText.stderr, '');
+  assert.equal(baselineJson.status, 0);
+  assert.equal(baselineJson.stderr, '');
+  const file = 'src/queries.ts';
+  const content = [
+    "el.closest<HTMLElement>('.eg-typed');",
+    'el.closest(',
+    "  '.a  >  .eg-multi'",
+    ');',
+    'el.closest(".eg-double");',
+    'el.classList.add("utility", "eg-target");',
+    ''
+  ].join('\n');
+  write(join(app.project, file), content);
+  const calls = ["closest('.eg-typed')", "closest('.a > .eg-multi')", 'closest(".eg-double")', 'add("eg-target")'];
+  const markers = ['.eg-typed', '.eg-multi', '.eg-double', '.eg-target'];
+  const lines = [1, 2, 5, 6];
+  const findings = calls.map((call, index) => ({
+    code: 'DS048',
+    severity: 'error',
+    message: message(call, markers[index]),
+    file,
+    line: lines[index]
+  }));
+  const before = treeHash(app.root);
+  const rows = findings.map(({ line, message: detail }) => `DS048 error ${file}:${line}: ${detail}\n`).join('');
+  assert.deepEqual(runBin(['doctor', 'apps/hub'], app.root), {
+    status: 1,
+    stdout: baselineText.stdout
+      .replace('DS051 skipped', `${rows}DS051 skipped`)
+      .replace('0 errors, 0 warnings, 4 skipped.', '4 errors, 0 warnings, 4 skipped.'),
+    stderr: ''
+  });
+  const expected = JSON.parse(baselineJson.stdout);
+  expected.findings.splice(2, 0, ...findings);
+  expected.result = 'failed';
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--json'], app.root), {
+    status: 1,
+    stdout: `${JSON.stringify(expected, null, 2)}\n`,
+    stderr: ''
+  });
+  const allowed = checkDesignSystem([source(file, content)], [entry(file, '.a > .eg-multi'), entry(file, 'eg-target')]);
+  assert.deepEqual(allowed.errors, []);
+  assert.deepEqual(found(allowed), [
+    dom(file, 1, '.eg-typed', calls[0], markers[0]),
+    dom(file, 5, '.eg-double', calls[2], markers[2])
+  ]);
+  assert.equal(treeHash(app.root), before);
+});
+
+test('S7 doctor walks story and declaration files but skips JS, MTS and node_modules', () => {
+  const app = fixture();
+  const baselineText = runBin(['doctor', 'apps/hub'], app.root);
+  const baselineJson = runBin(['doctor', 'apps/hub', '--json'], app.root);
+  assert.equal(baselineText.status, 0);
+  assert.equal(baselineText.stderr, '');
+  assert.equal(baselineJson.status, 0);
+  assert.equal(baselineJson.stderr, '');
+  for (const file of [
+    'src/declarations.d.ts',
+    'src/story.stories.ts',
+    'src/story.stories.tsx',
+    'src/ignored.js',
+    'src/ignored.mts',
+    'src/node_modules/ignored.tsx'
+  ]) {
+    write(join(app.project, file), "el.closest('.eg-panel');\n");
+  }
+  const before = treeHash(app.root);
+  const detail = message("closest('.eg-panel')", '.eg-panel');
+  const files = ['src/declarations.d.ts', 'src/story.stories.ts', 'src/story.stories.tsx'];
+  const rows = files.map((file) => `DS048 error ${file}:1: ${detail}\n`).join('');
+  assert.deepEqual(runBin(['doctor', 'apps/hub'], app.root), {
+    status: 1,
+    stdout: baselineText.stdout
+      .replace('DS051 skipped', `${rows}DS051 skipped`)
+      .replace('0 errors, 0 warnings, 4 skipped.', '3 errors, 0 warnings, 4 skipped.'),
+    stderr: ''
+  });
+  const expected = JSON.parse(baselineJson.stdout);
+  expected.findings.splice(
+    2,
+    0,
+    ...files.map((file) => ({ code: 'DS048', severity: 'error', message: detail, file, line: 1 }))
+  );
+  expected.result = 'failed';
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--json'], app.root), {
+    status: 1,
+    stdout: `${JSON.stringify(expected, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(app.root), before);
 });
 
 test('S7 doctor emits exact Recado findings in text and JSON, including repeated calls on one line', () => {
