@@ -8,6 +8,7 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 - S2 (#538, owner triage decision verbatim): "Prop opcional en Text (Recomendado)" ("Reutilizable en cualquier sitio (ListItem incluido); opt-in, el texto completo queda accesible (title/tooltip). ListItem mantiene su promesa por defecto.").
 - S3 (#540, owner triage decision verbatim): "Área invisible extendida (Recomendado)" ("El botón se ve igual pero su zona de toque llega a ≥44px; corrige también el incumplimiento actual de lg sin cambiar el aspecto. Requiere revisar Material y el anillo de foco.").
 - S5: Implementation plans follow skills/component-contributor (plan before code; recover exact spec version, contentSHA256 and approval from the saved snapshot; six mandatory files and either an approved CSS role or "No stylesheet"; registry workflow; tests/stories rules) and the precedent docs/components/icon-button/v0.3/implementation-plan.md. Plans are proposals: no code until each plan is approved.
+- S6 (owner choices, verbatim): Text plan "Aprobar e implementar (Recomendado)" ("Implemento con test-first según el plan, verificación independiente y PR; sin release hasta que lo pidas."); IconButton route "Quitar el scale-94 (Recomendado)" ("Enmienda v0.5: el press deja de encoger el botón (feedback por Material/tono en su lugar) y el ::after de 44,8px funciona tal cual. Lo más simple y robusto; cambia el feedback visual aprobado en v0.2 para todas las apps.").
 - S4: Follow skills/component-spec-proposer (seven blocks, prop-naming registry lookup with recorded entry IDs or new proposals, separate proposal/evidence/planned checks, no invented defaults or approval, English), the repo's amendment pattern (`docs/components/<name>/v<next>/<change>-amendment.md`), and the shared component contract. Do not implement, change tokens or dependencies, edit the registry, or publish on GitHub.
 
 ## Tasks
@@ -18,7 +19,9 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 | T2 | S3, S4 | worker | drafted: docs/components/icon-button/v0.4/hit-area-amendment.md (this commit) |
 | T3 | S2, S3 | parent | done: both amendments approved (efe3477, PR #545) |
 | T4 | S2, S4, S5 | worker | drafted: docs/components/text/v0.3/implementation-plan.md (this commit) |
-| T5 | S3, S4, S5 | worker | blocked: press-geometry prerequisite unresolved; owner route decision |
+| T5 | S3, S4, S5 | worker | blocked until T7 is approved; then the v0.4 plan assumes no press scale |
+| T6 | S2, S5, S6 | worker | implemented (commit 1); independent verify pending |
+| T7 | S3, S4, S6 | worker | drafted (commit 2); owner decisions pending |
 
 ## Log
 
@@ -31,3 +34,6 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 - L7: PR #545 merged as c0c4275. Owner: "mergeada" → implementation plans (T4, T5) on branch docs/plans-text-truncate-icon-button-hit-area.
 - L8: T4 drafted (amendment digest verified; six files; AC-01–AC-11 mapped; registry, artifact and CHANGELOG steps; visual Not evaluated).
 - L9: T5 stopped at the approved prerequisite (amendment digest verified). Chrome 148 synthetic experiments: uncompensated `--space-14` contracts to 42.112px pressed and a corner press reached the row; a compensated calc (~47.66px rest) and an animated counter-scale still misdirected clicks because the spring overshoots (pointerdown on the button, pointerup/click on the row); an inner visual layer needs a revised contract (Material, focus ring, Slot); `--space-16` is unapproved and still contracts. A geometry-only registered custom property sharing the scale with its reciprocal kept the edge click but needs an unapproved stylesheet role. Consumers to audit for overlap: ButtonGroup attached IconButtons, SocialLinks, Recado, Nexo, egdev-website.
+- L10 (owner choices): S6 → T6 (Text implementation) and T7 (IconButton v0.5 press-feedback amendment) in parallel.
+- L11: T6 by worker (two surface expansions, both listed in the approved plan plus scripts/prop-naming.test.mjs): `Text.truncate` implemented test-first (Text 21 RED → 74 GREEN; metadata/CSS 6 RED → 507 GREEN; Heading+ListItem 74 preserved); convention `single-line-text-truncation` recorded as approved with receipt docs/components/text/v0.3/prop-naming-approval.json citing the verbatim owner choice; registry 132/132; artifact 43/43; typecheck, biome, props/artifact/system checks green. Parent: fresh `pnpm build` + package-exports 137/137. Side effect: the artifact generator attaches all recipes of the shared primitives/text/types.ts to both Text and Heading, so Heading's artifact `variants`/`anatomy` gain the truncate recipes although its props do not change.
+- L12: T7 drafted: v0.5 removes the active `scale-94` (supersedes that v0.2 promise; v0.2 no-hover-lift stays); open owner decisions: ghost/outline press cue would be tone-only (non-color state-cue requirement), and secondary's pressed background uses `--color-alpha-red-15`, documented for shadows only. contentSHA256 b89c575da69b6ab4ce059efa1d80b379819bf0a7760f82fd32a07710e17c9f97 (draft).
