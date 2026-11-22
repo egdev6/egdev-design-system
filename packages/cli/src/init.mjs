@@ -62,6 +62,43 @@ const CONTRIBUTING_BLOCK = [
   CONTRIBUTING_END,
   ''
 ].join('\n');
+const AGENTS_FILE = 'AGENTS.md';
+const AGENTS_START = '<!-- egdev-ds:agents -->';
+const AGENTS_END = '<!-- /egdev-ds:agents -->';
+const AGENTS_BLOCK = [
+  AGENTS_START,
+  '## EGDEV design system',
+  '',
+  '- Before writing UI, use `@egdev/ui` and `@egdev/tokens` and query the `egdev-design-system` MCP server.',
+  '- Stay within component APIs: no appearance or layout CSS on classes passed to DS components (DS046).',
+  '- Do not select component internals (DS041, DS047) or look up `.eg-*` markup in code (DS048).',
+  '- Do not hand-write colors, spacing or fonts.',
+  '- If the DS lacks something, stop that part and open a Consumer request describing the need: https://github.com/egdev6/egdev-design-system/issues/new?template=consumer_request.yml',
+  '- Mitigate only by composing DS parts with `// TODO(egdev-design-system#N)` and an issue-backed allowlist entry.',
+  '- Never edit vendored tarballs, `egdev-ds.json` or `@egdev/*` lockfile entries.',
+  '- Flow: https://github.com/egdev6/egdev-design-system/blob/main/docs/distribution/consumer-requests.md.',
+  AGENTS_END,
+  ''
+].join('\n');
+/** @typedef {{ file: string, start: string, end: string, block: string, detail: string, searchUnsafeAncestors?: boolean }} Guide */
+/** @type {Guide[]} */
+const GUIDES = [
+  {
+    file: CONTRIBUTING_FILE,
+    start: CONTRIBUTING_START,
+    end: CONTRIBUTING_END,
+    block: CONTRIBUTING_BLOCK,
+    detail: 'consumer requests summary'
+  },
+  {
+    file: AGENTS_FILE,
+    start: AGENTS_START,
+    end: AGENTS_END,
+    block: AGENTS_BLOCK,
+    detail: 'design system agent rules',
+    searchUnsafeAncestors: true
+  }
+];
 export const ACCENT_FILE = 'src/theme/accent-host.ts';
 export const ACCENT_HOST = `// Accent host scaffold from \`egdev-ds init --accent\` (docs/foundation/runtime-accent.md).
 // Wire it in by hand: call applyAccent with an element your app owns, never a DS component.
@@ -107,12 +144,14 @@ const isFile = (path) => {
 const toPosix = (path) => path.split(sep).join('/');
 
 /**
- * True when the ordered S12 marker pair is present.
+ * True when the ordered marker pair is present.
  * @param {string} text
+ * @param {string} startMarker
+ * @param {string} endMarker
  */
-const hasContributingBlock = (text) => {
-  const start = text.indexOf(CONTRIBUTING_START);
-  return start !== -1 && text.indexOf(CONTRIBUTING_END, start + CONTRIBUTING_START.length) !== -1;
+const hasGuideBlock = (text, startMarker, endMarker) => {
+  const start = text.indexOf(startMarker);
+  return start !== -1 && text.indexOf(endMarker, start + startMarker.length) !== -1;
 };
 
 /**
@@ -257,49 +296,56 @@ export function planConfig(project, manifest, localRepo) {
 }
 
 /**
- * Plan the S12 consumer-request summary. Check each guide up to the nearest repository root for an
- * existing block. An ancestor guide is read-only and becomes a next step; only the project guide is
- * written, preserving its original bytes, extra blank lines and newline style.
+ * Plan a marked guide up to the nearest repository root. Only the project guide is written;
+ * ancestor guides are read-only. Preserve original bytes, extra blank lines and newline style.
  * @param {string} project
+ * @param {Guide} guide
  * @returns {{ action: Action, write: FileWrite } | { nextStep: string } | null}
  */
-function planContributing(project) {
-  const path = join(project, CONTRIBUTING_FILE);
+function planGuide(project, { file, start, end, block, detail, searchUnsafeAncestors = false }) {
+  const path = join(project, file);
+  const manual = { nextStep: `  Add the ${detail} to ${file} by hand; it is a link or not a regular file.` };
+  let unsafe = false;
   try {
-    assertSafeTarget(project, CONTRIBUTING_FILE);
+    assertSafeTarget(project, file);
   } catch (error) {
     if (!(error instanceof RefusedError)) {
       throw error;
     }
-    // A linked or irregular guide is never written. Reading it only decides whether the block exists.
+    // A linked or irregular project guide is never written. Reading only checks for the markers.
     const linked = isFile(path) ? readText(path) : null;
-    if (linked !== null && hasContributingBlock(linked)) {
+    if (linked !== null && hasGuideBlock(linked, start, end)) {
       return null;
     }
-    return {
-      nextStep: `  Add the consumer requests summary to ${CONTRIBUTING_FILE} by hand; it is a link or not a regular file.`
-    };
+    // Preserve CONTRIBUTING's existing linked-file precedence; S8 also checks ancestors for AGENTS.
+    if (!searchUnsafeAncestors) {
+      return manual;
+    }
+    unsafe = true;
   }
-  const original = existsSync(path) ? readFileSync(path) : null;
+  const original = !unsafe && existsSync(path) ? readFileSync(path) : null;
   const text = original?.toString('utf8') ?? '';
   const root = findRepoRoot(project) ?? project;
-  let nearest = original === null ? null : path;
+  let nearest = unsafe || original !== null ? path : null;
   for (let directory = project; ; directory = dirname(directory)) {
-    const candidate = join(directory, CONTRIBUTING_FILE);
+    const candidate = join(directory, file);
     let candidateText = directory === project && original !== null ? text : null;
     if (directory !== project && isFile(candidate)) {
       nearest ??= candidate;
       candidateText = readText(candidate);
     }
-    if (candidateText !== null && hasContributingBlock(candidateText)) {
+    if (candidateText !== null && hasGuideBlock(candidateText, start, end)) {
       return null;
     }
     if (directory === root || dirname(directory) === directory) {
       break;
     }
   }
+  if (unsafe) {
+    return manual;
+  }
   if (nearest !== null && nearest !== path) {
-    return { nextStep: `  Add the consumer requests summary to ${toPosix(relative(project, nearest))}.` };
+    return { nextStep: `  Add the ${detail} to ${toPosix(relative(project, nearest))}.` };
   }
   const newline = text.includes('\r\n') ? '\r\n' : '\n';
   let separator = '';
@@ -314,19 +360,32 @@ function planContributing(project) {
     }
   }
   return {
-    action: {
-      verb: original === null ? 'create' : 'edit',
-      path: CONTRIBUTING_FILE,
-      detail: 'consumer requests summary'
-    },
+    action: { verb: original === null ? 'create' : 'edit', path: file, detail },
     write: {
-      path: CONTRIBUTING_FILE,
-      content: Buffer.concat([
-        original ?? Buffer.alloc(0),
-        Buffer.from(separator + CONTRIBUTING_BLOCK.replaceAll('\n', newline))
-      ])
+      path: file,
+      content: Buffer.concat([original ?? Buffer.alloc(0), Buffer.from(separator + block.replaceAll('\n', newline))])
     }
   };
+}
+
+/** @param {string} project */
+function planGuides(project) {
+  /** @type {Action[]} */
+  const actions = [];
+  /** @type {FileWrite[]} */
+  const writes = [];
+  /** @type {string[]} */
+  const steps = [];
+  for (const guide of GUIDES) {
+    const planned = planGuide(project, guide);
+    if (planned && 'write' in planned) {
+      actions.push(planned.action);
+      writes.push(planned.write);
+    } else if (planned) {
+      steps.push(planned.nextStep);
+    }
+  }
+  return { actions, writes, steps };
 }
 
 /**
@@ -516,8 +575,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
   };
   const install = installCommand(packageManager, options.offline);
 
-  // Already vendored at the release commit: verify first. S12 still scaffolds a missing summary;
-  // once the block exists this remains the original idempotent, no-install short circuit.
+  // Already vendored at the release commit: verify first, then backfill missing guides without reinstalling.
   if (vendoredAt && !state.foreign) {
     for (const item of expectedFiles(manifest, workspaceText, 'pnpm')) {
       let packed;
@@ -532,9 +590,9 @@ export async function runInit({ argument, project, from, releaseDir, release, op
       }
     }
     const count = options.noInstall ? null : verifyLock(project, packageManager);
-    const contribution = planContributing(project);
-    if (contribution && 'write' in contribution) {
-      const actions = [contribution.action];
+    const guides = planGuides(project);
+    if (guides.writes.length > 0) {
+      const actions = guides.actions;
       if (!options.json) {
         stdout(`${[formatHeader(header), ...actions.map(formatAction)].join('\n')}\n`);
       }
@@ -543,7 +601,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
         return 0;
       }
       try {
-        await transact({ project, copies: [], writes: [contribution.write], watch: [], finish: () => count });
+        await transact({ project, copies: [], writes: guides.writes, watch: [], finish: () => count });
       } catch (error) {
         if (options.json) {
           stdout(formatPlanJson({ header, actions, result: 'failed' }));
@@ -558,7 +616,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
         stdout(
           [
             `Initialized at ${short}; ${verified}.`,
-            ...nextSteps({ packageManager, install, noInstall: options.noInstall }),
+            ...nextSteps({ packageManager, install, noInstall: options.noInstall, extra: guides.steps }),
             ''
           ].join('\n')
         );
@@ -570,7 +628,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     } else {
       const verified =
         count === null ? 'integrities unverified (--no-install)' : `${count} vendored integrities verified`;
-      const next = contribution && 'nextStep' in contribution ? `Next steps:\n${contribution.nextStep}\n` : '';
+      const next = guides.steps.length > 0 ? `Next steps:\n${guides.steps.join('\n')}\n` : '';
       stdout(`${formatHeader(header)}\nAlready at ${short}; ${verified}; no changes.\n${next}`);
     }
     return 0;
@@ -602,7 +660,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     throw new RefusedError('--accent needs the tokens package; add tokens to --packages.');
   }
 
-  // Plan (spec §6, S12): copies, package.json, workspace, CSS, config, MCP, contribution, accent, install.
+  // Plan (spec §6, S12, S8): copies, package.json, workspace, CSS, config, MCP, guides, accent, install.
   /** @type {Action[]} */
   const actions = [];
   /** @type {Conflict[]} */
@@ -681,11 +739,9 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     }
   }
 
-  const contribution = planContributing(project);
-  if (contribution && 'write' in contribution) {
-    actions.push(contribution.action);
-    writes.push(contribution.write);
-  }
+  const guides = planGuides(project);
+  actions.push(...guides.actions);
+  writes.push(...guides.writes);
 
   let accentCreated = false;
   if (options.accent) {
@@ -765,7 +821,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
         install,
         noInstall: options.noInstall,
         extra: [
-          ...(contribution && 'nextStep' in contribution ? [contribution.nextStep] : []),
+          ...guides.steps,
           ...(accentCreated ? [`  Call applyAccent from ${ACCENT_FILE} on a host element your app owns.`] : [])
         ]
       }),

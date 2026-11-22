@@ -77,6 +77,7 @@ framework, the CSS mode and the CSS entry, prints the plan, then applies it as o
 | `egdev-ds.json` | Created with the defaults when missing; `localRepo` is `--local-repo` or the repository folder (see Configuration) | Same |
 | `.mcp.json` | `mcpServers.egdev-design-system` when mcp is selected; other servers are kept | Same |
 | `CONTRIBUTING.md` | Checks up to the repository root for a marked [consumer requests](../../docs/distribution/consumer-requests.md) summary; otherwise creates or appends it in the project, or names an ancestor file as a manual next step | Same |
+| `AGENTS.md` | Checks up to the repository root for marked design system agent rules; otherwise creates or appends them in the project, or names an ancestor file as a manual next step | Same |
 | lockfile | Written by `npm install`, then every vendored integrity is checked against the tarball's sha512 | `pnpm install --no-frozen-lockfile` (pnpm freezes the lockfile under `CI=true`), same check |
 
 The CSS entry is `src/app/globals.css` or `app/globals.css` for Next.js. For Vite, it is the first local `.css`
@@ -95,6 +96,7 @@ egdev-ds init apps/hub (npm, vite, native) from ../egdev-design-system/release a
   create  egdev-ds.json  localRepo=nexo
   create  .mcp.json  mcpServers.egdev-design-system
   create  CONTRIBUTING.md  consumer requests summary
+  create  AGENTS.md  design system agent rules
   run     npm install
 Dry run: nothing written.
 ```
@@ -102,23 +104,34 @@ Dry run: nothing written.
 - A real run ends with `Initialized at e712915; <n> vendored integrities verified.`, the next steps and
   `Review the diff before committing.`
 - A second run at the same commit verifies and prints `Already at e712915; <n> vendored integrities verified; no changes.`
-  If the summary is missing and no ancestor guide exists, `init` plans and writes it even at the same commit, without
-  reinstalling.
+  If either marked block is missing and no ancestor guide calls for a manual step, `init` plans and writes the missing
+  project block even at the same commit, without reinstalling.
 - `init` checks `CONTRIBUTING.md` from the project through the nearest ancestor with a `.git` entry, inclusive. Without
-  a repository root it checks only the project. A marked block in any checked file needs no action. If the nearest guide
-  is an ancestor without a block, `init` leaves it unchanged and prints a manual next step with its project-relative path.
-  Like other next steps, that guidance is text-only, not a JSON write action. A project `CONTRIBUTING.md` that is a
-  symlink, a hard link or not a regular file is never written: if it already holds the block nothing happens; otherwise
-  `init` prints `Add the consumer requests summary to CONTRIBUTING.md by hand; it is a link or not a regular file.`
-- A project summary is appended with at least one blank line, preserving all existing bytes and any extra blank lines.
-  CRLF files keep their line-ending style. Existing content between the markers is never rewritten.
+  a repository root it checks only the project. A marked block in any checked file needs no action, except for the
+  linked-project case below. If the nearest guide is an ancestor without a block, `init` leaves it unchanged and prints
+  a manual next step with its project-relative path. Like other next steps, that guidance is text-only, not a JSON write
+  action. A project `CONTRIBUTING.md` that is a symlink, a hard link or not a regular file is never written: if it
+  already holds the block nothing happens; otherwise `init` prints `Add the consumer requests summary to CONTRIBUTING.md
+  by hand; it is a link or not a regular file.`, without checking ancestors.
+- `init` also checks `AGENTS.md` through the nearest `.git` ancestor, or only the project without a repository root.
+  An ordered `<!-- egdev-ds:agents -->` / `<!-- /egdev-ds:agents -->` pair in any checked file needs no action, even
+  when a nearer guide is unmarked. Otherwise, the nearest unmarked ancestor stays untouched and `init` prints
+  `Add the design system agent rules to <project-relative path>.` as a text-only manual step. A project guide that is
+  a symlink, hard link or not a regular file is never written or refused; if no checked file has the block, `init`
+  prints `Add the design system agent rules to AGENTS.md by hand; it is a link or not a regular file.`
+  The block tells agents to use the DS and MCP, respect component APIs and the guard, and follow the
+  [consumer request flow](../../docs/distribution/consumer-requests.md) for missing capabilities.
+- Either project block is appended with at least one blank line, preserving all existing bytes and any extra blank
+  lines. CRLF files keep their line-ending style. Existing content between the markers is never rewritten. Both writes
+  appear in text and JSON plans, respect dry runs and roll back with the transaction.
 - With `--json`, `actions` lists `{ verb, path, detail }`, a copy's `detail` has the full sha256, and `result` is
   `planned`, `applied`, `current` or `failed`.
 
 ### Safety
 
 - `init` never runs `git`. The only process it starts is the detected package manager.
-- Every write stays inside `<project>`. Symlinks, hard links and non-files are refused.
+- Every write stays inside `<project>`. Symlinks, hard links and non-files are refused as write targets; the two guide
+  files instead receive the non-failing manual treatment described above.
 - Each file is written to a temporary sibling and renamed into place. If a write, the install or the integrity
   check fails, every touched file is restored byte for byte, the copied tarballs and created folders are removed,
   and the exit code is 1.
@@ -133,7 +146,7 @@ Dry run: nothing written.
 `upgrade` replaces the vendored set of an app that already uses the design system with the set of a newer release,
 as one unit. Without `--add`, it never adds a package: only the `@egdev` packages the app declares, or pins through an
 override, are upgraded. An app without `@egdev/effects` stays without it, and `@egdev/cli` is upgraded only when the app
-has it. `upgrade`, including `--add`, never edits `CONTRIBUTING.md`.
+has it. `upgrade`, including `--add`, never edits `CONTRIBUTING.md` or `AGENTS.md`.
 
 | Flag | Effect |
 | --- | --- |

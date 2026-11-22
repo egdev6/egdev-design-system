@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `egdev-ds init` creates or appends marked design system agent rules in `AGENTS.md`, or names an unmarked ancestor
+  as a manual next step. It backfills already-vendored projects, preserves existing bytes and user edits, and includes
+  the write in plans, dry runs and rollback; `upgrade` never changes the guide. Refs #530.
+
 - `doctor` DS048 reports static DOM selector and class queries that depend on DS `.eg-*` markup in non-test `.ts` and
   `.tsx` files, unless an issue-backed guard exception covers the call. Its message uses the normalized matched string
   with the original quote style; the guard reuses parsed TypeScript sources across checks. Refs #530.

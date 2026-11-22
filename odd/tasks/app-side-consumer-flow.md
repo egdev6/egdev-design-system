@@ -26,6 +26,7 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
   - **Finding:** one per call: `DS048 error src/components/CompactNote.tsx:52: closest('[data-recado-appearance] > .eg-panel') depends on DS markup (.eg-panel): use a ref or an app-owned wrapper, or add an allowlist entry with an issue.`
   - **Allowlist:** `file` is the `.ts`/`.tsx` file and `pattern` is the static selector or class string exactly as written (whitespace-normalized). Stale-entry, DS042 and DS043 rules apply.
   - Dynamic arguments are ignored. Tests and stories follow the guard's existing test-file pattern.
+- S8 (T5, owner choice verbatim): "T5 + release ahora (Recomendado)" ("Bloque de AGENTS.md en init y minor del CLI con DS046–DS048; Recado y Nexo empiezan a abrir sus consumer requests. T4 (valores a mano, warning) queda para después."). Agent design: `egdev-ds init` writes a marked agent block in `AGENTS.md` with exactly the same rules as the S12 `CONTRIBUTING.md` block of #522 (search from `<project>` up to the nearest `.git` ancestor; a marked file anywhere → no action; nearest unmarked file in an ancestor → no write, manual next step; linked or irregular project file → never written, never fails; otherwise create or append in `<project>`, byte-preserving with only the missing blank-line separation; idempotent; in the plan, `--dry-run`, `--json` and rollback; already-vendored backfill; `upgrade` never touches it). Markers `<!-- egdev-ds:agents -->` … `<!-- /egdev-ds:agents -->`. English content, concise, for coding agents: use `@egdev/ui` and `@egdev/tokens` and query the `egdev-design-system` MCP server before writing UI; do not go beyond a DS component's API (no appearance or layout CSS on classes passed to DS components, no selectors into their internals, no `.eg-*` lookups in code, no hand-written colors, spacing or fonts), naming the doctor codes DS041, DS046, DS047 and DS048; when the DS lacks something, stop that part and open a Consumer request describing the need, mitigating only by composing DS parts with `// TODO(egdev-design-system#N)` and an allowlist entry; never edit vendored tarballs, `egdev-ds.json` or `@egdev/*` lockfile entries; link to `docs/distribution/consumer-requests.md`.
 - S4: Same CLI rules as the rest of `egdev-ds`: Node stdlib plus the project's own `typescript` and `postcss` (as the guard already resolves them), never run git, stable exit codes and `--json`, no `\s*X\s*` regexes on untrusted strings. Doctor codes are never reused.
 
 ## Tasks
@@ -35,7 +36,9 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 | T1 | S3, S4, S5 | worker | done: 4bf4c02 + verification amendments (next commit) |
 | T2 | S4, S6 | worker | done: 91f2c1e + 38f74c6 |
 | T3 | S4, S7 | worker | done: d7b864d + follow-up (next commit) |
-| T4–T8 | #530 | — | not started; each needs owner approval |
+| T5 | S4, S8 | worker | pending |
+| T7 | S8 | parent | CLI minor release with DS046–DS048 and the AGENTS block; validate on Recado |
+| T4, T6, T8 | #530 | — | deferred (T4 hand-written values as warning; T6 MCP tooling); each needs owner approval |
 
 ## Log
 
@@ -55,3 +58,6 @@ Consumer apps must carry out the consumer requests flow (#522) on their own: the
 - L14 (owner, verbatim): "si" → T3 (DS048, DS markup in app code) on branch feat/guard-ds048-dom-queries. Design choices in S7 are the agent's, recorded for review.
 - L15: T3 by worker: RED 10 (+3) → GREEN test:cli 216/216; typecheck and biome green; literal element access (`el['closest'](…)`) supported. Consumers: Recado 629f261 → 3 DS048 (CompactNote.tsx:54, ProjectsView.tsx:54, AppearanceProvider.tsx:194), matching an independent grep of those calls; egdev-website 0; Nexo 0. DS046/DS047 counts unchanged (Recado 5/8, Nexo 8/0).
 - L16: Independent verify of d7b864d (Risk: item 3) PASS for S7, S4 and the risk: 22 trigger and 26 exclusion cases; zero diffs vs base for DS040–DS047, status and init, including unusual `.ts` files (DS040/DS046/DS047 still ignore `.ts`); Recado's 3 findings are true positives, Nexo's ~80 `.eg-*` queries are all in tests. Advisories adopted: each source is parsed once and shared across checks (Nexo doctor median ~413 → ~614 ms before, 442 → 551 ms after on origin/main), and DS048 messages render canonically as `closest('…')` without type arguments or line breaks. Worker: RED 6 → GREEN test:cli 220/220. Kept as documented: `.ts` allowlist entries get no source line in upgrade/DS052 notices; escapes in patterns are written as in source.
+- L17: PR #533 merged as e030b0e (T3), CI green.
+- L18 (owner choice): S8 → T5 on branch feat/init-agents-block, then the CLI minor release; T4 deferred.
+- L19: T5 by worker: shared guide planner for CONTRIBUTING.md and AGENTS.md; RED 10 → GREEN test:cli 236/236; typecheck and biome green. Documented divergence: an unmarked linked project guide with a marked ancestor is a no-op for AGENTS.md (S8 rule order) while CONTRIBUTING.md keeps its released manual-step behavior. Dry runs against 6f6e0c5: Recado and egdev-website append to their root AGENTS.md; Nexo has none, so it is created in apps/hub.

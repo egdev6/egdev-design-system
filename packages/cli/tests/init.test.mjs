@@ -85,7 +85,8 @@ const npmPlan = (fixture, from) => [
   line('edit', 'src/index.css', '+@import "@egdev/ui/styles.css"'),
   line('create', 'egdev-ds.json', 'localRepo=hub'),
   line('create', '.mcp.json', 'mcpServers.egdev-design-system'),
-  line('create', 'CONTRIBUTING.md', 'consumer requests summary')
+  line('create', 'CONTRIBUTING.md', 'consumer requests summary'),
+  line('create', 'AGENTS.md', 'design system agent rules')
 ];
 
 const CONTRIBUTING = 'CONTRIBUTING.md';
@@ -234,6 +235,7 @@ test('S12 with no marked guide, a project guide takes precedence over an unmarke
 
 test('S12 already-vendored init reports an unmarked ancestor without writing, in text and JSON', () => {
   const fixture = markRepository(track(npmViteFixture()));
+  write(join(fixture.project, 'AGENTS.md'), '<!-- egdev-ds:agents -->\n<!-- /egdev-ds:agents -->\n');
   const from = release();
   const ancestor = join(fixture.root, CONTRIBUTING);
   write(ancestor, '# Existing repository guide\n');
@@ -267,6 +269,7 @@ test('S12 already-vendored init reports an unmarked ancestor without writing, in
 
 test('S12 already-vendored init recognizes a marked ancestor and stays a no-op', () => {
   const fixture = markRepository(track(npmViteFixture()));
+  write(join(fixture.project, 'AGENTS.md'), '<!-- egdev-ds:agents -->\n<!-- /egdev-ds:agents -->\n');
   const from = release();
   const ancestor = join(fixture.root, CONTRIBUTING);
   write(ancestor, `${START}\nAlready customized.\n${END}\n`);
@@ -376,7 +379,10 @@ test('S12 init at the same vendored release can plan and write a missing block, 
     framework: 'vite',
     cssMode: 'native',
     release: { dir: from, commit: COMMIT },
-    actions: [{ verb: 'create', path: CONTRIBUTING, detail: 'consumer requests summary' }],
+    actions: [
+      { verb: 'create', path: CONTRIBUTING, detail: 'consumer requests summary' },
+      { verb: 'create', path: 'AGENTS.md', detail: 'design system agent rules' }
+    ],
     findings: [],
     result: 'planned'
   };
@@ -456,6 +462,7 @@ test('S12 init never writes through a linked CONTRIBUTING.md without the block; 
 
 test('S12 an already-vendored project whose linked CONTRIBUTING.md has the block stays a no-op', () => {
   const fixture = track(npmViteFixture());
+  write(join(fixture.project, 'AGENTS.md'), '<!-- egdev-ds:agents -->\n<!-- /egdev-ds:agents -->\n');
   const from = release();
   write(join(fixture.root, 'GUIDE.md'), `${START}\n${END}\n`);
   symlinkSync('../../GUIDE.md', join(fixture.project, CONTRIBUTING));
@@ -567,6 +574,7 @@ test('AC6 AC16 npm+Vite+native init writes exactly the §6 effects, runs only np
   }
   assert.deepEqual(changed(before, treeContents(project)), [
     './.mcp.json',
+    './AGENTS.md',
     './CONTRIBUTING.md',
     './egdev-ds.json',
     './package-lock.json',
@@ -640,6 +648,7 @@ test('AC6 pnpm+Next.js+tailwind init with effects: workspace overrides, packageM
       line('create', 'egdev-ds.json', 'localRepo=site'),
       line('create', '.mcp.json', 'mcpServers.egdev-design-system'),
       line('create', 'CONTRIBUTING.md', 'consumer requests summary'),
+      line('create', 'AGENTS.md', 'design system agent rules'),
       line('run', 'pnpm install --no-frozen-lockfile'),
       `Initialized at ${C7}; 6 vendored integrities verified.`,
       ...nextSteps('pnpm ds:doctor'),
@@ -1089,7 +1098,7 @@ test('--json prints exactly one document on stdout for the plan', async () => {
       framework: 'vite',
       cssMode: 'native',
       release: { dir: from, commit: COMMIT },
-      actions: 20,
+      actions: 21,
       findings: [],
       result: 'planned'
     }
