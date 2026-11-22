@@ -58,6 +58,46 @@ export const SYSTEM_MD = 'design/system.md';
 const SYSTEM_MD_HEADER = /^<!-- Generated from EGDEV design system ([0-9a-f]{7,40})(?![0-9a-f])/;
 
 /**
+ * Read the installed artifact via the same project-rooted resolver as the guard engines. Older,
+ * absent or invalid artifacts silently keep the base DS046 contract. Read JSON directly instead
+ * of requiring it so repeated doctor runs observe updates without Node's module cache.
+ * @param {NodeJS.Require} require
+ * @returns {Map<string, Set<string>>}
+ */
+function readClassNameAllows(require) {
+  /** @type {Map<string, Set<string>>} */
+  const allowed = new Map();
+  try {
+    const text = readText(require.resolve('@egdev/system/design-system.json'));
+    /** @type {unknown} */
+    const artifact = text === null ? null : JSON.parse(text);
+    if (!isRecord(artifact) || !Array.isArray(artifact.components)) {
+      return allowed;
+    }
+    for (const component of artifact.components) {
+      if (
+        !isRecord(component) ||
+        typeof component.name !== 'string' ||
+        typeof component.package !== 'string' ||
+        (component.classNameAllows !== undefined &&
+          (!Array.isArray(component.classNameAllows) ||
+            !component.classNameAllows.every(
+              (property) => typeof property === 'string' && /^[a-z][a-z0-9-]*$/.test(property)
+            )))
+      ) {
+        return new Map();
+      }
+      if (component.package === '@egdev/ui' && Array.isArray(component.classNameAllows)) {
+        allowed.set(component.name, new Set(component.classNameAllows));
+      }
+    }
+  } catch {
+    return new Map();
+  }
+  return allowed;
+}
+
+/**
  * @param {string} path
  * @returns {string | null}
  */
@@ -756,7 +796,8 @@ export async function runDoctor({ project, release, failOnPending = false }) {
       const result = createGuard(engine).checkDesignSystem(sources, loaded.allowlist, {
         localRepo: config.localRepo,
         themeDirectory: config.themeDirectory,
-        sourceDirectory: config.sourceDirectory
+        sourceDirectory: config.sourceDirectory,
+        classNameAllows: readClassNameAllows(require)
       });
       for (const { file, line, snippet } of result.violations) {
         if (file.endsWith('.css')) {

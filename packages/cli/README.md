@@ -119,8 +119,12 @@ Dry run: nothing written.
   `Add the design system agent rules to <project-relative path>.` as a text-only manual step. A project guide that is
   a symlink, hard link or not a regular file is never written or refused; if no checked file has the block, `init`
   prints `Add the design system agent rules to AGENTS.md by hand; it is a link or not a regular file.`
-  The block tells agents to use the DS and MCP, respect component APIs and the guard, and follow the
-  [consumer request flow](../../docs/distribution/consumer-requests.md) for missing capabilities.
+  The block tells agents to use the DS and query the `egdev-design-system` MCP server when available; otherwise use
+  the vendored `@egdev/mcp` over stdio (`node node_modules/@egdev/mcp/dist/index.js`) or the project's
+  `design/system.md`. It states: "Classes passed to DS components may set only CSS properties in their `className`
+  contract (placement plus the component's published `classNameAllows`); anything else is DS046." It also tells agents
+  to follow the [consumer request flow](../../docs/distribution/consumer-requests.md) for missing capabilities. Existing
+  marked blocks keep their previous MCP and DS046 wording until an app edits it by hand.
 - Either project block is appended with at least one blank line, preserving all existing bytes and any extra blank
   lines. CRLF files keep their line-ending style. Existing content between the markers is never rewritten. Both writes
   appear in text and JSON plans, respect dry runs and roll back with the transaction.
@@ -375,7 +379,7 @@ Codes are stable: a code is never reused for another check.
 | DS043 | warning (error with `--fail-on-pending`) | Guard: `<localRepo>#TBD-*` placeholders pending. |
 | DS044 | error | `typescript` or `postcss` is not resolvable from the project; the guard needs both. |
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
-| DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` component to set non-placement properties. |
+| DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` component to set properties outside the base placement list and that component's `classNameAllows` contract. |
 | DS047 | error | Guard: an app CSS selector reaches into an `@egdev/ui` component's internal structure. |
 | DS048 | error | Guard: app code queries DS markup by its `.eg-*` class markers. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
@@ -422,8 +426,16 @@ The permitted declarations are custom properties (`--*`), `margin` and `margin-*
 case-insensitively and including with `!important`. The accepted units are `px`, `em`, `rem`, `ex`, `ch`, `cap`, `ic`,
 `lh`, `rlh`, `vw`, `vh`, `vi`, `vb`, `vmin`, `vmax`, `svw`, `svh`, `lvw`, `lvh`, `dvw`, `dvh`, `cqw`, `cqh`, `cqi`,
 `cqb`, `cqmin`, `cqmax`, `cm`, `mm`, `q`, `in`, `pt` and `pc`. Other values, including `0foo`, `auto`, `min-content`,
-`calc()` and `var()`, are findings; `width`, `max-width`, `height` and `max-height` remain findings even at zero. An
-allowlist entry for a now-permitted rule becomes stale unless the rule still has another offending declaration.
+`calc()` and `var()`, are findings under the base list; `width`, `max-width`, `height` and `max-height` are also
+outside that list, even at zero.
+
+DS046 extends the base list with the component's `classNameAllows` CSS properties in the project's vendored
+`@egdev/system/design-system.json` (amendment `odd/tasks/app-side-consumer-flow.md` S9). It resolves the artifact from
+`<project>` using Node module resolution, not the design system checkout. Aliased and namespace imports use the real
+export name. For example, a SelectTile contract can allow `width` and `grid-template-columns` while `color` still
+requires the component API or an issue-backed exception. If the artifact is missing, unreadable or invalid, or has no
+entry for the component, DS046 silently uses the base list. DS047 and DS048 do not use these allowances. An allowlist
+entry for a now-permitted rule becomes stale unless the rule still has another offending declaration.
 
 Everything else requires the component API or an issue-backed exception. DS046 does not inspect Tailwind utilities,
 inline `style` or structural selectors whose DS class occurs only in an earlier compound.

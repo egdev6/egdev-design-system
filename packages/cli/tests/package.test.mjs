@@ -27,7 +27,7 @@ test('AC1 @egdev/cli ships bin egdev-ds, Node 24, no dependencies and a matching
   const headings = read('../CHANGELOG.md')
     .split('\n')
     .filter((line) => /^##\s+\S/.test(line));
-  assert.deepEqual(headings.slice(0, 3), ['## 0.3.0', '## 0.2.0', '## 0.1.1']);
+  assert.deepEqual(headings.slice(0, 4), ['## Unreleased', '## 0.3.0', '## 0.2.0', '## 0.1.1']);
   const bin = read('../bin/egdev-ds.mjs');
   assert.ok(bin.startsWith('#!/usr/bin/env node\n'));
   assert.ok(statSync(new URL('../bin/egdev-ds.mjs', import.meta.url)).mode & 0o100, 'The bin is executable');

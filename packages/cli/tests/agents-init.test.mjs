@@ -54,8 +54,8 @@ const BLOCK = [
   START,
   '## EGDEV design system',
   '',
-  '- Before writing UI, use `@egdev/ui` and `@egdev/tokens` and query the `egdev-design-system` MCP server.',
-  '- Stay within component APIs: no appearance or layout CSS on classes passed to DS components (DS046).',
+  "- Before writing UI, use `@egdev/ui` and `@egdev/tokens`; query the `egdev-design-system` MCP server when available, otherwise use the vendored `@egdev/mcp` over stdio (`node node_modules/@egdev/mcp/dist/index.js`) or the project's `design/system.md`.",
+  "- Classes passed to DS components may set only CSS properties in their `className` contract (placement plus the component's published `classNameAllows`); anything else is DS046.",
   '- Do not select component internals (DS041, DS047) or look up `.eg-*` markup in code (DS048).',
   '- Do not hand-write colors, spacing or fonts.',
   '- If the DS lacks something, stop that part and open a Consumer request describing the need: https://github.com/egdev6/egdev-design-system/issues/new?template=consumer_request.yml',
@@ -134,6 +134,37 @@ test('S8 fresh init creates the precise agent rules and plans both guides in ord
     stderr: ''
   });
   assert.equal(treeHash(fixture.root), settled);
+});
+
+test('S9 init preserves previous marked agent blocks byte for byte', () => {
+  const legacy = [
+    START,
+    '## EGDEV design system',
+    '',
+    '- Before writing UI, use `@egdev/ui` and `@egdev/tokens` and query the `egdev-design-system` MCP server.',
+    END,
+    ''
+  ].join('\n');
+  const previous = BLOCK.replace(
+    "- Classes passed to DS components may set only CSS properties in their `className` contract (placement plus the component's published `classNameAllows`); anything else is DS046.",
+    '- Stay within component APIs: no appearance or layout CSS on classes passed to DS components (DS046).'
+  );
+  const from = release();
+  for (const original of [legacy, previous]) {
+    const fixture = track(npmViteFixture());
+    const path = join(fixture.project, AGENTS);
+    write(path, original);
+    write(join(fixture.project, CONTRIBUTING), `${CONTRIBUTING_START}\n${CONTRIBUTING_END}\n`);
+    const before = treeHash(fixture.root);
+    const header = `egdev-ds init ${fixture.argument} (npm, vite, native) from ${from} at ${C7}`;
+    assert.deepEqual(init(fixture, from), {
+      status: 0,
+      stdout: `${header}\nAlready at ${C7}; integrities unverified (--no-install); no changes.\n`,
+      stderr: ''
+    });
+    assert.equal(readFileSync(path, 'utf8'), original);
+    assert.equal(treeHash(fixture.root), before);
+  }
 });
 
 test('S8 append preserves every byte and only adds missing blank-line separation in LF and CRLF', () => {
