@@ -3,7 +3,8 @@
 What to do when a change in a consumer app needs a change in the design system. This page is the
 canonical rule for **every** app that consumes the DS (Nexo, egdev-website and any future one).
 Each consumer's CONTRIBUTING links here instead of restating it; `egdev-ds init` adds that summary
-as a marked block (see the [CLI reference](../../packages/cli/README.md)).
+as a marked block and adds a marked `AGENTS.md` block for coding agents, with the same repository-root
+search and manual ancestor guidance (see the [CLI reference](../../packages/cli/README.md)).
 
 Tracking issue: [#522](https://github.com/egdev6/egdev-design-system/issues/522).
 
