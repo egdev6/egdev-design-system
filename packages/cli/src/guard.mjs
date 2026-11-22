@@ -1,7 +1,7 @@
 // The design-system guard, moved from the egdev-design-system skill (assets/guard/
-// design-system-guard.ts) with DS040–DS045 parity, and extended for DS046. `typescript` and
+// design-system-guard.ts) with DS040–DS045 parity, and extended for DS046/DS047. `typescript` and
 // `postcss` are injected from the consumer project (Q4); the tree follows `sourceDirectory`.
-import { createAppearanceGuard } from './appearance-guard.mjs';
+import { createAppearanceGuard, ruleOffsets } from './appearance-guard.mjs';
 
 /** @typedef {typeof import('typescript')} TypeScript */
 /** @typedef {import('typescript').Node} TsNode */
@@ -34,7 +34,7 @@ import { createAppearanceGuard } from './appearance-guard.mjs';
  * @typedef {import('../types/index.d.ts').GuardAllowlistEntry} GuardAllowlistEntry
  */
 /** @typedef {{ file: string, line: number, snippet: string }} GuardViolation */
-/** @typedef {{ violations: GuardViolation[], appearanceViolations: import('./appearance-guard.mjs').AppearanceViolation[], errors: string[], pendingIssueCount: number }} GuardResult */
+/** @typedef {{ violations: GuardViolation[], appearanceViolations: import('./appearance-guard.mjs').AppearanceViolation[], structuralViolations?: import('./appearance-guard.mjs').StructuralViolation[], errors: string[], pendingIssueCount: number }} GuardResult */
 /**
  * `localRepo`: repository name used for local issue references (`<localRepo>#N`, `<localRepo>#TBD-slug`).
  * `themeDirectory`: app theme layer, the only place where CSS may target DS internals.
@@ -146,7 +146,11 @@ export function createGuard({ ts, postcss }) {
     };
   };
 
-  const { collectClasses, findAppearanceViolations } = createAppearanceGuard({ ts, postcss }, patterns, normalize);
+  const { collectClasses, findAppearanceViolations, findStructuralViolations } = createAppearanceGuard(
+    { ts, postcss },
+    patterns,
+    normalize
+  );
 
   /**
    * @param {GuardSource} source
@@ -160,13 +164,19 @@ export function createGuard({ ts, postcss }) {
     /**
      * @param {number} offset
      * @param {string} snippet
+     * @param {number} [ruleOffset]
      */
-    const add = (offset, snippet) =>
-      found.push({
+    const add = (offset, snippet, ruleOffset) => {
+      const violation = {
         file,
         line: content.slice(0, offset).split('\n').length,
         snippet: normalize(snippet)
-      });
+      };
+      if (ruleOffset !== undefined) {
+        ruleOffsets.set(violation, ruleOffset);
+      }
+      found.push(violation);
+    };
     const pattern = patterns(sourceDirectory);
     if (pattern.tsx.test(file) && !pattern.test.test(file)) {
       const source = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -191,7 +201,8 @@ export function createGuard({ ts, postcss }) {
           const start = selector.indexOf(part, cursor);
           cursor = start + part.length;
           if (part && targetsInternal(part)) {
-            add((rule.source?.start?.offset ?? 0) + start, part);
+            const offset = rule.source?.start?.offset ?? 0;
+            add(offset + start, part, offset);
           }
         }
       });
@@ -301,10 +312,17 @@ export function createGuard({ ts, postcss }) {
     const violations = [];
     /** @type {import('./appearance-guard.mjs').AppearanceViolation[]} */
     const appearanceViolations = [];
-    const classes = collectClasses(files, sourceDirectory);
+    /** @type {import('./appearance-guard.mjs').StructuralViolation[]} */
+    const structuralViolations = [];
+    const { classes, appClasses } = collectClasses(files, sourceDirectory);
     for (const source of files) {
-      // One existing CSS exception also covers DS046 on the same selector occurrence.
+      // Preserve the existing DS041/DS046 matching, and share any DS047 exception only with
+      // checks on the exact same rule offset (not another identical rule on the same line).
       const allowedSelectors = new Map();
+      const allowedRules = new Set();
+      const checkedRules = new Set();
+      const structural = findStructuralViolations(source, themeDirectory, sourceDirectory, classes, appClasses);
+      const structuralByOffset = new Map(structural.map((item) => [ruleOffsets.get(item), item]));
       /** @param {{ file: string, line: number, snippet: string }} item */
       const selectorKey = (item) => JSON.stringify([item.file, item.line, item.snippet]);
       if (allowlist.some((entry) => entry.kind === 'component-gap' && entry.file === source.file)) {
@@ -322,8 +340,29 @@ export function createGuard({ ts, postcss }) {
           }
         });
       }
-      for (const violation of findViolations(source, themeDirectory, sourceDirectory)) {
-        if (!consumeAllowlistEntry(violation)) {
+      const rawViolations = findViolations(source, themeDirectory, sourceDirectory);
+      for (const violation of rawViolations) {
+        const offset = ruleOffsets.get(violation);
+        const structuralRule = structuralByOffset.get(offset);
+        if (structuralRule) {
+          // DS041 entries match individual selector parts. Only a full-rule entry can also
+          // suppress DS046/DS047; keep consuming individual matches even if that entry exists.
+          if (consumeAllowlistEntry(violation)) {
+            if (violation.snippet === structuralRule.snippet) {
+              allowedRules.add(offset);
+            }
+          } else {
+            if (!allowedRules.has(offset) && !checkedRules.has(offset)) {
+              checkedRules.add(offset);
+              if (consumeAllowlistEntry(structuralRule)) {
+                allowedRules.add(offset);
+              }
+            }
+            if (!allowedRules.has(offset)) {
+              violations.push(violation);
+            }
+          }
+        } else if (!consumeAllowlistEntry(violation)) {
           violations.push(violation);
         } else if (source.file.endsWith('.css')) {
           const key = selectorKey(violation);
@@ -331,6 +370,18 @@ export function createGuard({ ts, postcss }) {
         }
       }
       for (const violation of findAppearanceViolations(source, themeDirectory, sourceDirectory, classes)) {
+        const offset = ruleOffsets.get(violation);
+        if (allowedRules.has(offset)) {
+          continue;
+        }
+        if (structuralByOffset.has(offset)) {
+          if (consumeAllowlistEntry(violation)) {
+            allowedRules.add(offset);
+          } else {
+            appearanceViolations.push(violation);
+          }
+          continue;
+        }
         const key = selectorKey(violation);
         const alreadyAllowed = allowedSelectors.get(key) ?? 0;
         if (alreadyAllowed > 0) {
@@ -339,6 +390,11 @@ export function createGuard({ ts, postcss }) {
         }
         if (!consumeAllowlistEntry(violation)) {
           appearanceViolations.push(violation);
+        }
+      }
+      for (const violation of structural) {
+        if (!allowedRules.has(ruleOffsets.get(violation)) && !consumeAllowlistEntry(violation)) {
+          structuralViolations.push(violation);
         }
       }
     }
@@ -350,6 +406,7 @@ export function createGuard({ ts, postcss }) {
     return {
       violations,
       appearanceViolations,
+      ...(structuralViolations.length ? { structuralViolations } : {}),
       errors,
       pendingIssueCount: allowlist.filter((entry) => pendingIssuePattern.test(entry.issue)).length
     };

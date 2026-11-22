@@ -709,7 +709,7 @@ export async function runDoctor({ project, release, failOnPending = false }) {
     }
   }
 
-  // DS045, DS044, DS040-DS043, DS046
+  // DS045, DS044, DS040-DS043, DS046, DS047
   const { config, problem } = readConfig(project, manifest);
   if (problem) {
     add('DS045', 'error', problem, CONFIG_FILE);
@@ -780,6 +780,16 @@ export async function runDoctor({ project, release, failOnPending = false }) {
           'DS046',
           'error',
           `${snippet} on ${component} sets ${properties.join(', ')}: use the component API or add an allowlist entry with an issue.`,
+          file,
+          line,
+          index
+        );
+      }
+      for (const [index, { file, line, selectors, component }] of (result.structuralViolations ?? []).entries()) {
+        add(
+          'DS047',
+          'error',
+          `${selectors.join(', ')} reaches into ${component} internals: use the component API or add an allowlist entry with an issue.`,
           file,
           line,
           index

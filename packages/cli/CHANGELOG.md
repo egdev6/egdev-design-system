@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `doctor` DS047 reports app selectors that reach into an `@egdev/ui` component's internal structure, including
+  placement-only declarations, unless an issue-backed guard exception covers the rule. Refs #530.
+
 - `doctor` DS046 reports app CSS classes that change the appearance or layout of an `@egdev/ui` component outside the
   placement-only allowance, unless the selector has an issue-backed guard exception. It collects static class candidates
   inside conditional expressions and object literals. `min-width` and `min-height` are allowed only at literal zero,
