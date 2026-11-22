@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- The artifact and design reference include Text's `truncate` prop and the approved
+  `single-line-text-truncation` convention. (#538)
+
 ## 0.9.0
 
 ### Added

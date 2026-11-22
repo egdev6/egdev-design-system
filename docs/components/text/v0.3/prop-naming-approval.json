@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the single-line-text-truncation convention and its reviewed first Text usage.",
+  "evidence": {
+    "date": "2026-11-22",
+    "ownerChoice": "Aprobar `truncate` (Recomendado)",
+    "amendmentPath": "docs/components/text/v0.3/truncate-amendment.md",
+    "amendmentPayloadSHA256": "sha256:fd8f0fdebc2bfd898a51cee69f94685cc64a9f877045f151fea609b202fcd799",
+    "provenance": "Owner session recorded in the amendment's resolved decisions item 3 and odd/tasks/consumer-request-specs.md L6; convention approval forwarded in the implementation handoff.",
+    "interpretation": "The amendment records the name choice and first-usage registration; the separately forwarded owner decision approves this exact convention payload. The amendment alone does not promote a global convention. This record is not native review authority."
+  },
+  "entries": [
+    {
+      "scope": "convention:single-line-text-truncation",
+      "contentHash": "sha256:e1a37b7e62e7f378b59f1aeaf05c5a1bdc73377c3e09aed41b9cabb6e0bf5872",
+      "convention": {
+        "id": "single-line-text-truncation",
+        "name": "truncate",
+        "meaning": "Opt in to visually eliding overflowing text to one line without removing its underlying content.",
+        "whenToUse": "Opt passive text into a single-line ellipsis in a bounded, shrinkable host with a visible route to the complete content.",
+        "avoid": "Multi-line clamping, data mutation, inline prose, or clipping interactive content.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/primitives/text/types.ts",
+        "symbol": "TextProps.truncate",
+        "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
+      }
+    }
+  ]
+}

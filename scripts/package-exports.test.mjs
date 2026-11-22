@@ -4484,7 +4484,7 @@ test('UI ships the Surface Material recipes as static token utilities', () => {
   assert.doesNotMatch(css, /\.eg-surface\s*[,{]/, 'Surface marker must not become a shipped CSS rule (no stylesheet)');
 });
 
-test('UI ships the approved Text and Heading title recipes without an application Tailwind compiler', () => {
+test('UI ships the approved Text and Heading title recipes without an application Tailwind compiler', async () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
   const rule = (selector) => {
@@ -4537,6 +4537,42 @@ test('UI ships the approved Text and Heading title recipes without an applicatio
     String.raw`.before\:bg-fg-brand-default`
   ]) {
     assert.ok(utilities.includes(selector), `Packed styles must retain eyebrow diamond utility ${selector}`);
+  }
+  // The actual Text recipes select these utilities; their presence elsewhere is not sufficient.
+  const textSource = readFileSync(resolve(root, 'packages/ui/src/primitives/text/types.ts'), 'utf8');
+  assert.match(textSource, /true:\s*'block min-w-0 truncate'/);
+  assert.match(textSource, /before:inline-block before:me-2\.5/);
+  const { Text } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM(renderToString(createElement(Text, { truncate: true, children: 'Complete eyebrow copy' })));
+  try {
+    const text = dom.window.document.querySelector('p.eg-text');
+    assert.ok(text);
+    assert.equal(text.textContent, 'Complete eyebrow copy');
+    for (const name of ['block', 'min-w-0', 'truncate', 'before:inline-block', 'before:me-2.5']) {
+      assert.ok(text.classList.contains(name), `Packed Text must select ${name}`);
+    }
+    assert.equal(text.classList.contains('inline-flex'), false);
+    assert.equal(text.hasAttribute('truncate'), false);
+  } finally {
+    dom.window.close();
+  }
+  assert.match(rule('.block'), /display:\s*block/);
+  assert.match(rule('.min-w-0'), /min-width:\s*var\(--space-0[,)]/);
+  const truncateRule = rule('.truncate');
+  for (const declaration of [/overflow:\s*hidden/, /text-overflow:\s*ellipsis/, /white-space:\s*nowrap/]) {
+    assert.match(truncateRule, declaration);
+  }
+  for (const [name, declaration] of [
+    ['before:inline-block', /display:\s*inline-block/],
+    ['before:me-2.5', /margin-inline-end:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/]
+  ]) {
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    const index = utilities.indexOf(selector);
+    assert.ok(index >= 0, `Missing Text eyebrow utility ${name}`);
+    assert.match(utilities.slice(index, index + 500), declaration);
   }
   const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
   for (const token of ['--text-title-hero', '--text-shadow-title-hero']) {

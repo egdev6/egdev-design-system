@@ -4,6 +4,13 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## Unreleased
+
+### Added
+
+- Text supports opt-in single-line truncation with `truncate`. Full content remains in the DOM;
+  consumers provide a bounded, shrinkable host and a visible route to the complete text. (#538)
+
 ## 0.7.1
 
 ### Changed

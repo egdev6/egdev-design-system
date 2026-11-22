@@ -45,8 +45,12 @@ const textVariantClasses = {
 } as const satisfies Record<Exclude<TextVariant, TextBodyVariant>, string>;
 
 export const textVariants = cva('eg-text m-0 font-display uppercase wrap-break-word', {
-  variants: { variant: textVariantClasses },
-  defaultVariants: { variant: 'eyebrow' }
+  variants: {
+    variant: textVariantClasses,
+    truncate: { true: 'block min-w-0 truncate', false: null }
+  },
+  compoundVariants: [{ variant: 'eyebrow', truncate: true, class: 'before:inline-block before:me-2.5' }],
+  defaultVariants: { variant: 'eyebrow', truncate: false }
 });
 
 const textBodyVariantClasses = {
@@ -70,9 +74,10 @@ export const textBodyVariants = cva(
   {
     variants: {
       variant: textBodyVariantClasses,
-      foreground: textForegroundClasses
+      foreground: textForegroundClasses,
+      truncate: { true: 'block min-w-0 truncate', false: null }
     },
-    defaultVariants: { foreground: 'inherit' }
+    defaultVariants: { foreground: 'inherit', truncate: false }
   }
 );
 
@@ -278,6 +283,7 @@ type HeadingVisualProps =
 /**
  * Non-heading display, eyebrow or body copy. className supports outer layout only (margins, width
  * constraints, flex/grid placement); typography, color, glow and accent layout follow the contract.
+ * When truncating, display, whitespace, clipping and ellipsis are owned by the truncate prop.
  * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type TextProps = Omit<ComponentPropsWithoutRef<'p'>, 'children' | 'role' | 'dangerouslySetInnerHTML'> &
@@ -294,6 +300,16 @@ export type TextProps = Omit<ComponentPropsWithoutRef<'p'>, 'children' | 'role' 
      * @control boolean
      */
     asChild?: boolean;
+    /**
+     * Visually elide overflowing copy to one line without removing its content. The host must bound
+     * the width, make every shrinking flex/grid ancestor and grid track shrinkable, and provide a
+     * visible keyboard- and touch-operable route to the complete text; title is supplementary only.
+     * A slotted child must be passive and block-compatible; it becomes block rather than inline.
+     * Do not place focusable descendants, hard breaks or nested block boxes in the clipping root.
+     * @default false
+     * @control boolean
+     */
+    truncate?: boolean;
   };
 
 /**

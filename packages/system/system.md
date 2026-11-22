@@ -2664,6 +2664,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
   - children: ReactNode; Main copy. With asChild, exactly one prop-spreading non-heading element with normal children. (components[] · packages/ui/src/primitives/text/types.ts)
   - foreground: enum; Semantic foreground is only available on body recipes. Foreground for body copy. Inherit follows the host; use on-flood or inherit on flood, and provide meaningful words and a non-color cue for status colors. (components[] · packages/ui/src/primitives/text/types.ts)
   - tone: enum; Accent Material context. Not available on the eyebrow, whose diamond is decorative. Accent Material context: canvas (surface-0) neon or raised brand on surface-1…3 and overlays. Consumers choose it; the host background is never inspected. The canvas hero accent glows. Not available on inverse: root and accent always use the on-flood foreground. Accent Material context is unavailable on body recipes. (components[] · packages/ui/src/primitives/text/types.ts)
+  - truncate: boolean; Visually elide overflowing copy to one line without removing its content. The host must bound the width, make every shrinking flex/grid ancestor and grid track shrinkable, and provide a visible keyboard- and touch-operable route to the complete text; title is supplementary only. A slotted child must be passive and block-compatible; it becomes block rather than inline. Do not place focusable descendants, hard breaks or nested block boxes in the clipping root. (components[] · packages/ui/src/primitives/text/types.ts)
   - variant: enum; Named visual recipe. Text excludes headings: use Heading for document hierarchy. Body or lede typography; use Heading for document hierarchy. (components[] · packages/ui/src/primitives/text/types.ts)
 ### VisuallyHidden
 catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
@@ -4573,6 +4574,7 @@ Not exported:
 - shell-label: shell; approved; TerminalCardBar (propNaming[] · skills/_shared/prop-naming.json)
 - side-navigation: sideNavigation; approved; AppShell (propNaming[] · skills/_shared/prop-naming.json)
 - signal-pulse: pulse; approved; Skeleton, StatusDot (propNaming[] · skills/_shared/prop-naming.json)
+- single-line-text-truncation: truncate; approved; Text (propNaming[] · skills/_shared/prop-naming.json)
 - slot-composition: asChild; approved; AlertDialogAction, AlertDialogCancel, AlertDialogTrigger, ArticleFeature, Button, Cluster, DialogClose, DialogTrigger, IconButton, Link, ListItem, PopoverClose, PopoverTrigger, ScrollReveal, Stack, Surface, Text, VisuallyHidden (propNaming[] · skills/_shared/prop-naming.json)
 - sort-change: onSortChange; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - square-particle-direction: squareDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
