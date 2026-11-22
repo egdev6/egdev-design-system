@@ -363,6 +363,7 @@ Codes are stable: a code is never reused for another check.
 | DS044 | error | `typescript` or `postcss` is not resolvable from the project; the guard needs both. |
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
 | DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` component to set non-placement properties. |
+| DS047 | error | Guard: an app CSS selector reaches into an `@egdev/ui` component's internal structure. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
 | DS051 | warning | The nearest `design/system.md`, from the project up to its repository root (the nearest folder with `.git`), records a design system commit in its first line (`<!-- Generated from EGDEV design system <commit>; … -->`) other than the vendored one: regenerate it. Skipped without the file, a recorded commit or a single vendored commit. |
 | DS052 | warning | With `--from` at the same vendored commit, each guard allowlist entry whose `egdev6/egdev-design-system#N` issue occurs in `resolves` for a package the project uses names a mitigation to remove. One warning lists the relevant resolving packages and versions in package-name order, with the source line when available. Skipped without `--from`; with a release whose `resolves` is empty or absent it adds no finding; otherwise skipped when the vendored commit is mixed, absent or differs from the release, or when the allowlist cannot be loaded; `--fail-on-pending` does not change its severity. |
@@ -412,6 +413,17 @@ allowlist entry for a now-permitted rule becomes stale unless the rule still has
 
 Everything else requires the component API or an issue-backed exception. DS046 does not inspect Tailwind utilities,
 inline `style` or structural selectors whose DS class occurs only in an earlier compound.
+
+DS047 checks those structural selectors: a static class on an imported `@egdev/ui` component followed by a descendant
+or child combinator reaches into DS-owned markup when the last compound has no app-owned class. Any declaration
+counts, including placement-only declarations. App-owned classes are static candidates collected by the same rules
+from `className` on any JSX element in the scanned non-test `.tsx` files. For example, `.note-detail > footer` is a
+finding, while `.note-detail .note-detail__actions` is not when the app applies `note-detail__actions` in JSX.
+A sibling combinator immediately after the component compound is not a finding; a final `.eg-*` class is reported by
+DS041 instead. Comma lists are checked selector by selector; one finding per rule names the offending parts. Media and
+nested rules are checked. The allowlist uses the CSS file and the full whitespace-normalized rule selector; one entry
+covers every guard check triggered by that rule, and duplicate rules need separate entries. Existing DS042 stale and
+DS043 pending rules apply.
 
 `@egdev/cli` publishes a type-only entry (`types/index.d.ts`) with the entry shape doctor validates (DS042), so the
 allowlist is checked at compile time:
