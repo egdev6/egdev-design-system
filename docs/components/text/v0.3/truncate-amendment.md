@@ -1,9 +1,9 @@
 # Text v0.3 — single-line truncation amendment
 
-- **Version / status:** v0.3 — Draft; not ready for implementation or publication. This is a proposal, not implemented behavior.
+- **Version / status:** v0.3 — Approved 2026-11-22 (owner, in session; odd/tasks/consumer-request-specs.md L6). Implementation plan requires separate approval.
 - **Amends:** the [approved Text and Heading v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/108#issuecomment-6251575943) and [Text v0.2](../v0.2/body-tone-amendment.md). Except for the explicitly opt-in changes below, their promises remain unchanged. Request: [#538](https://github.com/egdev6/egdev-design-system/issues/538); context: [Recado #41](https://github.com/egdev6/recado/issues/41).
-- **Approval / recovery:** This file is the authorized local draft. Exact spec and naming-convention approvals are Pending; an implementation plan requires separate approval. No code, token, dependency, registry or GitHub change is authorized here.
-- **Snapshot identity:** `version: v0.3`; `contentSHA256: Pending before finalization`; `visualHashes: Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/108`; `latestPublishedComment: Pending verification`. #538 is the request, not a replacement for the canonical component issue.
+- **Approval / recovery:** Owner session 2026-11-22, recorded verbatim in this file's resolved decisions and in odd/tasks/consumer-request-specs.md; this spec is not an implementation authorization. A separate plan approval is required. No code, token, dependency, registry or GitHub change is authorized here.
+- **Snapshot identity:** `version: v0.3`; `contentSHA256: fd8f0fdebc2bfd898a51cee69f94685cc64a9f877045f151fea609b202fcd799`; `visualHashes: Pending`; `approvalReference: owner session 2026-11-22 (odd/tasks/consumer-request-specs.md L6)`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/108`; `latestPublishedComment: Pending verification`. #538 is the request, not a replacement for the canonical component issue.
 - **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, with LF line endings and the final newline. Tracking metadata above is excluded. Approval must identify this version, payload digest and any adopted visual hashes.
 
 ## 1. Purpose and scope
@@ -133,10 +133,10 @@ All checks below are **planned**, not observed. Stories demonstrate scenarios; t
 | AC-10 | Static utilities are emitted in actual shipped CSS and the feature works for packed React 18/19 consumers without a Tailwind compiler. This draft changes no token, dependency, registry or legacy CSS; separately approved registry work is required for implementation. | Built-CSS/static-scan and packed-consumer tests, source/diff audit; verify separately approved registry work when authorized. | Pending; visual not applicable to packaging. |
 | AC-11 | The usage documentation excludes hard breaks, block boxes and focusable descendants inside a truncating root; Text does not gain a tree-validation or interaction engine. Independent ancestor/sibling controls remain operable. | Documentation/source review and public DOM/keyboard tests for unchanged ancestor/sibling control behavior; unsupported child combinations are not represented as supported test cases. | Pending; visual not applicable to the unsupported-content policy. |
 
-### Open human decisions and next steps
+### Resolved decisions and next steps
 
-1. Approve or revise this exact Text-only API, including `truncate` on all variants, block display on opt-in, and the explicit inline-accent/eyebrow changes. Widening the feature to `Heading` requires a separate scoped decision.
-2. Approve or revise the full-text access policy: visible consumer-owned route/disclosure as required above; native `title` and DS Tooltip are supplementary only. Confirm the Recado card's existing action actually exposes both strings without hiding its focus or touch target.
-3. Separately approve the proposed `single-line-text-truncation` naming convention, independently of this component snapshot. Do not update the registry from this draft.
-4. Supply and approve the expected-design sources and captures for VIS-01/02. Until then visual conformity is Not evaluated. Resolve the full Recado row/height and #540 hit-area cross-check separately; neither is guaranteed by Text alone.
-5. Finalize the snapshot hash and obtain recoverable scoped spec approval; only then propose and separately approve an implementation plan. All acceptance checks and actual package/browser/AT evidence remain pending.
+1. **Spec:** approved as drafted. Owner choice, verbatim: "Aprobar tal cual (Recomendado)". Text-only `truncate` on every variant, block display on opt-in, inline accent and eyebrow while truncating. Widening to `Heading` would need a separate scoped decision.
+2. **Full-text access policy:** approved as drafted. The visible route or disclosure is owned by the consumer; native `title` and the DS Tooltip are supplementary only. For Recado's card, confirm during implementation that tapping the card opens the full-text detail without hiding the trailing action's focus or touch target.
+3. **Naming convention:** owner choice, verbatim: "Aprobar `truncate` (Recomendado)". `single-line-text-truncation` / `truncate` is approved for registration with the first reviewed usage, during separately authorized implementation. This draft does not edit the registry.
+4. **Visual references:** the spec is approved without captures. VIS-01/02 remain pending, and visual conformity is Not evaluated until expected-design sources and captures are supplied and approved.
+5. **Next step:** propose a separate implementation plan, which needs its own approval. All acceptance checks and real package, browser and assistive-technology evidence remain pending.
