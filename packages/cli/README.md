@@ -421,9 +421,10 @@ from `className` on any JSX element in the scanned non-test `.tsx` files. For ex
 finding, while `.note-detail .note-detail__actions` is not when the app applies `note-detail__actions` in JSX.
 A sibling combinator immediately after the component compound is not a finding; a final `.eg-*` class is reported by
 DS041 instead. Comma lists are checked selector by selector; one finding per rule names the offending parts. Media and
-nested rules are checked. The allowlist uses the CSS file and the full whitespace-normalized rule selector; one entry
-covers every guard check triggered by that rule, and duplicate rules need separate entries. Existing DS042 stale and
-DS043 pending rules apply.
+nested rules are checked. DS046 and DS047 allowlist entries use the CSS file and the full whitespace-normalized rule
+selector. For a rule that triggers DS047, a full-selector entry also covers its DS041 parts. A DS041 entry for one
+comma-list part covers only that part, not other parts or DS046/DS047; it remains used while that part exists. Duplicate
+rules need separate entries. Existing DS042 stale and DS043 pending rules apply.
 
 `@egdev/cli` publishes a type-only entry (`types/index.d.ts`) with the entry shape doctor validates (DS042), so the
 allowlist is checked at compile time:

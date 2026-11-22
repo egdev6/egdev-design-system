@@ -345,15 +345,22 @@ export function createGuard({ ts, postcss }) {
         const offset = ruleOffsets.get(violation);
         const structuralRule = structuralByOffset.get(offset);
         if (structuralRule) {
-          if (!checkedRules.has(offset)) {
-            checkedRules.add(offset);
-            const sameRule = rawViolations.filter((item) => ruleOffsets.get(item) === offset);
-            if (sameRule.some(consumeAllowlistEntry) || consumeAllowlistEntry(structuralRule)) {
+          // DS041 entries match individual selector parts. Only a full-rule entry can also
+          // suppress DS046/DS047; keep consuming individual matches even if that entry exists.
+          if (consumeAllowlistEntry(violation)) {
+            if (violation.snippet === structuralRule.snippet) {
               allowedRules.add(offset);
             }
-          }
-          if (!allowedRules.has(offset)) {
-            violations.push(violation);
+          } else {
+            if (!allowedRules.has(offset) && !checkedRules.has(offset)) {
+              checkedRules.add(offset);
+              if (consumeAllowlistEntry(structuralRule)) {
+                allowedRules.add(offset);
+              }
+            }
+            if (!allowedRules.has(offset)) {
+              violations.push(violation);
+            }
           }
         } else if (!consumeAllowlistEntry(violation)) {
           violations.push(violation);
@@ -367,6 +374,14 @@ export function createGuard({ ts, postcss }) {
         if (allowedRules.has(offset)) {
           continue;
         }
+        if (structuralByOffset.has(offset)) {
+          if (consumeAllowlistEntry(violation)) {
+            allowedRules.add(offset);
+          } else {
+            appearanceViolations.push(violation);
+          }
+          continue;
+        }
         const key = selectorKey(violation);
         const alreadyAllowed = allowedSelectors.get(key) ?? 0;
         if (alreadyAllowed > 0) {
@@ -375,8 +390,6 @@ export function createGuard({ ts, postcss }) {
         }
         if (!consumeAllowlistEntry(violation)) {
           appearanceViolations.push(violation);
-        } else if (structuralByOffset.has(offset)) {
-          allowedRules.add(offset);
         }
       }
       for (const violation of structural) {

@@ -337,6 +337,131 @@ test('S6 allowlist is per rule even for identical same-line selectors and declar
   assert.deepEqual(result.errors, []);
 });
 
+test('S6 a DS041 part entry does not cover other parts or DS047 on the same rule', () => {
+  const files = [view(ds), css('.eg-a, .eg-b, .x > footer { color: red; }')];
+  const result = checkDesignSystem(files, [entry('.eg-a')]);
+  assert.deepEqual(result.violations, [{ file: 'src/styles.css', line: 1, snippet: '.eg-b' }]);
+  assert.deepEqual(result.appearanceViolations, []);
+  assert.deepEqual(findings(result), [structure(1, '.eg-a, .eg-b, .x > footer', 'DialogContent', ['.x > footer'])]);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.pendingIssueCount, 0);
+});
+
+test('S6 per-part DS041 entries stay used on a rule that also triggers DS047', () => {
+  const files = [view(ds), css('.eg-a, .eg-b, .x > footer { color: red; }')];
+  const result = checkDesignSystem(files, [entry('.eg-a'), entry('.eg-b')]);
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.appearanceViolations, []);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(findings(result), [structure(1, '.eg-a, .eg-b, .x > footer', 'DialogContent', ['.x > footer'])]);
+  assert.equal(result.pendingIssueCount, 0);
+});
+
+test('S6 DS041-only and DS046-only inputs keep base allowlist matching', () => {
+  const files = [view(ds), css('.eg-a, .eg-b { color: red; }\n.x, .eg-z { padding: 1px; }')];
+  const result = checkDesignSystem(files, [entry('.eg-a'), entry('.eg-z'), entry('.eg-a, .eg-b')]);
+  assert.deepEqual(result.violations, [{ file: 'src/styles.css', line: 1, snippet: '.eg-b' }]);
+  assert.deepEqual(result.appearanceViolations, [
+    { file: 'src/styles.css', line: 2, snippet: '.x, .eg-z', component: 'DialogContent', properties: ['padding'] }
+  ]);
+  assert.deepEqual(findings(result), []);
+  assert.deepEqual(result.errors, ['src/styles.css: stale allowlist entry .eg-a, .eg-b; remove it']);
+  assert.equal(result.pendingIssueCount, 0);
+});
+
+test('S6 an individual DS041 part cannot allowlist the full DS047 rule', () => {
+  const files = [view(ds), css('.eg-a, .x > footer { color: red; }')];
+  const result = checkDesignSystem(files, [entry('.eg-a')]);
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.appearanceViolations, []);
+  assert.deepEqual(findings(result), [structure(1, '.eg-a, .x > footer', 'DialogContent', ['.x > footer'])]);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.pendingIssueCount, 0);
+});
+
+test('S6 a full-selector entry covers DS041 and DS047 on the same rule', () => {
+  const files = [view(ds), css('.eg-a, .x > footer { color: red; }')];
+  const result = checkDesignSystem(files, [entry('.eg-a, .x > footer')]);
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.appearanceViolations, []);
+  assert.deepEqual(findings(result), []);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.pendingIssueCount, 0);
+});
+
+test('S6 a DS041 part entry does not suppress DS046 or DS047 on a combined rule', () => {
+  const files = [view(ds), css('.eg-a, .x, .x > footer { padding: 1px; }')];
+  const result = checkDesignSystem(files, [entry('.eg-a')]);
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.appearanceViolations, [
+    {
+      file: 'src/styles.css',
+      line: 1,
+      snippet: '.eg-a, .x, .x > footer',
+      component: 'DialogContent',
+      properties: ['padding']
+    }
+  ]);
+  assert.deepEqual(findings(result), [structure(1, '.eg-a, .x, .x > footer', 'DialogContent', ['.x > footer'])]);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.pendingIssueCount, 0);
+});
+
+test('S6 full-rule and individual DS041 entries are both used when both match', () => {
+  const files = [view(ds), css('.eg-a, .x > footer { color: red; }')];
+  const result = checkDesignSystem(files, [entry('.eg-a, .x > footer'), entry('.eg-a')]);
+  assert.deepEqual(result.violations, []);
+  assert.deepEqual(result.appearanceViolations, []);
+  assert.deepEqual(findings(result), []);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.pendingIssueCount, 0);
+});
+
+test('S6 doctor preserves part-specific DS041 while reporting DS047 in text and JSON', () => {
+  const app = fixture();
+  const baselineText = runBin(['doctor', 'apps/hub'], app.root);
+  const baselineJson = runBin(['doctor', 'apps/hub', '--json'], app.root);
+  assert.equal(baselineText.status, 0);
+  assert.equal(baselineText.stderr, '');
+  assert.equal(baselineJson.status, 0);
+  assert.equal(baselineJson.stderr, '');
+  write(join(app.project, 'src/Note.tsx'), `${ds}\n`);
+  write(join(app.project, 'src/styles.css'), '.eg-a, .eg-b, .x > footer { color: red; }\n');
+  const entries = [entry('.eg-a')];
+  write(
+    join(app.project, 'src/design-system-allowlist.ts'),
+    `export const designSystemAllowlist = ${JSON.stringify(entries)};\n`
+  );
+  const before = treeHash(app.root);
+  const message041 = 'DS internal selector .eg-b: move it under src/theme/ or add an allowlist entry with an issue.';
+  const message047 =
+    '.x > footer reaches into DialogContent internals: use the component API or add an allowlist entry with an issue.';
+  assert.deepEqual(runBin(['doctor', 'apps/hub'], app.root), {
+    status: 1,
+    stdout: baselineText.stdout
+      .replace(
+        'DS051 skipped',
+        `DS041 error src/styles.css:1: ${message041}\nDS047 error src/styles.css:1: ${message047}\nDS051 skipped`
+      )
+      .replace('0 errors, 0 warnings, 4 skipped.', '2 errors, 0 warnings, 4 skipped.'),
+    stderr: ''
+  });
+  const expected = JSON.parse(baselineJson.stdout);
+  expected.findings.splice(
+    2,
+    0,
+    { code: 'DS041', severity: 'error', message: message041, file: 'src/styles.css', line: 1 },
+    { code: 'DS047', severity: 'error', message: message047, file: 'src/styles.css', line: 1 }
+  );
+  expected.result = 'failed';
+  assert.deepEqual(runBin(['doctor', 'apps/hub', '--json'], app.root), {
+    status: 1,
+    stdout: `${JSON.stringify(expected, null, 2)}\n`,
+    stderr: ''
+  });
+  assert.equal(treeHash(app.root), before);
+});
+
 test('S6 a full selector-list exception covers DS041, DS046 and DS047 on the same rule', () => {
   const files = [
     view('import { DialogContent } from \'@egdev/ui\'; const d = <DialogContent className="x eg-parent" />;'),
