@@ -364,6 +364,7 @@ Codes are stable: a code is never reused for another check.
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
 | DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` component to set non-placement properties. |
 | DS047 | error | Guard: an app CSS selector reaches into an `@egdev/ui` component's internal structure. |
+| DS048 | error | Guard: app code queries DS markup by its `.eg-*` class markers. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
 | DS051 | warning | The nearest `design/system.md`, from the project up to its repository root (the nearest folder with `.git`), records a design system commit in its first line (`<!-- Generated from EGDEV design system <commit>; … -->`) other than the vendored one: regenerate it. Skipped without the file, a recorded commit or a single vendored commit. |
 | DS052 | warning | With `--from` at the same vendored commit, each guard allowlist entry whose `egdev6/egdev-design-system#N` issue occurs in `resolves` for a package the project uses names a mitigation to remove. One warning lists the relevant resolving packages and versions in package-name order, with the source line when available. Skipped without `--from`; with a release whose `resolves` is empty or absent it adds no finding; otherwise skipped when the vendored commit is mixed, absent or differs from the release, or when the allowlist cannot be loaded; `--fail-on-pending` does not change its severity. |
@@ -426,13 +427,26 @@ selector. For a rule that triggers DS047, a full-selector entry also covers its 
 comma-list part covers only that part, not other parts or DS046/DS047; it remains used while that part exists. Duplicate
 rules need separate entries. Existing DS042 stale and DS043 pending rules apply.
 
+DS048 checks non-test `.ts` and `.tsx` files under `sourceDirectory`, honoring `exclude`. It reports one finding per
+call to `querySelector`, `querySelectorAll`, `closest` or `matches` on any receiver when the static first argument
+contains a `.eg-*` class selector. It also checks static arguments to `getElementsByClassName` and
+`classList.contains`, `add`, `remove` and `toggle` for whole `eg-*` class tokens. Literal element access such as
+`el['closest'](...)` and optional chaining are supported. Attribute selectors alone, other class names and dynamic
+arguments are ignored. String literals, no-substitution templates and the static parts of interpolated templates are
+checked; interpolated expressions are not evaluated. For a template, the first static part containing a marker is the
+exception pattern. The guard's test-file rule excludes `__tests__/`, `.test.ts`, `.spec.ts`, `.test.tsx` and
+`.spec.tsx`; story files are scanned unless they match that rule. Use a ref or app-owned wrapper instead, or an
+issue-backed entry whose `file` is the source file and `pattern` is the exact whitespace-normalized static selector
+or class string as written (without quotes or template delimiters). Duplicate calls need separate entries. DS042
+validation and stale-entry rules and DS043 pending rules apply.
+
 `@egdev/cli` publishes a type-only entry (`types/index.d.ts`) with the entry shape doctor validates (DS042), so the
 allowlist is checked at compile time:
 
 ```ts
 import type { GuardAllowlistEntry } from '@egdev/cli';
 
-// Exact opening tags and selectors: remove each entry when its workaround goes away.
+// Exact opening tags, selectors and query strings: remove each entry when its workaround goes away.
 export const designSystemAllowlist: readonly GuardAllowlistEntry[] = [
   { file: 'src/Swatch.tsx', pattern: '<input type="color" />', issue: 'my-app#21', reason: 'Awaiting a DS swatch.' },
   {

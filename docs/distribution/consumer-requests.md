@@ -47,8 +47,10 @@ length unit, and with optional `!important`; other values remain findings. DS047
 class on an imported `@egdev/ui` JSX component to reach its internal markup through a descendant or child combinator,
 even for placement-only declarations. A last compound with an app-owned class is allowed; a sibling immediately after
 the component is outside it, and DS041 covers a final `.eg-*` class. Both checks scan matching rules outside the theme
-folder. Tailwind utilities and inline styles are not yet covered. See the
-[guard reference](../../packages/cli/README.md#guard-allowlist).
+folder. DS048 reports DOM queries in non-test `.ts` and `.tsx` files that use static `.eg-*` selectors or `eg-*`
+class tokens, including `closest` and `classList` calls: use a ref or an app-owned wrapper, or add an issue-backed
+exception for the source file and exact whitespace-normalized selector or class string. Tailwind utilities and inline
+styles are not yet covered. See the [guard reference](../../packages/cli/README.md#guard-allowlist).
 
 **Allowed**
 

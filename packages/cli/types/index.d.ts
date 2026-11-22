@@ -4,13 +4,13 @@
 
 /**
  * One entry of `<sourceDirectory>/design-system-allowlist.ts`: an exact, whitespace-normalized opening
- * tag, individual CSS selector, or DS046 rule selector, not a regex. Non-guarded markup awaiting a DS capability is tracked
- * by its opening tag and TODO comment with `kind: 'component-gap'`.
+ * tag, CSS selector, or static DOM query selector or class string, not a regex. Non-guarded markup awaiting
+ * a DS capability is tracked by its opening tag and TODO comment with `kind: 'component-gap'`.
  */
 export type GuardAllowlistEntry = {
   /** Project-relative file the exception applies to, such as `src/components/Swatch.tsx`. */
   readonly file: string;
-  /** The exact opening tag or CSS selector the guard reports. */
+  /** The exact opening tag, CSS selector, or static DOM query string the guard reports. */
   readonly pattern: string;
   /** `egdev6/egdev-design-system#N`, `<localRepo>#N` or a `<localRepo>#TBD-slug` placeholder. */
   readonly issue: string;

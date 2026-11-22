@@ -1,7 +1,8 @@
 // The design-system guard, moved from the egdev-design-system skill (assets/guard/
-// design-system-guard.ts) with DS040–DS045 parity, and extended for DS046/DS047. `typescript` and
+// design-system-guard.ts) with DS040–DS045 parity, and extended for DS046–DS048. `typescript` and
 // `postcss` are injected from the consumer project (Q4); the tree follows `sourceDirectory`.
 import { createAppearanceGuard, ruleOffsets } from './appearance-guard.mjs';
+import { createDomGuard } from './dom-guard.mjs';
 
 /** @typedef {typeof import('typescript')} TypeScript */
 /** @typedef {import('typescript').Node} TsNode */
@@ -28,13 +29,13 @@ import { createAppearanceGuard, ruleOffsets } from './appearance-guard.mjs';
 /** @typedef {{ ts: TypeScript, postcss: Postcss }} GuardEngine */
 /** @typedef {{ file: string, content: string }} GuardSource */
 /**
- * An exact, whitespace-normalized opening tag or individual CSS selector, not a regex. Non-guarded
+ * An exact, whitespace-normalized opening tag, CSS selector or DOM query string, not a regex. Non-guarded
  * markup awaiting a DS capability is tracked by its opening tag and TODO (`kind: 'component-gap'`).
  * Declared once in the package's public type entry (S6, #488); doctor validates the same shape (DS042).
  * @typedef {import('../types/index.d.ts').GuardAllowlistEntry} GuardAllowlistEntry
  */
 /** @typedef {{ file: string, line: number, snippet: string }} GuardViolation */
-/** @typedef {{ violations: GuardViolation[], appearanceViolations: import('./appearance-guard.mjs').AppearanceViolation[], structuralViolations?: import('./appearance-guard.mjs').StructuralViolation[], errors: string[], pendingIssueCount: number }} GuardResult */
+/** @typedef {{ violations: GuardViolation[], appearanceViolations: import('./appearance-guard.mjs').AppearanceViolation[], structuralViolations?: import('./appearance-guard.mjs').StructuralViolation[], domViolations?: import('./dom-guard.mjs').DomViolation[], errors: string[], pendingIssueCount: number }} GuardResult */
 /**
  * `localRepo`: repository name used for local issue references (`<localRepo>#N`, `<localRepo>#TBD-slug`).
  * `themeDirectory`: app theme layer, the only place where CSS may target DS internals.
@@ -142,7 +143,9 @@ export function createGuard({ ts, postcss }) {
     return {
       tsx: new RegExp(`^${root}\\/.+\\.tsx$`),
       css: new RegExp(`^${root}\\/.+\\.css$`),
-      test: /(?:^|\/)__tests__\/|\.(?:test|spec)\.tsx$/
+      test: /(?:^|\/)__tests__\/|\.(?:test|spec)\.tsx$/,
+      code: new RegExp(`^${root}\\/.+\\.tsx?$`),
+      codeTest: /(?:^|\/)__tests__\/|\.(?:test|spec)\.tsx?$/
     };
   };
 
@@ -151,6 +154,7 @@ export function createGuard({ ts, postcss }) {
     patterns,
     normalize
   );
+  const { findDomViolations } = createDomGuard(ts, patterns, normalize);
 
   /**
    * @param {GuardSource} source
@@ -314,6 +318,8 @@ export function createGuard({ ts, postcss }) {
     const appearanceViolations = [];
     /** @type {import('./appearance-guard.mjs').StructuralViolation[]} */
     const structuralViolations = [];
+    /** @type {import('./dom-guard.mjs').DomViolation[]} */
+    const domViolations = [];
     const { classes, appClasses } = collectClasses(files, sourceDirectory);
     for (const source of files) {
       // Preserve the existing DS041/DS046 matching, and share any DS047 exception only with
@@ -397,6 +403,11 @@ export function createGuard({ ts, postcss }) {
           structuralViolations.push(violation);
         }
       }
+      for (const violation of findDomViolations(source, sourceDirectory)) {
+        if (!consumeAllowlistEntry(violation)) {
+          domViolations.push(violation);
+        }
+      }
     }
     allowlist.forEach((entry, i) => {
       if (!used[i]) {
@@ -407,6 +418,7 @@ export function createGuard({ ts, postcss }) {
       violations,
       appearanceViolations,
       ...(structuralViolations.length ? { structuralViolations } : {}),
+      ...(domViolations.length ? { domViolations } : {}),
       errors,
       pendingIssueCount: allowlist.filter((entry) => pendingIssuePattern.test(entry.issue)).length
     };

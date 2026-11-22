@@ -86,7 +86,7 @@ function isPlacement(property, value) {
  * @param {number} start
  * @returns {{ value: string, end: number }}
  */
-function cssIdentifier(text, start) {
+export function cssIdentifier(text, start) {
   let value = '';
   let i = start;
   while (i < text.length) {
@@ -445,6 +445,22 @@ function positivePseudos(text) {
 }
 
 /**
+ * Extract only literal text from a string or template, leaving template expressions to the caller.
+ * @param {import('./guard.mjs').TypeScript} ts
+ * @param {import('typescript').Node} node
+ * @returns {(import('typescript').StringLiteral | import('typescript').TemplateLiteralLikeNode)[]}
+ */
+export function staticStringParts(ts, node) {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return [node];
+  }
+  if (ts.isTemplateExpression(node)) {
+    return [node.head, ...node.templateSpans.map((span) => span.literal)];
+  }
+  return [];
+}
+
+/**
  * @param {GuardEngine} engine
  * @param {(sourceDirectory: string) => SourcePatterns} patterns
  * @param {(text: string) => string} normalize
@@ -537,14 +553,15 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
         if (ts.isComputedPropertyName(node) || ts.isTypeNode(node)) {
           return;
         }
-        if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
-          add(node.text, component);
-        } else if (ts.isTemplateExpression(node)) {
-          add(node.head.text, component);
-          for (const span of node.templateSpans) {
+        const parts = staticStringParts(ts, node);
+        if (ts.isTemplateExpression(node)) {
+          add(parts[0]?.text ?? '', component);
+          for (const [index, span] of node.templateSpans.entries()) {
             addStatic(span.expression, component);
-            add(span.literal.text, component);
+            add(parts[index + 1]?.text ?? '', component);
           }
+        } else if (parts.length) {
+          add(parts[0]?.text ?? '', component);
         } else if (ts.isObjectLiteralExpression(node)) {
           for (const property of node.properties) {
             if ('name' in property && property.name && ts.isIdentifier(property.name)) {
