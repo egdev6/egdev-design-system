@@ -4,7 +4,7 @@
 
 - Contract: `sheet-layout-amendment.md`, payload SHA-256 `76666ef717749c13bb16742ef7f064ee547591a79599b6bc12a04471aedc3048`.
 - Baseline: pre-change `packages/ui/dist` built by the parent; plan baseline `aa35a0d20d7a6d6c324a19cafd3966be885a8c74`. The pre-implementation browser baseline was also captured before runtime edits (then-harness SHA-256 `61444cc7df155f44ee3549442c34b96274a587f9a16460037f92506536410360`).
-- Current `packages/ui/src/molecules/dialog/types.ts` SHA-256: `eb3cc9efd71fccabeacf7a190b323ff7e951415b1029bdcc28ddc66d1a91a0f6`. All 16 prior naming usages and two proposed usages pin this revision. Re-check after review if the file changes.
+- Current `packages/ui/src/molecules/dialog/types.ts` SHA-256: `99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f`. All 16 prior naming usages and two proposed usages pin this revision. Re-check after review if the file changes.
 - `packages/system/design-system.json`: 599,314 bytes, below 768 KiB. New `dialog-title-overflow` and `dialog-action-placement` conventions remain **proposed**, not globally approved.
 - Tests were added and observed failing before runtime implementation; the pre-compaction record does not preserve the exact RED failure count. The final focused Dialog run passed 47 tests. Do not interpret this as a complete RED-count receipt.
 
