@@ -9,6 +9,18 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import { build as viteBuild } from 'vite';
 
+// Serialize a value as a JavaScript literal that is safe to embed in generated code (CodeQL js/bad-code-sanitization).
+const unsafeCharacters = {
+  '<': '\\u003C',
+  '>': '\\u003E',
+  '/': '\\u002F',
+  '\u2028': '\\u2028',
+  '\u2029': '\\u2029'
+};
+function jsLiteral(value) {
+  return JSON.stringify(value).replace(/[<>/\u2028\u2029]/g, (character) => unsafeCharacters[character]);
+}
+
 // Local evidence only: no repository build, network, or persistent browser profile.
 const root = resolve(fileURLToPath(new URL('../../../..', import.meta.url)));
 const require = createRequire(join(root, 'package.json'));
@@ -25,8 +37,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { hydrateRoot } from 'react-dom/client';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction,
-  Dialog, DialogTrigger, DialogContent, DialogClose, Button } from ${JSON.stringify(join(root, 'packages/ui/src/index.ts'))};
-import * as RadixAlert from ${JSON.stringify(join(root, 'packages/ui/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs'))};
+  Dialog, DialogTrigger, DialogContent, DialogClose, Button } from ${jsLiteral(join(root, 'packages/ui/src/index.ts'))};
+import * as RadixAlert from ${jsLiteral(join(root, 'packages/ui/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs'))};
 const defaults = { mode:'single', scope:'derived', form:'native', placement:'footer', disabledAction:false, width:440, height:600 };
 export function App() {
   const [host, setHost] = useState(null);
@@ -303,7 +315,7 @@ async function key(cdp, name, shift = false) {
 }
 
 async function point(cdp, selector) {
-  const box = await cdp.evaluate(`(() => { const node = document.querySelector(${JSON.stringify(selector)});
+  const box = await cdp.evaluate(`(() => { const node = document.querySelector(${jsLiteral(selector)});
     if (!node) return null; const r = node.getBoundingClientRect();
     return {x:r.x+r.width/2, y:r.y+r.height/2}; })()`);
   assert.ok(box, `Missing ${selector}`);
@@ -335,7 +347,7 @@ async function click(cdp, selector, input = 'mouse') {
 }
 
 async function reset(cdp, settings = {}) {
-  await cdp.evaluate(`window.__reset(${JSON.stringify(settings)})`);
+  await cdp.evaluate(`window.__reset(${jsLiteral(settings)})`);
   await waitFor(
     () => cdp.evaluate(`!document.querySelector('[role="dialog"], [role="alertdialog"]')`),
     'closed portals'
@@ -343,7 +355,7 @@ async function reset(cdp, settings = {}) {
 }
 
 async function focusIs(cdp, id, description) {
-  await waitFor(() => cdp.evaluate(`document.activeElement.id === ${JSON.stringify(id)}`), description);
+  await waitFor(() => cdp.evaluate(`document.activeElement.id === ${jsLiteral(id)}`), description);
 }
 
 async function open(cdp, nested = false) {
@@ -444,7 +456,7 @@ async function outsideChecks(cdp) {
       assert.equal(await cdp.evaluate('document.activeElement.id'), 'cancel', 'Pending toggle retains focus');
       const location = await point(cdp, '#outside-button');
       await pointer(cdp, input, location);
-      const result = await cdp.evaluate(`({pending:${pending}, input:${JSON.stringify(input)},
+      const result = await cdp.evaluate(`({pending:${pending}, input:${jsLiteral(input)},
         focus:{id:document.activeElement.id,tag:document.activeElement.tagName,
           inside:document.querySelector('[role="alertdialog"]').contains(document.activeElement)},
         outsideEvents:window.__outsideEvents, focusEvents:window.__focusEvents, events:window.__events,
@@ -512,7 +524,7 @@ async function pendingChecks(cdp) {
     assert.deepEqual(attributes, { busy: 'true', cancel: 'true', action: 'true', disabled: [false, false] });
     for (const button of ['cancel', 'action']) {
       for (const input of ['mouse', 'touch', 'Enter', 'Space']) {
-        await cdp.evaluate(`document.getElementById(${JSON.stringify(button)}).focus(); window.__input = []`);
+        await cdp.evaluate(`document.getElementById(${jsLiteral(button)}).focus(); window.__input = []`);
         assert.equal(await cdp.evaluate('document.activeElement.id'), button);
         if (input === 'mouse' || input === 'touch') {
           await click(cdp, `#${button}`, input);
@@ -526,7 +538,7 @@ async function pendingChecks(cdp) {
         assert.equal(result.open, true);
         assert.ok(
           result.input.some((event) => event.type === 'click' && event.target === button),
-          `${form}/${button}/${input}: activation must actually reach the control: ${JSON.stringify(result.input)}`
+          `${form}/${button}/${input}: activation must actually reach the control: ${jsLiteral(result.input)}`
         );
         if (input === 'mouse' || input === 'touch') {
           for (const type of ['pointerdown', 'pointerup']) {
@@ -607,7 +619,7 @@ async function dialogPendingChecks(cdp) {
       placements.push({ placement, form });
       for (const button of ['dialog-explicit', 'dialog-built-in']) {
         for (const input of ['mouse', 'touch', 'Enter', 'Space']) {
-          await cdp.evaluate(`document.getElementById(${JSON.stringify(button)}).focus(); window.__input=[]`);
+          await cdp.evaluate(`document.getElementById(${jsLiteral(button)}).focus(); window.__input=[]`);
           if (input === 'mouse' || input === 'touch') {
             await click(cdp, `#${button}`, input);
           } else {

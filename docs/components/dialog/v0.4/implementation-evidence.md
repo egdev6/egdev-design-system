@@ -35,7 +35,7 @@ Focused Dialog 47/47; Dialog accent + AlertDialog + CommandPalette 33/33; IconBu
 
 The parent owns fresh repository `pnpm build`, `pnpm test:package-exports` and `pnpm test:package-consumption`; the added packed fixtures have **not** been run against a fresh candidate build here. Recheck artifact and system freshness after that build. Broad `pnpm test`, `pnpm lint` and `pnpm storybook-build` were not run by this worker.
 
-Extended candidate run (2026-11-23, Chrome 148, harness SHA-256 `7d37d7cc5419d3049fd3afcf2634496fd2cc8a9c4a65d506ac32c5203c4a9974`, `failures: []`) observed:
+Extended candidate run (2026-11-23, Chrome 148, harness SHA-256 `ad3d888f9b479a955c8cf2638be642e5a2f063b9babc1e8e229656488d8b3489`, `failures: []`) observed:
 
 - 864 edge hit-test sequences (432 mouse, 432 emulated touch);
 - an 8-case keyboard and modal matrix (Tab/Shift+Tab containment, Escape, scrim dismissal, trigger focus restoration and controlled rejection, for header and footer placement);

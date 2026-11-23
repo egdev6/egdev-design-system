@@ -7,6 +7,18 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
+// Serialize a value as a JavaScript literal that is safe to embed in generated code (CodeQL js/bad-code-sanitization).
+const unsafeCharacters = {
+  '<': '\\u003C',
+  '>': '\\u003E',
+  '/': '\\u002F',
+  '\u2028': '\\u2028',
+  '\u2029': '\\u2029'
+};
+function jsLiteral(value) {
+  return JSON.stringify(value).replace(/[<>/\u2028\u2029]/g, (character) => unsafeCharacters[character]);
+}
+
 // This is a local evidence tool, not a component, a consumer adapter, or a dev server.
 // All generated assets and the browser profile belong to this invocation's temp directory.
 const root = resolve(fileURLToPath(new URL('../../../..', import.meta.url)));
@@ -30,7 +42,7 @@ import React, { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { hydrateRoot } from 'react-dom/client';
 import { Dialog, DialogTrigger, DialogContent, Icon, IconButton, Button,
-  AlertDialog, AlertDialogContent, AlertDialogCancel, AlertDialogAction, CommandPalette } from ${JSON.stringify(entry)};
+  AlertDialog, AlertDialogContent, AlertDialogCancel, AlertDialogAction, CommandPalette } from ${jsLiteral(entry)};
 const initial = { kind: 'dialog', variant: 'sheet', width: 440, height: 600,
   direction: 'ltr', layout: 'inline', title: 'Account settings', description: 'Adjust preferences.',
   status: 'Saved', padding: 'default', scope: 'container', open: true, reject: true };
@@ -318,7 +330,7 @@ async function observe(cdp, url, scenarios) {
   await waitFor(() => cdp.evaluate('window.__fixtureReady === true'), 'hydrated fixture');
   const results = [];
   for (const [name, settings] of scenarios) {
-    await cdp.evaluate(`window.__setScene(${JSON.stringify(settings)})`);
+    await cdp.evaluate(`window.__setScene(${jsLiteral(settings)})`);
     await waitFor(() => cdp.evaluate(`!!document.querySelector('[role="dialog"], [role="alertdialog"]')`), name);
     await delay(150);
     await cdp.evaluate(
@@ -364,13 +376,13 @@ async function hitTests(cdp) {
     ]) {
       const { actionSize } = scenario;
       await cdp.evaluate(
-        `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, title: 'Short', direction, ...scenario })})`
+        `window.__setScene(${jsLiteral({ size: 'full', clamp: true, headerActions: true, title: 'Short', direction, ...scenario })})`
       );
       await waitFor(() => cdp.evaluate(`!!document.querySelector('[role="dialog"]')`), 'hit-test dialog');
       await delay(100);
       const boxes = await cdp.evaluate(`(() => {
         const buttons = [...document.querySelectorAll('[role="dialog"] button')];
-        const names = ${JSON.stringify(scenario.moreActions ? ['Edit action', 'Copy action', 'Close'] : ['Edit action', 'Close'])};
+        const names = ${jsLiteral(scenario.moreActions ? ['Edit action', 'Copy action', 'Close'] : ['Edit action', 'Close'])};
         return Object.fromEntries(names.map((name) => {
           const node = buttons.find((item) => item.textContent.trim() === name);
           const r = node.getBoundingClientRect();
@@ -414,7 +426,7 @@ async function hitTests(cdp) {
               assert.equal(
                 event?.target,
                 name,
-                `${direction}/${actionSize}/${input}/${name}/${dx},${dy} ${type}: ${JSON.stringify(events)}`
+                `${direction}/${actionSize}/${input}/${name}/${dx},${dy} ${type}: ${jsLiteral(events)}`
               );
             }
             results.push({ direction, actionSize, wrapped: Boolean(scenario.moreActions), input, name, dx, dy });
@@ -429,7 +441,7 @@ async function hitTests(cdp) {
 
 async function interactionChecks(cdp) {
   const title = 'A full accessible title retained in the body and the Radix dialog';
-  await cdp.evaluate(`window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, title })})`);
+  await cdp.evaluate(`window.__setScene(${jsLiteral({ size: 'full', clamp: true, headerActions: true, title })})`);
   await waitFor(() => cdp.evaluate(`!!document.querySelector('[role="dialog"]')`), 'accessibility fixture');
   await delay(100);
   await cdp.call('Accessibility.enable');
@@ -437,7 +449,7 @@ async function interactionChecks(cdp) {
   const dialogs = tree.nodes.filter((node) => node.role?.value === 'dialog');
   // The existing uppercase title styling is reflected in Chrome's accessibility tree.
   const modal = dialogs.find((node) => node.name?.value === title.toUpperCase());
-  assert.ok(modal, `Accessibility tree must expose the full title as the dialog name: ${JSON.stringify(dialogs)}`);
+  assert.ok(modal, `Accessibility tree must expose the full title as the dialog name: ${jsLiteral(dialogs)}`);
   assert.equal(await cdp.evaluate(`document.querySelector('[role="dialog"] h2').textContent`), title);
   assert.equal(modal.description?.value, 'Adjust preferences.');
   assert.equal(await cdp.evaluate(`document.activeElement.textContent.trim()`), 'Edit action');
@@ -483,7 +495,7 @@ async function interactionChecks(cdp) {
     'Controlled rejection must retain the dialog'
   );
   await cdp.evaluate(
-    `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, height: 130, title })})`
+    `window.__setScene(${jsLiteral({ size: 'full', clamp: true, headerActions: true, height: 130, title })})`
   );
   await waitFor(() => cdp.evaluate(`!!document.querySelector('[role="dialog"]')`), 'short host');
   const scroll = await cdp.evaluate(
@@ -530,7 +542,7 @@ async function focusName(cdp) {
 }
 
 async function openFromTrigger(cdp, settings) {
-  await cdp.evaluate(`window.__prepareScene(${JSON.stringify(settings)})`);
+  await cdp.evaluate(`window.__prepareScene(${jsLiteral(settings)})`);
   const point = await cdp.evaluate(`(() => {
     const trigger = [...document.querySelectorAll('button')].find((button) => button.textContent.trim() === 'Open dialog');
     trigger.scrollIntoView({block:'nearest'});
@@ -557,14 +569,10 @@ async function titleRouteDiagnostic(cdp) {
     );
     attempts.push({ includeText, ...observed });
   }
-  assert.equal(
-    attempts[1].title,
-    'Account settings',
-    `Native Enter must reveal the title: ${JSON.stringify(attempts)}`
-  );
+  assert.equal(attempts[1].title, 'Account settings', `Native Enter must reveal the title: ${jsLiteral(attempts)}`);
   assert.ok(
     attempts[1].clicks.some((event) => event.target === 'Show full title'),
-    `Native Enter must activate the route: ${JSON.stringify(attempts)}`
+    `Native Enter must activate the route: ${jsLiteral(attempts)}`
   );
   return {
     cause: attempts[0].title ? 'synchronous observation before React commit' : 'CDP Enter omitted text',
@@ -692,7 +700,7 @@ async function focusRings(cdp) {
     });
     for (const direction of ['ltr', 'rtl']) {
       await cdp.evaluate(
-        `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, titleRoute: true, direction, width: 440, height: zoom === 200 ? 300 : 600 })})`
+        `window.__setScene(${jsLiteral({ size: 'full', clamp: true, headerActions: true, titleRoute: true, direction, width: 440, height: zoom === 200 ? 300 : 600 })})`
       );
       await delay(100);
       await key(cdp, 'Tab', true);
@@ -708,17 +716,17 @@ async function focusRings(cdp) {
         );
         assert.ok(
           info.focusVisible && info.shadow.includes('255, 0, 54'),
-          `${zoom}/${direction}/${name}: expected focus shadow: ${JSON.stringify(info)}`
+          `${zoom}/${direction}/${name}: expected focus shadow: ${jsLiteral(info)}`
         );
         const shot = await cdp.call('Page.captureScreenshot', { format: 'png', fromSurface: true });
         const samples = await cdp.evaluate(`new Promise((resolve, reject) => {
           const image=new Image(); image.onload=() => { const canvas=document.createElement('canvas'); canvas.width=image.width; canvas.height=image.height; const context=canvas.getContext('2d'); context.drawImage(image,0,0);
-          const r=${JSON.stringify(info)}; const scale=${zoom / 100}; const points=[[r.x+r.width/2,r.y-3],[r.right+3,r.y+r.height/2],[r.x+r.width/2,r.bottom+3],[r.x-3,r.y+r.height/2]];
+          const r=${jsLiteral(info)}; const scale=${zoom / 100}; const points=[[r.x+r.width/2,r.y-3],[r.right+3,r.y+r.height/2],[r.x+r.width/2,r.bottom+3],[r.x-3,r.y+r.height/2]];
           resolve(points.map(([x,y]) => [...context.getImageData(Math.floor(x*scale),Math.floor(y*scale),1,1).data])); }; image.onerror=reject; image.src='data:image/png;base64,${shot.data}';
         })`);
         assert.ok(
           samples.every(([r, g, b]) => r > 245 && g < 10 && b > 45 && b < 65),
-          `${zoom}/${direction}/${name}: clipped or covered focus ring pixels ${JSON.stringify(samples)} at ${JSON.stringify(info)}`
+          `${zoom}/${direction}/${name}: clipped or covered focus ring pixels ${jsLiteral(samples)} at ${jsLiteral(info)}`
         );
         results.push({ zoom, direction, name, shadow: info.shadow, pixels: samples });
       }
@@ -744,7 +752,7 @@ async function gapChecks(cdp) {
       ['lg', 'lg']
     ]) {
       await cdp.evaluate(
-        `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, title: 'Short', direction, actionSize: first, nextActionSize: second, moreActions: true })})`
+        `window.__setScene(${jsLiteral({ size: 'full', clamp: true, headerActions: true, title: 'Short', direction, actionSize: first, nextActionSize: second, moreActions: true })})`
       );
       await delay(100);
       const geometry = await cdp.evaluate(
@@ -753,7 +761,7 @@ async function gapChecks(cdp) {
       const cssRequired = (2 * geometry.target - geometry.sizes[first] - geometry.sizes[second]) / 2 + geometry.token;
       assert.ok(
         geometry.columnGap + 1e-9 >= cssRequired && geometry.rowGap + 1e-9 >= cssRequired,
-        `${direction}/${first}-${second}: CSS gap is below the required token margin: ${JSON.stringify({ geometry, cssRequired })}`
+        `${direction}/${first}-${second}: CSS gap is below the required token margin: ${jsLiteral({ geometry, cssRequired })}`
       );
       const pairs = [];
       for (const [a, b] of [
@@ -803,7 +811,7 @@ async function resizeChecks(cdp) {
     });
     for (const direction of ['ltr', 'rtl']) {
       await cdp.evaluate(
-        `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, title: 'A long title with enough words to occupy multiple lines in a compact sheet header', direction, height: 240 })})`
+        `window.__setScene(${jsLiteral({ size: 'full', clamp: true, headerActions: true, title: 'A long title with enough words to occupy multiple lines in a compact sheet header', direction, height: 240 })})`
       );
       await delay(100);
       await cdp.evaluate(`window.__retainedPanel=document.querySelector('[role="dialog"]'); window.__events=[]`);
@@ -816,7 +824,7 @@ async function resizeChecks(cdp) {
         );
         assert.ok(
           result.samePanel && result.focus === 'Edit action' && result.events.length === 0,
-          `${direction}/${height}: resize must preserve panel, focus and state ${JSON.stringify(result)}`
+          `${direction}/${height}: resize must preserve panel, focus and state ${jsLiteral(result)}`
         );
         assert.ok(result.bodyContent >= 44.7, `${direction}/${height}: body content minimum`);
         assert.equal(
@@ -841,7 +849,7 @@ async function preferenceChecks(cdp) {
         : [{ name: 'forced-colors', value: 'active' }];
     await cdp.call('Emulation.setEmulatedMedia', { features });
     await cdp.evaluate(
-      `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, titleRoute: true })})`
+      `window.__setScene(${jsLiteral({ size: 'full', clamp: true, headerActions: true, titleRoute: true })})`
     );
     await delay(150);
     const panel = await cdp.evaluate(
@@ -863,22 +871,22 @@ async function preferenceChecks(cdp) {
     if (preference === 'reduced-motion') {
       assert.ok(
         panel.motion && panel.transition === 'none' && panel.transform === 'none',
-        `Reduced-motion panel ${JSON.stringify(panel)}`
+        `Reduced-motion panel ${jsLiteral(panel)}`
       );
       assert.ok(
         controls.every((control) => control.transition === 'none' && control.transform === 'none'),
-        `Reduced-motion controls ${JSON.stringify(controls)}`
+        `Reduced-motion controls ${jsLiteral(controls)}`
       );
     } else {
       assert.ok(
         panel.forced && panel.visibility === 'visible' && panel.width > 0 && panel.height > 0,
-        `Dialog surface must remain visible in forced colors: ${JSON.stringify(panel)}`
+        `Dialog surface must remain visible in forced colors: ${jsLiteral(panel)}`
       );
       assert.ok(
         panel.title === 'Account settings' &&
           panel.titleVisibility === 'visible' &&
           panel.titleColor !== panel.background,
-        `Dialog title must remain visible in forced colors: ${JSON.stringify(panel)}`
+        `Dialog title must remain visible in forced colors: ${jsLiteral(panel)}`
       );
       // Button and IconButton are shipped atoms. Their missing forced-colors focus
       // outlines are reported as a cross-component finding, not a #543 assertion.
@@ -892,7 +900,7 @@ async function preferenceChecks(cdp) {
 async function negativeControls(cdp) {
   const results = [];
   for (const clipped of [false, true]) {
-    await cdp.evaluate(`window.__setScene(${JSON.stringify({ kind: 'negative', clipped })})`);
+    await cdp.evaluate(`window.__setScene(${jsLiteral({ kind: 'negative', clipped })})`);
     const box = await cdp.evaluate(
       `(() => { const r = document.querySelector('#negative-targets button').getBoundingClientRect(); return {x:r.x+r.width/2+22,y:r.y+r.height/2+( ${clipped ? '22' : '0'} )}; })()`
     );

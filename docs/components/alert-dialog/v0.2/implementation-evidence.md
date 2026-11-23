@@ -42,7 +42,7 @@ focus limitation (odd/tasks/consumer-request-specs.md L41); final package gates 
 ## Real-browser evidence
 
 `node docs/components/alert-dialog/v0.2/browser-evidence.mjs` passed with harness SHA-256
-`5935aed7258ef1666ab684277e13758d162c290b73c3d60c8dac299f6bb7a99a`. It compiles UI JavaScript,
+`c9015505fc150613086ac0237b7783e00d5bd9476bd77507fe2e1fe8f7bc4ace`. It compiles UI JavaScript,
 UI CSS and native token CSS from current sources without writing repository build output, hydrates
 the SSR shell, uses a fresh temporary Chrome profile, and cleans up its scratch. HTTP(S) was blocked.
 Chrome 148.0.7778.167 ran headless at 1000×800, DPR 1, zoom 1, LTR, with no theme override,
