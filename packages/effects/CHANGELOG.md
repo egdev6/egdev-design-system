@@ -4,6 +4,11 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.2.11
+
+- No code changes. Peer ranges follow `@egdev/ui` 0.10.0 so the effects tarball matches the current
+  release set.
+
 ## 0.2.10
 
 - No code changes. Peer ranges follow `@egdev/ui` 0.9.0 so the effects tarball matches the current
