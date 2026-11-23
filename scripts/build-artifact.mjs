@@ -249,6 +249,210 @@ function variants(file) {
   }
   return result.sort((a, b) => compare(a.name, b.name));
 }
+// Follow executable references from each export rather than assigning an entire types file.
+// This is intentionally local: other public components keep their own recipe entries.
+function usedRecipes(entry) {
+  const source = entry.types && program.getSourceFile(entry.types);
+  if (!source || !entry.declaration) {
+    return new Set();
+  }
+  const directory = dirname(entry.types);
+  const recipes = new Map();
+  function collect(node) {
+    if (
+      (ts.isVariableDeclaration(node) || ts.isPropertyAssignment(node)) &&
+      ts.isIdentifier(node.name) &&
+      node.initializer &&
+      ts.isCallExpression(node.initializer) &&
+      node.initializer.expression.getText(source) === 'cva'
+    ) {
+      recipes.set(checker.getSymbolAtLocation(node.name), node.name.text);
+    }
+    ts.forEachChild(node, collect);
+  }
+  collect(source);
+  const found = new Set();
+  const visited = new Map();
+  const target = (node) => {
+    const symbol = checker.getSymbolAtLocation(node);
+    return symbol?.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol;
+  };
+  const unwrap = (node) => {
+    while (node && (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isSatisfiesExpression(node))) {
+      node = node.expression;
+    }
+    return node;
+  };
+  function literal(node, bindings) {
+    node = unwrap(node);
+    if (!node) {
+      return undefined;
+    }
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+      return node.text;
+    }
+    if (node.kind === ts.SyntaxKind.TrueKeyword || node.kind === ts.SyntaxKind.FalseKeyword) {
+      return node.kind === ts.SyntaxKind.TrueKeyword;
+    }
+    if (ts.isIdentifier(node)) {
+      return bindings.get(target(node));
+    }
+    if (ts.isBinaryExpression(node)) {
+      const left = literal(node.left, bindings);
+      const right = literal(node.right, bindings);
+      if (left !== undefined && right !== undefined) {
+        if (node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken) {
+          return left === right;
+        }
+        if (node.operatorToken.kind === ts.SyntaxKind.ExclamationEqualsEqualsToken) {
+          return left !== right;
+        }
+      }
+    }
+    return undefined;
+  }
+  function follow(symbol, args = [], selected = null) {
+    if (!symbol) {
+      return;
+    }
+    if (recipes.has(symbol)) {
+      found.add(recipes.get(symbol));
+      return;
+    }
+    const declaration = symbol.valueDeclaration;
+    if (!declaration || dirname(declaration.getSourceFile().fileName) !== directory) {
+      return;
+    }
+    const fn = ts.isFunctionDeclaration(declaration)
+      ? declaration
+      : ts.isVariableDeclaration(declaration) && declaration.initializer && ts.isArrowFunction(declaration.initializer)
+        ? declaration.initializer
+        : null;
+    const bindings = new Map();
+    if (fn) {
+      fn.parameters.forEach((parameter, index) => {
+        if (ts.isIdentifier(parameter.name) && args[index] !== undefined) {
+          bindings.set(target(parameter.name), args[index]);
+        }
+      });
+    }
+    const key = JSON.stringify([args, selected && [...selected].sort(compare)]);
+    const seen = visited.get(declaration) ?? new Set();
+    if (seen.has(key)) {
+      return;
+    }
+    seen.add(key);
+    visited.set(declaration, seen);
+    if (fn) {
+      visit(fn.body, bindings, selected);
+    } else if (
+      (ts.isVariableDeclaration(declaration) || ts.isPropertyAssignment(declaration)) &&
+      declaration.initializer
+    ) {
+      const initializer = unwrap(declaration.initializer);
+      if (ts.isIdentifier(initializer)) {
+        follow(target(initializer));
+      } else if (ts.isObjectLiteralExpression(initializer)) {
+        for (const property of initializer.properties) {
+          if (ts.isPropertyAssignment(property)) {
+            follow(target(property.name));
+          }
+        }
+      } else {
+        visit(initializer, bindings, null);
+      }
+    }
+  }
+  function callTarget(expression, bindings, args, selected) {
+    expression = unwrap(expression);
+    if (ts.isIdentifier(expression)) {
+      follow(target(expression), args, selected);
+    } else if (ts.isPropertyAccessExpression(expression)) {
+      const declaration = ts.isIdentifier(expression.expression) && target(expression.expression)?.valueDeclaration;
+      const object = declaration && ts.isVariableDeclaration(declaration) && unwrap(declaration.initializer);
+      const property =
+        object &&
+        ts.isObjectLiteralExpression(object) &&
+        object.properties.find(
+          (item) =>
+            ts.isPropertyAssignment(item) && item.name.getText().replace(/^['"]|['"]$/g, '') === expression.name.text
+        );
+      follow(property ? target(property.name) : target(expression.name), args, selected);
+    } else if (ts.isElementAccessExpression(expression) && ts.isIdentifier(expression.expression)) {
+      const declaration = target(expression.expression)?.valueDeclaration;
+      const object = declaration && ts.isVariableDeclaration(declaration) && unwrap(declaration.initializer);
+      if (object && ts.isObjectLiteralExpression(object)) {
+        const key = literal(expression.argumentExpression, bindings);
+        for (const property of object.properties) {
+          if (
+            ts.isPropertyAssignment(property) &&
+            (key === undefined || property.name.getText().replace(/^['"]|['"]$/g, '') === key)
+          ) {
+            callTarget(property.initializer, bindings, args, selected);
+          }
+        }
+      }
+    }
+  }
+  function visit(node, bindings, selected) {
+    if (!node || ts.isTypeNode(node)) {
+      return;
+    }
+    if (ts.isConditionalExpression(node)) {
+      const condition = literal(node.condition, bindings);
+      visit(node.condition, bindings, null);
+      if (condition !== false) {
+        visit(node.whenTrue, bindings, selected);
+      }
+      if (condition !== true) {
+        visit(node.whenFalse, bindings, selected);
+      }
+      return;
+    }
+    if (ts.isReturnStatement(node) && selected && node.expression) {
+      const expression = unwrap(node.expression);
+      if (ts.isObjectLiteralExpression(expression)) {
+        for (const property of expression.properties) {
+          if (!ts.isPropertyAssignment(property) || selected.has(property.name.getText().replace(/^['"]|['"]$/g, ''))) {
+            visit(property, bindings, null);
+          }
+        }
+        return;
+      }
+    }
+    if (ts.isCallExpression(node)) {
+      const parent = node.parent;
+      const selectedKeys =
+        ts.isVariableDeclaration(parent) &&
+        ts.isObjectBindingPattern(parent.name) &&
+        parent.name.elements.every((item) => !item.dotDotDotToken)
+          ? new Set(
+              parent.name.elements.map((item) => (item.propertyName ?? item.name).getText().replace(/^['"]|['"]$/g, ''))
+            )
+          : null;
+      callTarget(
+        node.expression,
+        bindings,
+        node.arguments.map((argument) => literal(argument, bindings)),
+        selectedKeys
+      );
+    } else if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
+      if (ts.isIdentifier(node.tagName)) {
+        const symbol = target(node.tagName);
+        if (!publicValues.some((value) => value.symbol === symbol)) {
+          follow(symbol);
+        }
+      }
+    } else if (ts.isFunctionDeclaration(node)) {
+      return;
+    }
+    const childSelection = ts.isFunctionLike(node) ? null : selected;
+    ts.forEachChild(node, (child) => visit(child, bindings, childSelection));
+  }
+  follow(entry.symbol);
+  return found;
+}
+
 // Associate only public values declared in the same source file and named for their parent.
 // Descriptions and child restrictions remain source facts, not inferred API promises.
 function compoundParts(parent) {
@@ -741,19 +945,20 @@ const components = publicValues
       }))
       .sort((a, b) => compare(a.name, b.name));
     const allowed = classNameAllows(entry);
+    const used = usedRecipes(entry);
     return {
       name: entry.name,
       package: entry.package,
       source: pathOf(entry.types ?? entry.file),
       ...(allowed ? { classNameAllows: allowed } : {}),
       props,
-      variants: variants(entry.types),
+      variants: variants(entry.types).filter(({ name }) => used.has(name)),
       parts: compoundParts(entry),
       composedOf: composedOf(entry),
       anatomy: visualAnatomy(
         entry.types,
         /\/templates\//.test(entry.file) || /\/organisms\/[^/]*section[^/]*\//.test(entry.file)
-      ),
+      ).filter(({ name }) => used.has(name)),
       layout: layoutAnatomy(entry),
       surfaceUsage: surfaceUsage(entry)
     };
