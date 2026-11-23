@@ -1102,7 +1102,7 @@
         "source": {
           "path": "packages/ui/src/molecules/button-group/types.ts",
           "symbol": "ButtonGroupProps",
-          "revision": "sha256:f2ae71b59f4e641e43201bfd21071910b2c11973e4bef319a8425c1004febd64"
+          "revision": "sha256:d6a52db112355a5d8991be93a5ecbd02d40fbee96954441186547e6d0353b436"
         }
       },
       {
@@ -1845,7 +1845,7 @@
         "source": {
           "path": "packages/ui/src/molecules/button-group/types.ts",
           "symbol": "ButtonGroupProps",
-          "revision": "sha256:f2ae71b59f4e641e43201bfd21071910b2c11973e4bef319a8425c1004febd64"
+          "revision": "sha256:d6a52db112355a5d8991be93a5ecbd02d40fbee96954441186547e6d0353b436"
         }
       },
       {

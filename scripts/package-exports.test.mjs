@@ -4582,6 +4582,14 @@ test('UI ships the approved Text and Heading title recipes without an applicatio
   assert.doesNotMatch(css, /\.eg-(?:text|heading)\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 });
 
+test('IconButton compact suppression ships as a direct-parent attribute rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const rule = css.match(/\[data-icon-button-target=["']?compact["']?\]\s*>\s*[^{,]*::after\s*\{[^}]*\}/);
+  assert.ok(rule, 'Compact hit-area suppression rule is shipped');
+  assert.match(rule[0], /content:\s*none/);
+  assert.doesNotMatch(rule[0].split('{')[0], /\.eg-/, 'No eg-* marker is used as the styling selector');
+});
+
 test('UI ships every static IconButton CVA utility, native resets and scoped state recipes', async () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);

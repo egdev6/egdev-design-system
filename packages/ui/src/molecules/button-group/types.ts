@@ -6,7 +6,7 @@ export type ButtonGroupVariant = 'spaced' | 'attached';
 /**
  * Related independent actions with native tab stops, not a roving-focus toolbar.
  * Supply direct Button/IconButton elements; attached items must have matching heights:
- * Button md + IconButton lg (48px), or Button sm + IconButton md (40px).
+ * Button md + IconButton lg (38.4px), or Button sm + IconButton md (32px), at default tokens.
  * className supports root outer margins and parent alignment only, merged last with cn.
  * Child appearance remains owned by the atoms, except attached logical inner corners.
  * Both group variants suppress direct IconButton hit-area extensions to preserve compact layout;
