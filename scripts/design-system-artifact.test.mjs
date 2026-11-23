@@ -88,7 +88,7 @@ test('IconButton hit-area facts and composition spacing are source-derived witho
   assert.doesNotMatch(root, /scale-94|ease-spring/);
   assert.doesNotMatch(recipe('ButtonGroup', 'buttonGroupVariants'), /\[&>\.eg-icon-btn\]/);
   assert.doesNotMatch(recipe('Tabs', 'tabsScrollAreaVariants'), /\[&>\.eg-icon-btn\]/);
-  assert.match(recipe('ListItem', 'listItemPartVariants'), /eg-list-item__acts[^']*gap-5/);
+  assert.match(recipe('ListItemActions', 'listItemPartVariants'), /eg-list-item__acts[^']*gap-5/);
   assert.match(recipe('Carousel', 'carouselControlsVariants'), /gap-3/);
   const gap = component('SocialLinks').props.find(({ name }) => name === 'gap');
   assert.equal(gap.default, '2');
@@ -442,6 +442,203 @@ test('Text truncation is optional, defaults false and does not widen Heading or 
   assert.ok(naming.components.includes('Text'));
 });
 
+test('Heading and Text expose only their own and shared recipes', () => {
+  const artifact = read('packages/system/design-system.json');
+  const heading = artifact.components.find(({ name }) => name === 'Heading');
+  const text = artifact.components.find(({ name }) => name === 'Text');
+  for (const field of ['variants', 'anatomy']) {
+    assert.deepEqual(
+      heading[field].map(({ name }) => name),
+      ['accentVariants', 'headingVariants'],
+      field
+    );
+    assert.deepEqual(
+      text[field].map(({ name }) => name),
+      ['accentVariants', 'textBodyVariants', 'textVariants'],
+      field
+    );
+  }
+  assert.ok(
+    heading.anatomy.every(({ name, variants }) => name !== 'textBodyVariants' && !Object.hasOwn(variants, 'truncate'))
+  );
+  for (const name of ['textBodyVariants', 'textVariants']) {
+    assert.ok(Object.hasOwn(text.anatomy.find((recipe) => recipe.name === name).variants, 'truncate'), name);
+  }
+  assert.ok(
+    text.anatomy
+      .find(({ name }) => name === 'textVariants')
+      .compounds.some(({ conditions }) => conditions.variant === 'eyebrow' && conditions.truncate === 'true')
+  );
+});
+
+test('compound components expose the recipes used by their individual hooks', () => {
+  const { components } = read('packages/system/design-system.json');
+  const names = (name, field) =>
+    components.find((component) => component.name === name)[field].map((item) => item.name);
+  const expected = [
+    ['ListItem', ['listItemVariants']],
+    ['ListItemActions', ['listItemPartVariants']],
+    ['ListItemTitle', ['listItemPartVariants']],
+    ['Collapsible', ['collapsibleVariants']],
+    ['CollapsibleHeader', ['collapsibleActionsVariants', 'collapsibleHeaderVariants']],
+    ['CollapsibleTrigger', ['collapsibleCaretVariants', 'collapsibleLabelVariants', 'collapsibleTriggerVariants']],
+    ['CollapsibleContent', ['collapsibleContentVariants']],
+    ['Dialog', []],
+    ['DialogTrigger', []],
+    [
+      'DialogContent',
+      [
+        'dialogBodyVariants',
+        'dialogDescriptionVariants',
+        'dialogDismissVariants',
+        'dialogFootVariants',
+        'dialogHeadVariants',
+        'dialogOverlayLayout',
+        'dialogPanelVariants',
+        'dialogScrimVariants',
+        'dialogStatusVariants',
+        'dialogTitleRowVariants',
+        'dialogTitleVariants'
+      ]
+    ],
+    ['AlertDialog', []],
+    ['AlertDialogContent', ['alertDialogHeadVariants', 'alertDialogIconVariants', 'alertDialogTitleRowVariants']]
+  ];
+  for (const [name, recipes] of expected) {
+    for (const field of ['variants', 'anatomy']) {
+      assert.deepEqual(names(name, field), recipes, `${name} ${field}`);
+    }
+  }
+});
+
+test('shared hooks attribute only the selected part and preserve public recipe exports', () => {
+  const { components } = read('packages/system/design-system.json');
+  const expected = [
+    ['BlogGridFeature', ['blogGridFeatureVariants']],
+    ['BlogGridRow', ['blogGridRowVariants']],
+    ['LiveBandList', ['liveBandListVariants']],
+    ['LiveBandRow', ['liveBandRowVariants']],
+    ['PanelHeader', ['panelHeaderVariants']],
+    ['PanelBody', ['panelBodyVariants']],
+    ['PanelFooter', ['panelFooterVariants']],
+    ['TopBarBrand', ['topBarBrandVariants']],
+    ['TopBarSearchCompact', ['topBarCompactVariants']],
+    ['TopBarMobileTrigger', ['topBarCompactVariants']],
+    ['Surface', ['surfaceVariants']],
+    ['surfaceVariants', ['surfaceVariants']],
+    ['Button', ['buttonIconVariants', 'buttonVariants']]
+  ];
+  for (const [name, recipes] of expected) {
+    const item = components.find((component) => component.name === name);
+    for (const field of ['variants', 'anatomy']) {
+      assert.deepEqual(
+        item[field].map((recipe) => recipe.name),
+        recipes,
+        `${name} ${field}`
+      );
+    }
+  }
+});
+
+test('object-backed recipes and exported recipe collections retain their anatomy', () => {
+  const { components } = read('packages/system/design-system.json');
+  const names = (name) => components.find((component) => component.name === name).anatomy.map((recipe) => recipe.name);
+  const radio = [
+    'radioGroupIndicatorVariants',
+    'radioGroupItemVariants',
+    'radioGroupLabelVariants',
+    'radioGroupRootVariants',
+    'radioGroupRowVariants'
+  ];
+  const shell = [
+    'appShellBodyVariants',
+    'appShellBottomVariants',
+    'appShellMainVariants',
+    'appShellRootVariants',
+    'appShellSideVariants',
+    'appShellSkipLinkVariants',
+    'appShellSkipRowVariants'
+  ];
+  assert.deepEqual(names('RadioGroup'), radio);
+  assert.deepEqual(names('radioGroupVariants'), radio);
+  assert.deepEqual(names('AppShell'), shell);
+  assert.deepEqual(names('appShellVariants'), shell);
+  assert.deepEqual(names('SelectTile'), [
+    'badge',
+    'card',
+    'check',
+    'control',
+    'fallback',
+    'image',
+    'label',
+    'media',
+    'meta',
+    'root'
+  ]);
+  assert.deepEqual(names('ColorSwatchGroup'), [
+    'badge',
+    'customFrame',
+    'customInput',
+    'customLabel',
+    'group',
+    'item',
+    'legend',
+    'optionLabel',
+    'output',
+    'patch',
+    'ring',
+    'root',
+    'row',
+    'spectrum'
+  ]);
+});
+
+test('recipe attribution follows aliased and newly called recipes without modifying the artifact', () => {
+  const loader = `
+    import fs from 'node:fs';
+    import { syncBuiltinESMExports } from 'node:module';
+    import { resolve } from 'node:path';
+    const read = fs.readFileSync;
+    const write = fs.writeFileSync;
+    const hook = resolve('packages/ui/src/primitives/text/useHeading.ts');
+    const artifact = resolve('packages/system/design-system.json');
+    fs.readFileSync = function (path, options) {
+      const value = read.call(this, path, options);
+      if (typeof path !== 'string' || resolve(path) !== hook) return value;
+      const changed = value.toString()
+        .replace('headingVariants, textForegroundClasses', 'headingVariants as headingAlias, textForegroundClasses, textBodyVariants')
+        .replace('headingVariants({ variant,', 'textBodyVariants(), headingAlias({ variant,');
+      return typeof value === 'string' ? changed : Buffer.from(changed);
+    };
+    fs.writeFileSync = function (path, value, ...rest) {
+      if (typeof path === 'string' && resolve(path) === artifact) { process.stdout.write(value); return; }
+      return write.call(this, path, value, ...rest);
+    };
+    syncBuiltinESMExports();
+  `;
+  const before = readFileSync('packages/system/design-system.json', 'utf8');
+  const result = spawnSync(
+    process.execPath,
+    [
+      '--import',
+      `data:text/javascript;base64,${Buffer.from(loader).toString('base64')}`,
+      'scripts/build-artifact.mjs',
+      '--write'
+    ],
+    { encoding: 'utf8', timeout: 120_000, maxBuffer: 4_000_000 }
+  );
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, '');
+  assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
+  const heading = JSON.parse(result.stdout).components.find(({ name }) => name === 'Heading');
+  for (const field of ['variants', 'anatomy']) {
+    assert.deepEqual(
+      heading[field].map(({ name }) => name),
+      ['accentVariants', 'headingVariants', 'textBodyVariants']
+    );
+  }
+});
+
 test('factored Text body recipes retain their classes in the artifact', () => {
   const artifact = read('packages/system/design-system.json');
   const text = artifact.components.find(({ name }) => name === 'Text');
@@ -652,7 +849,7 @@ test('same-file literal constants produce the same anatomy as inline classes', (
     "  directCall: String('p-6'),",
     '  directTemplate: `p-${3}`',
     '} } });',
-    "{ const artifactShadowed = 'p-4'; const artifactShadowVariants = cva(artifactShadowed); }"
+    "export function artifactFixtureShadow() { const artifactShadowed = 'p-4'; const artifactShadowVariants = cva(artifactShadowed); return artifactShadowVariants(); }"
   ].join('\n');
   const loader = `
     import fs from 'node:fs';
@@ -661,12 +858,19 @@ test('same-file literal constants produce the same anatomy as inline classes', (
     const read = fs.readFileSync;
     const write = fs.writeFileSync;
     const button = resolve('packages/ui/src/atoms/button/types.ts');
+    const hook = resolve('packages/ui/src/atoms/button/useButton.ts');
     const external = resolve('packages/ui/src/primitives/text/types.ts');
     const artifact = resolve('packages/system/design-system.json');
     fs.readFileSync = function (path, options) {
       const value = read.call(this, path, options);
       if (typeof path !== 'string') return value;
       const target = resolve(path);
+      if (target === hook) {
+        const changed = "import { artifactFixtureVariants, artifactFixtureShadow } from './types';\\n" +
+          value.toString().replace('cn(buttonVariants({ variant, size, labelWrap }), className)',
+            'cn(artifactFixtureVariants(), artifactFixtureShadow(), buttonVariants({ variant, size, labelWrap }), className)');
+        return typeof value === 'string' ? changed : Buffer.from(changed);
+      }
       const addition = target === button ? ${JSON.stringify(fixture)} :
         target === external ? "\\nexport const artifactExternalClass = 'p-8';\\n" : null;
       if (addition === null) return value;
