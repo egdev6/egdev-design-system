@@ -35,4 +35,18 @@ Focused Dialog 47/47; Dialog accent + AlertDialog + CommandPalette 33/33; IconBu
 
 The parent owns fresh repository `pnpm build`, `pnpm test:package-exports` and `pnpm test:package-consumption`; the added packed fixtures have **not** been run against a fresh candidate build here. Recheck artifact and system freshness after that build. Broad `pnpm test`, `pnpm lint` and `pnpm storybook-build` were not run by this worker.
 
-Still **Pending**, not proven by the above: real assistive-technology review; real Storybook Controls review; 200% browser zoom; physical touch; complete Shift+Tab looping, scrim/close/trigger-restoration and visible-full-title-route interaction across all inputs; resize transitions, viewport-scoped custom mount and transformed/clipping constraints; reduced-motion and reduced-transparency/unsupported-filter probes; actual focus-ring clipping and all requested target-gap measurements. The plan's AC-02, AC-04–11 retain these browser/AT or packed-evidence gaps. VIS-01–03 remain Pending and visual conformity is **Not evaluated**. Do not remove downstream Recado mitigations until release, upgrade and Recado's own verification.
+Extended candidate run (2026-11-23, Chrome 148, harness SHA-256 `7d37d7cc5419d3049fd3afcf2634496fd2cc8a9c4a65d506ac32c5203c4a9974`, `failures: []`) observed:
+
+- 864 edge hit-test sequences (432 mouse, 432 emulated touch);
+- an 8-case keyboard and modal matrix (Tab/Shift+Tab containment, Escape, scrim dismissal, trigger focus restoration and controlled rejection, for header and footer placement);
+- 16 four-sided focus-ring samples across LTR/RTL at 100% and emulated 200% zoom;
+- 10 gap checks;
+- 4 resize transitions across the insufficient-host threshold, in both directions;
+- 2 preference checks (reduced motion, forced colors);
+- the title route revealing the full title by keyboard.
+
+The `sm/sm` header gap computes to 22.4px in CSS and lays out at 22.390625px (1433/64). That is within one Chrome LayoutUnit (1/64 px) of the 22.40315px outset-plus-token threshold, so the harness compares with that tolerance and keeps the edge probes strict. 200% zoom is CDP device-scale emulation, not browser zoom UI.
+
+Known cross-component finding, out of #543 scope: under forced colors, Button and IconButton suppress their focus shadow while keeping `outline-style: none`, so consumer-supplied controls lose a visible focus indicator. The Dialog-owned assertions pass. This needs its own issue.
+
+Still **Pending**, not proven by the above: real assistive-technology review; real Storybook Controls review; physical touch; real browser zoom UI; viewport-scoped custom mount and transformed/clipping constraints; reduced-transparency/unsupported-filter probes; packed-consumer evidence. VIS-01–03 remain Pending and visual conformity is **Not evaluated**. Do not remove downstream Recado mitigations until release, upgrade and Recado's own verification.

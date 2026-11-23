@@ -37,21 +37,33 @@ const initial = { kind: 'dialog', variant: 'sheet', width: 440, height: 600,
 export function App() {
   const [scene, setScene] = useState(initial);
   const [host, setHost] = useState(null);
+  const [showTitle, setShowTitle] = useState(false);
   useEffect(() => {
     window.__events = [];
     window.__pointerEvents = [];
+    window.__keyEvents = [];
+    const captureKey = (event) => window.__keyEvents.push({type:event.type, key:event.key, target:event.target?.textContent?.trim()});
+    for (const type of ['keydown', 'keypress', 'keyup']) document.addEventListener(type, captureKey, true);
     const capture = (event) => {
       const button = event.target instanceof Element ? event.target.closest('button') : null;
       window.__pointerEvents.push({type:event.type, pointerType:event.pointerType, target:button?.textContent.trim() || event.target?.tagName});
     };
     for (const type of ['pointerdown', 'pointerup', 'click']) document.addEventListener(type, capture, true);
-    window.__setScene = async (next) => {
-      flushSync(() => setScene({ ...initial, ...next, open: false }));
+    window.__prepareScene = async (next) => {
+      flushSync(() => { setShowTitle(false); setScene({ ...initial, ...next, open: false }); });
       await new Promise((resolve) => setTimeout(resolve, 50));
+      window.__events = [];
+    };
+    window.__setScene = async (next) => {
+      await window.__prepareScene(next);
       flushSync(() => setScene({ ...initial, ...next, open: true }));
     };
+    window.__resizeHost = (height) => flushSync(() => setScene((previous) => ({...previous, height})));
     window.__fixtureReady = true;
-    return () => { for (const type of ['pointerdown', 'pointerup', 'click']) document.removeEventListener(type, capture, true); };
+    return () => {
+      for (const type of ['pointerdown', 'pointerup', 'click']) document.removeEventListener(type, capture, true);
+      for (const type of ['keydown', 'keypress', 'keyup']) document.removeEventListener(type, captureKey, true);
+    };
   }, []);
   const extras = {};
   if (scene.size) extras.size = scene.size;
@@ -60,22 +72,24 @@ export function App() {
   const actions = <>
     <IconButton label='Edit action' size={scene.actionSize || 'lg'} icon={<Icon name='settings'/>}
       onClick={() => window.__events.push('edit')}/>
-    {scene.moreActions && <IconButton label='Copy action' size={scene.actionSize || 'lg'} icon={<Icon name='copy'/>}
+    {scene.moreActions && <IconButton label='Copy action' size={scene.nextActionSize || scene.actionSize || 'lg'} icon={<Icon name='copy'/>}
       onClick={() => window.__events.push('copy')}/>}
     <Button onClick={() => window.__events.push('apply')}>Apply</Button>
   </>;
   const body = <>
-    <p className='wrap-anywhere'>{scene.title}</p><input aria-label='Body field'/>
+    {scene.titleRoute && <Button onClick={() => setShowTitle((previous) => !previous)}>Show full title</Button>}
+    {(!scene.titleRoute || showTitle) && <p data-full-title='' className='wrap-anywhere'>{scene.title}</p>}
+    <input aria-label='Body field'/>
     {Array.from({length: 25}, (_, index) => <p key={index}>Body detail {index + 1}</p>)}
     <button type='button' onClick={() => window.__events.push('body')}>Body action</button>
   </>;
   return <main>
-    <div aria-label='Outside content'><button type='button'>Outside action</button></div>
+    <div aria-label='Outside content'><button type='button' onClick={() => window.__events.push('outside')}>Outside action</button></div>
     <div id='fixture-host' ref={setHost} dir={scene.direction}
       style={{ position: 'relative', boxSizing: 'border-box', width: scene.width + 'px',
         height: scene.height + 'px', padding: '8px', border: '2px solid transparent' }}/>
     {host && scene.kind === 'dialog' && <Dialog open={scene.open}
-      onOpenChange={(value) => { window.__events.push('open:' + value); if (!scene.reject) setScene(s => ({...s, open: value})); }}>
+      onOpenChange={(value) => { window.__events.push('open:' + value); if (value || !scene.reject) setScene(s => ({...s, open: value})); }}>
       <DialogTrigger>Open dialog</DialogTrigger>
       <DialogContent title={scene.title} description={scene.description} statusText={scene.status}
         container={host} overlayScope={scene.scope} variant={scene.variant} headerLayout={scene.layout}
@@ -341,6 +355,11 @@ async function hitTests(cdp) {
       { actionSize: 'sm' },
       { actionSize: 'md' },
       { actionSize: 'lg' },
+      { actionSize: 'sm', nextActionSize: 'sm', moreActions: true },
+      { actionSize: 'md', nextActionSize: 'md', moreActions: true },
+      { actionSize: 'sm', nextActionSize: 'lg', moreActions: true },
+      { actionSize: 'md', nextActionSize: 'lg', moreActions: true },
+      { actionSize: 'lg', nextActionSize: 'lg', moreActions: true },
       { actionSize: 'sm', moreActions: true, width: 200 }
     ]) {
       const { actionSize } = scenario;
@@ -358,7 +377,7 @@ async function hitTests(cdp) {
           return [name, {x:r.x,y:r.y,width:r.width,height:r.height,afterWidth:getComputedStyle(node,'::after').width}];
         }));
       })()`);
-      if (scenario.moreActions) {
+      if (scenario.moreActions && scenario.width === 200) {
         assert.ok(
           Math.abs(boxes['Edit action'].y - boxes['Copy action'].y) > 1 ||
             (await cdp.evaluate(
@@ -482,6 +501,392 @@ async function interactionChecks(cdp) {
     controlledRejection: true,
     shortOverlayWheel: afterWheel
   };
+}
+
+async function key(cdp, name, shift = false, includeText = true) {
+  const code = name === 'Tab' ? 9 : name === 'Escape' ? 27 : 13;
+  const params = {
+    key: name,
+    code: name,
+    windowsVirtualKeyCode: code,
+    nativeVirtualKeyCode: code,
+    modifiers: shift ? 8 : 0
+  };
+  // A CDP keyDown is not a native Enter press unless its text is supplied; Chromium
+  // otherwise omits keypress and does not activate a native button.
+  const text = name === 'Enter' && includeText ? { text: '\r', unmodifiedText: '\r' } : {};
+  await cdp.call('Input.dispatchKeyEvent', { type: 'keyDown', ...params, ...text });
+  await cdp.call('Input.dispatchKeyEvent', { type: 'keyUp', ...params });
+}
+
+async function mouseClick(cdp, x, y) {
+  await cdp.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+  await cdp.call('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
+  await cdp.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 });
+}
+
+async function focusName(cdp) {
+  return cdp.evaluate(`document.activeElement.getAttribute('aria-label') || document.activeElement.textContent.trim()`);
+}
+
+async function openFromTrigger(cdp, settings) {
+  await cdp.evaluate(`window.__prepareScene(${JSON.stringify(settings)})`);
+  const point = await cdp.evaluate(`(() => {
+    const trigger = [...document.querySelectorAll('button')].find((button) => button.textContent.trim() === 'Open dialog');
+    trigger.scrollIntoView({block:'nearest'});
+    const r = trigger.getBoundingClientRect(); return {x:r.x+r.width/2,y:r.y+r.height/2};
+  })()`);
+  await mouseClick(cdp, point.x, point.y);
+  await waitFor(() => cdp.evaluate(`!!document.querySelector('[role="dialog"]')`), 'trigger opens dialog');
+  await delay(80);
+}
+
+async function titleRouteDiagnostic(cdp) {
+  const attempts = [];
+  for (const includeText of [false, true]) {
+    await openFromTrigger(cdp, { clamp: true, headerActions: true, titleRoute: true, reject: false });
+    for (let i = 0; i < 2; i++) {
+      await key(cdp, 'Tab');
+    }
+    assert.equal(await focusName(cdp), 'Show full title');
+    await cdp.evaluate(`window.__keyEvents=[]; window.__pointerEvents=[]`);
+    await key(cdp, 'Enter', false, includeText);
+    await delay(200);
+    const observed = await cdp.evaluate(
+      `({title:document.querySelector('[data-full-title]')?.textContent ?? null, keys:window.__keyEvents, clicks:window.__pointerEvents.filter(event => event.type === 'click')})`
+    );
+    attempts.push({ includeText, ...observed });
+  }
+  assert.equal(
+    attempts[1].title,
+    'Account settings',
+    `Native Enter must reveal the title: ${JSON.stringify(attempts)}`
+  );
+  assert.ok(
+    attempts[1].clicks.some((event) => event.target === 'Show full title'),
+    `Native Enter must activate the route: ${JSON.stringify(attempts)}`
+  );
+  return {
+    cause: attempts[0].title ? 'synchronous observation before React commit' : 'CDP Enter omitted text',
+    attempts
+  };
+}
+
+async function keyboardMatrix(cdp) {
+  const cases = [];
+  for (const zoom of [100, 200]) {
+    await cdp.call('Emulation.setDeviceMetricsOverride', {
+      width: (1000 * 100) / zoom,
+      height: (800 * 100) / zoom,
+      deviceScaleFactor: zoom / 100,
+      mobile: false
+    });
+    for (const scope of ['container', 'viewport']) {
+      for (const placement of ['header', 'footer']) {
+        const settings = {
+          width: 440,
+          height: zoom === 200 ? 260 : 600,
+          scope,
+          headerActions: placement === 'header',
+          clamp: true,
+          titleRoute: true,
+          reject: false
+        };
+        const order =
+          placement === 'header'
+            ? ['Edit action', 'Apply', 'Show full title', 'Body field', 'Body action', 'Close']
+            : ['Show full title', 'Body field', 'Body action', 'Edit action', 'Apply', 'Close'];
+        await openFromTrigger(cdp, settings);
+        assert.equal(await focusName(cdp), order[0], `${zoom}/${scope}/${placement}: initial focus`);
+        const forward = [];
+        for (let i = 0; i < order.length; i++) {
+          await key(cdp, 'Tab');
+          forward.push(await focusName(cdp));
+        }
+        assert.deepEqual(forward, [...order.slice(1), order[0]], `${zoom}/${scope}/${placement}: Tab trap`);
+        const reverse = [];
+        for (let i = 0; i < order.length; i++) {
+          await key(cdp, 'Tab', true);
+          reverse.push(await focusName(cdp));
+        }
+        assert.deepEqual(
+          reverse,
+          [...order.slice(1).reverse(), order[0]],
+          `${zoom}/${scope}/${placement}: Shift+Tab trap`
+        );
+        const outside = await cdp.evaluate(
+          `(() => { const button = [...document.querySelectorAll('button')].find(x => x.textContent.trim() === 'Outside action'); const r = button.getBoundingClientRect(); return {pointerEvents:getComputedStyle(button).pointerEvents, hit:document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.textContent.trim()}; })()`
+        );
+        assert.notEqual(
+          outside.hit,
+          'Outside action',
+          `${zoom}/${scope}/${placement}: background must not receive pointer`
+        );
+        while ((await focusName(cdp)) !== 'Show full title') {
+          await key(cdp, 'Tab');
+        }
+        await key(cdp, 'Enter');
+        await waitFor(
+          () => cdp.evaluate(`document.querySelector('[data-full-title]')?.textContent === 'Account settings'`),
+          'keyboard title reveal'
+        );
+        await key(cdp, 'Escape');
+        await waitFor(() => cdp.evaluate(`!document.querySelector('[role="dialog"]')`), 'Escape dismissal');
+        await waitFor(async () => (await focusName(cdp)) === 'Open dialog', 'Escape focus restoration');
+        assert.deepEqual(await cdp.evaluate('window.__events'), ['open:true', 'open:false']);
+        await openFromTrigger(cdp, settings);
+        for (let i = 0; i < order.length - 1; i++) {
+          await key(cdp, 'Tab');
+        }
+        assert.equal(await focusName(cdp), 'Close');
+        await key(cdp, 'Enter');
+        await waitFor(() => cdp.evaluate(`!document.querySelector('[role="dialog"]')`), 'Close dismissal');
+        await waitFor(async () => (await focusName(cdp)) === 'Open dialog', 'Close focus restoration');
+        assert.deepEqual(await cdp.evaluate('window.__events'), ['open:true', 'open:false']);
+        await openFromTrigger(cdp, settings);
+        const scrim = await cdp.evaluate(
+          `(() => { const panel = document.querySelector('[role="dialog"]'); const r = panel.parentElement.getBoundingClientRect(); return {x:r.left+8,y:r.top+8}; })()`
+        );
+        await mouseClick(cdp, scrim.x, scrim.y);
+        await waitFor(() => cdp.evaluate(`!document.querySelector('[role="dialog"]')`), 'scrim dismissal');
+        await waitFor(async () => (await focusName(cdp)) === 'Open dialog', 'scrim focus restoration');
+        assert.deepEqual(await cdp.evaluate('window.__events'), ['open:true', 'open:false']);
+        await openFromTrigger(cdp, { ...settings, reject: true });
+        await key(cdp, 'Escape');
+        assert.ok(
+          await cdp.evaluate(`window.__events.includes('open:false') && !!document.querySelector('[role="dialog"]')`),
+          'Controlled rejection'
+        );
+        cases.push({
+          zoom,
+          scope,
+          placement,
+          order,
+          forward,
+          reverse,
+          dismissals: ['Escape', 'Close', 'scrim'],
+          restored: true,
+          outside,
+          controlledRejection: true
+        });
+      }
+    }
+  }
+  await cdp.call('Emulation.setDeviceMetricsOverride', {
+    width: 1000,
+    height: 800,
+    deviceScaleFactor: 1,
+    mobile: false
+  });
+  return cases;
+}
+
+async function focusRings(cdp) {
+  const results = [];
+  for (const zoom of [100, 200]) {
+    await cdp.call('Emulation.setDeviceMetricsOverride', {
+      width: (1000 * 100) / zoom,
+      height: (800 * 100) / zoom,
+      deviceScaleFactor: zoom / 100,
+      mobile: false
+    });
+    for (const direction of ['ltr', 'rtl']) {
+      await cdp.evaluate(
+        `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, titleRoute: true, direction, width: 440, height: zoom === 200 ? 300 : 600 })})`
+      );
+      await delay(100);
+      await key(cdp, 'Tab', true);
+      for (const name of ['Edit action', 'Apply', 'Show full title', 'Body field', 'Body action', 'Close']) {
+        await key(cdp, 'Tab');
+        assert.equal(await focusName(cdp), name, `Focus-ring order: ${name}`);
+        if (!['Edit action', 'Apply', 'Show full title', 'Close'].includes(name)) {
+          continue;
+        }
+        await delay(250);
+        const info = await cdp.evaluate(
+          `(() => { const element=document.activeElement; const r=element.getBoundingClientRect(); const s=getComputedStyle(element); return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height,shadow:s.boxShadow,focusVisible:element.matches(':focus-visible')}; })()`
+        );
+        assert.ok(
+          info.focusVisible && info.shadow.includes('255, 0, 54'),
+          `${zoom}/${direction}/${name}: expected focus shadow: ${JSON.stringify(info)}`
+        );
+        const shot = await cdp.call('Page.captureScreenshot', { format: 'png', fromSurface: true });
+        const samples = await cdp.evaluate(`new Promise((resolve, reject) => {
+          const image=new Image(); image.onload=() => { const canvas=document.createElement('canvas'); canvas.width=image.width; canvas.height=image.height; const context=canvas.getContext('2d'); context.drawImage(image,0,0);
+          const r=${JSON.stringify(info)}; const scale=${zoom / 100}; const points=[[r.x+r.width/2,r.y-3],[r.right+3,r.y+r.height/2],[r.x+r.width/2,r.bottom+3],[r.x-3,r.y+r.height/2]];
+          resolve(points.map(([x,y]) => [...context.getImageData(Math.floor(x*scale),Math.floor(y*scale),1,1).data])); }; image.onerror=reject; image.src='data:image/png;base64,${shot.data}';
+        })`);
+        assert.ok(
+          samples.every(([r, g, b]) => r > 245 && g < 10 && b > 45 && b < 65),
+          `${zoom}/${direction}/${name}: clipped or covered focus ring pixels ${JSON.stringify(samples)} at ${JSON.stringify(info)}`
+        );
+        results.push({ zoom, direction, name, shadow: info.shadow, pixels: samples });
+      }
+    }
+  }
+  await cdp.call('Emulation.setDeviceMetricsOverride', {
+    width: 1000,
+    height: 800,
+    deviceScaleFactor: 1,
+    mobile: false
+  });
+  return results;
+}
+
+async function gapChecks(cdp) {
+  const results = [];
+  for (const direction of ['ltr', 'rtl']) {
+    for (const [first, second] of [
+      ['sm', 'sm'],
+      ['sm', 'lg'],
+      ['md', 'md'],
+      ['md', 'lg'],
+      ['lg', 'lg']
+    ]) {
+      await cdp.evaluate(
+        `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, title: 'Short', direction, actionSize: first, nextActionSize: second, moreActions: true })})`
+      );
+      await delay(100);
+      const geometry = await cdp.evaluate(
+        `(() => { const panel=document.querySelector('[role="dialog"]'); const buttons=[...panel.querySelectorAll('button')]; const names=['Edit action','Copy action','Close']; const root=getComputedStyle(document.documentElement); const space=(number) => parseFloat(root.getPropertyValue('--space-'+number)); const foot=getComputedStyle(panel.querySelector('header .eg-dialog__foot')); const box=(name) => { const node=buttons.find(x => x.textContent.trim() === name); const r=node.getBoundingClientRect(); const after=getComputedStyle(node,'::after'); return {name,left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height,afterWidth:parseFloat(after.width),afterHeight:parseFloat(after.height)}; }; return {boxes:names.map(box), token:space(1),target:space(14),sizes:{sm:space(8),md:space(10),lg:space(12)},columnGap:parseFloat(foot.columnGap),rowGap:parseFloat(foot.rowGap)}; })()`
+      );
+      const cssRequired = (2 * geometry.target - geometry.sizes[first] - geometry.sizes[second]) / 2 + geometry.token;
+      assert.ok(
+        geometry.columnGap + 1e-9 >= cssRequired && geometry.rowGap + 1e-9 >= cssRequired,
+        `${direction}/${first}-${second}: CSS gap is below the required token margin: ${JSON.stringify({ geometry, cssRequired })}`
+      );
+      const pairs = [];
+      for (const [a, b] of [
+        [geometry.boxes[0], geometry.boxes[1]],
+        [geometry.boxes[0], geometry.boxes[2]],
+        [geometry.boxes[1], geometry.boxes[2]]
+      ]) {
+        const horizontalOverlap = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+        const verticalOverlap = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+        if (horizontalOverlap <= 0 && verticalOverlap <= 0) {
+          continue;
+        }
+        const axis = verticalOverlap > 0 ? 'x' : 'y';
+        const ordered = [a, b].sort((left, right) => (axis === 'x' ? left.left - right.left : left.top - right.top));
+        const [left, right] = ordered;
+        const gap = axis === 'x' ? right.left - left.right : right.top - left.bottom;
+        const outset =
+          axis === 'x'
+            ? (left.afterWidth - left.width + right.afterWidth - right.width) / 2
+            : (left.afterHeight - left.height + right.afterHeight - right.height) / 2;
+        const required = outset + geometry.token;
+        // Chrome snaps layout coordinates to 1/64 CSS px; allow one LayoutUnit only.
+        assert.ok(
+          gap + 1 / 64 >= required,
+          `${direction}/${first}-${second}/${left.name}-${right.name}: ${axis} gap ${gap} < ${required}`
+        );
+        pairs.push({ names: [left.name, right.name], axis, gap, outset, token: geometry.token, required });
+      }
+      assert.ok(
+        pairs.some((pair) => pair.names.includes('Edit action') && pair.names.includes('Copy action')),
+        'Header icon buttons must be adjacent'
+      );
+      results.push({ direction, first, second, cssGap: geometry.columnGap, cssRequired, pairs });
+    }
+  }
+  return results;
+}
+
+async function resizeChecks(cdp) {
+  const results = [];
+  for (const zoom of [100, 200]) {
+    await cdp.call('Emulation.setDeviceMetricsOverride', {
+      width: (1000 * 100) / zoom,
+      height: (800 * 100) / zoom,
+      deviceScaleFactor: zoom / 100,
+      mobile: false
+    });
+    for (const direction of ['ltr', 'rtl']) {
+      await cdp.evaluate(
+        `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, title: 'A long title with enough words to occupy multiple lines in a compact sheet header', direction, height: 240 })})`
+      );
+      await delay(100);
+      await cdp.evaluate(`window.__retainedPanel=document.querySelector('[role="dialog"]'); window.__events=[]`);
+      const measurements = [];
+      for (const height of [240, 220, 130, 220, 240]) {
+        await cdp.evaluate(`window.__resizeHost(${height})`);
+        await delay(80);
+        const result = await cdp.evaluate(
+          `(() => { const panel=document.querySelector('[role="dialog"]'); const overlay=panel.parentElement; const body=panel.querySelector('.eg-dialog__body'); const s=getComputedStyle(body); const r=body.getBoundingClientRect(); return {samePanel:panel===window.__retainedPanel,focus:document.activeElement.textContent.trim(),events:window.__events.slice(),height:overlay.clientHeight,scrollHeight:overlay.scrollHeight,bodyContent:r.height-parseFloat(s.paddingTop)-parseFloat(s.paddingBottom)}; })()`
+        );
+        assert.ok(
+          result.samePanel && result.focus === 'Edit action' && result.events.length === 0,
+          `${direction}/${height}: resize must preserve panel, focus and state ${JSON.stringify(result)}`
+        );
+        assert.ok(result.bodyContent >= 44.7, `${direction}/${height}: body content minimum`);
+        assert.equal(
+          result.scrollHeight > result.height,
+          height < 225,
+          `${direction}/${height}: exceptional scroll threshold`
+        );
+        measurements.push({ hostHeight: height, ...result });
+      }
+      results.push({ zoom, direction, measurements });
+    }
+  }
+  return results;
+}
+
+async function preferenceChecks(cdp) {
+  const results = [];
+  for (const preference of ['reduced-motion', 'forced-colors']) {
+    const features =
+      preference === 'reduced-motion'
+        ? [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        : [{ name: 'forced-colors', value: 'active' }];
+    await cdp.call('Emulation.setEmulatedMedia', { features });
+    await cdp.evaluate(
+      `window.__setScene(${JSON.stringify({ size: 'full', clamp: true, headerActions: true, titleRoute: true })})`
+    );
+    await delay(150);
+    const panel = await cdp.evaluate(
+      `(() => { const node=document.querySelector('[role="dialog"]'); const title=node.querySelector('h2'); const s=getComputedStyle(node); const t=getComputedStyle(title); const r=node.getBoundingClientRect(); return {motion:matchMedia('(prefers-reduced-motion: reduce)').matches,forced:matchMedia('(forced-colors: active)').matches,transition:s.transitionProperty,duration:s.transitionDuration,transform:s.transform,background:s.backgroundColor,visibility:s.visibility,width:r.width,height:r.height,title:title.textContent,titleColor:t.color,titleVisibility:t.visibility}; })()`
+    );
+    await key(cdp, 'Tab', true);
+    const controls = [];
+    for (const name of ['Edit action', 'Apply', 'Show full title', 'Body field', 'Body action', 'Close']) {
+      await key(cdp, 'Tab');
+      assert.equal(await focusName(cdp), name);
+      if (!['Edit action', 'Apply', 'Show full title', 'Close'].includes(name)) {
+        continue;
+      }
+      const style = await cdp.evaluate(
+        `(() => { const s=getComputedStyle(document.activeElement); return {visible:document.activeElement.matches(':focus-visible'),outlineStyle:s.outlineStyle,outlineWidth:s.outlineWidth,outlineColor:s.outlineColor,shadow:s.boxShadow,transition:s.transitionProperty,duration:s.transitionDuration,transform:s.transform}; })()`
+      );
+      controls.push({ name, ...style });
+    }
+    if (preference === 'reduced-motion') {
+      assert.ok(
+        panel.motion && panel.transition === 'none' && panel.transform === 'none',
+        `Reduced-motion panel ${JSON.stringify(panel)}`
+      );
+      assert.ok(
+        controls.every((control) => control.transition === 'none' && control.transform === 'none'),
+        `Reduced-motion controls ${JSON.stringify(controls)}`
+      );
+    } else {
+      assert.ok(
+        panel.forced && panel.visibility === 'visible' && panel.width > 0 && panel.height > 0,
+        `Dialog surface must remain visible in forced colors: ${JSON.stringify(panel)}`
+      );
+      assert.ok(
+        panel.title === 'Account settings' &&
+          panel.titleVisibility === 'visible' &&
+          panel.titleColor !== panel.background,
+        `Dialog title must remain visible in forced colors: ${JSON.stringify(panel)}`
+      );
+      // Button and IconButton are shipped atoms. Their missing forced-colors focus
+      // outlines are reported as a cross-component finding, not a #543 assertion.
+    }
+    results.push({ preference, panel, controls });
+    await cdp.call('Emulation.setEmulatedMedia', { features: [] });
+  }
+  return results;
 }
 
 async function negativeControls(cdp) {
@@ -612,6 +1017,31 @@ try {
   const hits = candidate ? await hitTests(cdp) : [];
   const interactions = candidate ? await interactionChecks(cdp) : null;
   const negatives = candidate ? await negativeControls(cdp) : [];
+  const extended = {};
+  const failures = [];
+  if (candidate) {
+    for (const [name, check] of Object.entries({
+      titleRouteDiagnostic,
+      keyboardMatrix,
+      focusRings,
+      gapChecks,
+      resizeChecks,
+      preferenceChecks
+    })) {
+      try {
+        await cdp.call('Emulation.setDeviceMetricsOverride', {
+          width: 1000,
+          height: 800,
+          deviceScaleFactor: 1,
+          mobile: false
+        });
+        await cdp.call('Emulation.setEmulatedMedia', { features: [] });
+        extended[name] = await check(cdp);
+      } catch (error) {
+        failures.push(`${name}: ${error.stack || error}`);
+      }
+    }
+  }
   const summarize = (results) =>
     results?.map(({ name, before, after }) => ({
       name,
@@ -661,7 +1091,9 @@ try {
           touch: hits.filter((item) => item.input === 'touch').length
         },
         interactions,
-        negatives
+        negatives,
+        extended,
+        failures
       },
       null,
       2
@@ -688,8 +1120,9 @@ try {
         `${baselineResult.name}: changed shared scrim`
       );
     }
-    assert.equal(hits.length, 324, 'Mouse and touch edge/corner sequences');
+    assert.equal(hits.length, 864, 'Mouse and touch edge/corner sequences');
     assert.equal(negatives.length, 4, 'Both negative fixtures must be detected with both inputs');
+    assert.deepEqual(failures, [], 'Extended browser evidence checks');
     const byName = (name) => candidateResults.find((item) => item.name === name);
     for (const name of ['sheet-clamp', 'sheet-header-actions', 'sheet-combined-440', 'sheet-just-enough-height']) {
       const result = byName(name);
