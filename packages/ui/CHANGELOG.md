@@ -4,6 +4,19 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.10.0
+
+### Added
+
+- Sheets independently support `size='full'`, `titleOverflow='clamp'` and `actionsPlacement='header'`.
+  Consumers provide a visible complete-title route usable by keyboard, pointer and touch, manageable actions,
+  and clear hit targets and focus rings. In an insufficient host, clamp or header actions may make the overlay
+  scroll and move top actions out of view; unchanged sheets keep their existing cap and footer. (#543)
+- AlertDialog supports a ready portal `container` and derived or explicit `overlayScope`. Both
+  AlertDialog and Dialog independently support a root `pending` lock for their owned dismissal controls.
+  Consumers prevent the initiating close and duplicate starts synchronously, and provide progress,
+  recovery and any accessible announcements; host-scoped paint remains document-modal. (#544)
+
 ## 0.9.0
 
 ### Added

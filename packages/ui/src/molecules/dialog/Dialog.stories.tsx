@@ -1,7 +1,10 @@
 import { createAccentTheme } from '@egdev/tokens/accent';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, useRef, useState } from 'react';
+import { action } from 'storybook/actions';
 import { Button } from '../../atoms/button';
+import { Icon } from '../../atoms/icon';
+import { IconButton } from '../../atoms/icon-button';
 import { Input } from '../../atoms/input';
 import { Stack } from '../../primitives/stack';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from './Dialog';
@@ -19,6 +22,15 @@ import { Dialog, DialogClose, DialogContent, DialogTrigger } from './Dialog';
  * host bounds paint, not Radix's document-wide modal interaction. Viewport scope requires
  * ancestors without clipping or fixed-position containing blocks. Content className merges
  * last; reserved panel geometry, paint, focus and positioning overrides are unsupported.
+ * Sheets independently opt into full overlay width, a two-line title and header actions.
+ * A clamped title needs a visible complete-title route usable by keyboard, pointer and touch;
+ * native title and Tooltip are supplementary. In a sufficiently large host, the body scrolls
+ * under fixed header actions. If the chrome and minimum body cannot fit, an opted-in clamp or
+ * header action placement permits overlay scrolling, so top actions can move out of view.
+ * Supply manageable actions and adequate spacing for extended targets, including wrapped rows.
+ * Pending locks only this root's owned close paths, not arbitrary children or controlled state.
+ * Prevent the initiating close and duplicate starts synchronously; supply visible progress, recovery,
+ * and any separately designed announcement. aria-busy does not itself announce progress.
  */
 const meta = {
   title: 'Molecules/Dialog',
@@ -219,6 +231,54 @@ export const Controlled: Story = {
     );
   }
 };
+/** The consumer synchronously guards the first close and supplies visible progress during an independent lock. */
+export const PendingAction: Story = {
+  render: function PendingActionStory() {
+    const [open, setOpen] = useState(false);
+    const [pending, setPending] = useState(false);
+    const inFlight = useRef(false);
+    return (
+      <Dialog open={open} pending={pending} onOpenChange={setOpen}>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open editor</Button>
+        </DialogTrigger>
+        <DialogContent
+          title='Save changes'
+          description='Review before saving.'
+          actions={
+            <>
+              <DialogClose asChild={true}>
+                <Button variant='secondary'>Cancel</Button>
+              </DialogClose>
+              <DialogClose asChild={true}>
+                <Button
+                  onClick={(event) => {
+                    event.preventDefault();
+                    if (inFlight.current) {
+                      return;
+                    }
+                    inFlight.current = true;
+                    setPending(true);
+                    window.setTimeout(() => {
+                      inFlight.current = false;
+                      setPending(false);
+                      setOpen(false);
+                    }, 1500);
+                  }}
+                >
+                  Save
+                </Button>
+              </DialogClose>
+            </>
+          }
+        >
+          {pending ? 'Saving changes…' : 'Ready to save.'}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+};
+
 function ContainerExample({ viewport = false }: { viewport?: boolean }) {
   const [host, setHost] = useState<HTMLDivElement | null>(null);
   return (
@@ -310,6 +370,107 @@ export const CompactForm: Story = {
       </>
     )
   }
+};
+
+type SheetExampleProps = {
+  title: string;
+  full?: boolean;
+  clamp?: boolean;
+  headerActions?: boolean;
+  noActions?: boolean;
+  headerLayout?: 'inline' | 'stacked';
+};
+
+function SheetExample({ title, full, clamp, headerActions, noActions, headerLayout }: SheetExampleProps) {
+  const [host, setHost] = useState<HTMLDivElement | null>(null);
+  const actions = noActions ? undefined : (
+    <>
+      <IconButton label='Edit record' icon={<Icon name='pencil' />} size='md' onClick={action('edit')} />
+      <Button size='lg' labelWrap={true} onClick={action('apply')}>
+        Apply changes
+      </Button>
+    </>
+  );
+  return (
+    <Dialog>
+      <DialogTrigger asChild={true}>
+        <Button variant='secondary'>Open {title}</Button>
+      </DialogTrigger>
+      <div className='w-full max-w-[calc(var(--space-1)*137.5)] min-w-[var(--space-24)] resize-x overflow-hidden'>
+        <div ref={setHost} className='relative w-full h-[calc(var(--space-24)*7)]' />
+      </div>
+      {host && (
+        <DialogContent
+          variant='sheet'
+          container={host}
+          size={full ? 'full' : undefined}
+          title={title}
+          titleOverflow={clamp ? 'clamp' : undefined}
+          actionsPlacement={headerActions ? 'header' : undefined}
+          headerLayout={headerLayout}
+          actions={actions}
+        >
+          <Stack gap={3}>
+            <p className='wrap-anywhere'>{title}</p>
+            <Input aria-label='Record name' />
+            {Array.from({ length: 24 }, (_, index) => (
+              <p key={index}>Record detail {index + 1}</p>
+            ))}
+            <Button size='lg' onClick={action('body action')}>
+              Review details
+            </Button>
+          </Stack>
+        </DialogContent>
+      )}
+    </Dialog>
+  );
+}
+
+/** A full sheet follows its resizable host; the host is the overlay boundary, not merely the portal mount. */
+export const FullSheet: Story = {
+  render: () => <SheetExample title='Full-width sheet' full={true} />
+};
+
+/** Fitting, long and unbroken titles retain a visible complete copy in the body in both layouts. */
+export const ClampedSheetTitle: Story = {
+  render: () => (
+    <Stack gap={6}>
+      <SheetExample title='Short title' clamp={true} headerLayout='inline' />
+      <SheetExample
+        title='A long record title that stays completely available in the scrollable body'
+        clamp={true}
+        headerLayout='stacked'
+      />
+      <SheetExample
+        title='AnExtremelyLongUnbrokenRecordTitleThatRemainsAvailableInTheScrollableBody'
+        clamp={true}
+        headerLayout='inline'
+      />
+    </Stack>
+  )
+};
+
+/** Header actions wrap before body controls; absent actions add no row and the built-in close remains last in Tab order. */
+export const HeaderActions: Story = {
+  render: () => (
+    <Stack gap={6}>
+      <SheetExample title='Actions above the body' headerActions={true} />
+      <SheetExample title='No supplied actions' headerActions={true} noActions={true} />
+    </Stack>
+  )
+};
+
+/** A 440px token-derived host combines all three options and a visible complete-title route. */
+export const RecadoSheet: Story = {
+  render: () => (
+    <SheetExample
+      title='A detailed record title that remains available in full at the start of the body'
+      full={true}
+      clamp={true}
+      headerActions={true}
+      headerLayout='stacked'
+    />
+  )
 };
 
 /** A compact body remains the scroll viewport while its header and actions stay in place. */

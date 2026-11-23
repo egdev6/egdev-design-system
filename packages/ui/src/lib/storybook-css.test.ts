@@ -6,6 +6,16 @@ import { build } from 'vite';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buttonVariants } from '../atoms/button/types';
 import { gaugeCircleVariants } from '../atoms/gauge/types';
+import {
+  dialogCloseVariants,
+  dialogHeaderActionsVariants,
+  dialogOverlayVariants,
+  dialogScrimVariants,
+  dialogSheetBodyMinimumVariants,
+  dialogSheetClampTitleVariants,
+  dialogSheetFullVariants,
+  dialogSheetOverflowVariants
+} from '../molecules/dialog/types';
 import { textBodyVariants, textVariants } from '../primitives/text/types';
 
 let css: string;
@@ -151,6 +161,63 @@ function rule(selector: string) {
 }
 
 describe('Storybook preview CSS', () => {
+  it('emits marker-free sheet opt-in utilities from the production Dialog recipes', () => {
+    expect(rule('.line-clamp-2')).toMatch(/-webkit-line-clamp:\s*2/);
+    expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule('.basis-0')).toMatch(/flex-basis:/);
+    expect(rule('.box-border')).toMatch(/box-sizing:\s*border-box/);
+    expect(rule('.max-w-none')).toMatch(/max-width:\s*none/);
+    for (const recipe of [
+      dialogSheetClampTitleVariants(),
+      dialogSheetFullVariants(),
+      dialogSheetOverflowVariants(),
+      dialogSheetBodyMinimumVariants(),
+      dialogHeaderActionsVariants()
+    ]) {
+      expect(recipe).not.toMatch(/\beg-dialog/);
+    }
+  });
+
+  it('compiles the shared AlertDialog placement and scrim from production sources without story scanning', {
+    timeout: 30_000
+  }, async () => {
+    const result = await build({
+      configFile: false,
+      envDir: false,
+      plugins: [tailwindcss({ optimize: false })],
+      logLevel: 'warn',
+      build: {
+        write: false,
+        minify: false,
+        cssMinify: false,
+        rolldownOptions: {
+          input: fileURLToPath(new URL('../styles/compiled.css', import.meta.url))
+        }
+      }
+    });
+    const assets = (Array.isArray(result) ? result : [result]).flatMap((output) =>
+      'output' in output ? output.output : []
+    );
+    const stylesheet = assets.find((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
+    if (stylesheet?.type !== 'asset') {
+      throw new Error('The production UI CSS build must emit a stylesheet');
+    }
+    const production = String(stylesheet.source);
+    expect(production).toMatch(/\.absolute\s*\{[^}]*position:\s*absolute/);
+    expect(production).toMatch(/\.fixed\s*\{[^}]*position:\s*fixed/);
+    expect(production).toMatch(/\.inset-0\s*\{[^}]*inset:\s*(?:var\(--space-0\)|0)/);
+    expect(production).toContain(String.raw`.bg-bg-scrim\/72`);
+    const pendingSelector = String.raw`.aria-disabled\:\[\&\:not\(\:disabled\)\]\:pointer-events-auto`;
+    const pendingPosition = production.indexOf(pendingSelector);
+    expect(pendingPosition).toBeGreaterThanOrEqual(0);
+    expect(production.slice(pendingPosition, pendingPosition + 250)).toMatch(/pointer-events:\s*auto/);
+    expect(dialogCloseVariants({ pending: true })).toBe('aria-disabled:[&:not(:disabled)]:pointer-events-auto');
+    expect(dialogCloseVariants({ pending: false })).toBe('');
+    expect(dialogOverlayVariants({ scope: 'container', flush: false }).split(' ')).toContain('absolute');
+    expect(dialogOverlayVariants({ scope: 'viewport', flush: false }).split(' ')).toContain('fixed');
+    expect(dialogScrimVariants()).not.toContain('eg-');
+  });
+
   it('compiles compact Heading metrics and display family from existing tokens', () => {
     const compact = rule('.text-heading-small');
     for (const [property, token] of [

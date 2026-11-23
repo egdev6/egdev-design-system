@@ -18,9 +18,9 @@ See Typography roles for source-derived font families and sizes; display heading
 Schema: 1.0.0 (schemaVersion)
 | Package | Version | Source |
 | --- | --- | --- |
-| @egdev/effects | 0.2.10 | packages[] · packages/effects/package.json |
+| @egdev/effects | 0.2.11 | packages[] · packages/effects/package.json |
 | @egdev/tokens | 0.6.1 | packages[] · packages/tokens/package.json |
-| @egdev/ui | 0.9.0 | packages[] · packages/ui/package.json |
+| @egdev/ui | 0.10.0 | packages[] · packages/ui/package.json |
 Re-run: `pnpm exec egdev-system-md --write`
 
 ## Typography roles
@@ -886,7 +886,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · AlertDialog
 - AlertDialog (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - AlertDialogAction: Decision action. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
   - AlertDialogCancel: Least-destructive decision; receives initial focus. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
-  - AlertDialogContent: Labelled modal with required consequence and actions. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
+  - AlertDialogContent: Labelled modal with required consequence and actions. A connected, positioned, non-scrolling host bounds container-scoped paint, not document-wide Radix modality. Render after the host is ready and close before removing or replacing it. Viewport scope beneath a host can still be constrained by clipping or containing blocks. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
   - AlertDialogTrigger: Optional disclosure control. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - No statically extracted anatomy.
@@ -894,6 +894,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · AlertDialog
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - onOpenChange: ((open: boolean) => void); Requested visibility changes. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - open: boolean; Controlled visibility. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
+  - pending: boolean; Locks this alert's owned dismissal controls and marks its content busy while an action is in flight. Consumers synchronously prevent the initiating action's close and provide progress and error messages; aria-busy does not guarantee an announcement. An outside-host pointer press can move focus to body without closing; Tab re-enters through Radix's active trap. Controlled close and unmount remain possible. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
 ### ArticleFeature
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - ArticleFeature (components[] · packages/ui/src/molecules/article-feature/types.ts)
@@ -1091,7 +1092,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
 - Dialog (components[] · packages/ui/src/molecules/dialog/types.ts)
   - DialogClose: Explicit close action. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
-  - DialogContent: Modal panel with an owned title and optional description. A connected, positioned, non-scrolling host bounds container-scoped paint; without one the portal uses body. A custom host does not localize Radix modality, which remains document-wide. Render after the host ref is ready and close before replacing or removing it. Viewport scope under a host is subject to ancestor clipping and fixed-position containing blocks. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
+  - DialogContent: Modal panel with an owned title and optional description. A connected, positioned, non-scrolling host bounds container-scoped paint; without one the portal uses body. A custom host does not localize Radix modality, which remains document-wide. Render after the host ref is ready and close before replacing or removing it. Viewport scope under a host is subject to ancestor clipping and fixed-position containing blocks. Sheets may fill that boundary, clamp the title and move actions to the header independently. For a clamped title, supply a visible, keyboard-, pointer- and touch-accessible route to its full text. A sufficiently sized host keeps the header fixed while the body scrolls; otherwise an opted-in clamp or header actions may make the overlay scroll. Supply manageable actions and enough space for the complete targets and focus rings, including between wrapped controls. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
   - DialogTrigger: Optional native or slotted disclosure button. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - No statically extracted anatomy.
@@ -1099,6 +1100,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/molecules/dialog/types.ts)
   - onOpenChange: ((open: boolean) => void); Requested visibility changes. (components[] · packages/ui/src/molecules/dialog/types.ts)
   - open: boolean; Controlled visibility. (components[] · packages/ui/src/molecules/dialog/types.ts)
+  - pending: boolean; Locks this dialog's owned dismissal controls and marks its content busy while an action is in flight. Consumers synchronously prevent the initiating close, guard duplicate starts, and provide visible progress, recovery and any needed announcement outside the busy subtree; aria-busy is not an announcement. An outside-host pointer press can move focus to body without closing; Tab re-enters through Radix's active trap. Controlled close and unmount remain possible. (components[] · packages/ui/src/molecules/dialog/types.ts)
 ### Field
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Label + Slot
 - Field (components[] · packages/ui/src/molecules/field/types.ts)
@@ -2631,8 +2633,11 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - dialogHeadVariants base: ps-[var(--space-6)] → --space-6
     - dialogHeadVariants base: pe-[calc(var(--space-4)+var(--space-12))] → --space-4, --space-12
     - dialogHeadVariants base: gap-[var(--space-2)] → --space-2
+    - dialogHeaderActionsVariants base: gap-[var(--space-7)] → --space-7
     - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
     - dialogOverlayLayout flush=true: p-0 → --spacing-0
+    - dialogSheetHeadVariants base: p-0 → --spacing-0
+    - dialogSheetHeadVariants base: gap-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
     - dialogTitleRowVariants base: gap-[var(--space-3)] → --space-3
     - dialogTitleVariants base: font-display → --font-display
@@ -3499,8 +3504,10 @@ Not exported:
 - decorative-cover-word: coverWord; approved; ArticleFeatureCover (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-index: index; approved; ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-separation: decorative; approved; Divider (propNaming[] · skills/_shared/prop-naming.json)
+- dialog-action-placement: actionsPlacement; proposed; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - dialog-header-layout: headerLayout; approved; AlertDialogContent, DialogContent (propNaming[] · skills/_shared/prop-naming.json)
-- dialog-overlay-scope: overlayScope; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
+- dialog-overlay-scope: overlayScope; approved; AlertDialogContent, DialogContent (propNaming[] · skills/_shared/prop-naming.json)
+- dialog-title-overflow: titleOverflow; proposed; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - disclosure-motion: motion; approved; CollapsibleTrigger (propNaming[] · skills/_shared/prop-naming.json)
 - disclosure-presence: presence; approved; CollapsibleContent (propNaming[] · skills/_shared/prop-naming.json)
 - dismiss-label: dismissLabel; approved; CommandPalette, DialogContent, Toast (propNaming[] · skills/_shared/prop-naming.json)
@@ -3566,6 +3573,7 @@ Not exported:
 - measurement-text-equivalent: valueText; approved; Gauge, GaugeGroupRing, MeterRow, ProgressBar, Slider (propNaming[] · skills/_shared/prop-naming.json)
 - menu-entry-kind: kind; approved; MenuEntry, ModuleRail, NavList (propNaming[] · skills/_shared/prop-naming.json)
 - message-summary: summary; approved; Notice, Toast (propNaming[] · skills/_shared/prop-naming.json)
+- modal-action-pending: pending; approved; AlertDialog, Dialog (propNaming[] · skills/_shared/prop-naming.json)
 - move-intent: onMove; approved; CalendarGrid (propNaming[] · skills/_shared/prop-naming.json)
 - navigation-intent: onNavigate; approved; CalendarGrid, Menu, ModuleRail, NavList, SectionNav, TabBar, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - new-tab-navigation: external; approved; Chip, Link, SocialLinkItem (propNaming[] · skills/_shared/prop-naming.json)
@@ -3581,7 +3589,7 @@ Not exported:
 - paused-presentation: paused; approved; Avatar (propNaming[] · skills/_shared/prop-naming.json)
 - pending-activity: loading; approved; Button, Input (propNaming[] · skills/_shared/prop-naming.json)
 - pointer-tilt: pointerTilt; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
-- portal-container: container; approved; DialogContent, Portal (propNaming[] · skills/_shared/prop-naming.json)
+- portal-container: container; approved; AlertDialogContent, DialogContent, Portal (propNaming[] · skills/_shared/prop-naming.json)
 - preset-dimensions: size; approved; AppIcon, Avatar, Button, Countdown, DialogContent, Gauge, GaugeGroup, Icon, IconButton, Indicator, Input, ListItem, Logo, Notice, NowCard, ProgressBar, ProjectCard, Select, Skeleton, SocialLinks, Spinner, Stat, Table, Tabs, Timeline, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-change: onPressedChange; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-state: pressed; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)

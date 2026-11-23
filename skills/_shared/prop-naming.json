@@ -760,12 +760,12 @@
       },
       {
         "component": "DialogContent",
-        "type": "DialogSize (sm | md | lg | full; centered only)",
+        "type": "DialogSize (sm | md | lg | full centered; sheet full or omitted)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -1032,7 +1032,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -1380,7 +1380,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -2870,7 +2870,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogTriggerProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -2880,7 +2880,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogCancelProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -2890,7 +2890,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogActionProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -2900,7 +2900,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogTriggerProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -2910,7 +2910,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogCloseProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -4720,7 +4720,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -4740,7 +4740,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -4817,7 +4817,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -4837,7 +4837,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -4914,7 +4914,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -4934,7 +4934,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -5256,7 +5256,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -5266,7 +5266,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -5611,7 +5611,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -5621,7 +5621,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -5969,6 +5969,43 @@
     ]
   },
   {
+    "id": "modal-action-pending",
+    "name": "pending",
+    "meaning": "A consumer-declared action is in flight for a modal, temporarily locking its owned dismissal controls.",
+    "whenToUse": "Declare an in-flight action on a modal root while the consumer owns completion, progress and recovery.",
+    "avoid": "Automatic Promise tracking, arbitrary child controls, per-control loading, collection refresh or progress values.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/alert-dialog/v0.2/prop-naming-approval.json",
+      "scope": "convention:modal-action-pending",
+      "contentHash": "sha256:30e77a03fd259a757c236e831ad06fc7ff71b4a60c2a4bcf77fb055b1d251489"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "AlertDialog",
+        "type": "boolean (optional; default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogProps",
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
+        }
+      },
+      {
+        "component": "Dialog",
+        "type": "boolean (optional; default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogProps",
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
+        }
+      }
+    ]
+  },
+  {
     "id": "portal-container",
     "name": "container",
     "meaning": "The DOM node that a component's portalled content is rendered into instead of the document body.",
@@ -6000,7 +6037,17 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
+        }
+      },
+      {
+        "component": "AlertDialogContent",
+        "type": "HTMLElement | null (null or omitted uses body)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       }
     ]
@@ -6008,16 +6055,16 @@
   {
     "id": "dialog-overlay-scope",
     "name": "overlayScope",
-    "meaning": "The layout boundary of a Dialog modal overlay grid.",
-    "whenToUse": "Choose viewport or container layout for the Dialog overlay, independently of the portal mount target.",
+    "meaning": "The layout boundary of a Dialog or AlertDialog modal overlay grid.",
+    "whenToUse": "Choose viewport or container layout for the Dialog or AlertDialog overlay, independently of the portal mount target.",
     "avoid": "Portal mount targets, generic positioning, collision boundaries or claims of locally scoped modality.",
     "status": "approved",
     "aliases": [],
     "exceptions": [],
     "approval": {
-      "reference": "docs/components/dialog/v0.2/prop-naming-approval.json",
+      "reference": "docs/components/alert-dialog/v0.2/prop-naming-approval.json",
       "scope": "convention:dialog-overlay-scope",
-      "contentHash": "sha256:a2d8773263a45ebc578bbd5dacc58802181c08376ab5ab7e398141d7dd08e2d4"
+      "contentHash": "sha256:6c5d33a1aed8e32196b7f0212ea03f9b990b8457377d8484d06c205f5dbced03"
     },
     "usages": [
       {
@@ -6027,7 +6074,17 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
+        }
+      },
+      {
+        "component": "AlertDialogContent",
+        "type": "'viewport' | 'container' (derived from host; container requires host)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       }
     ]
@@ -6054,7 +6111,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -6064,7 +6121,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       }
     ]
@@ -6781,7 +6838,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       }
     ]
@@ -6926,7 +6983,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -7017,7 +7074,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:a669f446426068240f2143bc21a7f48980f81510521b00f177035fa2b7ceb7b5"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -7027,7 +7084,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -7064,7 +7121,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       }
     ]
@@ -8755,6 +8812,52 @@
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps.truncate",
           "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
+        }
+      }
+    ]
+  },
+  {
+    "id": "dialog-title-overflow",
+    "name": "titleOverflow",
+    "meaning": "Select whether a Dialog sheet's visible owned title remains unchanged or is limited to two lines without changing its string.",
+    "whenToUse": "Bound a sheet title when the consumer provides a visible route to its complete text.",
+    "avoid": "Single-line truncation, control labels, data mutation or hiding the accessible title.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "DialogContent",
+        "type": "'default' | 'clamp' (sheet only; default default)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
+        }
+      }
+    ]
+  },
+  {
+    "id": "dialog-action-placement",
+    "name": "actionsPlacement",
+    "meaning": "Select where a Dialog sheet renders its existing consumer-supplied actions.",
+    "whenToUse": "Choose the footer or header for the sheet's existing actions, without adding a slot.",
+    "avoid": "Floating-side or icon placement, a new action slot, or automatic action creation.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "DialogContent",
+        "type": "'footer' | 'header' (sheet only; default footer)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       }
     ]

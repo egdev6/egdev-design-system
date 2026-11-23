@@ -85,6 +85,6 @@ describe('AlertDialog Storybook metadata', () => {
       ts.forEachChild(node, visit);
     };
     visit(file);
-    expect(count).toBe(14);
+    expect(count).toBe(19);
   });
 });

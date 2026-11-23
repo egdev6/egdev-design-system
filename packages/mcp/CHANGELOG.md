@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.11
+
+- No code changes. Depend on `@egdev/system` 0.12.0 so every tool serves the current artifact.
+
 ## 0.4.10
 
 - No code changes. Depend on `@egdev/system` 0.11.0 so every tool serves the current artifact.

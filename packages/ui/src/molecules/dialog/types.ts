@@ -14,6 +14,16 @@ export type DialogProps = {
   /** Requested visibility changes. @control false
    * @controlReason Callback is not serializable; see Controlled. */
   onOpenChange?: (open: boolean) => void;
+  /**
+   * Locks this dialog's owned dismissal controls and marks its content busy while an action is in flight.
+   * Consumers synchronously prevent the initiating close, guard duplicate starts, and provide visible
+   * progress, recovery and any needed announcement outside the busy subtree; aria-busy is not an announcement.
+   * An outside-host pointer press can move focus to body without closing; Tab re-enters through Radix's active trap.
+   * Controlled close and unmount remain possible.
+   * @default false
+   * @control boolean
+   */
+  pending?: boolean;
 };
 
 type ButtonComposition =
@@ -39,12 +49,29 @@ type DialogDimensions =
   | {
       /** Panel placement. @default centered
        * @control select */ variant?: 'centered';
-      /** Centered panel dimensions. @default md
+      /** Centered dimensions default to md; an omitted sheet size remains capped. @default md
        * @control select */ size?: DialogSize;
+      /** Available only for sheets. @control select */ titleOverflow?: never;
+      /** Available only for sheets. @control select */ actionsPlacement?: never;
     }
   | {
       /** Panel placement. @control select */ variant: 'sheet';
-      /** Sheet dimensions are fixed. @control select */ size?: never;
+      /** Full fills the overlay width; omission keeps the sheet capped. @control select */ size?: 'full';
+      /**
+       * Limit the visible title to two lines, retaining the full accessible title. Consumers must
+       * provide a visible route to the complete title for keyboard, pointer and touch users.
+       * A native title attribute or Tooltip alone is not sufficient.
+       * @default default
+       * @control select
+       */
+      titleOverflow?: 'default' | 'clamp';
+      /**
+       * Place existing actions in the footer or the header. A sufficiently sized host keeps the
+       * header visible while the body scrolls; an insufficient host may scroll the overlay.
+       * @default footer
+       * @control select
+       */
+      actionsPlacement?: 'footer' | 'header';
     };
 
 type DialogPlacement =
@@ -92,12 +119,17 @@ export type DialogContentProps = Omit<
     /** Optional passive header status. @control text */ statusText?: string;
     /** Body content. @control false
      * @controlReason ReactNode is not serializable; see Default. */ children: ReactNode;
-    /** Optional footer actions. @control false
-     * @controlReason ReactNode is not serializable; see WithSplitAction. */ actions?: ReactNode;
+    /** Optional actions, in the footer by default. Supply a manageable set with adequate target spacing. @control false
+     * @controlReason ReactNode is not serializable; see WithSplitAction and HeaderActions. */ actions?: ReactNode;
     /** Localized close name. @default Close
      * @control text */ dismissLabel?: string;
   };
 
+/** Keep pending closes hit-testable without overriding explicitly disabled buttons. */
+export const dialogCloseVariants = cva('', {
+  variants: { pending: { true: 'aria-disabled:[&:not(:disabled)]:pointer-events-auto', false: '' } },
+  defaultVariants: { pending: false }
+});
 /** Internal, marker-free paint recipe shared by modal components. */
 export const dialogScrimVariants = cva('bg-bg-scrim/72 backdrop-blur-none');
 export const dialogOverlayLayout = cva('inset-0 grid overflow-y-auto place-items-center p-[var(--space-6)]', {
@@ -152,6 +184,21 @@ export const dialogDismissVariants = cva(
 );
 /** Header text zeroes the browser's default heading and paragraph margins in every layout. */
 export const dialogTitleVariants = cva('m-0 font-display uppercase text-heading-small text-fg-default');
+/** Sheet-only recipes leave the recipes shared with sibling modals unchanged. */
+export const dialogSheetClampTitleVariants = cva('min-w-0 line-clamp-2 wrap-anywhere');
+export const dialogSheetFullVariants = cva('max-w-none');
+export const dialogSheetOverflowVariants = cva('min-h-min max-h-none self-start');
+export const dialogSheetBodyMinimumVariants = cva('box-border basis-0', {
+  variants: {
+    bodyPadding: {
+      default: 'min-h-[calc(var(--space-14)+2*var(--space-6))]',
+      compact: 'min-h-[calc(var(--space-14)+2*var(--space-3))]'
+    }
+  },
+  defaultVariants: { bodyPadding: 'default' }
+});
+export const dialogSheetHeadVariants = cva('relative shrink-0 border-b-0 p-0 flex flex-col items-stretch gap-0');
+export const dialogHeaderActionsVariants = cva('flex-wrap gap-[var(--space-7)]');
 export const dialogDescriptionVariants = cva('m-0 text-body-default text-fg-secondary');
 export const dialogStatusVariants = cva('text-label-default text-fg-muted');
 export const dialogBodyVariants = cva('min-h-0 overflow-y-auto', {

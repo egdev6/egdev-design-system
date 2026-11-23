@@ -417,7 +417,20 @@ test('dialog exports its public compound API and keeps shared recipes internal',
   for (const dialogName of ['Dialog', 'DialogTrigger', 'DialogContent', 'DialogClose']) {
     assert.ok(dialogExports[dialogName], `Missing ${dialogName}`);
   }
-  for (const dialogName of ['dialogScrimVariants', 'dialogPanelVariants', 'useDialogContent']) {
+  for (const dialogName of [
+    'dialogScrimVariants',
+    'dialogPanelVariants',
+    'dialogSheetClampTitleVariants',
+    'dialogSheetFullVariants',
+    'dialogSheetBodyMinimumVariants',
+    'dialogSheetHeadVariants',
+    'dialogSheetOverflowVariants',
+    'dialogHeaderActionsVariants',
+    'dialogCloseVariants',
+    'DialogPendingContext',
+    'useDialogCloseButton',
+    'useDialogContent'
+  ]) {
     assert.equal(Object.hasOwn(dialogExports, dialogName), false, `${dialogName} is internal`);
   }
   const dialogCss = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
@@ -429,6 +442,69 @@ test('dialog exports its public compound API and keeps shared recipes internal',
     String.raw`.p-\[var\(--space-3\)\]`
   ]) {
     assert.ok(dialogCss.includes(dialogSelector), `Missing Dialog utility ${dialogSelector}`);
+  }
+});
+
+test('AlertDialog declarations expose placement and pending without private helpers', async () => {
+  const declaration = artifact('ui', ui.exports['.'].types);
+  const program = ts.createProgram([declaration], {
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    strictNullChecks: true,
+    skipLibCheck: true
+  });
+  const checker = program.getTypeChecker();
+  const source = program.getSourceFile(declaration);
+  const moduleSymbol = checker.getSymbolAtLocation(source);
+  const exports = checker.getExportsOfModule(moduleSymbol);
+  function declared(name) {
+    const exported = exports.find((entry) => entry.name === name);
+    assert.ok(exported, name);
+    const symbol = exported.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exported) : exported;
+    return checker.getDeclaredTypeOfSymbol(symbol);
+  }
+  const pending = checker.getPropertyOfType(declared('AlertDialogProps'), 'pending');
+  assert.ok(pending.flags & ts.SymbolFlags.Optional);
+  assert.equal(checker.typeToString(checker.getTypeOfSymbolAtLocation(pending, source)), 'boolean | undefined');
+  const dialogPending = checker.getPropertyOfType(declared('DialogProps'), 'pending');
+  assert.ok(dialogPending.flags & ts.SymbolFlags.Optional);
+  assert.equal(checker.typeToString(checker.getTypeOfSymbolAtLocation(dialogPending, source)), 'boolean | undefined');
+  const content = declared('AlertDialogContentProps');
+  for (const name of ['container', 'overlayScope']) {
+    const property = checker.getPropertyOfType(content, name);
+    assert.ok(property, name);
+    assert.ok(property.flags & ts.SymbolFlags.Optional, name);
+  }
+  const scope = checker.getTypeOfSymbolAtLocation(checker.getPropertyOfType(content, 'overlayScope'), source);
+  assert.deepEqual(
+    scope.types
+      .filter((part) => part.isStringLiteral())
+      .map((part) => part.value)
+      .sort(),
+    ['container', 'viewport']
+  );
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  for (const name of ['AlertDialogPendingContext', 'useAlertDialogContent', 'dialogOverlayVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const pendingSelector = String.raw`.aria-disabled\:\[\&\:not\(\:disabled\)\]\:pointer-events-auto`;
+  const pendingPosition = utilities.indexOf(pendingSelector);
+  assert.ok(pendingPosition >= 0, 'Pending close hit-test utility is shipped');
+  assert.match(utilities.slice(pendingPosition, pendingPosition + 250), /pointer-events:\s*auto/);
+  for (const [selector, declaration] of [
+    [/\.absolute\s*\{/, /position:\s*absolute/],
+    [/\.fixed\s*\{/, /position:\s*fixed/],
+    [/\.inset-0\s*\{/, /inset:\s*(?:var\(--space-0\)|0)/]
+  ]) {
+    assert.match(cssBlock(utilities, selector), declaration);
+  }
+  for (const path of [
+    'packages/ui/src/molecules/alert-dialog/types.ts',
+    'packages/ui/src/molecules/alert-dialog/useAlertDialog.ts'
+  ]) {
+    assert.doesNotMatch(readFileSync(resolve(root, path), 'utf8'), /\[&[^\]]*\.eg-/);
   }
 });
 
@@ -482,6 +558,61 @@ test('Dialog and AlertDialog export closed header-layout props and shipped layou
     assert.match(cssBlock(utilities, selector), declaration);
   }
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-dialog__head\s*\{[^}]*display:\s*flex/);
+});
+
+test('Dialog sheet-only choices and their marker-free utilities ship in the public package', () => {
+  const file = resolve(root, '__dialog_sheet_type_fixture__.ts');
+  const fixture = `
+import type { DialogContentProps } from './packages/ui/dist/index';
+const base = { title: 'Complete title', children: 'Body' };
+const centered: DialogContentProps = { ...base, size: 'full' };
+const sheet: DialogContentProps = { ...base, variant: 'sheet', size: 'full' };
+const clamp: DialogContentProps = { ...base, variant: 'sheet', titleOverflow: 'clamp' };
+const actions: DialogContentProps = { ...base, variant: 'sheet', actionsPlacement: 'header' };
+const combined: DialogContentProps = { ...base, variant: 'sheet', size: 'full', titleOverflow: 'clamp', actionsPlacement: 'header' };
+// @ts-expect-error Sheets reject centered presets.
+const small: DialogContentProps = { ...base, variant: 'sheet', size: 'sm' };
+// @ts-expect-error Sheets reject centered presets.
+const medium: DialogContentProps = { ...base, variant: 'sheet', size: 'md' };
+// @ts-expect-error Sheets reject centered presets.
+const large: DialogContentProps = { ...base, variant: 'sheet', size: 'lg' };
+// @ts-expect-error The centered branch rejects title clamping.
+const invalidTitle: DialogContentProps = { ...base, titleOverflow: 'clamp' };
+// @ts-expect-error The centered branch rejects header actions.
+const invalidActions: DialogContentProps = { ...base, actionsPlacement: 'header' };
+void [centered, sheet, clamp, actions, combined, small, medium, large, invalidTitle, invalidActions];
+`;
+  const options = {
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    strict: true,
+    skipLibCheck: true,
+    noEmit: true
+  };
+  const host = ts.createCompilerHost(options);
+  const original = host.getSourceFile.bind(host);
+  host.getSourceFile = (name, ...args) =>
+    name === file ? ts.createSourceFile(file, fixture, ts.ScriptTarget.Latest, true) : original(name, ...args);
+  const program = ts.createProgram([file], options, host);
+  assert.deepEqual(
+    ts.getPreEmitDiagnostics(program).map((item) => ts.flattenDiagnosticMessageText(item.messageText, '\n')),
+    []
+  );
+
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const [selector, declaration] of [
+    [/\.line-clamp-2\s*\{/, /-webkit-line-clamp:\s*2/],
+    [/\.wrap-anywhere\s*\{/, /overflow-wrap:\s*anywhere/],
+    [/\.basis-0\s*\{/, /flex-basis:/],
+    [/\.min-h-min\s*\{/, /min-height:\s*min-content/],
+    [/\.max-w-none\s*\{/, /max-width:\s*none/],
+    [/\.box-border\s*\{/, /box-sizing:\s*border-box/]
+  ]) {
+    assert.match(cssBlock(utilities, selector), declaration);
+  }
+  assert.doesNotMatch(utilities, /\.eg-dialog(?:__|--|\b)/, 'Dialog markers are not new styling selectors');
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-dialog__foot\s*\{/);
 });
 
 test('ambient package exposes the decorative component and its stylesheet without private engines', async () => {

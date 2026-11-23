@@ -484,6 +484,40 @@ test('Heading and Text expose only their own and shared recipes', () => {
   );
 });
 
+test('AlertDialog placement and pending are attributed only to the affected public parts', () => {
+  const artifact = read('packages/system/design-system.json');
+  const root = artifact.components.find(({ name }) => name === 'AlertDialog');
+  const content = artifact.components.find(({ name }) => name === 'AlertDialogContent');
+  const dialog = artifact.components.find(({ name }) => name === 'Dialog');
+  const dialogContent = artifact.components.find(({ name }) => name === 'DialogContent');
+  const pending = root.props.find(({ name }) => name === 'pending');
+  assert.ok(pending);
+  assert.equal(pending.type, 'boolean');
+  assert.equal(pending.required, false);
+  assert.equal(pending.default, 'false');
+  const dialogPending = dialog.props.find(({ name }) => name === 'pending');
+  assert.ok(dialogPending);
+  assert.equal(dialogPending.type, 'boolean');
+  assert.equal(dialogPending.required, false);
+  assert.equal(dialogPending.default, 'false');
+  assert.ok(!root.props.some(({ name }) => name === 'container' || name === 'overlayScope'));
+  assert.ok(!content.props.some(({ name }) => name === 'pending'));
+  assert.ok(!dialogContent.props.some(({ name }) => name === 'pending'));
+  for (const name of ['container', 'overlayScope']) {
+    const prop = content.props.find((item) => item.name === name);
+    assert.ok(prop, name);
+    assert.equal(prop.required, false, name);
+    assert.equal(prop.default, null, name);
+  }
+  for (const id of ['portal-container', 'dialog-overlay-scope']) {
+    assert.ok(artifact.propNaming.find((entry) => entry.id === id).components.includes('AlertDialogContent'), id);
+  }
+  const naming = artifact.propNaming.find(({ id }) => id === 'modal-action-pending');
+  assert.equal(naming.name, 'pending');
+  assert.equal(naming.status, 'approved');
+  assert.deepEqual(naming.components, ['AlertDialog', 'Dialog']);
+});
+
 test('compound components expose the recipes used by their individual hooks', () => {
   const { components } = read('packages/system/design-system.json');
   const names = (name, field) =>
@@ -498,6 +532,7 @@ test('compound components expose the recipes used by their individual hooks', ()
     ['CollapsibleContent', ['collapsibleContentVariants']],
     ['Dialog', []],
     ['DialogTrigger', []],
+    ['DialogClose', ['dialogCloseVariants']],
     [
       'DialogContent',
       [
@@ -506,9 +541,15 @@ test('compound components expose the recipes used by their individual hooks', ()
         'dialogDismissVariants',
         'dialogFootVariants',
         'dialogHeadVariants',
+        'dialogHeaderActionsVariants',
         'dialogOverlayLayout',
         'dialogPanelVariants',
         'dialogScrimVariants',
+        'dialogSheetBodyMinimumVariants',
+        'dialogSheetClampTitleVariants',
+        'dialogSheetFullVariants',
+        'dialogSheetHeadVariants',
+        'dialogSheetOverflowVariants',
         'dialogStatusVariants',
         'dialogTitleRowVariants',
         'dialogTitleVariants'
@@ -521,6 +562,58 @@ test('compound components expose the recipes used by their individual hooks', ()
     for (const field of ['variants', 'anatomy']) {
       assert.deepEqual(names(name, field), recipes, `${name} ${field}`);
     }
+  }
+});
+
+test('Dialog sheet options and scoped naming are derived without changing sibling APIs', () => {
+  const artifact = read('packages/system/design-system.json');
+  const component = (name) => {
+    const result = artifact.components.find((entry) => entry.name === name);
+    assert.ok(result, name);
+    return result;
+  };
+  const dialog = component('DialogContent');
+  assert.deepEqual(
+    dialog.props.map(({ name }) => name).sort(),
+    [
+      'actions',
+      'actionsPlacement',
+      'bodyPadding',
+      'children',
+      'container',
+      'description',
+      'dismissLabel',
+      'headerLayout',
+      'overlayScope',
+      'size',
+      'statusText',
+      'title',
+      'titleOverflow',
+      'variant'
+    ].sort()
+  );
+  for (const [name, value] of [
+    ['actionsPlacement', 'footer'],
+    ['titleOverflow', 'default']
+  ]) {
+    const prop = dialog.props.find((item) => item.name === name);
+    assert.equal(prop.type, 'enum');
+    assert.equal(prop.required, false);
+    assert.equal(prop.default, value);
+  }
+  assert.match(dialog.props.find(({ name }) => name === 'size').description, /omitted sheet size remains capped/i);
+  assert.equal(dialog.classNameAllows, undefined);
+  for (const [id, name] of [
+    ['dialog-title-overflow', 'titleOverflow'],
+    ['dialog-action-placement', 'actionsPlacement']
+  ]) {
+    const entry = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(entry.name, name);
+    assert.equal(entry.status, 'proposed');
+    assert.deepEqual(entry.components, ['DialogContent']);
+  }
+  for (const sibling of ['AlertDialogContent', 'CommandPalette']) {
+    assert.ok(!component(sibling).props.some(({ name }) => ['titleOverflow', 'actionsPlacement'].includes(name)));
   }
 });
 

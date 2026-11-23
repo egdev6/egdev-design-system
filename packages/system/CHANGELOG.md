@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.0
+
+### Added
+
+- The source-derived artifact and reference include Dialog sheet layout options and their proposed naming
+  concepts; the centered defaults, reserved `className` properties and sibling APIs remain unchanged. (#543)
+- Record AlertDialog's container and overlay scope, both modal roots' independent pending-action
+  props, their approved naming conventions and current source evidence. (#544)
+
 ## 0.11.0
 
 ### Fixed

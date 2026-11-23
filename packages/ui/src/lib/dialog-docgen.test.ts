@@ -104,7 +104,7 @@ describe('Dialog Storybook metadata and CSS', () => {
       ts.forEachChild(node, visit);
     };
     visit(file);
-    expect(count).toBe(24);
+    expect(count).toBe(29);
   });
 
   it('scans and emits container positioning and compact padding from production CVA', async () => {

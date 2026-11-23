@@ -1001,7 +1001,92 @@ describe('pure JSDoc Controls metadata mapping', () => {
   });
 });
 
+describe('Dialog sheet layout Controls', () => {
+  it('maps the Dialog root pending boolean without injecting an argument', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(fileURLToPath(new URL('../molecules/dialog/Dialog.tsx', import.meta.url)))
+      .find((item) => item.displayName === 'Dialog');
+    expect(doc).toBeDefined();
+    const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const composed = composeStory({}, { title: 'Metadata/Dialog', component: metadata }, preview, 'Default');
+    expect(composed.argTypes.pending?.control).toEqual({ type: 'boolean' });
+    expect(composed.argTypes.pending?.table?.defaultValue?.summary).toBe('false');
+    expect(composed.argTypes.pending?.type?.required).not.toBe(true);
+    expect(composed.args).toEqual({});
+  });
+  it('maps the full public rows and conditional choices without diagnostics or injected args', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(fileURLToPath(new URL('../molecules/dialog/Dialog.tsx', import.meta.url)))
+      .find((item) => item.displayName === 'DialogContent');
+    expect(doc).toBeDefined();
+    const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const composed = composeStory({}, { title: 'Metadata/DialogContent', component: metadata }, preview, 'Default');
+    for (const [name, options, defaultValue] of [
+      ['size', ['sm', 'md', 'lg', 'full'], '"md"'],
+      ['titleOverflow', ['default', 'clamp'], '"default"'],
+      ['actionsPlacement', ['footer', 'header'], '"footer"']
+    ] as const) {
+      const row = composed.argTypes[name];
+      expect(row?.control, name).toEqual({ type: 'select' });
+      expect([...(row?.options ?? [])].sort(), name).toEqual([...options].sort());
+      expect(row?.table?.defaultValue?.summary, name).toBe(defaultValue);
+      expect(row?.type?.required, name).not.toBe(true);
+    }
+    for (const name of [
+      'variant',
+      'container',
+      'overlayScope',
+      'bodyPadding',
+      'headerLayout',
+      'title',
+      'description',
+      'statusText',
+      'children',
+      'actions',
+      'dismissLabel'
+    ]) {
+      expect(composed.argTypes[name], name).toBeDefined();
+    }
+    expect(composed.args).toEqual({});
+  });
+});
+
 describe('Dialog header-layout Controls', () => {
+  it('maps AlertDialog pending and placement through real extraction without injecting values', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const extracted = parser.parse(
+      fileURLToPath(new URL('../molecules/alert-dialog/AlertDialog.tsx', import.meta.url))
+    );
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    for (const name of ['AlertDialog', 'AlertDialogContent']) {
+      const doc = extracted.find((item) => item.displayName === name);
+      expect(doc).toBeDefined();
+      const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics, name).toEqual([]);
+      const composed = composeStory({}, { title: `Metadata/${name}`, component: metadata }, preview, 'Default');
+      expect(composed.args).toEqual({});
+      if (name === 'AlertDialog') {
+        expect(composed.argTypes.pending?.control).toEqual({ type: 'boolean' });
+        expect(composed.argTypes.pending?.table?.defaultValue?.summary).toBe('false');
+        expect(composed.argTypes.pending?.type?.required).not.toBe(true);
+      } else {
+        expect(composed.argTypes.container?.control).toBe(false);
+        expect(composed.argTypes.container?.table?.disable).toBeUndefined();
+        expect(composed.argTypes.container?.table?.defaultValue).toBeUndefined();
+        expect(composed.argTypes.overlayScope?.control).toEqual({ type: 'select' });
+        expect([...(composed.argTypes.overlayScope?.options ?? [])].sort()).toEqual(['container', 'viewport']);
+        expect(composed.argTypes.overlayScope?.table?.defaultValue).toBeUndefined();
+      }
+    }
+  });
+
   for (const [name, path, defaultValue] of [
     ['DialogContent', 'molecules/dialog/Dialog.tsx', 'inline'],
     ['AlertDialogContent', 'molecules/alert-dialog/AlertDialog.tsx', 'stacked']

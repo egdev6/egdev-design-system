@@ -173,7 +173,224 @@ function defaults(path: string, cva: boolean): Record<string, string> {
   return result;
 }
 
+describe('Dialog sheet layout metadata', () => {
+  it('documents every root prop and the independent pending default', { timeout: heavyDocgenTimeoutMs }, () => {
+    const file = ast(source('molecules/dialog/types.ts'));
+    const declarations = ownProps(file, ['DialogProps']);
+    expect(declarations.map((item) => item.name.getText(file))).toEqual([
+      'children',
+      'open',
+      'defaultOpen',
+      'onOpenChange',
+      'pending'
+    ]);
+    for (const property of declarations) {
+      const name = property.name.getText(file);
+      const control = name === 'children' || name === 'onOpenChange' ? 'false' : 'boolean';
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map(({ comment }) => comment),
+        name
+      ).toEqual([control]);
+      if (control === 'false') {
+        expect(tags.find(({ tagName }) => tagName.text === 'controlReason')?.comment).toBeTruthy();
+      }
+    }
+    const root = parser
+      .parse(source('molecules/dialog/Dialog.tsx'))
+      .find(({ displayName }) => displayName === 'Dialog');
+    expect(root?.props.pending).toMatchObject({
+      required: false,
+      defaultValue: { value: 'false' },
+      tags: { control: 'boolean' }
+    });
+    expect(exportedStoryNames(ast(source('molecules/dialog/Dialog.stories.tsx')))).toContain('PendingAction');
+  });
+  it('annotates every own declaration in dimensions and placement branches', () => {
+    const file = ast(source('molecules/dialog/types.ts'));
+    const declarations = ownProps(file, ['DialogDimensions', 'DialogPlacement', 'DialogContentProps']);
+    const controls: Record<string, string> = {
+      variant: 'select',
+      size: 'select',
+      titleOverflow: 'select',
+      actionsPlacement: 'select',
+      container: 'false',
+      overlayScope: 'select',
+      bodyPadding: 'select',
+      headerLayout: 'select',
+      title: 'text',
+      description: 'text',
+      statusText: 'text',
+      children: 'false',
+      actions: 'false',
+      dismissLabel: 'text'
+    };
+    expect(declarations).toHaveLength(20);
+    expect([...new Set(declarations.map((prop) => prop.name.getText(file)))].sort()).toEqual(
+      Object.keys(controls).sort()
+    );
+    for (const property of declarations) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map(({ comment }) => comment),
+        name
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(tags.find(({ tagName }) => tagName.text === 'controlReason')?.comment, name).toBeTruthy();
+      }
+      if (!property.questionToken) {
+        expect(
+          tags.some(({ tagName }) => tagName.text === 'default'),
+          name
+        ).toBe(false);
+      }
+    }
+  });
+
+  it('extracts the conditional public choices, defaults and native boundary', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('molecules/dialog/Dialog.tsx'))
+      .find(({ displayName }) => displayName === 'DialogContent');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    for (const [name, choices, defaultValue] of [
+      ['size', ['full', 'lg', 'md', 'sm'], 'md'],
+      ['titleOverflow', ['clamp', 'default'], 'default'],
+      ['actionsPlacement', ['footer', 'header'], 'footer']
+    ] as const) {
+      expect(props[name]?.required, name).toBe(false);
+      expect(props[name]?.type.name, name).toBe('enum');
+      expect(props[name]?.type.value.map(({ value }: { value: string }) => normalize(value)).sort(), name).toEqual(
+        [...choices].sort()
+      );
+      expect(props[name]?.defaultValue?.value, name).toBe(defaultValue);
+    }
+    expect(props.size?.description).toMatch(/omitted sheet size remains capped/i);
+    expect(props.title?.required).toBe(true);
+    expect(props.children?.required).toBe(true);
+    for (const name of ['id', 'dir', 'lang', 'className', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of ['style', 'role', 'aria-labelledby', 'aria-describedby', 'aria-modal', 'ref', 'asChild']) {
+      expect(props[name], name).toBeUndefined();
+    }
+  });
+
+  it('documents distinct full sheet, title, header actions and combined examples', () => {
+    expect(exportedStoryNames(ast(source('molecules/dialog/Dialog.stories.tsx')))).toEqual(
+      expect.arrayContaining(['FullSheet', 'ClampedSheetTitle', 'HeaderActions', 'RecadoSheet'])
+    );
+  });
+});
+
 describe('Dialog header-layout metadata and stories', () => {
+  it('extracts AlertDialog placement and pending declarations, defaults, controls and stories', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const file = ast(source('molecules/alert-dialog/types.ts'));
+    const expectedControls: Record<string, string> = {
+      children: 'false',
+      open: 'boolean',
+      defaultOpen: 'boolean',
+      onOpenChange: 'false',
+      pending: 'boolean',
+      container: 'false',
+      overlayScope: 'select',
+      title: 'text',
+      description: 'text',
+      headerLayout: 'select',
+      actions: 'false',
+      tone: 'select',
+      asChild: 'boolean'
+    };
+    const properties = ownProps(file, [
+      'AlertDialogProps',
+      'AlertDialogPlacement',
+      'AlertDialogContentProps',
+      'ButtonComposition'
+    ]);
+    expect(properties.map((property) => property.name.getText(file))).toEqual([
+      'children',
+      'open',
+      'defaultOpen',
+      'onOpenChange',
+      'pending',
+      'asChild',
+      'children',
+      'asChild',
+      'children',
+      'container',
+      'overlayScope',
+      'container',
+      'overlayScope',
+      'title',
+      'description',
+      'headerLayout',
+      'children',
+      'actions',
+      'tone'
+    ]);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map(({ comment }) => comment),
+        name
+      ).toEqual([expectedControls[name]]);
+      if (expectedControls[name] === 'false') {
+        expect(
+          tags.some(({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(comment)),
+          name
+        ).toBe(true);
+      }
+      if (!property.questionToken || name === 'container' || name === 'overlayScope') {
+        expect(
+          tags.some(({ tagName }) => tagName.text === 'default'),
+          name
+        ).toBe(false);
+      }
+    }
+    const extracted = parser.parse(source('molecules/alert-dialog/AlertDialog.tsx'));
+    const root = extracted.find(({ displayName }) => displayName === 'AlertDialog');
+    const content = extracted.find(({ displayName }) => displayName === 'AlertDialogContent');
+    expect(root?.props.pending).toMatchObject({
+      required: false,
+      defaultValue: { value: 'false' },
+      tags: { control: 'boolean' }
+    });
+    expect(content?.props.container).toMatchObject({ required: false, defaultValue: null });
+    const containerTags = content?.props.container?.tags as Record<string, string> | undefined;
+    expect(containerTags?.control).toMatch(/^false(?:\nfalse)*$/);
+    expect(containerTags?.controlReason).toMatch(/DOM elements.*Container and ContainerViewport/);
+    expect(content?.props.overlayScope).toMatchObject({ required: false, defaultValue: null });
+    const scopeTags = content?.props.overlayScope?.tags as Record<string, string> | undefined;
+    expect(scopeTags?.control).toMatch(/^select(?:\nselect)*$/);
+    expect(
+      content?.props.overlayScope?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()
+    ).toEqual(['container', 'viewport']);
+    for (const name of ['title', 'description', 'actions']) {
+      expect(content?.props[name]?.required, name).toBe(true);
+    }
+    for (const name of ['role', 'style', 'aria-describedby', 'aria-labelledby', 'aria-modal', 'ref']) {
+      expect(content?.props[name], name).toBeUndefined();
+    }
+    expect(exportedStoryNames(ast(source('molecules/alert-dialog/AlertDialog.stories.tsx')))).toEqual([
+      'Default',
+      'InlineHeader',
+      'StackedHeader',
+      'StackedLongTitle',
+      'InlineLongTitle',
+      'Danger',
+      'WithBody',
+      'PendingAction',
+      'Controlled',
+      'Container',
+      'ContainerViewport',
+      'NestedDelete'
+    ]);
+  });
+
   for (const [name, path, types, defaultValue] of [
     ['DialogContent', 'molecules/dialog/Dialog.tsx', 'molecules/dialog/types.ts', 'inline'],
     ['AlertDialogContent', 'molecules/alert-dialog/AlertDialog.tsx', 'molecules/alert-dialog/types.ts', 'stacked']

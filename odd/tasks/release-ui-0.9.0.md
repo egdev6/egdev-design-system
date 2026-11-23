@@ -17,3 +17,4 @@ Local-tarball release on `integration/round-2`, prioritized for Nexo. It deliver
 ## Log
 
 - L1 — Integration checks on round-2 were green before the bumps: `pnpm test` 3471/3471, build, package-exports 138/138, package-consumption 14/14.
+- L2 — Owner merged #552 (dc5900d). A clean `release:pack` on main reported dirty false: ui 0.9.0, effects 0.2.10, system 0.11.0, mcp 0.4.10, tokens 0.6.1, cli 0.4.0. New `resolves` entries: #537 and #550 (ui 0.9.0), #547 (system 0.11.0). Owner granted, verbatim: "Sí, comentar y cerrar las tres (Recomendado)". All three were commented and closed as completed; the Nexo session was notified.
