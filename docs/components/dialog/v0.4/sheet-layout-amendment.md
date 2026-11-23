@@ -1,9 +1,9 @@
 # Dialog v0.4 — sheet-layout amendment
 
-- **Version / status:** v0.4 — Draft; not ready for implementation.
+- **Version / status:** Approved 2026-11-23 (owner, in session; owner direction to integrate, odd/tasks/consumer-request-specs.md L35). Implementation plan requires separate approval.
 - **Amends:** the approved [Dialog v0.1 contract and plan](../v0.1/implementation-plan.md), [v0.2 container and compact-body amendment](../v0.2/container-compact-amendment.md), [v0.2 header-layout amendment](../v0.2/header-layout-amendment.md), and [v0.3 header-spacing amendment and owner extension](../v0.3/stacked-header-spacing-amendment.md). Unmentioned promises remain unchanged. Request: [#543](https://github.com/egdev6/egdev-design-system/issues/543); parent request: [#539](https://github.com/egdev6/egdev-design-system/issues/539); consumer context: [Recado #41](https://github.com/egdev6/recado/issues/41).
-- **Approval / recovery:** Pending. The recommendations and acceptance checks below are proposals, not an owner decision or evidence of implementation. Approval must identify this exact version, digest, scope and any adopted visuals. A separate implementation plan and any necessary naming, token or dependency approvals are required.
-- **Snapshot identity:** `version: v0.4`; `contentSHA256: fb07b81f0da125398a0b9393f03179057f896d72e1a815130f09851cc65b094a`; `visualHashes: VIS-01 Pending, VIS-02 Pending, VIS-03 Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/119`; `latestPublishedComment: Pending verification`. #543 is the request, not a replacement canonical component issue; no issue or comment is published by this draft.
+- **Approval / recovery:** Owner session 2026-11-23. The verbatim choice is recorded in this file's resolved decisions and in odd/tasks/consumer-request-specs.md L35. This spec does not authorize implementation; a separate plan approval is required.
+- **Snapshot identity:** `version: v0.4`; `contentSHA256: 76666ef717749c13bb16742ef7f064ee547591a79599b6bc12a04471aedc3048`; `visualHashes: VIS-01 Pending, VIS-02 Pending, VIS-03 Pending`; `approvalReference: owner session 2026-11-23 (odd/tasks/consumer-request-specs.md L35)`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/119`; `latestPublishedComment: Pending verification`. #543 is the request, not a replacement canonical component issue; no issue or comment is published by this draft.
 - **Hash definition:** SHA-256 of the UTF-8 payload from the line-start `## 1. Purpose and scope` through EOF, with LF line endings and the final newline. Tracking metadata above that heading is excluded.
 
 ## 1. Purpose and scope
@@ -141,7 +141,12 @@ All checks are **planned**, not observed; stories are fixtures, not behavior tes
 | AC-10 | The owner-selected insufficient-host behavior is explicit, operable and tested; no control is silently clipped or inaccessible. If overlay fallback is chosen, the only-body-scroll exception is disclosed and tested. | Real-browser short-height, 200% zoom and wrapped-action cases; compare scroll positions, focus reachability and actual targets against the resolved policy. | Pending; decision D4. |
 | AC-11 | Surface/scrim Material, motion/transparency fallbacks, public markers and supported merges remain; actual emitted CSS works without consumer Tailwind, with no unapproved tokens or dependencies. | Static CVA scan, built-CSS cascade and sibling AlertDialog/CommandPalette preservation checks; packed React 18/19 consumer, reduced-motion/transparency and supported className tests. | Pending; visual conformity Not evaluated. |
 
-### Open owner decisions
+### Owner decisions — resolved
+
+Owner choice, verbatim (2026-11-23): "Aprobar con recomendaciones (Recomendado)" ("size='full' solo para sheet, actionsPlacement footer|header, título a 2 líneas opt-in con vía al completo, scroll excepcional del overlay en host insuficiente, banda existente; sin capturas nuevas.") Every recommendation listed below is approved as written; the alternatives are rejected. Approved without new expected-design captures, so visual conformity is Not evaluated. A separate implementation plan still needs its own approval.
+
+#### Decisions as proposed (recommendations approved)
+
 
 1. **D1 — Full width API.** **Recommend** allowing `size='full'` only on sheets, with omitted sheet size still capped; reuse `preset-dimensions` and preserve centered sizes. Alternative: a separate boolean such as `fullWidth`, default false; it is more explicit but needs the naming-registry resolution described in §3 and another axis. Neither option approves arbitrary width overrides.
 2. **D2 — Long title and visual access.** **Recommend** sheet-only `titleOverflow='default' | 'clamp'`, default unchanged; `'clamp'` means at most two visible lines with the full title retained in the Radix node and a consumer-provided visible route. Alternatives: a single-line truncation with the same route, or scroll/move the heading instead of clamping. The latter either adds a scroll region or changes reading/layout ownership and must not be represented as the same contract. Approve the line limit, naming and full-text route explicitly.
