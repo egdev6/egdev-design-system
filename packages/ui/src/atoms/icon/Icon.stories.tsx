@@ -7,7 +7,7 @@ const names = Object.keys(iconPaths) as IconName[];
 
 /**
  * ## Description
- * One inline glyph from the closed 47-name system set: 1.75 stroke, round caps and joins,
+ * One inline glyph from the closed 48-name system set: 1.75 stroke, round caps and joins,
  * no fill unless filled, and color inherited from the surrounding text (currentColor).
  *
  * ## Dependencies
@@ -42,6 +42,28 @@ export const Gallery: Story = {
         <div key={name} className='flex flex-col items-center gap-2 rounded-md border border-border-subtle px-2 py-4'>
           <Icon {...args} name={name} />
           <span className='text-meta text-fg-muted'>{name}</span>
+        </div>
+      ))}
+    </div>
+  )
+};
+
+/** Physical left and right arrows retain their directions in LTR and RTL at every preset. */
+export const Directions: Story = {
+  args: { name: 'arrow-left' },
+  render: () => (
+    <div className='grid gap-4'>
+      {(['ltr', 'rtl'] as const).map((dir) => (
+        <div key={dir} dir={dir} className='flex flex-col gap-2'>
+          {(['sm', 'md', 'lg'] as const).map((size) => (
+            <div key={size} className='flex items-center gap-4'>
+              <span className='text-meta text-fg-muted'>
+                {dir.toUpperCase()} {size}
+              </span>
+              <Icon name='arrow-left' size={size} />
+              <Icon name='arrow-right' size={size} />
+            </div>
+          ))}
         </div>
       ))}
     </div>

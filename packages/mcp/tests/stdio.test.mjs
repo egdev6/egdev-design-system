@@ -45,6 +45,17 @@ test('stdio tools project the installed artifact, validate inputs, and survive e
       component,
       catalog: artifact.catalog.find((entry) => entry.name === component.name)
     });
+    const icon = artifact.components.find((entry) => entry.name === 'Icon');
+    assert.ok(icon, 'Icon must be present in the artifact');
+    assert.deepEqual(await value('get_component', { name: 'Icon' }), {
+      designSystem,
+      component: icon,
+      catalog: artifact.catalog.find((entry) => entry.name === 'Icon')
+    });
+    const iconName = icon.props.find((entry) => entry.name === 'name');
+    assert.equal(iconName?.type, 'enum');
+    assert.equal(iconName?.required, true);
+    assert.equal(iconName?.default, null);
     assert.deepEqual(await value('get_tokens'), {
       designSystem,
       tokens: artifact.tokens,

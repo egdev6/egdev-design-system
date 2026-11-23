@@ -4421,6 +4421,19 @@ test('UI Icon renders decorative and labelled svg glyphs on the server', async (
   );
   assert.doesNotMatch(labelled, /role=|<title|label="/);
   assert.doesNotMatch(renderToString(createElement(Icon, { name: 'search', label: '' })), /<span/);
+  for (const label of [undefined, 'Go back']) {
+    const left = renderToString(createElement(Icon, { name: 'arrow-left', label }));
+    assert.match(left, /^<svg /);
+    assert.ok(left.includes('viewBox="0 0 24 24"') && left.includes('aria-hidden="true"'));
+    assert.ok(left.includes('focusable="false"') && left.includes('stroke-current'));
+    assert.ok(left.includes('<path d="M19 12h-14"></path><path d="m12 5-7 7 7 7"></path>'));
+    assert.doesNotMatch(left, /transform=|<title|role=/);
+    if (label) {
+      assert.match(left, /<span [^>]*>Go back<\/span>$/);
+    } else {
+      assert.doesNotMatch(left, /<span/);
+    }
+  }
   for (const [name, firstPath] of [
     ['download', 'M12 15V3'],
     ['external-link', 'M15 3h6v6']

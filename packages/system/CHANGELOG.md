@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Attribute shared CVA recipes to the individual components that use them instead of every export
+  from the same types file. (#547)
+
 ## 0.10.0
 
 ### Added

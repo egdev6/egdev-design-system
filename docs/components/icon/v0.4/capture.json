@@ -1,0 +1,395 @@
+{
+  "status": "Observed implementation; not an approved expected-design reference",
+  "capturedAt": "2026-11-23T02:55:35.360Z",
+  "source": {
+    "revision": "a196a26ade02e8b184734c356949eb23c8de23e3",
+    "worktree": "Modified Icon source and story; see source hashes.",
+    "files": [
+      {
+        "path": "packages/ui/src/atoms/icon/types.ts",
+        "sha256": "81b4efe2a2f4ec337bac642fad1bb25f6bfe1fa3e04bd12a58c0dd24e276ab97"
+      },
+      {
+        "path": "packages/ui/src/atoms/icon/icon-paths.ts",
+        "sha256": "42c6a16491a88cb02e8b17eccf4bf154711c4e7e939974c702484f0a7d73cc88"
+      },
+      {
+        "path": "packages/ui/src/atoms/icon/Icon.stories.tsx",
+        "sha256": "3d5f7d3361762e3903f0082af24d629e7fb848f32b4e89861c4f0d4ca420ad8b"
+      }
+    ],
+    "story": "Atoms/Icon/Directions",
+    "rendering": "Scratch Vite builds from current source (native token CSS, UI/story CSS and JS); react-dom/server renderToStaticMarkup; local file opened in headless Chrome via CDP pipe. No dev server or network."
+  },
+  "browser": {
+    "product": "Chrome/148.0.7778.167",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36",
+    "protocolVersion": "1.3",
+    "tool": "Chrome DevTools Protocol via local pipe"
+  },
+  "conditions": {
+    "viewportCssPx": [1280, 900],
+    "deviceScaleFactor": 1,
+    "zoomPercent": 100,
+    "theme": "default dark token canvas",
+    "interaction": "normal",
+    "motion": "no-preference",
+    "transparency": "no-preference",
+    "fonts": {
+      "requested": ["Barlow", "Barlow Condensed", "JetBrains Mono"],
+      "loadedFaces": [],
+      "actualPlatformFonts": {
+        "storyLabel": [
+          {
+            "familyName": "DejaVu Sans",
+            "postScriptName": "DejaVuSans-Bold",
+            "isCustomFont": false,
+            "glyphCount": 6
+          }
+        ],
+        "sans": [
+          {
+            "familyName": "DejaVu Sans",
+            "postScriptName": "DejaVuSans",
+            "isCustomFont": false,
+            "glyphCount": 20
+          }
+        ],
+        "display": [
+          {
+            "familyName": "Liberation Sans",
+            "postScriptName": "LiberationSans",
+            "isCustomFont": false,
+            "glyphCount": 20
+          }
+        ],
+        "mono": [
+          {
+            "familyName": "DejaVu Sans Mono",
+            "postScriptName": "DejaVuSansMono",
+            "isCustomFont": false,
+            "glyphCount": 20
+          }
+        ]
+      },
+      "note": "External Google Fonts were not requested; local fallback was explicitly accepted by the parent."
+    }
+  },
+  "captures": [
+    {
+      "path": "captures/arrow-left--default--1280x900--dark.png",
+      "kind": "component-zone",
+      "alt": "Default medium physical left arrow on the dark token canvas.",
+      "sha256": "b7cb8fb495b1f2b1c0f55f7b4978abd24095570f93ddb2738ee5cf8485f27c73",
+      "pixels": {
+        "width": 16,
+        "height": 16
+      },
+      "clip": {
+        "x": 79.265625,
+        "y": 36.953125,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "path": "captures/directions--default--1280x900--dark.png",
+      "kind": "supplementary-matrix",
+      "alt": "Physical left and right arrows in LTR and RTL at small, medium and large sizes.",
+      "sha256": "cb278422bd316b648ea3aa266e00b8336ee30a4d3ccb65278cc465465436a56d",
+      "pixels": {
+        "width": 1248,
+        "height": 144
+      },
+      "clip": {
+        "x": 16,
+        "y": 16,
+        "width": 1248,
+        "height": 144.265625
+      }
+    }
+  ],
+  "measurements": {
+    "body": {
+      "background": "rgb(20, 21, 24)",
+      "color": "rgb(255, 255, 255)",
+      "family": "Barlow, system-ui, sans-serif"
+    },
+    "matrixDisplay": "grid",
+    "directions": [
+      {
+        "direction": "ltr",
+        "rows": [
+          {
+            "text": "LTR sm",
+            "icons": [
+              {
+                "paths": ["M19 12h-14", "m12 5-7 7 7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 77.90625,
+                  "y": 16.875,
+                  "width": 12.796875,
+                  "height": 12.796875
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              },
+              {
+                "paths": ["M5 12h14", "m12 5 7 7-7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 103.5,
+                  "y": 16.875,
+                  "width": 12.796875,
+                  "height": 12.796875
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              }
+            ]
+          },
+          {
+            "text": "LTR md",
+            "icons": [
+              {
+                "paths": ["M19 12h-14", "m12 5-7 7 7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 79.265625,
+                  "y": 36.953125,
+                  "width": 16,
+                  "height": 16
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              },
+              {
+                "paths": ["M5 12h14", "m12 5 7 7-7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 108.0625,
+                  "y": 36.953125,
+                  "width": 16,
+                  "height": 16
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              }
+            ]
+          },
+          {
+            "text": "LTR lg",
+            "icons": [
+              {
+                "paths": ["M19 12h-14", "m12 5-7 7 7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 71.4375,
+                  "y": 59.34375,
+                  "width": 22.390625,
+                  "height": 22.390625
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              },
+              {
+                "paths": ["M5 12h14", "m12 5 7 7-7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 106.625,
+                  "y": 59.34375,
+                  "width": 22.390625,
+                  "height": 22.390625
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "direction": "rtl",
+        "rows": [
+          {
+            "text": "RTL sm",
+            "icons": [
+              {
+                "paths": ["M19 12h-14", "m12 5-7 7 7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 1187.9375,
+                  "y": 95.40625,
+                  "width": 12.796875,
+                  "height": 12.796875
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              },
+              {
+                "paths": ["M5 12h14", "m12 5 7 7-7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 1162.34375,
+                  "y": 95.40625,
+                  "width": 12.796875,
+                  "height": 12.796875
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              }
+            ]
+          },
+          {
+            "text": "RTL md",
+            "icons": [
+              {
+                "paths": ["M19 12h-14", "m12 5-7 7 7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 1183.390625,
+                  "y": 115.484375,
+                  "width": 16,
+                  "height": 16
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              },
+              {
+                "paths": ["M5 12h14", "m12 5 7 7-7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 1154.59375,
+                  "y": 115.484375,
+                  "width": 16,
+                  "height": 16
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              }
+            ]
+          },
+          {
+            "text": "RTL lg",
+            "icons": [
+              {
+                "paths": ["M19 12h-14", "m12 5-7 7 7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 1184.8125,
+                  "y": 137.875,
+                  "width": 22.390625,
+                  "height": 22.390625
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              },
+              {
+                "paths": ["M5 12h14", "m12 5 7 7-7 7"],
+                "viewBox": "0 0 24 24",
+                "transform": "none",
+                "stroke": "rgb(255, 255, 255)",
+                "color": "rgb(255, 255, 255)",
+                "strokeWidth": "1.75px",
+                "fill": "none",
+                "linecap": "round",
+                "linejoin": "round",
+                "box": {
+                  "x": 1149.625,
+                  "y": 137.875,
+                  "width": 22.390625,
+                  "height": 22.390625
+                },
+                "ariaHidden": "true",
+                "focusable": "false"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "Observed implementation only; VIS-01 is historical and VIS-02 has no adopted expected-design image.",
+    "Expected-design visual conformity: Not evaluated.",
+    "Static story capture does not establish Storybook browser Controls or screen-reader behavior."
+  ]
+}

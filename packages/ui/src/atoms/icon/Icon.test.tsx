@@ -2,13 +2,64 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
+import type { IconName as PublicIconName, IconProps as PublicIconProps } from '../../index';
 import { Icon } from './Icon';
-import { Gallery } from './Icon.stories';
+import { Directions, Gallery } from './Icon.stories';
 import { iconPaths } from './icon-paths';
 import type { IconName, IconSize } from './types';
 import { useIcon } from './useIcon';
 
+const expectedNames = [
+  'github',
+  'youtube',
+  'twitch',
+  'x',
+  'linkedin',
+  'instagram',
+  'search',
+  'arrow-left',
+  'arrow-right',
+  'arrow-up-right',
+  'arrow-down',
+  'play',
+  'users',
+  'menu',
+  'radio',
+  'terminal',
+  'hammer',
+  'compass',
+  'alert',
+  'close',
+  'user',
+  'bookmark',
+  'bell',
+  'settings',
+  'log-out',
+  'chevron-down',
+  'calendar',
+  'inbox',
+  'lightbulb',
+  'shuffle',
+  'pause',
+  'pencil',
+  'send',
+  'grip',
+  'upload',
+  'flask',
+  'plug',
+  'bot',
+  'trash',
+  'copy',
+  'check',
+  'minus',
+  'plus',
+  'circle-alert',
+  'circle-check',
+  'info',
+  'download',
+  'external-link'
+] as const satisfies readonly PublicIconName[];
 const names = Object.keys(iconPaths) as IconName[];
 const sizes: [IconSize, string][] = [
   ['sm', 'size-4'],
@@ -17,6 +68,11 @@ const sizes: [IconSize, string][] = [
 ];
 const glyphElements = new Set(['path', 'circle', 'rect', 'line', 'polyline', 'polygon']);
 const newGlyphs = [
+  {
+    name: 'arrow-left',
+    label: 'Go back',
+    paths: ['M19 12h-14', 'm12 5-7 7 7 7']
+  },
   {
     name: 'download',
     label: 'Download',
@@ -38,26 +94,67 @@ const svgOf = (container: HTMLElement) => {
 };
 
 describe('Icon glyph set', () => {
-  it('ships exactly 47 names, including both additions and the existing status glyphs', () => {
-    expect(names).toHaveLength(47);
-    expect(new Set(names).size).toBe(47);
+  it('ships exactly the prior 47 names plus arrow-left through the public type and glyph set', () => {
+    expect(expectedNames).toHaveLength(48);
+    expect(new Set(expectedNames).size).toBe(48);
+    expect(names).toHaveLength(48);
+    expect(new Set(names).size).toBe(48);
+    expect([...names].sort()).toEqual([...expectedNames].sort());
     expect(names).not.toContain('external');
-    for (const name of [
-      'check',
-      'minus',
-      'plus',
-      'chevron-down',
-      'grip',
-      'flask',
-      'trash',
-      'circle-alert',
-      'circle-check',
-      'info',
-      'download',
-      'external-link'
-    ] as const) {
-      expect(names).toContain(name);
+    expectTypeOf<PublicIconName>().toEqualTypeOf<(typeof expectedNames)[number]>();
+    expectTypeOf<PublicIconProps['name']>().toEqualTypeOf<PublicIconName>();
+    const arrow: PublicIconName = 'arrow-left';
+    const props: PublicIconProps = { name: arrow };
+    expect(props.name).toBe('arrow-left');
+  });
+
+  it.each(['ltr', 'rtl'] as const)('keeps both arrows physical and untransformed in %s', (dir) => {
+    const { container } = render(
+      <div dir={dir}>
+        <Icon name='arrow-left' />
+        <Icon name='arrow-right' />
+      </div>
+    );
+    const icons = [...container.querySelectorAll('svg.eg-icon')];
+    expect(icons).toHaveLength(2);
+    expect(icons.map((svg) => [...svg.children].map((child) => [child.tagName, child.getAttribute('d')]))).toEqual([
+      [
+        ['path', 'M19 12h-14'],
+        ['path', 'm12 5-7 7 7 7']
+      ],
+      [
+        ['path', 'M5 12h14'],
+        ['path', 'm12 5 7 7-7 7']
+      ]
+    ]);
+    for (const svg of icons) {
+      expect(svg).toHaveAttribute('viewBox', '0 0 24 24');
+      expect(svg).toHaveAttribute('stroke-linecap', 'round');
+      expect(svg).toHaveAttribute('stroke-linejoin', 'round');
+      expect(svg).toHaveClass('eg-icon', 'stroke-current', 'stroke-(length:--icon-stroke)', 'fill-none');
+      expect(svg).not.toHaveAttribute('transform');
+      expect(svg).not.toHaveAttribute('style');
+      for (const child of svg.children) {
+        expect(child).not.toHaveAttribute('transform');
+      }
     }
+  });
+
+  it('replaces left and right paths without replacing the decorative svg root', () => {
+    const { container, rerender } = render(<Icon name='arrow-left' />);
+    const original = svgOf(container);
+    rerender(<Icon name='arrow-right' />);
+    expect(svgOf(container)).toBe(original);
+    expect([...original.querySelectorAll('path')].map((path) => path.getAttribute('d'))).toEqual([
+      'M5 12h14',
+      'm12 5 7 7-7 7'
+    ]);
+    rerender(<Icon name='arrow-left' />);
+    expect(svgOf(container)).toBe(original);
+    expect([...original.querySelectorAll('path')].map((path) => path.getAttribute('d'))).toEqual([
+      'M19 12h-14',
+      'm12 5-7 7 7 7'
+    ]);
   });
 
   it.each(names)('renders %s as a 24x24 viewBox svg with its own glyph elements', (name) => {
@@ -137,10 +234,10 @@ describe('Icon glyph set', () => {
     const original = svgOf(container);
     rerender(<Icon name='external-link' />);
     expect(svgOf(container) === original).toBe(true);
-    expect([...original.querySelectorAll('path')].map((path) => path.getAttribute('d'))).toEqual(newGlyphs[1].paths);
+    expect([...original.querySelectorAll('path')].map((path) => path.getAttribute('d'))).toEqual(newGlyphs[2].paths);
     rerender(<Icon name='download' />);
     expect(svgOf(container) === original).toBe(true);
-    expect([...original.querySelectorAll('path')].map((path) => path.getAttribute('d'))).toEqual(newGlyphs[0].paths);
+    expect([...original.querySelectorAll('path')].map((path) => path.getAttribute('d'))).toEqual(newGlyphs[1].paths);
   });
 
   it('shows the new glyphs in the gallery alongside existing icons', () => {
@@ -149,9 +246,35 @@ describe('Icon glyph set', () => {
     }
     const content = Gallery.render({ name: 'search' }, {} as Parameters<typeof Gallery.render>[1]);
     render(<>{content}</>);
-    for (const name of ['search', 'download', 'external-link']) {
+    for (const name of expectedNames) {
       const card = screen.getByText(name).parentElement;
       expect(card?.querySelector('svg.eg-icon')).toBeInTheDocument();
+    }
+  });
+
+  it('shows both physical arrows at each preset in the Directions story', () => {
+    if (!Directions.render) {
+      throw new Error('Directions must have a render function');
+    }
+    const content = Directions.render({ name: 'arrow-left' }, {} as Parameters<typeof Directions.render>[1]);
+    const { container } = render(<>{content}</>);
+    for (const dir of ['ltr', 'rtl']) {
+      const icons = [...container.querySelectorAll(`[dir="${dir}"] svg.eg-icon`)];
+      expect(icons).toHaveLength(6);
+      for (const [index, utility] of ['size-4', 'size-(--icon-size)', 'size-7'].entries()) {
+        const left = icons[index * 2];
+        const right = icons[index * 2 + 1];
+        expect(left).toHaveClass(utility);
+        expect(right).toHaveClass(utility);
+        expect([...(left?.querySelectorAll('path') ?? [])].map((path) => path.getAttribute('d'))).toEqual([
+          'M19 12h-14',
+          'm12 5-7 7 7 7'
+        ]);
+        expect([...(right?.querySelectorAll('path') ?? [])].map((path) => path.getAttribute('d'))).toEqual([
+          'M5 12h14',
+          'm12 5 7 7-7 7'
+        ]);
+      }
     }
   });
 
@@ -217,6 +340,35 @@ describe('Icon appearance', () => {
 });
 
 describe('Icon accessibility', () => {
+  it('keeps a decorative left arrow out of tab order and a named button named once', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <button type='button'>Before</button>
+        <Icon name='arrow-left' />
+        <button type='button'>
+          Back
+          <Icon name='arrow-left' label='' />
+        </button>
+        <button type='button'>After</button>
+      </>
+    );
+    const icons = [...container.querySelectorAll('svg.eg-icon')];
+    expect(icons).toHaveLength(2);
+    for (const svg of icons) {
+      expect(svg).toHaveAttribute('aria-hidden', 'true');
+      expect(svg).toHaveAttribute('focusable', 'false');
+      expect(svg).not.toHaveAttribute('role');
+      expect(svg.querySelector('title')).toBeNull();
+    }
+    expect(screen.getAllByRole('button', { name: 'Back' })).toHaveLength(1);
+    expect(container.querySelector('span')).toBeNull();
+    for (const name of ['Before', 'Back', 'After']) {
+      await user.tab();
+      expect(screen.getByRole('button', { name })).toHaveFocus();
+    }
+  });
+
   it('is decorative by default: hidden, not focusable and without a name or role', async () => {
     const user = userEvent.setup();
     const { container } = render(
