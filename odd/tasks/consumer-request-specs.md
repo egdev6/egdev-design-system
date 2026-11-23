@@ -28,7 +28,8 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 | T4 | S2, S4, S5 | worker | drafted: docs/components/text/v0.3/implementation-plan.md (this commit) |
 | T5 | S3, S4, S5 | worker | done: plan approved (7aa05ea) |
 | T8 | S3, S6–S12 | worker | done: b66eaf4 + follow-up; independent verify PASS; released in ui 0.8.0 (#549) |
-| T9 | S4, S13 | worker | done: Icon v0.4 approved (this commit) |
+| T9 | S4, S13 | worker | done: Icon v0.4 approved (f5b9ce2) |
+| T10 | S4, S5, S13 | worker | drafted: docs/components/icon/v0.4/implementation-plan.md (this commit); owner approval pending |
 | T6 | S2, S5, S6 | worker | done: dd033c5; independent verify PASS |
 | T7 | S3, S4, S6 | worker | done: v0.5 approved (this commit) |
 
@@ -65,3 +66,4 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 - L29: PR #548 CI `Verify` failed in "Test packed package consumption (React 18 and 19)". The cause: scripts/package-consumption.test.mjs:7134 still expected `gap-1` for SocialLinks md with `gap: 1` (the worker updated it without running it, since it installs packages). Fixed to expect the S12 minimum `gap-5` and no `gap-1`. Parent ran it locally after a fresh build: `pnpm test:package-consumption` 14/14 (React 18.3.1 and 19.3.0), so the packed-consumer evidence (AC-10) is now observed.
 - L30: Released ui 0.8.0 / system 0.10.0 (#549, 3a038fa); #538 and #540 closed with availability comments; Recado and Nexo sessions notified. Owner: "si" → T9, spec for #537 on branch docs/spec-icon-arrow-left.
 - L31 (owner choice, verbatim): "Aprobar sin captura nueva (Recomendado)". Icon v0.4 arrow-left amendment approved, contentSHA256 ab4b9e389e367aaec8b9f3cffc8b8ec2969de56819638a3fc13830a531b7e94c. `arrow-left` is a horizontal reflection of `arrow-right` about x=12 and is not RTL-aware. The Icon real-capture requirement still applies to the implementation PR. Next: the implementation plan.
+- L32: T10 plan drafted (amendment digest verified; AC-01–AC-10 mapped; covers registry revisions, the Icon and FieldMessage inventories, catalog, artifact, a local packed-consumer run after build, attribution and the required real capture).
