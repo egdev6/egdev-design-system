@@ -7131,7 +7131,7 @@ try {
   assert.equal(document.querySelectorAll('.eg-social__label').length, 1);
   assert.equal(renderToString(createElement(SocialLinksSamples, { items: [] })), '');
   const ghost = renderToString(createElement(SocialLinksSamples, { caption: null, variant: 'ghost', size: 'md', inline: true, gap: 1 }));
-  assert.ok(ghost.includes('size-10') && ghost.includes('gap-1') && ghost.includes('flex-wrap'));
+  assert.ok(ghost.includes('size-10') && ghost.includes('gap-5') && !ghost.includes('gap-1') && ghost.includes('flex-wrap'));
   assert.ok(!ghost.includes('eg-social__label'));
 } finally {
   socialDocument.window.close();
