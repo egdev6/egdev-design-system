@@ -1,9 +1,9 @@
 # AlertDialog v0.2 — container and pending-action amendment
 
-- **Version / status:** v0.2 — Draft; not ready for implementation.
+- **Version / status:** Approved 2026-11-23 (owner, in session; owner direction to integrate, odd/tasks/consumer-request-specs.md L35). Implementation plan requires separate approval.
 - **Amends:** the approved AlertDialog v0.1 contract in [#120](https://github.com/egdev6/egdev-design-system/issues/120) and its [local plan record](../v0.1/implementation-plan.md), together with the shared [header-layout amendment](../../dialog/v0.2/header-layout-amendment.md) and its [v0.3 owner extension](../../dialog/v0.3/stacked-header-spacing-amendment.md). It also proposes a bounded Dialog pending-state delta against the approved [Dialog container contract](../../dialog/v0.2/container-compact-amendment.md) and [#119](https://github.com/egdev6/egdev-design-system/issues/119). Unmentioned promises remain unchanged.
-- **Approval / recovery:** Pending. Owner decisions below are recommendations, not decisions already made. Approval must bind this exact snapshot, scope and any adopted visual hashes; an implementation plan, naming changes, tokens, dependencies, captures and publication require separate authorization.
-- **Snapshot identity:** `version: v0.2`; `contentSHA256: d4a8c74a5104605d1ced9f7b8c14adc7230882b37f102c0fdf276ab7c0ea0555`; `visualHashes: VIS-01 3d348ff39c64508416135197066439add03ac484256180484994e8495df996f4 (historical v0.1); VIS-02 Pending; VIS-03 Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/120`; `latestPublishedComment: Pending` (this snapshot is unpublished; remote AlertDialog history was not checked). [#544](https://github.com/egdev6/egdev-design-system/issues/544) is the follow-up request, not a replacement component issue.
+- **Approval / recovery:** Owner session 2026-11-23. The verbatim choice is recorded in this file's resolved decisions and in odd/tasks/consumer-request-specs.md L35. This spec does not authorize implementation; a separate plan approval is required.
+- **Snapshot identity:** `version: v0.2`; `contentSHA256: 5da2ef0668cbc5f4348a13cc55083f0c9cae3c09dbf623df41be9b2254c7e9df`; `visualHashes: VIS-01 3d348ff39c64508416135197066439add03ac484256180484994e8495df996f4 (historical v0.1); VIS-02 Pending; VIS-03 Pending`; `approvalReference: owner session 2026-11-23 (odd/tasks/consumer-request-specs.md L35)`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/120`; `latestPublishedComment: Pending` (this snapshot is unpublished; remote AlertDialog history was not checked). [#544](https://github.com/egdev6/egdev-design-system/issues/544) is the follow-up request, not a replacement component issue.
 - **Hash definition:** SHA-256 of the UTF-8 payload from the line-start `## 1. Purpose and scope` through EOF, with LF line endings and the final newline; tracking metadata above that heading is excluded.
 
 ## 1. Purpose and scope
@@ -135,7 +135,12 @@ All checks below are **planned**, not observed. Stories illustrate scenarios and
 | AC-07 | Existing Material, `headerLayout`, public APIs/refs, supported merges and reduced preferences remain; no new styling or unrelated Dialog recipe regression. | Component preserve tests, actual emitted CSS/static CVA scan and browser computed-style/focus checks; story and documentation review. | Pending. |
 | AC-08 | Proposed types/metadata and packaged behavior work with supported React versions and a consumer without its own Tailwind compiler. | Public export/type and docgen/Controls checks, packed React 18/19 consumers and shipped-CSS validation under a separately approved plan. | Pending. |
 
-### Open owner decisions
+### Owner decisions — resolved
+
+Owner choice, verbatim (2026-11-23): "Aprobar con recomendaciones (Recomendado)" ("pending en ambos modales, container + overlayScope en AlertDialogContent, aria-disabled con activación bloqueada, aria-busy (anuncios del consumidor), apilado garantizado en mismo host; sin capturas nuevas.") Every recommendation listed below is approved as written; the alternatives are rejected. Approved without new expected-design captures, so visual conformity is Not evaluated. A separate implementation plan still needs its own approval.
+
+#### Decisions as proposed (recommendations approved)
+
 
 1. **Scope and naming:** (A) `pending?: boolean` on both modal roots, with new `modal-action-pending` convention; (B) AlertDialog only, leaving Dialog's built-in close to a separate contract; (C) separate dismissal-lock APIs instead of a pending concept. **Recommend A:** the request includes both confirmation and sheet close, and independent root values avoid accidental propagation. Approve the new naming convention separately.
 2. **Portal and scope:** (A) `container` plus Dialog-equivalent `overlayScope` and derived defaults; (B) `container` only with host layout forced; (C) keep body-only mounting. **Recommend A:** it meets bounded-host and mount-only use without changing defaults. Confirm whether existing `dialog-overlay-scope` approval includes AlertDialog or approve a scoped wording amendment.
