@@ -3,6 +3,7 @@ import { composeStory } from '@storybook/react-vite';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createRef } from 'react';
+import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogTrigger } from '.';
 import meta, { PendingAction } from './AlertDialog.stories';
@@ -31,6 +32,28 @@ const describedBy: AlertDialogContentProps = {
 const size: AlertDialogContentProps = { title: 'Title', description: 'Description', actions: null, size: 'sm' };
 // @ts-expect-error The root has no DOM props.
 const rootId: import('./types').AlertDialogProps = { children: null, id: 'invalid' };
+const placementBase = { title: 'Placement', description: 'Choose.', actions: null };
+const placements: AlertDialogContentProps[] = [
+  placementBase,
+  { ...placementBase, container: null, overlayScope: 'viewport' },
+  { ...placementBase, container: document.body },
+  { ...placementBase, container: document.body, overlayScope: 'viewport' },
+  { ...placementBase, container: document.body, overlayScope: 'container' }
+];
+// @ts-expect-error Container layout requires a host.
+const missingPlacementHost: AlertDialogContentProps = { ...placementBase, overlayScope: 'container' };
+// @ts-expect-error Null is not a host for container layout.
+const nullPlacementHost: AlertDialogContentProps = { ...placementBase, container: null, overlayScope: 'container' };
+const invalidPlacementScope: AlertDialogContentProps = {
+  ...placementBase,
+  container: document.body,
+  // @ts-expect-error Scope only accepts the documented values.
+  overlayScope: 'local'
+};
+const pendingRoot: import('./types').AlertDialogProps = { children: null, pending: true };
+// @ts-expect-error Pending is a boolean, not an operation or a label.
+const invalidPending: import('./types').AlertDialogProps = { children: null, pending: 'working' };
+void [placements, missingPlacementHost, nullPlacementHost, invalidPlacementScope, pendingRoot, invalidPending];
 const variant: AlertDialogContentProps = {
   title: 'Title',
   description: 'Description',
@@ -71,6 +94,84 @@ function Example({ onOpenChange }: { onOpenChange?: (open: boolean) => void }) {
     </AlertDialog>
   );
 }
+
+describe('AlertDialog placement', () => {
+  const content = {
+    title: 'Placement',
+    description: 'Choose.',
+    actions: <AlertDialogCancel>Cancel</AlertDialogCancel>
+  };
+
+  it.each(['omitted', 'null'] as const)('retains the body portal with %s host', (host) => {
+    render(
+      <AlertDialog defaultOpen={true}>
+        <AlertDialogContent {...content} {...(host === 'null' ? { container: null } : {})} />
+      </AlertDialog>
+    );
+    const panel = screen.getByRole('alertdialog', { name: 'Placement', description: 'Choose.' });
+    const overlay = panel.closest('.eg-alert-dialog-backdrop');
+    expect(overlay?.parentElement).toBe(document.body);
+    expect(overlay).toHaveClass('fixed', 'inset-0');
+    expect(overlay).not.toHaveClass('absolute');
+  });
+
+  it.each(['derived', 'container', 'viewport'] as const)(
+    'uses %s scope in the ready host without prop leakage',
+    (scope) => {
+      render(<div aria-label='Portal host' />);
+      const host = screen.getByLabelText('Portal host');
+      render(
+        <AlertDialog defaultOpen={true}>
+          <AlertDialogContent {...content} container={host} {...(scope === 'derived' ? {} : { overlayScope: scope })} />
+        </AlertDialog>
+      );
+      const panel = screen.getByRole('alertdialog', { name: 'Placement' });
+      const overlay = panel.closest('.eg-alert-dialog-backdrop');
+      expect(overlay?.parentElement).toBe(host);
+      expect(overlay).toHaveClass(scope === 'viewport' ? 'fixed' : 'absolute', 'inset-0');
+      expect(overlay).not.toHaveClass(scope === 'viewport' ? 'absolute' : 'fixed');
+      for (const node of [overlay, panel, ...panel.querySelectorAll('*')]) {
+        expect(node).not.toHaveAttribute('container');
+        expect(node).not.toHaveAttribute('overlayscope');
+        expect(node).not.toHaveAttribute('pending');
+      }
+    }
+  );
+
+  it.each(['missing', 'null'] as const)('fails closed for container scope with a %s host', (host) => {
+    const invalid = {
+      ...content,
+      ...(host === 'null' ? { container: null } : {}),
+      overlayScope: 'container'
+    } as unknown as AlertDialogContentProps;
+    render(
+      <AlertDialog defaultOpen={true}>
+        <AlertDialogContent {...invalid} />
+      </AlertDialog>
+    );
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(document.querySelector('.eg-alert-dialog-backdrop')).toBeNull();
+  });
+
+  it('waits for a host before mounting and preserves server portal behavior', () => {
+    const tree = (host: HTMLElement | null) => (
+      <AlertDialog defaultOpen={true}>{host && <AlertDialogContent {...content} container={host} />}</AlertDialog>
+    );
+    expect(
+      renderToString(
+        <AlertDialog defaultOpen={true}>
+          <AlertDialogContent {...content} />
+        </AlertDialog>
+      )
+    ).toBe('');
+    const view = render(tree(null));
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    const host = view.container;
+    view.rerender(tree(host));
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(screen.getByRole('alertdialog').closest('.eg-alert-dialog-backdrop')?.parentElement).toBe(host);
+  });
+});
 
 describe('AlertDialog public behavior', () => {
   it('preserves baseline overlay and body classes', () => {

@@ -426,6 +426,9 @@ test('dialog exports its public compound API and keeps shared recipes internal',
     'dialogSheetHeadVariants',
     'dialogSheetOverflowVariants',
     'dialogHeaderActionsVariants',
+    'dialogCloseVariants',
+    'DialogPendingContext',
+    'useDialogCloseButton',
     'useDialogContent'
   ]) {
     assert.equal(Object.hasOwn(dialogExports, dialogName), false, `${dialogName} is internal`);
@@ -439,6 +442,69 @@ test('dialog exports its public compound API and keeps shared recipes internal',
     String.raw`.p-\[var\(--space-3\)\]`
   ]) {
     assert.ok(dialogCss.includes(dialogSelector), `Missing Dialog utility ${dialogSelector}`);
+  }
+});
+
+test('AlertDialog declarations expose placement and pending without private helpers', async () => {
+  const declaration = artifact('ui', ui.exports['.'].types);
+  const program = ts.createProgram([declaration], {
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    strictNullChecks: true,
+    skipLibCheck: true
+  });
+  const checker = program.getTypeChecker();
+  const source = program.getSourceFile(declaration);
+  const moduleSymbol = checker.getSymbolAtLocation(source);
+  const exports = checker.getExportsOfModule(moduleSymbol);
+  function declared(name) {
+    const exported = exports.find((entry) => entry.name === name);
+    assert.ok(exported, name);
+    const symbol = exported.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exported) : exported;
+    return checker.getDeclaredTypeOfSymbol(symbol);
+  }
+  const pending = checker.getPropertyOfType(declared('AlertDialogProps'), 'pending');
+  assert.ok(pending.flags & ts.SymbolFlags.Optional);
+  assert.equal(checker.typeToString(checker.getTypeOfSymbolAtLocation(pending, source)), 'boolean | undefined');
+  const dialogPending = checker.getPropertyOfType(declared('DialogProps'), 'pending');
+  assert.ok(dialogPending.flags & ts.SymbolFlags.Optional);
+  assert.equal(checker.typeToString(checker.getTypeOfSymbolAtLocation(dialogPending, source)), 'boolean | undefined');
+  const content = declared('AlertDialogContentProps');
+  for (const name of ['container', 'overlayScope']) {
+    const property = checker.getPropertyOfType(content, name);
+    assert.ok(property, name);
+    assert.ok(property.flags & ts.SymbolFlags.Optional, name);
+  }
+  const scope = checker.getTypeOfSymbolAtLocation(checker.getPropertyOfType(content, 'overlayScope'), source);
+  assert.deepEqual(
+    scope.types
+      .filter((part) => part.isStringLiteral())
+      .map((part) => part.value)
+      .sort(),
+    ['container', 'viewport']
+  );
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  for (const name of ['AlertDialogPendingContext', 'useAlertDialogContent', 'dialogOverlayVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const pendingSelector = String.raw`.aria-disabled\:\[\&\:not\(\:disabled\)\]\:pointer-events-auto`;
+  const pendingPosition = utilities.indexOf(pendingSelector);
+  assert.ok(pendingPosition >= 0, 'Pending close hit-test utility is shipped');
+  assert.match(utilities.slice(pendingPosition, pendingPosition + 250), /pointer-events:\s*auto/);
+  for (const [selector, declaration] of [
+    [/\.absolute\s*\{/, /position:\s*absolute/],
+    [/\.fixed\s*\{/, /position:\s*fixed/],
+    [/\.inset-0\s*\{/, /inset:\s*(?:var\(--space-0\)|0)/]
+  ]) {
+    assert.match(cssBlock(utilities, selector), declaration);
+  }
+  for (const path of [
+    'packages/ui/src/molecules/alert-dialog/types.ts',
+    'packages/ui/src/molecules/alert-dialog/useAlertDialog.ts'
+  ]) {
+    assert.doesNotMatch(readFileSync(resolve(root, path), 'utf8'), /\[&[^\]]*\.eg-/);
   }
 });
 

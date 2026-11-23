@@ -1,7 +1,14 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createRef, type ReactNode, useState } from 'react';
+import { createRef, type ReactNode, useRef, useState } from 'react';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogTrigger
+} from '../alert-dialog';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from '.';
 import type { DialogCloseProps, DialogContentProps, DialogProps, DialogTriggerProps } from './types';
 import { dialogPanelVariants, dialogScrimVariants } from './types';
@@ -133,6 +140,310 @@ function HostedExample({
     </>
   );
 }
+
+describe('Dialog pending action', () => {
+  it.each([undefined, false, true] as const)('passes aria-busy %s through except while pending', (busy) => {
+    const change = vi.fn();
+    const tree = (pending: boolean, open = true) => (
+      <Dialog open={open} pending={pending} onOpenChange={change}>
+        <DialogContent title='Settings' description='Preferences' aria-busy={busy}>
+          Body
+        </DialogContent>
+      </Dialog>
+    );
+    const view = render(tree(false));
+    const panel = screen.getByRole('dialog', { name: 'Settings', description: 'Preferences' });
+    expect(panel).toHaveAttribute('aria-modal', 'true');
+    expect(panel.getAttribute('aria-busy')).toBe(busy === undefined ? null : String(busy));
+    view.rerender(tree(true));
+    expect(panel).toHaveAttribute('aria-busy', 'true');
+    expect(panel).not.toHaveAttribute('pending');
+    view.rerender(tree(false));
+    expect(panel.getAttribute('aria-busy')).toBe(busy === undefined ? null : String(busy));
+    view.rerender(tree(true, false));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(change).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['native', 'footer'],
+    ['slot', 'footer'],
+    ['native', 'header'],
+    ['slot', 'header']
+  ] as const)('locks the %s close in the %s and restores handlers, ref and dismissal', async (form, placement) => {
+    const user = userEvent.setup();
+    const change = vi.fn();
+    const capture = vi.fn();
+    const outer = vi.fn();
+    const child = vi.fn();
+    const ref = createRef<HTMLButtonElement>();
+    const tree = (pending: boolean) => (
+      <Dialog open={true} pending={pending} onOpenChange={change}>
+        <DialogContent
+          title='Sheet'
+          variant='sheet'
+          size='full'
+          actionsPlacement={placement}
+          actions={
+            form === 'slot' ? (
+              <DialogClose asChild={true} ref={ref} onClickCapture={capture} onClick={outer}>
+                <button type='button' aria-disabled={false} onClick={child}>
+                  Done
+                </button>
+              </DialogClose>
+            ) : (
+              <DialogClose ref={ref} onClickCapture={capture} onClick={outer}>
+                Done
+              </DialogClose>
+            )
+          }
+        >
+          Body
+        </DialogContent>
+      </Dialog>
+    );
+    const view = render(tree(true));
+    const panel = screen.getByRole('dialog', { name: 'Sheet' });
+    const button = screen.getByRole('button', { name: 'Done' });
+    expect(ref.current).toBe(button);
+    expect(placement === 'header' ? panel.querySelector('header') : panel.querySelector('footer')).toContainElement(
+      button
+    );
+    expect(button).toHaveAttribute('aria-disabled', 'true');
+    expect(button).not.toBeDisabled();
+    expect(button).toHaveClass('aria-disabled:[&:not(:disabled)]:pointer-events-auto');
+    button.focus();
+    await user.click(button);
+    await user.keyboard('{Enter}');
+    await user.keyboard(' ');
+    fireEvent.click(button);
+    expect(button).toHaveFocus();
+    expect(panel).toBeInTheDocument();
+    expect(capture).not.toHaveBeenCalled();
+    expect(outer).not.toHaveBeenCalled();
+    expect(child).not.toHaveBeenCalled();
+    expect(change).not.toHaveBeenCalled();
+    view.rerender(tree(false));
+    expect(button).toHaveFocus();
+    if (form === 'slot') {
+      expect(button).toHaveAttribute('aria-disabled', 'false');
+    } else {
+      expect(button).not.toHaveAttribute('aria-disabled', 'true');
+    }
+    await user.click(button);
+    expect(capture).toHaveBeenCalledOnce();
+    expect(outer).toHaveBeenCalledOnce();
+    expect(child).toHaveBeenCalledTimes(form === 'slot' ? 1 : 0);
+    expect(change).toHaveBeenCalledExactlyOnceWith(false);
+  });
+
+  it('locks the built-in close while retaining focus and restores uncontrolled dismissal', async () => {
+    const user = userEvent.setup();
+    const change = vi.fn();
+    const tree = (pending: boolean) => (
+      <Dialog defaultOpen={true} pending={pending} onOpenChange={change}>
+        <DialogContent title='Settings'>Body</DialogContent>
+      </Dialog>
+    );
+    const view = render(tree(false));
+    const close = screen.getByRole('button', { name: 'Close' });
+    close.focus();
+    view.rerender(tree(true));
+    expect(close).toHaveFocus();
+    expect(close).toHaveAttribute('aria-disabled', 'true');
+    expect(close).not.toBeDisabled();
+    expect(close).toHaveClass('aria-disabled:[&:not(:disabled)]:pointer-events-auto');
+    await user.click(close);
+    await user.keyboard('{Enter}');
+    await user.keyboard(' ');
+    fireEvent.click(close);
+    expect(close).toHaveFocus();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(change).not.toHaveBeenCalled();
+    view.rerender(tree(false));
+    await user.click(close);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(change).toHaveBeenCalledExactlyOnceWith(false);
+  });
+
+  it('blocks Escape and outside while pending, then permits ordinary outside dismissal', async () => {
+    const user = userEvent.setup();
+    const change = vi.fn();
+    const tree = (pending: boolean) => (
+      <Dialog defaultOpen={true} pending={pending} onOpenChange={change}>
+        <DialogContent title='Settings'>
+          <input aria-label='Name' />
+        </DialogContent>
+      </Dialog>
+    );
+    const view = render(tree(true));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    const panel = screen.getByRole('dialog');
+    const overlay = panel.closest('.eg-dialog-backdrop');
+    if (!overlay) {
+      throw new Error('Missing dialog overlay');
+    }
+    fireEvent.pointerDown(overlay, { button: 0, pointerType: 'mouse' });
+    fireEvent.click(overlay);
+    await user.keyboard('{Escape}');
+    expect(panel).toBeInTheDocument();
+    expect(change).not.toHaveBeenCalled();
+    view.rerender(tree(false));
+    fireEvent.pointerDown(overlay, { button: 0, pointerType: 'mouse' });
+    fireEvent.click(overlay);
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(change).toHaveBeenCalledExactlyOnceWith(false);
+  });
+
+  it('preserves explicit native disabled controls and an operable Trigger while pending', async () => {
+    const user = userEvent.setup();
+    const triggerClick = vi.fn();
+    const change = vi.fn();
+    render(
+      <Dialog pending={true} onOpenChange={change}>
+        <DialogTrigger onClick={triggerClick}>Open</DialogTrigger>
+        <DialogContent title='Settings' actions={<DialogClose disabled={true}>Done</DialogClose>}>
+          Body
+        </DialogContent>
+      </Dialog>
+    );
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    expect(triggerClick).toHaveBeenCalledOnce();
+    expect(change).toHaveBeenCalledExactlyOnceWith(true);
+    expect(screen.getByRole('button', { name: 'Done' })).toBeDisabled();
+  });
+
+  it('keeps independently pending nested roots from propagating a blocked Escape', async () => {
+    const user = userEvent.setup();
+    const parentChange = vi.fn();
+    const childChange = vi.fn();
+    function Nested() {
+      const [childPending, setChildPending] = useState(true);
+      return (
+        <Dialog defaultOpen={true} pending={true} onOpenChange={parentChange}>
+          <DialogContent title='Sheet' variant='sheet'>
+            <AlertDialog pending={childPending} onOpenChange={childChange}>
+              <AlertDialogTrigger>Open alert</AlertDialogTrigger>
+              <AlertDialogContent
+                title='Delete?'
+                description='Cannot undo.'
+                actions={
+                  <>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction>Delete</AlertDialogAction>
+                  </>
+                }
+              />
+            </AlertDialog>
+            <button type='button' onClick={() => setChildPending(false)}>
+              Unlock alert
+            </button>
+          </DialogContent>
+        </Dialog>
+      );
+    }
+    render(<Nested />);
+    await user.click(screen.getByRole('button', { name: 'Open alert' }));
+    childChange.mockClear();
+    await user.keyboard('{Escape}');
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(childChange).not.toHaveBeenCalled();
+    expect(parentChange).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Unlock alert', hidden: true }));
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(childChange).toHaveBeenCalledExactlyOnceWith(false);
+    expect(screen.getByRole('dialog')).toHaveAttribute('aria-busy', 'true');
+    await user.keyboard('{Escape}');
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(parentChange).not.toHaveBeenCalled();
+  });
+
+  it('lets a consumer synchronously guard duplicate starts, recover and close on success', async () => {
+    const user = userEvent.setup();
+    const operations: { resolve: () => void; reject: () => void }[] = [];
+    const change = vi.fn();
+    function AsyncExample() {
+      const [open, setOpen] = useState(true);
+      const [pending, setPending] = useState(false);
+      const [failed, setFailed] = useState(false);
+      const inFlight = useRef(false);
+      return (
+        <Dialog
+          open={open}
+          pending={pending}
+          onOpenChange={(next) => {
+            change(next);
+            setOpen(next);
+          }}
+        >
+          <DialogContent
+            title='Save'
+            actions={
+              <DialogClose
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (inFlight.current) {
+                    return;
+                  }
+                  inFlight.current = true;
+                  setPending(true);
+                  setFailed(false);
+                  new Promise<void>((resolve, reject) =>
+                    operations.push({ resolve, reject: () => reject(new Error('Failed')) })
+                  )
+                    .then(() => {
+                      inFlight.current = false;
+                      setPending(false);
+                      setOpen(false);
+                    })
+                    .catch(() => {
+                      inFlight.current = false;
+                      setPending(false);
+                      setFailed(true);
+                    });
+                }}
+              >
+                Save
+              </DialogClose>
+            }
+          >
+            {pending && <span>Saving…</span>}
+            {failed && <span>Save failed. Try again.</span>}
+          </DialogContent>
+        </Dialog>
+      );
+    }
+    render(<AsyncExample />);
+    const save = screen.getByRole('button', { name: 'Save' });
+    act(() => {
+      fireEvent.click(save);
+      fireEvent.click(save);
+    });
+    expect(operations).toHaveLength(1);
+    expect(screen.getByText('Saving…')).toBeVisible();
+    expect(screen.getByRole('dialog')).toHaveAttribute('aria-busy', 'true');
+    expect(change).not.toHaveBeenCalled();
+    const first = operations[0];
+    if (!first) {
+      throw new Error('Missing operation');
+    }
+    await act(async () => first.reject());
+    expect(screen.getByText('Save failed. Try again.')).toBeVisible();
+    expect(screen.getByRole('dialog')).not.toHaveAttribute('aria-busy');
+    await user.click(save);
+    expect(operations).toHaveLength(2);
+    const second = operations[1];
+    if (!second) {
+      throw new Error('Missing retry');
+    }
+    await act(async () => second.resolve());
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(change).not.toHaveBeenCalled();
+  });
+});
 
 describe('Dialog sheet layout opt-ins', () => {
   const title = 'A long complete title for a sheet that stays available as its accessible name';

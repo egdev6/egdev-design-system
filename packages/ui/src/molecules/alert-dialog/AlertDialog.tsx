@@ -1,5 +1,5 @@
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
-import { forwardRef } from 'react';
+import { forwardRef, useContext } from 'react';
 import { Button } from '../../atoms/button';
 import { Icon } from '../../atoms/icon';
 import { Surface } from '../../primitives/surface';
@@ -10,11 +10,15 @@ import type {
   AlertDialogProps,
   AlertDialogTriggerProps
 } from './types';
-import { useAlertDialogButton, useAlertDialogContent } from './useAlertDialog';
+import { AlertDialogPendingContext, useAlertDialogButton, useAlertDialogContent } from './useAlertDialog';
 
 /** Decision-required modal root. */
-export function AlertDialog(props: AlertDialogProps) {
-  return <AlertDialogPrimitive.Root {...props} />;
+export function AlertDialog({ pending = false, ...props }: AlertDialogProps) {
+  return (
+    <AlertDialogPendingContext.Provider value={pending}>
+      <AlertDialogPrimitive.Root {...props} />
+    </AlertDialogPendingContext.Provider>
+  );
 }
 /** Optional disclosure control. */
 export const AlertDialogTrigger = forwardRef<HTMLButtonElement, AlertDialogTriggerProps>((props, ref) => (
@@ -23,7 +27,7 @@ export const AlertDialogTrigger = forwardRef<HTMLButtonElement, AlertDialogTrigg
 AlertDialogTrigger.displayName = 'AlertDialogTrigger';
 /** Least-destructive decision; receives initial focus. */
 export const AlertDialogCancel = forwardRef<HTMLButtonElement, AlertDialogCancelProps>((props, ref) => {
-  const { children, ...button } = useAlertDialogButton(props);
+  const { children, ...button } = useAlertDialogButton(props, useContext(AlertDialogPendingContext));
   return button.asChild ? (
     <AlertDialogPrimitive.Cancel {...button} ref={ref}>
       {children}
@@ -37,7 +41,7 @@ export const AlertDialogCancel = forwardRef<HTMLButtonElement, AlertDialogCancel
 AlertDialogCancel.displayName = 'AlertDialogCancel';
 /** Decision action. */
 export const AlertDialogAction = forwardRef<HTMLButtonElement, AlertDialogActionProps>((props, ref) => {
-  const { children, ...button } = useAlertDialogButton(props);
+  const { children, ...button } = useAlertDialogButton(props, useContext(AlertDialogPendingContext));
   return button.asChild ? (
     <AlertDialogPrimitive.Action {...button} ref={ref}>
       {children}
@@ -49,13 +53,28 @@ export const AlertDialogAction = forwardRef<HTMLButtonElement, AlertDialogAction
   );
 });
 AlertDialogAction.displayName = 'AlertDialogAction';
-/** Labelled modal with required consequence and actions. */
+/**
+ * Labelled modal with required consequence and actions. A connected, positioned,
+ * non-scrolling host bounds container-scoped paint, not document-wide Radix modality.
+ * Render after the host is ready and close before removing or replacing it. Viewport
+ * scope beneath a host can still be constrained by clipping or containing blocks.
+ */
 export function AlertDialogContent(props: AlertDialogContentProps) {
+  const pending = useContext(AlertDialogPendingContext);
   const c = useAlertDialogContent(props);
+  if (c.blocked) {
+    return null;
+  }
   return (
-    <AlertDialogPrimitive.Portal>
+    <AlertDialogPrimitive.Portal container={c.container}>
       <AlertDialogPrimitive.Overlay className={c.overlayClass}>
-        <AlertDialogPrimitive.Content {...c.rest} aria-modal={true} asChild={true}>
+        <AlertDialogPrimitive.Content
+          {...c.rest}
+          aria-busy={pending ? true : c.rest['aria-busy']}
+          aria-modal={true}
+          onEscapeKeyDown={pending ? (event) => event.preventDefault() : undefined}
+          asChild={true}
+        >
           <Surface tone='surface-2' elevation={3} radius='xl' padding='none' className={c.panelClass}>
             <header className={c.headClass}>
               <div className={c.titleRowClass}>

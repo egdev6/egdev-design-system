@@ -401,6 +401,23 @@ type AlertDialogRecipeNotExported = (typeof import('@egdev/ui'))['alertDialogHea
 const alertDialogContentProps: AlertDialogContentProps = { title: 'Delete?', description: 'Cannot undo.', actions: [createElement(AlertDialogCancel, { key: 'cancel', children: 'Cancel' }), createElement(AlertDialogAction, { key: 'action', children: 'Delete' })] };
 export const alertDialogProps: AlertDialogProps = { children: [createElement(AlertDialogTrigger, { key: 'trigger', children: 'Open' }), createElement(AlertDialogContent, { ...alertDialogContentProps, key: 'content' })] };
 export function alertDialogSample() { return createElement(AlertDialog, alertDialogProps); }
+export function alertDialogPlacementFixtures(host: HTMLElement) {
+  const omitted: AlertDialogContentProps = { ...alertDialogContentProps };
+  const body: AlertDialogContentProps = { ...alertDialogContentProps, container: null, overlayScope: 'viewport' };
+  const derived: AlertDialogContentProps = { ...alertDialogContentProps, container: host };
+  const contained: AlertDialogContentProps = { ...alertDialogContentProps, container: host, overlayScope: 'container' };
+  const viewport: AlertDialogContentProps = { ...alertDialogContentProps, container: host, overlayScope: 'viewport' };
+  // @ts-expect-error Container scope requires a non-null host.
+  const missingHost: AlertDialogContentProps = { ...alertDialogContentProps, overlayScope: 'container' };
+  // @ts-expect-error Null is not a container-scoped host.
+  const nullHost: AlertDialogContentProps = { ...alertDialogContentProps, container: null, overlayScope: 'container' };
+  // @ts-expect-error Overlay scope is a closed union.
+  const invalid: AlertDialogContentProps = { ...alertDialogContentProps, container: host, overlayScope: 'local' };
+  const pending: AlertDialogProps = { ...alertDialogProps, pending: true };
+  // @ts-expect-error Pending is boolean, not an operation label.
+  const invalidPending: AlertDialogProps = { ...alertDialogProps, pending: 'loading' };
+  return [omitted, body, derived, contained, viewport, missingHost, nullHost, invalid, pending, invalidPending];
+}
 export const alertDialogHeaderLayouts: AlertDialogContentProps[] = [
   { ...alertDialogContentProps, headerLayout: 'inline' },
   { ...alertDialogContentProps, headerLayout: 'stacked' }
@@ -440,6 +457,9 @@ const dialogInvalidHeader: DialogContentProps = { ...dialogContentProps, headerL
 const dialogBooleanHeader: DialogContentProps = { ...dialogContentProps, headerLayout: true };
 export type DialogHeaderNegatives = [typeof dialogInvalidHeader, typeof dialogBooleanHeader];
 export const dialogProps: DialogProps = { children: [createElement(DialogTrigger, { ...dialogTriggerProps, key: 'trigger', ref: dialogTriggerRef }), createElement(DialogContent, { ...dialogContentProps, key: 'content', actions: createElement(DialogClose, { ...dialogCloseProps, ref: dialogCloseRef }) })] };
+export const dialogPending: DialogProps = { ...dialogProps, pending: true };
+// @ts-expect-error Pending is a boolean lock, not an operation label.
+export const dialogInvalidPending: DialogProps = { ...dialogProps, pending: 'saving' };
 export function dialogSample() { return createElement(Dialog, dialogProps); }
 export function dialogPlacementFixtures(host: HTMLElement) {
   const contained: DialogContentProps = { title: 'Contained', children: 'Body', container: host, bodyPadding: 'compact' };
@@ -5026,6 +5046,8 @@ function assertDialogConsumerCSS(css) {
     assert.ok(css.includes(selector), `Missing Dialog utility ${selector}`);
   }
   assert.match(css, /\.absolute\s*\{[^}]*position:\s*absolute/);
+  assert.match(css, /\.fixed\s*\{[^}]*position:\s*fixed/);
+  assert.match(css, /\.inset-0\s*\{[^}]*inset:\s*(?:var\(--space-0\)|0)/);
   assert.match(css, /\.p-\\\[var\\\(--space-3\\\)\\\]\s*\{[^}]*padding:\s*var\(--space-3\)/);
   // Header recipes must work for packed consumers without a Tailwind compiler.
   assert.match(css, /\.flex\s*\{[^}]*display:\s*flex/);
@@ -8302,6 +8324,66 @@ try {
     assert.equal(packedTriggerRef.current, null);
     assert.equal(packedCloseRef.current, null);
   }
+  const dialogRequests = [];
+  let dialogOuterClicks = 0;
+  let dialogChildClicks = 0;
+  const packedDialog = (pending) => createElement(Dialog, { open: true, pending, onOpenChange: (open) => dialogRequests.push(open) },
+    createElement(DialogContent, { title: 'Packed pending', variant: 'sheet', actionsPlacement: 'header',
+      actions: createElement(DialogClose, { asChild: true, ref: packedCloseRef, onClick: () => dialogOuterClicks++ },
+        createElement('button', { type: 'button', 'aria-disabled': false, onClick: () => dialogChildClicks++ }, 'Done')) }, 'Body'));
+  await act(async () => root.render(packedDialog(true)));
+  const pendingDialog = document.querySelector('[role="dialog"]');
+  assert.equal(pendingDialog.getAttribute('aria-busy'), 'true');
+  assert.equal(pendingDialog.hasAttribute('pending'), false);
+  assert.equal(packedCloseRef.current.getAttribute('aria-disabled'), 'true');
+  assert.equal(pendingDialog.querySelector('header').contains(packedCloseRef.current), true);
+  await act(async () => packedCloseRef.current.click());
+  assert.deepEqual([dialogOuterClicks, dialogChildClicks, dialogRequests.length], [0, 0, 0]);
+  await act(async () => root.render(packedDialog(false)));
+  assert.equal(packedCloseRef.current.getAttribute('aria-disabled'), 'false');
+  await act(async () => packedCloseRef.current.click());
+  assert.deepEqual([dialogOuterClicks, dialogChildClicks, dialogRequests], [1, 1, [false]]);
+  await act(async () => root.render(null));
+  assert.equal(packedCloseRef.current, null);
+  const { AlertDialog: PackedAlertDialog, AlertDialogContent: PackedAlertContent, AlertDialogCancel: PackedAlertCancel, AlertDialogAction: PackedAlertAction } = await import('@egdev/ui');
+  const alertHost = document.createElement('div');
+  document.body.append(alertHost);
+  const alertCancelRef = createRef();
+  const alertActionRef = createRef();
+  const alertRequests = [];
+  let alertOuterClicks = 0;
+  let alertChildClicks = 0;
+  const packedAlert = (pending) => createElement(PackedAlertDialog, {
+    open: true, pending, onOpenChange: (open) => alertRequests.push(open),
+    children: createElement(PackedAlertContent, {
+      title: 'Packed alert', description: 'Decide.', container: alertHost,
+      actions: [
+        createElement(PackedAlertCancel, { key: 'cancel', ref: alertCancelRef, children: 'Cancel' }),
+        createElement(PackedAlertAction, { key: 'action', ref: alertActionRef, asChild: true, onClick: () => alertOuterClicks++,
+          children: createElement('button', { type: 'button', 'aria-disabled': false, onClick: () => alertChildClicks++, children: 'Delete' }) })
+      ]
+    })
+  });
+  await act(async () => root.render(packedAlert(true)));
+  const alertPanel = alertHost.querySelector('[role="alertdialog"]');
+  const alertOverlay = alertPanel.closest('.eg-alert-dialog-backdrop');
+  assert.equal(alertOverlay.parentElement, alertHost);
+  assert.ok(alertOverlay.classList.contains('absolute'));
+  assert.equal(alertPanel.getAttribute('aria-busy'), 'true');
+  for (const name of ['container', 'overlayscope', 'pending']) assert.equal(alertPanel.hasAttribute(name), false);
+  assert.equal(alertCancelRef.current.textContent, 'Cancel');
+  assert.equal(alertActionRef.current.getAttribute('aria-disabled'), 'true');
+  await act(async () => alertActionRef.current.click());
+  assert.deepEqual([alertOuterClicks, alertChildClicks, alertRequests.length], [0, 0, 0]);
+  await act(async () => root.render(packedAlert(false)));
+  assert.equal(alertActionRef.current.getAttribute('aria-disabled'), 'false');
+  await act(async () => alertActionRef.current.click());
+  assert.deepEqual([alertOuterClicks, alertChildClicks, alertRequests.length], [1, 1, 1]);
+  assert.deepEqual(alertRequests, [false]);
+  await act(async () => root.render(null));
+  assert.equal(alertCancelRef.current, null);
+  assert.equal(alertActionRef.current, null);
+  alertHost.remove();
   const { TypographySamples, textTruncatedChildRef } = await import('./consumer.ts');
   await act(async () => root.render(createElement(TypographySamples)));
   const truncatedSlot = document.getElementById('text-truncated-slot');

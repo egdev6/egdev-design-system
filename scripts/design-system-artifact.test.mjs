@@ -484,6 +484,40 @@ test('Heading and Text expose only their own and shared recipes', () => {
   );
 });
 
+test('AlertDialog placement and pending are attributed only to the affected public parts', () => {
+  const artifact = read('packages/system/design-system.json');
+  const root = artifact.components.find(({ name }) => name === 'AlertDialog');
+  const content = artifact.components.find(({ name }) => name === 'AlertDialogContent');
+  const dialog = artifact.components.find(({ name }) => name === 'Dialog');
+  const dialogContent = artifact.components.find(({ name }) => name === 'DialogContent');
+  const pending = root.props.find(({ name }) => name === 'pending');
+  assert.ok(pending);
+  assert.equal(pending.type, 'boolean');
+  assert.equal(pending.required, false);
+  assert.equal(pending.default, 'false');
+  const dialogPending = dialog.props.find(({ name }) => name === 'pending');
+  assert.ok(dialogPending);
+  assert.equal(dialogPending.type, 'boolean');
+  assert.equal(dialogPending.required, false);
+  assert.equal(dialogPending.default, 'false');
+  assert.ok(!root.props.some(({ name }) => name === 'container' || name === 'overlayScope'));
+  assert.ok(!content.props.some(({ name }) => name === 'pending'));
+  assert.ok(!dialogContent.props.some(({ name }) => name === 'pending'));
+  for (const name of ['container', 'overlayScope']) {
+    const prop = content.props.find((item) => item.name === name);
+    assert.ok(prop, name);
+    assert.equal(prop.required, false, name);
+    assert.equal(prop.default, null, name);
+  }
+  for (const id of ['portal-container', 'dialog-overlay-scope']) {
+    assert.ok(artifact.propNaming.find((entry) => entry.id === id).components.includes('AlertDialogContent'), id);
+  }
+  const naming = artifact.propNaming.find(({ id }) => id === 'modal-action-pending');
+  assert.equal(naming.name, 'pending');
+  assert.equal(naming.status, 'approved');
+  assert.deepEqual(naming.components, ['AlertDialog', 'Dialog']);
+});
+
 test('compound components expose the recipes used by their individual hooks', () => {
   const { components } = read('packages/system/design-system.json');
   const names = (name, field) =>
@@ -498,6 +532,7 @@ test('compound components expose the recipes used by their individual hooks', ()
     ['CollapsibleContent', ['collapsibleContentVariants']],
     ['Dialog', []],
     ['DialogTrigger', []],
+    ['DialogClose', ['dialogCloseVariants']],
     [
       'DialogContent',
       [

@@ -181,7 +181,14 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/alert-dialog/types.ts#AlertDialogProps'
   })),
-  ...['heading-title', 'content-description', 'trailing-actions', 'surface-material-tone'].map((conventionId) => ({
+  ...[
+    'heading-title',
+    'content-description',
+    'trailing-actions',
+    'surface-material-tone',
+    'portal-container',
+    'dialog-overlay-scope'
+  ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/alert-dialog/types.ts#AlertDialogContentProps'
   })),
@@ -875,8 +882,9 @@ const postReceiptProposals = [
   'image-fit',
   // AttachmentField v0.2 adds its independently approved reset token after the frozen receipts.
   'transient-feedback-reset-key',
-  // Text v0.3 records a separately approved convention after the frozen receipts.
+  // Text v0.3 and AlertDialog v0.2 record separately approved conventions after the frozen receipts.
   'single-line-text-truncation',
+  'modal-action-pending',
   // Dialog v0.4 proposes two component-scoped concepts without global naming approval.
   'dialog-title-overflow',
   'dialog-action-placement'
@@ -898,7 +906,8 @@ function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
         'panel-header': 'docs/decisions/prop-naming-molecule-specs-approval.json',
         'trailing-actions': 'docs/decisions/prop-naming-molecule-specs-approval.json',
         'panel-footer': 'docs/decisions/prop-naming-molecule-specs-approval.json',
-        'tooltip-content': 'docs/decisions/prop-naming-atom-specs-approval.json'
+        'tooltip-content': 'docs/decisions/prop-naming-atom-specs-approval.json',
+        'dialog-overlay-scope': 'docs/components/dialog/v0.2/prop-naming-approval.json'
       };
       if (Object.hasOwn(amendments, entry.id)) {
         const reference = amendments[entry.id];
@@ -1034,14 +1043,20 @@ test('Dialog placement and body padding bind the delegated naming approval and r
     assert.deepEqual(entry.usages.find((usage) => usage.component === 'DialogContent').source, source);
   }
   for (const id of ['dialog-overlay-scope', 'inner-padding']) {
-    const entry = registry.find((item) => item.id === id);
+    const current = registry.find((item) => item.id === id);
+    const previous = receipt.entries.find((item) => item.scope === `convention:${id}`);
+    const entry =
+      id === 'dialog-overlay-scope'
+        ? {
+            ...current,
+            ...previous.convention,
+            approval: { reference, scope: previous.scope, contentHash: previous.contentHash }
+          }
+        : current;
     const { approval: binding, usages, ...convention } = entry;
     const contentHash = props.conventionHash(entry);
     assert.deepEqual(binding, { reference, scope: `convention:${id}`, contentHash });
-    assert.deepEqual(
-      receipt.entries.find((item) => item.scope === binding.scope),
-      { scope: binding.scope, contentHash, convention }
-    );
+    assert.deepEqual(previous, { scope: binding.scope, contentHash, convention });
   }
   const padding = registry.find(({ id }) => id === 'inner-padding');
   const exception = padding.exceptions.find(
@@ -1063,6 +1078,86 @@ test('Dialog placement and body padding bind the delegated naming approval and r
       source: { ...source, revision: 'sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27' }
     }
   );
+  validate(registry);
+});
+
+test('AlertDialog placement and pending bind the forwarded owner choices and preserve Dialog naming history', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/alert-dialog/v0.2/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const previousPath = 'docs/components/dialog/v0.2/prop-naming-approval.json';
+  const previous = JSON.parse(fs.readFileSync(resolve(root, previousPath), 'utf8')).entries.find(
+    ({ scope }) => scope === 'convention:dialog-overlay-scope'
+  );
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.date, '2026-11-23');
+  assert.ok(receipt.evidence.userStatements.some(({ quote }) => quote === 'Enmendar el texto (Recomendado)'));
+  assert.ok(
+    receipt.evidence.userStatements.some(
+      ({ quote }) => quote === 'Incluye aprobar las convenciones nuevas que el plan propone (modal-action-pending)'
+    )
+  );
+  assert.deepEqual(receipt.priorReceipts, [
+    { path: previousPath, wholeFileSHA256: digest(fs.readFileSync(resolve(root, previousPath))) }
+  ]);
+  assert.equal(receipt.semanticAmendments[0].previousContentHash, previous.contentHash);
+  assert.equal(props.conventionHash(previous.convention), previous.contentHash);
+  const placement = registry.find(({ id }) => id === 'dialog-overlay-scope');
+  const pending = registry.find(({ id }) => id === 'modal-action-pending');
+  for (const entry of [placement, pending]) {
+    const { approval, usages, ...convention } = entry;
+    const contentHash = props.conventionHash(entry);
+    assert.deepEqual(approval, { reference, scope: `convention:${entry.id}`, contentHash });
+    assert.deepEqual(
+      receipt.entries.find(({ scope }) => scope === approval.scope),
+      { scope: approval.scope, contentHash, convention }
+    );
+  }
+  const { approval: _approval, usages: _usages, ...convention } = placement;
+  assert.deepEqual(
+    { ...convention, meaning: previous.convention.meaning, whenToUse: previous.convention.whenToUse },
+    previous.convention
+  );
+  assert.equal(convention.meaning, 'The layout boundary of a Dialog or AlertDialog modal overlay grid.');
+  assert.equal(
+    convention.whenToUse,
+    'Choose viewport or container layout for the Dialog or AlertDialog overlay, independently of the portal mount target.'
+  );
+  const path = 'packages/ui/src/molecules/alert-dialog/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  for (const id of ['portal-container', 'dialog-overlay-scope']) {
+    assert.deepEqual(
+      registry.find((entry) => entry.id === id).usages.find(({ component }) => component === 'AlertDialogContent')
+        .source,
+      { path, symbol: 'AlertDialogContentProps', revision }
+    );
+  }
+  assert.deepEqual(pending.usages, [
+    {
+      component: 'AlertDialog',
+      type: 'boolean (optional; default false)',
+      status: 'existing',
+      source: { path, symbol: 'AlertDialogProps', revision }
+    },
+    {
+      component: 'Dialog',
+      type: 'boolean (optional; default false)',
+      status: 'existing',
+      source: {
+        path: 'packages/ui/src/molecules/dialog/types.ts',
+        symbol: 'DialogProps',
+        revision: digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/dialog/types.ts')))
+      }
+    }
+  ]);
+  for (const entry of registry) {
+    for (const usage of entry.usages.filter((item) =>
+      [path, 'packages/ui/src/molecules/dialog/types.ts'].includes(item.source.path)
+    )) {
+      assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
+    }
+  }
   validate(registry);
 });
 
@@ -1579,7 +1674,7 @@ test('Dialog sheet concepts remain proposed and bind every reviewed source revis
   const path = 'packages/ui/src/molecules/dialog/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, path)));
   const usages = registry.flatMap((entry) => entry.usages.filter((usage) => usage.source.path === path));
-  assert.equal(usages.length, 18);
+  assert.equal(usages.length, 19);
   for (const usage of usages) {
     assert.equal(usage.source.revision, revision);
   }
@@ -2151,8 +2246,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // Panel and Tabs fill add one approved shared convention (host-fill).
   // PhotoFrame fit adds one approved convention (image-fit).
   // AttachmentField v0.2 adds the approved reset token; Text v0.3 adds truncation.
-  assert.equal(actual.length, 183);
-  assert.equal(beforeIndicatorConventions(actual).length, 180);
+  // AlertDialog v0.2 adds its independently approved pending convention; Dialog v0.4 proposes two more.
+  assert.equal(actual.length, 184);
+  assert.equal(beforeIndicatorConventions(actual).length, 181);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

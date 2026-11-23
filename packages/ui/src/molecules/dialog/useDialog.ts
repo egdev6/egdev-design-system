@@ -1,8 +1,9 @@
-import { Children, Fragment, isValidElement } from 'react';
+import { Children, cloneElement, createContext, Fragment, isValidElement, type MouseEvent } from 'react';
 import { cn } from '../../lib/cn';
 import type { DialogCloseProps, DialogContentProps, DialogTriggerProps } from './types';
 import {
   dialogBodyVariants,
+  dialogCloseVariants,
   dialogDescriptionVariants,
   dialogDismissVariants,
   dialogFootVariants,
@@ -21,12 +22,34 @@ import {
   dialogTitleVariants
 } from './types';
 
+export const DialogPendingContext = createContext(false);
+
 export function useDialogButton(props: DialogTriggerProps | DialogCloseProps) {
   const { asChild = false, children, className, ...rest } = props;
   if (asChild && (!isValidElement(children) || Children.count(children) !== 1 || children.type === Fragment)) {
     throw new Error('Dialog asChild requires a single named button-compatible element');
   }
   return { ...rest, asChild, children, className, type: 'button' as const };
+}
+
+export function useDialogCloseButton(props: DialogCloseProps, pending: boolean) {
+  const button = useDialogButton(props);
+  if (!pending) {
+    return button;
+  }
+  return {
+    ...button,
+    children:
+      button.asChild && isValidElement<{ 'aria-disabled'?: boolean | 'true' | 'false' }>(button.children)
+        ? cloneElement(button.children, { 'aria-disabled': true })
+        : button.children,
+    className: cn(dialogCloseVariants({ pending }), button.className),
+    'aria-disabled': true as const,
+    onClickCapture: (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
 }
 
 export function useDialogContent(props: DialogContentProps) {
