@@ -489,14 +489,20 @@ test('AlertDialog placement and pending are attributed only to the affected publ
   const root = artifact.components.find(({ name }) => name === 'AlertDialog');
   const content = artifact.components.find(({ name }) => name === 'AlertDialogContent');
   const dialog = artifact.components.find(({ name }) => name === 'Dialog');
+  const dialogContent = artifact.components.find(({ name }) => name === 'DialogContent');
   const pending = root.props.find(({ name }) => name === 'pending');
   assert.ok(pending);
   assert.equal(pending.type, 'boolean');
   assert.equal(pending.required, false);
   assert.equal(pending.default, 'false');
-  assert.ok(!dialog.props.some(({ name }) => name === 'pending'));
+  const dialogPending = dialog.props.find(({ name }) => name === 'pending');
+  assert.ok(dialogPending);
+  assert.equal(dialogPending.type, 'boolean');
+  assert.equal(dialogPending.required, false);
+  assert.equal(dialogPending.default, 'false');
   assert.ok(!root.props.some(({ name }) => name === 'container' || name === 'overlayScope'));
   assert.ok(!content.props.some(({ name }) => name === 'pending'));
+  assert.ok(!dialogContent.props.some(({ name }) => name === 'pending'));
   for (const name of ['container', 'overlayScope']) {
     const prop = content.props.find((item) => item.name === name);
     assert.ok(prop, name);
@@ -509,7 +515,7 @@ test('AlertDialog placement and pending are attributed only to the affected publ
   const naming = artifact.propNaming.find(({ id }) => id === 'modal-action-pending');
   assert.equal(naming.name, 'pending');
   assert.equal(naming.status, 'approved');
-  assert.deepEqual(naming.components, ['AlertDialog']);
+  assert.deepEqual(naming.components, ['AlertDialog', 'Dialog']);
 });
 
 test('compound components expose the recipes used by their individual hooks', () => {
@@ -526,6 +532,7 @@ test('compound components expose the recipes used by their individual hooks', ()
     ['CollapsibleContent', ['collapsibleContentVariants']],
     ['Dialog', []],
     ['DialogTrigger', []],
+    ['DialogClose', ['dialogCloseVariants']],
     [
       'DialogContent',
       [

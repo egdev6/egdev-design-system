@@ -13,7 +13,8 @@ export type AlertDialogProps = {
   /**
    * Locks this alert's owned dismissal controls and marks its content busy while an action is in flight.
    * Consumers synchronously prevent the initiating action's close and provide progress and error messages;
-   * aria-busy does not guarantee an announcement. Controlled close and unmount remain possible.
+   * aria-busy does not guarantee an announcement. An outside-host pointer press can move focus to body
+   * without closing; Tab re-enters through Radix's active trap. Controlled close and unmount remain possible.
    * @default false
    * @control boolean
    */

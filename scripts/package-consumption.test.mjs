@@ -457,6 +457,9 @@ const dialogInvalidHeader: DialogContentProps = { ...dialogContentProps, headerL
 const dialogBooleanHeader: DialogContentProps = { ...dialogContentProps, headerLayout: true };
 export type DialogHeaderNegatives = [typeof dialogInvalidHeader, typeof dialogBooleanHeader];
 export const dialogProps: DialogProps = { children: [createElement(DialogTrigger, { ...dialogTriggerProps, key: 'trigger', ref: dialogTriggerRef }), createElement(DialogContent, { ...dialogContentProps, key: 'content', actions: createElement(DialogClose, { ...dialogCloseProps, ref: dialogCloseRef }) })] };
+export const dialogPending: DialogProps = { ...dialogProps, pending: true };
+// @ts-expect-error Pending is a boolean lock, not an operation label.
+export const dialogInvalidPending: DialogProps = { ...dialogProps, pending: 'saving' };
 export function dialogSample() { return createElement(Dialog, dialogProps); }
 export function dialogPlacementFixtures(host: HTMLElement) {
   const contained: DialogContentProps = { title: 'Contained', children: 'Body', container: host, bodyPadding: 'compact' };
@@ -8321,6 +8324,27 @@ try {
     assert.equal(packedTriggerRef.current, null);
     assert.equal(packedCloseRef.current, null);
   }
+  const dialogRequests = [];
+  let dialogOuterClicks = 0;
+  let dialogChildClicks = 0;
+  const packedDialog = (pending) => createElement(Dialog, { open: true, pending, onOpenChange: (open) => dialogRequests.push(open) },
+    createElement(DialogContent, { title: 'Packed pending', variant: 'sheet', actionsPlacement: 'header',
+      actions: createElement(DialogClose, { asChild: true, ref: packedCloseRef, onClick: () => dialogOuterClicks++ },
+        createElement('button', { type: 'button', 'aria-disabled': false, onClick: () => dialogChildClicks++ }, 'Done')) }, 'Body'));
+  await act(async () => root.render(packedDialog(true)));
+  const pendingDialog = document.querySelector('[role="dialog"]');
+  assert.equal(pendingDialog.getAttribute('aria-busy'), 'true');
+  assert.equal(pendingDialog.hasAttribute('pending'), false);
+  assert.equal(packedCloseRef.current.getAttribute('aria-disabled'), 'true');
+  assert.equal(pendingDialog.querySelector('header').contains(packedCloseRef.current), true);
+  await act(async () => packedCloseRef.current.click());
+  assert.deepEqual([dialogOuterClicks, dialogChildClicks, dialogRequests.length], [0, 0, 0]);
+  await act(async () => root.render(packedDialog(false)));
+  assert.equal(packedCloseRef.current.getAttribute('aria-disabled'), 'false');
+  await act(async () => packedCloseRef.current.click());
+  assert.deepEqual([dialogOuterClicks, dialogChildClicks, dialogRequests], [1, 1, [false]]);
+  await act(async () => root.render(null));
+  assert.equal(packedCloseRef.current, null);
   const { AlertDialog: PackedAlertDialog, AlertDialogContent: PackedAlertContent, AlertDialogCancel: PackedAlertCancel, AlertDialogAction: PackedAlertAction } = await import('@egdev/ui');
   const alertHost = document.createElement('div');
   document.body.append(alertHost);

@@ -14,6 +14,16 @@ export type DialogProps = {
   /** Requested visibility changes. @control false
    * @controlReason Callback is not serializable; see Controlled. */
   onOpenChange?: (open: boolean) => void;
+  /**
+   * Locks this dialog's owned dismissal controls and marks its content busy while an action is in flight.
+   * Consumers synchronously prevent the initiating close, guard duplicate starts, and provide visible
+   * progress, recovery and any needed announcement outside the busy subtree; aria-busy is not an announcement.
+   * An outside-host pointer press can move focus to body without closing; Tab re-enters through Radix's active trap.
+   * Controlled close and unmount remain possible.
+   * @default false
+   * @control boolean
+   */
+  pending?: boolean;
 };
 
 type ButtonComposition =
@@ -115,6 +125,11 @@ export type DialogContentProps = Omit<
      * @control text */ dismissLabel?: string;
   };
 
+/** Keep pending closes hit-testable without overriding explicitly disabled buttons. */
+export const dialogCloseVariants = cva('', {
+  variants: { pending: { true: 'aria-disabled:[&:not(:disabled)]:pointer-events-auto', false: '' } },
+  defaultVariants: { pending: false }
+});
 /** Internal, marker-free paint recipe shared by modal components. */
 export const dialogScrimVariants = cva('bg-bg-scrim/72 backdrop-blur-none');
 export const dialogOverlayLayout = cva('inset-0 grid overflow-y-auto place-items-center p-[var(--space-6)]', {

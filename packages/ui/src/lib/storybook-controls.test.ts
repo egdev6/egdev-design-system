@@ -1002,6 +1002,20 @@ describe('pure JSDoc Controls metadata mapping', () => {
 });
 
 describe('Dialog sheet layout Controls', () => {
+  it('maps the Dialog root pending boolean without injecting an argument', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(fileURLToPath(new URL('../molecules/dialog/Dialog.tsx', import.meta.url)))
+      .find((item) => item.displayName === 'Dialog');
+    expect(doc).toBeDefined();
+    const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const composed = composeStory({}, { title: 'Metadata/Dialog', component: metadata }, preview, 'Default');
+    expect(composed.argTypes.pending?.control).toEqual({ type: 'boolean' });
+    expect(composed.argTypes.pending?.table?.defaultValue?.summary).toBe('false');
+    expect(composed.argTypes.pending?.type?.required).not.toBe(true);
+    expect(composed.args).toEqual({});
+  });
   it('maps the full public rows and conditional choices without diagnostics or injected args', {
     timeout: heavyDocgenTimeoutMs
   }, () => {

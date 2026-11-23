@@ -25,9 +25,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { hydrateRoot } from 'react-dom/client';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction,
-  Dialog, DialogTrigger, DialogContent } from ${JSON.stringify(join(root, 'packages/ui/src/index.ts'))};
+  Dialog, DialogTrigger, DialogContent, DialogClose, Button } from ${JSON.stringify(join(root, 'packages/ui/src/index.ts'))};
 import * as RadixAlert from ${JSON.stringify(join(root, 'packages/ui/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs'))};
-const defaults = { mode:'single', scope:'derived', form:'native', disabledAction:false, width:440, height:600 };
+const defaults = { mode:'single', scope:'derived', form:'native', placement:'footer', disabledAction:false, width:440, height:600 };
 export function App() {
   const [host, setHost] = useState(null);
   const [settings, setSettings] = useState(defaults);
@@ -124,10 +124,22 @@ export function App() {
     <div id='outside'><button id='outside-button' onClick={() => window.__events.outside++}>Outside action</button></div>
     <div id='fixture-host' ref={setHost} style={{position:'relative', boxSizing:'border-box',
       width:settings.width+'px', height:settings.height+'px', marginLeft:'100px', marginTop:'60px'}}/>
-    {host && (settings.mode === 'nested' ? <Dialog open={sheetOpen} onOpenChange={(value) => {
+    {host && (settings.mode === 'dialog-pending' ? <Dialog open={sheetOpen} pending={pending} onOpenChange={(value) => {
       window.__events.sheet.push(value); setSheetOpen(value);
     }}><DialogTrigger id='sheet-trigger'>Open sheet</DialogTrigger>
-      <DialogContent title='Note' description='Note details.' variant='sheet' container={host}>{alert}</DialogContent>
+      <DialogContent title='Note' description='Note details.' variant='sheet' size='full' container={host}
+        actionsPlacement={settings.placement} actions={settings.form === 'slot'
+          ? <DialogClose asChild onClick={() => window.__events.cancelOuter++}><button id='dialog-explicit' type='button' aria-disabled={false} onClick={() => window.__events.cancelChild++}>Done</button></DialogClose>
+          : settings.form === 'button'
+            ? <DialogClose asChild onClick={() => window.__events.cancelOuter++}><Button id='dialog-explicit' aria-disabled={false} onClick={() => window.__events.cancelChild++}>Done</Button></DialogClose>
+            : <DialogClose id='dialog-explicit' onClick={() => window.__events.cancelOuter++}>Done</DialogClose>}>
+        <input aria-label='Note body'/>{pending && <p>Saving…</p>}
+      </DialogContent>
+    </Dialog> : settings.mode === 'nested' ? <Dialog open={sheetOpen} onOpenChange={(value) => {
+      window.__events.sheet.push(value); setSheetOpen(value);
+    }}><DialogTrigger id='sheet-trigger'>Open sheet</DialogTrigger>
+      <DialogContent title='Note' description='Note details.' variant='sheet' size='full' container={host}
+        actionsPlacement='header' actions={<button id='sheet-header-action' type='button' onClick={() => window.__events.outside++}>Sheet action</button>}>{alert}</DialogContent>
     </Dialog> : alert)}
   </main>;
 }
@@ -445,6 +457,11 @@ async function outsideChecks(cdp) {
         result.outsideEvents.some((event) => event.prevented && !event.originalPrevented),
         `${input}/${pending}: Radix must cancel its custom outside event, not the original pointer event`
       );
+      await key(cdp, 'Tab');
+      result.tabReenters = await cdp.evaluate(
+        `document.querySelector('[role="alertdialog"]').contains(document.activeElement)`
+      );
+      assert.equal(result.tabReenters, true, `${input}/${pending}: Tab re-enters the active trap`);
       results.push(result);
     }
   }
@@ -564,6 +581,108 @@ async function pendingChecks(cdp) {
   return { cases, blockedEscape: 2, unlockedCancel: 2, explicitDisabled: 2 };
 }
 
+async function dialogPendingChecks(cdp) {
+  const cases = [];
+  const placements = [];
+  const outside = [];
+  for (const placement of ['header', 'footer']) {
+    for (const form of ['native', 'slot', 'button']) {
+      await reset(cdp, { mode: 'dialog-pending', form, placement });
+      await click(cdp, '#sheet-trigger');
+      await waitFor(() => cdp.evaluate(`!!document.querySelector('[role="dialog"]')`), 'pending sheet');
+      await cdp.evaluate(`(() => { const panel=document.querySelector('[role="dialog"]');
+        [...panel.querySelectorAll('button')].find(node => node.textContent.trim()==='Close').id='dialog-built-in';
+        document.getElementById('dialog-explicit').focus(); window.__setPending(true); })()`);
+      const attributes = await cdp.evaluate(`(() => { const panel=document.querySelector('[role="dialog"]');
+        const explicit=document.getElementById('dialog-explicit'); const built=document.getElementById('dialog-built-in');
+        return {busy:panel.getAttribute('aria-busy'), focus:document.activeElement.id,
+          placement:panel.querySelector('header').contains(explicit) ? 'header' : 'footer',
+          controls:[explicit,built].map(node => ({disabled:node.disabled, aria:node.getAttribute('aria-disabled'), pointer:getComputedStyle(node).pointerEvents}))}; })()`);
+      assert.equal(attributes.busy, 'true');
+      assert.equal(attributes.focus, 'dialog-explicit');
+      assert.equal(attributes.placement, placement);
+      for (const control of attributes.controls) {
+        assert.deepEqual(control, { disabled: false, aria: 'true', pointer: 'auto' });
+      }
+      placements.push({ placement, form });
+      for (const button of ['dialog-explicit', 'dialog-built-in']) {
+        for (const input of ['mouse', 'touch', 'Enter', 'Space']) {
+          await cdp.evaluate(`document.getElementById(${JSON.stringify(button)}).focus(); window.__input=[]`);
+          if (input === 'mouse' || input === 'touch') {
+            await click(cdp, `#${button}`, input);
+          } else {
+            await key(cdp, input);
+          }
+          const result =
+            await cdp.evaluate(`({focus:document.activeElement.id, input:window.__input, events:window.__events,
+            open:!!document.querySelector('[role="dialog"]')})`);
+          assert.equal(result.focus, button, `${placement}/${form}/${button}/${input} focus`);
+          assert.equal(result.open, true);
+          assert.ok(
+            result.input.some((event) => event.type === 'click' && event.target === button),
+            `${button}/${input} click must reach the control`
+          );
+          if (input === 'mouse' || input === 'touch') {
+            for (const type of ['pointerdown', 'pointerup']) {
+              assert.ok(
+                result.input.some(
+                  (event) => event.type === type && event.target === button && event.pointerType === input
+                )
+              );
+            }
+          }
+          assert.deepEqual(result.events.sheet, [true]);
+          assert.equal(result.events.cancelOuter, 0);
+          assert.equal(result.events.cancelChild, 0);
+          cases.push({ placement, form, button, input });
+        }
+      }
+      await cdp.evaluate(`document.getElementById('dialog-explicit').click()`);
+      await key(cdp, 'Escape');
+      assert.deepEqual(await cdp.evaluate('window.__events.sheet'), [true]);
+      assert.equal(await cdp.evaluate(`!!document.querySelector('[role="dialog"]')`), true);
+      const overlayPoint = await cdp.evaluate(
+        `(() => { const r=document.querySelector('[role="dialog"]').parentElement.getBoundingClientRect(); return {x:r.left+2,y:r.top+2}; })()`
+      );
+      await pointer(cdp, 'mouse', overlayPoint);
+      assert.deepEqual(await cdp.evaluate('window.__events.sheet'), [true]);
+      await cdp.evaluate('window.__setPending(false)');
+      await click(cdp, '#dialog-explicit');
+      await waitFor(() => cdp.evaluate(`!document.querySelector('[role="dialog"]')`), 'unlocked dialog close');
+      const events = await cdp.evaluate('window.__events');
+      assert.deepEqual(events.sheet, [true, false]);
+      assert.equal(events.cancelOuter, 1);
+      assert.equal(events.cancelChild, form === 'native' ? 0 : 1);
+    }
+  }
+  for (const input of ['mouse', 'touch']) {
+    await reset(cdp, { mode: 'dialog-pending', placement: 'header' });
+    await click(cdp, '#sheet-trigger');
+    await waitFor(() => cdp.evaluate(`!!document.querySelector('[role="dialog"]')`), 'hosted pending sheet');
+    await cdp.evaluate(`document.getElementById('dialog-explicit').focus(); window.__setPending(true)`);
+    await pointer(cdp, input, await point(cdp, '#outside-button'));
+    const focus = await cdp.evaluate(`({tag:document.activeElement.tagName, events:window.__events,
+      open:!!document.querySelector('[role="dialog"]')})`);
+    assert.equal(focus.open, true);
+    assert.deepEqual(focus.events.sheet, [true]);
+    assert.equal(focus.events.outside, 0);
+    assert.equal(focus.tag, 'BODY', `${input}: documented outside-host focus`);
+    await key(cdp, 'Tab');
+    assert.equal(
+      await cdp.evaluate(`document.querySelector('[role="dialog"]').contains(document.activeElement)`),
+      true
+    );
+    outside.push({ input, focus: focus.tag, tabReenters: true });
+  }
+  return {
+    activationCases: cases.length,
+    placements: placements.length,
+    blockedEscape: placements.length,
+    blockedOutside: placements.length,
+    outside
+  };
+}
+
 async function stackingChecks(cdp) {
   const samples = [];
   const hits = [];
@@ -582,8 +701,10 @@ async function stackingChecks(cdp) {
         const sheet=document.querySelector('[role="dialog"]'); const host=document.getElementById('fixture-host');
         const close=[...sheet.querySelectorAll('button')].find(n => n.textContent.trim()==='Close');
         const header=sheet.querySelector('header').getBoundingClientRect(); const r=close.getBoundingClientRect();
+        const action=sheet.querySelector('#sheet-header-action').getBoundingClientRect();
         const h=host.getBoundingClientRect(); const cx=r.x+r.width/2, cy=r.y+r.height/2;
-        return {close:{x:cx,y:cy},closeLeft:{x:cx-22,y:cy},closeRight:{x:cx+22,y:cy},
+        return {headerAction:{x:action.x+action.width/2,y:action.y+action.height/2},
+          close:{x:cx,y:cy},closeLeft:{x:cx-22,y:cy},closeRight:{x:cx+22,y:cy},
           closeTop:{x:cx,y:cy-22},closeBottom:{x:cx,y:cy+22},header:{x:header.x+header.width/2,y:header.y+header.height/2},
           topLeft:{x:h.left+2,y:h.top+2},topRight:{x:h.right-2,y:h.top+2},
           bottomLeft:{x:h.left+2,y:h.bottom-2},bottomRight:{x:h.right-2,y:h.bottom-2}};
@@ -621,6 +742,7 @@ async function stackingChecks(cdp) {
           assert.deepEqual(result.events.sheet, [true], 'Sheet receives no close request');
           assert.deepEqual(result.events.alert, [true], 'Alert receives no close request');
           assert.equal(result.events.cancelOuter + result.events.actionOuter, 0, 'Pending action handlers are blocked');
+          assert.equal(result.events.outside, 0, 'Sheet header action stays blocked');
           assert.ok(
             result.input.some((event) => event.type === 'pointerdown' && event.pointerType === input),
             `${motion}/${size.width}/${input}/${name}: real pointerdown`
@@ -719,6 +841,8 @@ try {
       explicitDisabled: pending.explicitDisabled
     })
   );
+  const dialogPending = await dialogPendingChecks(cdp);
+  console.log(JSON.stringify({ step: 'dialog-pending', ...dialogPending }));
   const stacking = await stackingChecks(cdp);
   const workflow = await asyncChecks(cdp);
   assert.deepEqual(cdp.exceptions, [], 'Browser runtime exceptions');
@@ -742,6 +866,7 @@ try {
           unlockedCancel: pending.unlockedCancel,
           explicitDisabled: pending.explicitDisabled
         },
+        dialogPending,
         stacking: {
           paintedSamples: stacking.samples.length,
           pointerSequences: stacking.hits.length,

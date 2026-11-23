@@ -765,7 +765,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -1032,7 +1032,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -1380,7 +1380,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -2870,7 +2870,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogTriggerProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -2880,7 +2880,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogCancelProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -2890,7 +2890,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogActionProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -2900,7 +2900,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogTriggerProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -2910,7 +2910,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogCloseProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -4720,7 +4720,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -4740,7 +4740,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -4817,7 +4817,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -4837,7 +4837,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -4914,7 +4914,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -4934,7 +4934,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -5256,7 +5256,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -5266,7 +5266,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -5611,7 +5611,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -5621,7 +5621,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -5990,7 +5990,17 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
+        }
+      },
+      {
+        "component": "Dialog",
+        "type": "boolean (optional; default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogProps",
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       }
     ]
@@ -6027,7 +6037,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -6037,7 +6047,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       }
     ]
@@ -6064,7 +6074,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -6074,7 +6084,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       }
     ]
@@ -6101,7 +6111,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -6111,7 +6121,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       }
     ]
@@ -6828,7 +6838,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       }
     ]
@@ -6973,7 +6983,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -7064,7 +7074,7 @@
         "source": {
           "path": "packages/ui/src/molecules/alert-dialog/types.ts",
           "symbol": "AlertDialogContentProps",
-          "revision": "sha256:5f4908ab3c919e382f244ec2b22759376d2cd6ebb842010e8d2e9c7da3fb1c8b"
+          "revision": "sha256:0fa3e22f6405387550ff44ba6ebb07cfcab88c042f93af31e79842b6b7d32850"
         }
       },
       {
@@ -7074,7 +7084,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       },
       {
@@ -7111,7 +7121,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       }
     ]
@@ -8824,7 +8834,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       }
     ]
@@ -8847,7 +8857,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+          "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
         }
       }
     ]

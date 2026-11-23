@@ -174,6 +174,38 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Dialog sheet layout metadata', () => {
+  it('documents every root prop and the independent pending default', { timeout: heavyDocgenTimeoutMs }, () => {
+    const file = ast(source('molecules/dialog/types.ts'));
+    const declarations = ownProps(file, ['DialogProps']);
+    expect(declarations.map((item) => item.name.getText(file))).toEqual([
+      'children',
+      'open',
+      'defaultOpen',
+      'onOpenChange',
+      'pending'
+    ]);
+    for (const property of declarations) {
+      const name = property.name.getText(file);
+      const control = name === 'children' || name === 'onOpenChange' ? 'false' : 'boolean';
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map(({ comment }) => comment),
+        name
+      ).toEqual([control]);
+      if (control === 'false') {
+        expect(tags.find(({ tagName }) => tagName.text === 'controlReason')?.comment).toBeTruthy();
+      }
+    }
+    const root = parser
+      .parse(source('molecules/dialog/Dialog.tsx'))
+      .find(({ displayName }) => displayName === 'Dialog');
+    expect(root?.props.pending).toMatchObject({
+      required: false,
+      defaultValue: { value: 'false' },
+      tags: { control: 'boolean' }
+    });
+    expect(exportedStoryNames(ast(source('molecules/dialog/Dialog.stories.tsx')))).toContain('PendingAction');
+  });
   it('annotates every own declaration in dimensions and placement branches', () => {
     const file = ast(source('molecules/dialog/types.ts'));
     const declarations = ownProps(file, ['DialogDimensions', 'DialogPlacement', 'DialogContentProps']);

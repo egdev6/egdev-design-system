@@ -1,14 +1,18 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { forwardRef } from 'react';
+import { forwardRef, useContext } from 'react';
 import { Icon } from '../../atoms/icon';
 import { IconButton } from '../../atoms/icon-button';
 import { Surface } from '../../primitives/surface';
 import type { DialogCloseProps, DialogContentProps, DialogProps, DialogTriggerProps } from './types';
-import { useDialogButton, useDialogContent } from './useDialog';
+import { DialogPendingContext, useDialogButton, useDialogCloseButton, useDialogContent } from './useDialog';
 
 /** Modal root; Radix owns visibility and focus. */
-export function Dialog(props: DialogProps) {
-  return <DialogPrimitive.Root {...props} modal={true} />;
+export function Dialog({ pending = false, ...props }: DialogProps) {
+  return (
+    <DialogPendingContext.Provider value={pending}>
+      <DialogPrimitive.Root {...props} modal={true} />
+    </DialogPendingContext.Provider>
+  );
 }
 /** Optional native or slotted disclosure button. */
 export const DialogTrigger = forwardRef<HTMLButtonElement, DialogTriggerProps>((props, ref) => (
@@ -17,7 +21,7 @@ export const DialogTrigger = forwardRef<HTMLButtonElement, DialogTriggerProps>((
 DialogTrigger.displayName = 'DialogTrigger';
 /** Explicit close action. */
 export const DialogClose = forwardRef<HTMLButtonElement, DialogCloseProps>((props, ref) => (
-  <DialogPrimitive.Close {...useDialogButton(props)} ref={ref} />
+  <DialogPrimitive.Close {...useDialogCloseButton(props, useContext(DialogPendingContext))} ref={ref} />
 ));
 DialogClose.displayName = 'DialogClose';
 /**
@@ -33,6 +37,7 @@ DialogClose.displayName = 'DialogClose';
  * enough space for the complete targets and focus rings, including between wrapped controls.
  */
 export function DialogContent(props: DialogContentProps) {
+  const pending = useContext(DialogPendingContext);
   const c = useDialogContent(props);
   if (c.blocked) {
     return null;
@@ -65,7 +70,7 @@ export function DialogContent(props: DialogContentProps) {
       </header>
       <div className={c.bodyClass}>{c.children}</div>
       {!c.headerActions && c.actions != null && <footer className={c.footClass}>{c.actions}</footer>}
-      <DialogPrimitive.Close asChild={true}>
+      <DialogClose asChild={true}>
         <IconButton
           className={c.dismissClass}
           label={c.dismissLabel}
@@ -73,7 +78,7 @@ export function DialogContent(props: DialogContentProps) {
           size='lg'
           variant='ghost'
         />
-      </DialogPrimitive.Close>
+      </DialogClose>
     </>
   );
   return (
@@ -81,8 +86,12 @@ export function DialogContent(props: DialogContentProps) {
       <DialogPrimitive.Overlay className={c.overlayClass}>
         <DialogPrimitive.Content
           {...c.rest}
+          aria-busy={pending ? true : c.rest['aria-busy']}
           aria-modal={true}
           {...(c.description === undefined ? { 'aria-describedby': undefined } : {})}
+          onEscapeKeyDown={pending ? (event) => event.preventDefault() : undefined}
+          onPointerDownOutside={pending ? (event) => event.preventDefault() : undefined}
+          onInteractOutside={pending ? (event) => event.preventDefault() : undefined}
           asChild={true}
         >
           {c.variant === 'sheet' ? (

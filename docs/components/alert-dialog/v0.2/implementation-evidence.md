@@ -2,16 +2,23 @@
 
 ## Scope and status
 
-This lane implements AlertDialog's `container`, `overlayScope` and root-local `pending`; it does not
-change Dialog. Dialog's independent pending lock remains deferred until after #543 is integrated.
-The scoped naming amendment and `modal-action-pending` approval are recorded in
-[prop-naming-approval.json](prop-naming-approval.json). The earlier Dialog receipt is unchanged.
-Browser checks were run as described below, but an outside-focus limitation still needs an owner
-decision, and the final package gates remain pending. This is not final acceptance.
+This lane implements AlertDialog's `container`, `overlayScope` and root-local `pending`, and Dialog's
+independent root-local `pending` after #543. The scoped naming amendment and `modal-action-pending`
+approval are recorded in [prop-naming-approval.json](prop-naming-approval.json). The earlier Dialog
+receipt and the approved amendment snapshot are unchanged. The owner chose to document the outside-host
+focus limitation (odd/tasks/consumer-request-specs.md L41); final package gates remain parent-owned.
 
 ## Observed tests
 
-- The initial focused RED run failed 15 tests and passed 47: absent pending/busy and decision guards,
+- Dialog pending RED: the focused Dialog/AlertDialog command failed 10 and passed 77 tests, exposing
+  missing busy, guards and dismissal blocking. The identical command then passed 87/87 after implementation.
+  Header, accent and CommandPalette preservation passed 28/28. Dialog tests cover header/footer placement,
+  native/Slot refs and handlers, built-in close, pending transitions, Escape/outside, independent nested
+  roots and consumer-guarded failure/retry/success.
+- The current Storybook source docgen, Controls pipeline and CSS checks passed 517/517. The reviewed
+  registry and generated view passed `pnpm props:check` and 134/134 `pnpm test:props`. The regenerated
+  artifact and system reference passed their freshness checks, 52/52 artifact tests and 36/36 system tests.
+- The initial AlertDialog focused RED run failed 15 tests and passed 47: absent pending/busy and decision guards,
   body instead of hosted portals, and missing-host fallback were observed. After implementation the
   same command passed 62/62. A further Slot regression for a child declaring `aria-disabled=false`
   failed 1 test before the fix and passed afterward. The latest focused run passed 64/64.
@@ -26,24 +33,16 @@ decision, and the final package gates remain pending. This is not final acceptan
   build: 510/510. The latter checks the emitted absolute/fixed/inset and scrim utilities without
   story scanning, not the final shipped package. Typecheck and Biome passed; actual browser
   Controls remain unverified.
-- Before the browser-discovered pointer fix, `pnpm props:docs`, `pnpm props:check`, and
-  `pnpm test:props` passed, 133/133 tests. The `dialog-overlay-scope` receipt binds the owner's
-  two amended fields and pins the historical Dialog receipt; the source revisions were then current.
-  The subsequent `types.ts` edit makes them stale: `pnpm props:check` failed and `pnpm test:props`
-  passed 85/133. The parent owns the registry refresh.
-- Before that edit, `pnpm artifact --write`, `pnpm system:docs`, `pnpm artifact --check` and
-  `pnpm system:check` passed; `pnpm test:artifact` passed 51/51 and `pnpm test:system` 36/36.
-  After the edit, `pnpm artifact --check` reported stale JSON, and `pnpm test:artifact` passed
-  50/51 with the current-artifact check failing. `pnpm system:check` and `pnpm test:system` still
-  passed, the latter 36/36; the parent owns regeneration. The earlier JSON was 597,835 bytes, below
-  the 768 KiB budget.
+- The earlier AlertDialog-only registry and artifact became stale after its browser pointer fix.
+  Both files' reviewed source revisions have since been refreshed and the generated outputs regenerated.
+  The `dialog-overlay-scope` receipt continues to pin the historical Dialog receipt.
 - `scripts/package-exports.test.mjs` and `scripts/package-consumption.test.mjs` contain updated
   declaration, CSS and consumer fixtures. They have not been run against a fresh candidate build.
 
 ## Real-browser evidence
 
 `node docs/components/alert-dialog/v0.2/browser-evidence.mjs` passed with harness SHA-256
-`8f1255431a6f45a6749a1977cba4c54ee4c2c0d0d44e99f37d1d36343a1173bf`. It compiles UI JavaScript,
+`5935aed7258ef1666ab684277e13758d162c290b73c3d60c8dac299f6bb7a99a`. It compiles UI JavaScript,
 UI CSS and native token CSS from current sources without writing repository build output, hydrates
 the SSR shell, uses a fresh temporary Chrome profile, and cleans up its scratch. HTTP(S) was blocked.
 Chrome 148.0.7778.167 ran headless at 1000×800, DPR 1, zoom 1, LTR, with no theme override,
@@ -55,11 +54,12 @@ sampled for stacking; external web fonts and other browsers were not evaluated.
   after resize both were 360×520. The hosted viewport overlay was (0, 0, 1000, 800) before and
   after resize. Outside content was accessibility-hidden and pointer-inert, Tab/Shift+Tab stayed
   inside the alert, and normal Escape and Cancel restored trigger focus.
-- **Same-host stacking:** with a sheet opened first in the same positioned host, 160 sampled
-  `elementFromPoint` checks across two host sizes, two motion preferences, four post-mount samples
-  and ten sheet-chrome/host-edge points hit the alert or its veil. Eighty mouse/touch sequences at
-  those points while pending caused no sheet or alert close request. Eight normal Cancel/Action
-  mouse/touch sequences hit the actual alert button and closed only the alert; nested and parent
+- **Same-host stacking:** with a full-width sheet and header action opened first in the same positioned
+  host, 176 sampled `elementFromPoint` checks across two host sizes, two motion preferences, four
+  post-mount samples and eleven sheet-chrome/host-edge points hit the alert or its veil. Eighty-eight
+  mouse/touch sequences at those points while pending caused no sheet or alert close request or header
+  action. Eight normal Cancel/Action mouse/touch sequences hit the actual alert button and closed only
+  the alert; nested and parent
   trigger focus return was checked. This is sampled evidence, not continuous transition coverage
   or a guarantee for clipped/competing stacking contexts; close-button corners were not sampled.
 - **Pending:** 16 native/slotted Cancel/Action × mouse/touch/Enter/Space sequences reached the
@@ -73,15 +73,22 @@ sampled for stacking; external web fonts and other browsers were not evaluated.
   pending native Cancel pointer-transparent. The browser test failed on its painted target before
   implementation; the AlertDialog-only static utility then restored pointer hit testing while
   excluding native `:disabled`. This changed `packages/ui/src/molecules/alert-dialog/types.ts`.
+- **Dialog pending:** 48 native, slotted-native and slotted-Button explicit and built-in close
+  activations across mouse, touch, Enter and Space passed, including both header and footer placement.
+  Six Escape and six scrim probes were blocked; unlocking restored the explicit close in all six
+  placement/form combinations.
+  The #543 candidate harness also passed with 864 mouse/touch edge and corner sequences and no failures.
 
-### Outside-host focus limitation — owner decision pending
+### Outside-host focus limitation — documented Radix behavior
 
 In four otherwise identical checks (pending false/true × mouse/touch), a pointer on the page outside
 its host left the modal open and the outside handler uncalled, but focus moved from Cancel to BODY
 with `focusout.relatedTarget=null`. The non-pending baseline and a direct installed-Radix fixture
-showed the same result; it is not caused by enabling this pending lock. Do not claim outside-pointer
-focus retention without a separate owner decision. Pending transitions, guarded activation and
-Escape themselves retained focus in the checks above.
+showed the same result; it is not caused by enabling this pending lock. Tab re-entered the alert in
+all four cases. In two Dialog pending checks (mouse/touch), an outside-host press likewise moved focus
+to `body` without closing and Tab re-entered through the active trap. The owner chose to document
+this Radix limitation rather than add a focus engine (L41). Pending transitions, guarded activation
+and Escape themselves retained focus in the checks above.
 
 The installed Radix AlertDialog spreads consumer props then replaces `onPointerDownOutside` and
 `onInteractOutside` (`packages/ui/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs:56-63`).
@@ -97,12 +104,12 @@ No custom outside or focus guard was added.
 
 ## Pending evidence and limits
 
-- Owner decision on the documented outside-host focus limitation remains pending. Other untested
-  browser cases include close-corner coverage, clipping/containing-block negatives, focus-ring
-  paint, reduced transparency, triggerless/removed-trigger limits and actual Controls widgets.
-- The parent owns the final `pnpm build` and `pnpm test:package-exports`; neither was run here.
-  Package consumption was expressly excluded and remains unverified for React 18/19 and native CSS
-  consumers. Repeat the cross-feature check after #543 lands.
+- Untested browser cases include alert close-corner coverage, clipping/containing-block negatives,
+  pending-state focus-ring paint, reduced transparency, triggerless/removed-trigger limits and actual
+  Controls widgets.
+- The parent owns the final build and package checks; these were not run here. Packed React 18/19
+  and native CSS consumption remain unverified. The combined full-width/header-action same-host
+  browser case is now sampled above.
 - Actual Storybook Controls widgets and assistive-technology speech remain unverified. `aria-busy`
   is not an announcement; consumers own progress, error recovery and any accessible announcements.
   Initial Action close and duplicate operation starts must be prevented synchronously by the consumer.

@@ -894,7 +894,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · AlertDialog
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - onOpenChange: ((open: boolean) => void); Requested visibility changes. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - open: boolean; Controlled visibility. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
-  - pending: boolean; Locks this alert's owned dismissal controls and marks its content busy while an action is in flight. Consumers synchronously prevent the initiating action's close and provide progress and error messages; aria-busy does not guarantee an announcement. Controlled close and unmount remain possible. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
+  - pending: boolean; Locks this alert's owned dismissal controls and marks its content busy while an action is in flight. Consumers synchronously prevent the initiating action's close and provide progress and error messages; aria-busy does not guarantee an announcement. An outside-host pointer press can move focus to body without closing; Tab re-enters through Radix's active trap. Controlled close and unmount remain possible. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
 ### ArticleFeature
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - ArticleFeature (components[] · packages/ui/src/molecules/article-feature/types.ts)
@@ -1100,6 +1100,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/molecules/dialog/types.ts)
   - onOpenChange: ((open: boolean) => void); Requested visibility changes. (components[] · packages/ui/src/molecules/dialog/types.ts)
   - open: boolean; Controlled visibility. (components[] · packages/ui/src/molecules/dialog/types.ts)
+  - pending: boolean; Locks this dialog's owned dismissal controls and marks its content busy while an action is in flight. Consumers synchronously prevent the initiating close, guard duplicate starts, and provide visible progress, recovery and any needed announcement outside the busy subtree; aria-busy is not an announcement. An outside-host pointer press can move focus to body without closing; Tab re-enters through Radix's active trap. Controlled close and unmount remain possible. (components[] · packages/ui/src/molecules/dialog/types.ts)
 ### Field
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Label + Slot
 - Field (components[] · packages/ui/src/molecules/field/types.ts)
@@ -3572,7 +3573,7 @@ Not exported:
 - measurement-text-equivalent: valueText; approved; Gauge, GaugeGroupRing, MeterRow, ProgressBar, Slider (propNaming[] · skills/_shared/prop-naming.json)
 - menu-entry-kind: kind; approved; MenuEntry, ModuleRail, NavList (propNaming[] · skills/_shared/prop-naming.json)
 - message-summary: summary; approved; Notice, Toast (propNaming[] · skills/_shared/prop-naming.json)
-- modal-action-pending: pending; approved; AlertDialog (propNaming[] · skills/_shared/prop-naming.json)
+- modal-action-pending: pending; approved; AlertDialog, Dialog (propNaming[] · skills/_shared/prop-naming.json)
 - move-intent: onMove; approved; CalendarGrid (propNaming[] · skills/_shared/prop-naming.json)
 - navigation-intent: onNavigate; approved; CalendarGrid, Menu, ModuleRail, NavList, SectionNav, TabBar, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - new-tab-navigation: external; approved; Chip, Link, SocialLinkItem (propNaming[] · skills/_shared/prop-naming.json)

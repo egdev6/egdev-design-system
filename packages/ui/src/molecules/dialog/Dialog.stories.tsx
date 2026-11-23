@@ -1,6 +1,6 @@
 import { createAccentTheme } from '@egdev/tokens/accent';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, useRef, useState } from 'react';
 import { action } from 'storybook/actions';
 import { Button } from '../../atoms/button';
 import { Icon } from '../../atoms/icon';
@@ -28,6 +28,9 @@ import { Dialog, DialogClose, DialogContent, DialogTrigger } from './Dialog';
  * under fixed header actions. If the chrome and minimum body cannot fit, an opted-in clamp or
  * header action placement permits overlay scrolling, so top actions can move out of view.
  * Supply manageable actions and adequate spacing for extended targets, including wrapped rows.
+ * Pending locks only this root's owned close paths, not arbitrary children or controlled state.
+ * Prevent the initiating close and duplicate starts synchronously; supply visible progress, recovery,
+ * and any separately designed announcement. aria-busy does not itself announce progress.
  */
 const meta = {
   title: 'Molecules/Dialog',
@@ -228,6 +231,54 @@ export const Controlled: Story = {
     );
   }
 };
+/** The consumer synchronously guards the first close and supplies visible progress during an independent lock. */
+export const PendingAction: Story = {
+  render: function PendingActionStory() {
+    const [open, setOpen] = useState(false);
+    const [pending, setPending] = useState(false);
+    const inFlight = useRef(false);
+    return (
+      <Dialog open={open} pending={pending} onOpenChange={setOpen}>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open editor</Button>
+        </DialogTrigger>
+        <DialogContent
+          title='Save changes'
+          description='Review before saving.'
+          actions={
+            <>
+              <DialogClose asChild={true}>
+                <Button variant='secondary'>Cancel</Button>
+              </DialogClose>
+              <DialogClose asChild={true}>
+                <Button
+                  onClick={(event) => {
+                    event.preventDefault();
+                    if (inFlight.current) {
+                      return;
+                    }
+                    inFlight.current = true;
+                    setPending(true);
+                    window.setTimeout(() => {
+                      inFlight.current = false;
+                      setPending(false);
+                      setOpen(false);
+                    }, 1500);
+                  }}
+                >
+                  Save
+                </Button>
+              </DialogClose>
+            </>
+          }
+        >
+          {pending ? 'Saving changes…' : 'Ready to save.'}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+};
+
 function ContainerExample({ viewport = false }: { viewport?: boolean }) {
   const [host, setHost] = useState<HTMLDivElement | null>(null);
   return (

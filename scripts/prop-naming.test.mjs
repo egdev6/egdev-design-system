@@ -1139,11 +1139,23 @@ test('AlertDialog placement and pending bind the forwarded owner choices and pre
       type: 'boolean (optional; default false)',
       status: 'existing',
       source: { path, symbol: 'AlertDialogProps', revision }
+    },
+    {
+      component: 'Dialog',
+      type: 'boolean (optional; default false)',
+      status: 'existing',
+      source: {
+        path: 'packages/ui/src/molecules/dialog/types.ts',
+        symbol: 'DialogProps',
+        revision: digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/dialog/types.ts')))
+      }
     }
   ]);
   for (const entry of registry) {
-    for (const usage of entry.usages.filter((item) => item.source.path === path)) {
-      assert.equal(usage.source.revision, revision);
+    for (const usage of entry.usages.filter((item) =>
+      [path, 'packages/ui/src/molecules/dialog/types.ts'].includes(item.source.path)
+    )) {
+      assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
     }
   }
   validate(registry);
@@ -1662,7 +1674,7 @@ test('Dialog sheet concepts remain proposed and bind every reviewed source revis
   const path = 'packages/ui/src/molecules/dialog/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, path)));
   const usages = registry.flatMap((entry) => entry.usages.filter((usage) => usage.source.path === path));
-  assert.equal(usages.length, 18);
+  assert.equal(usages.length, 19);
   for (const usage of usages) {
     assert.equal(usage.source.revision, revision);
   }

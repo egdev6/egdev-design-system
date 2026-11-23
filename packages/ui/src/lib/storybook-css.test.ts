@@ -7,6 +7,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { buttonVariants } from '../atoms/button/types';
 import { gaugeCircleVariants } from '../atoms/gauge/types';
 import {
+  dialogCloseVariants,
   dialogHeaderActionsVariants,
   dialogOverlayVariants,
   dialogScrimVariants,
@@ -206,6 +207,12 @@ describe('Storybook preview CSS', () => {
     expect(production).toMatch(/\.fixed\s*\{[^}]*position:\s*fixed/);
     expect(production).toMatch(/\.inset-0\s*\{[^}]*inset:\s*(?:var\(--space-0\)|0)/);
     expect(production).toContain(String.raw`.bg-bg-scrim\/72`);
+    const pendingSelector = String.raw`.aria-disabled\:\[\&\:not\(\:disabled\)\]\:pointer-events-auto`;
+    const pendingPosition = production.indexOf(pendingSelector);
+    expect(pendingPosition).toBeGreaterThanOrEqual(0);
+    expect(production.slice(pendingPosition, pendingPosition + 250)).toMatch(/pointer-events:\s*auto/);
+    expect(dialogCloseVariants({ pending: true })).toBe('aria-disabled:[&:not(:disabled)]:pointer-events-auto');
+    expect(dialogCloseVariants({ pending: false })).toBe('');
     expect(dialogOverlayVariants({ scope: 'container', flush: false }).split(' ')).toContain('absolute');
     expect(dialogOverlayVariants({ scope: 'viewport', flush: false }).split(' ')).toContain('fixed');
     expect(dialogScrimVariants()).not.toContain('eg-');
