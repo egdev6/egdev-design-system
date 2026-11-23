@@ -417,7 +417,17 @@ test('dialog exports its public compound API and keeps shared recipes internal',
   for (const dialogName of ['Dialog', 'DialogTrigger', 'DialogContent', 'DialogClose']) {
     assert.ok(dialogExports[dialogName], `Missing ${dialogName}`);
   }
-  for (const dialogName of ['dialogScrimVariants', 'dialogPanelVariants', 'useDialogContent']) {
+  for (const dialogName of [
+    'dialogScrimVariants',
+    'dialogPanelVariants',
+    'dialogSheetClampTitleVariants',
+    'dialogSheetFullVariants',
+    'dialogSheetBodyMinimumVariants',
+    'dialogSheetHeadVariants',
+    'dialogSheetOverflowVariants',
+    'dialogHeaderActionsVariants',
+    'useDialogContent'
+  ]) {
     assert.equal(Object.hasOwn(dialogExports, dialogName), false, `${dialogName} is internal`);
   }
   const dialogCss = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
@@ -482,6 +492,61 @@ test('Dialog and AlertDialog export closed header-layout props and shipped layou
     assert.match(cssBlock(utilities, selector), declaration);
   }
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-dialog__head\s*\{[^}]*display:\s*flex/);
+});
+
+test('Dialog sheet-only choices and their marker-free utilities ship in the public package', () => {
+  const file = resolve(root, '__dialog_sheet_type_fixture__.ts');
+  const fixture = `
+import type { DialogContentProps } from './packages/ui/dist/index';
+const base = { title: 'Complete title', children: 'Body' };
+const centered: DialogContentProps = { ...base, size: 'full' };
+const sheet: DialogContentProps = { ...base, variant: 'sheet', size: 'full' };
+const clamp: DialogContentProps = { ...base, variant: 'sheet', titleOverflow: 'clamp' };
+const actions: DialogContentProps = { ...base, variant: 'sheet', actionsPlacement: 'header' };
+const combined: DialogContentProps = { ...base, variant: 'sheet', size: 'full', titleOverflow: 'clamp', actionsPlacement: 'header' };
+// @ts-expect-error Sheets reject centered presets.
+const small: DialogContentProps = { ...base, variant: 'sheet', size: 'sm' };
+// @ts-expect-error Sheets reject centered presets.
+const medium: DialogContentProps = { ...base, variant: 'sheet', size: 'md' };
+// @ts-expect-error Sheets reject centered presets.
+const large: DialogContentProps = { ...base, variant: 'sheet', size: 'lg' };
+// @ts-expect-error The centered branch rejects title clamping.
+const invalidTitle: DialogContentProps = { ...base, titleOverflow: 'clamp' };
+// @ts-expect-error The centered branch rejects header actions.
+const invalidActions: DialogContentProps = { ...base, actionsPlacement: 'header' };
+void [centered, sheet, clamp, actions, combined, small, medium, large, invalidTitle, invalidActions];
+`;
+  const options = {
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    strict: true,
+    skipLibCheck: true,
+    noEmit: true
+  };
+  const host = ts.createCompilerHost(options);
+  const original = host.getSourceFile.bind(host);
+  host.getSourceFile = (name, ...args) =>
+    name === file ? ts.createSourceFile(file, fixture, ts.ScriptTarget.Latest, true) : original(name, ...args);
+  const program = ts.createProgram([file], options, host);
+  assert.deepEqual(
+    ts.getPreEmitDiagnostics(program).map((item) => ts.flattenDiagnosticMessageText(item.messageText, '\n')),
+    []
+  );
+
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const [selector, declaration] of [
+    [/\.line-clamp-2\s*\{/, /-webkit-line-clamp:\s*2/],
+    [/\.wrap-anywhere\s*\{/, /overflow-wrap:\s*anywhere/],
+    [/\.basis-0\s*\{/, /flex-basis:/],
+    [/\.min-h-min\s*\{/, /min-height:\s*min-content/],
+    [/\.max-w-none\s*\{/, /max-width:\s*none/],
+    [/\.box-border\s*\{/, /box-sizing:\s*border-box/]
+  ]) {
+    assert.match(cssBlock(utilities, selector), declaration);
+  }
+  assert.doesNotMatch(utilities, /\.eg-dialog(?:__|--|\b)/, 'Dialog markers are not new styling selectors');
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-dialog__foot\s*\{/);
 });
 
 test('ambient package exposes the decorative component and its stylesheet without private engines', async () => {

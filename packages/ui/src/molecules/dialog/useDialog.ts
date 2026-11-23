@@ -6,10 +6,16 @@ import {
   dialogDescriptionVariants,
   dialogDismissVariants,
   dialogFootVariants,
+  dialogHeaderActionsVariants,
   dialogHeadVariants,
   dialogOverlayVariants,
   dialogPanelVariants,
   dialogScrimVariants,
+  dialogSheetBodyMinimumVariants,
+  dialogSheetClampTitleVariants,
+  dialogSheetFullVariants,
+  dialogSheetHeadVariants,
+  dialogSheetOverflowVariants,
   dialogStatusVariants,
   dialogTitleRowVariants,
   dialogTitleVariants
@@ -33,6 +39,8 @@ export function useDialogContent(props: DialogContentProps) {
     dismissLabel = 'Close',
     variant = 'centered',
     size = 'md',
+    titleOverflow,
+    actionsPlacement,
     container,
     overlayScope,
     bodyPadding,
@@ -43,6 +51,10 @@ export function useDialogContent(props: DialogContentProps) {
   const flush = variant === 'sheet' || size === 'full';
   const scope = overlayScope ?? (container ? 'container' : 'viewport');
   const headerLayout = requestedHeaderLayout === 'stacked' ? 'stacked' : 'inline';
+  const sheet = variant === 'sheet';
+  const clampTitle = sheet && titleOverflow === 'clamp';
+  const headerActions = sheet && actionsPlacement === 'header';
+  const exceptionalScroll = clampTitle || headerActions;
   return {
     container,
     blocked: scope === 'container' && !container,
@@ -53,22 +65,32 @@ export function useDialogContent(props: DialogContentProps) {
     actions,
     dismissLabel,
     headerLayout,
+    headerActions,
     variant,
     size,
     rest,
     overlayClass: cn('eg-dialog-backdrop', dialogScrimVariants(), dialogOverlayVariants({ flush, scope })),
     panelClass: cn(
       'eg-dialog',
-      dialogPanelVariants({ variant, size: variant === 'sheet' ? undefined : size }),
+      dialogPanelVariants({ variant, size: sheet ? undefined : size }),
+      sheet && size === 'full' && dialogSheetFullVariants(),
+      exceptionalScroll && dialogSheetOverflowVariants(),
       className
     ),
     dismissClass: cn(dialogDismissVariants()),
-    headClass: cn('eg-dialog__head', dialogHeadVariants({ headerLayout })),
+    headClass: cn('eg-dialog__head', headerActions ? dialogSheetHeadVariants() : dialogHeadVariants({ headerLayout })),
+    headingGroupClass: cn(dialogHeadVariants({ headerLayout })),
     titleRowClass: cn(dialogTitleRowVariants()),
-    titleClass: cn('eg-dialog__title', dialogTitleVariants()),
+    titleClass: cn('eg-dialog__title', dialogTitleVariants(), clampTitle && dialogSheetClampTitleVariants()),
     descriptionClass: cn('eg-dialog__description', dialogDescriptionVariants()),
     statusClass: cn('eg-dialog__status', dialogStatusVariants()),
-    bodyClass: cn('eg-dialog__body', dialogBodyVariants({ bodyPadding })),
-    footClass: cn('eg-dialog__foot', dialogFootVariants({ variant }))
+    bodyClass: cn(
+      'eg-dialog__body',
+      dialogBodyVariants({ bodyPadding }),
+      exceptionalScroll &&
+        dialogSheetBodyMinimumVariants({ bodyPadding: bodyPadding === 'compact' ? 'compact' : 'default' })
+    ),
+    footClass: cn('eg-dialog__foot', dialogFootVariants({ variant })),
+    headerActionsClass: cn('eg-dialog__foot', dialogFootVariants({ variant: 'sheet' }), dialogHeaderActionsVariants())
   };
 }

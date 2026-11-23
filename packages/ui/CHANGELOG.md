@@ -4,6 +4,15 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## Unreleased
+
+### Added
+
+- Sheets independently support `size='full'`, `titleOverflow='clamp'` and `actionsPlacement='header'`.
+  Consumers provide a visible complete-title route usable by keyboard, pointer and touch, manageable actions,
+  and clear hit targets and focus rings. In an insufficient host, clamp or header actions may make the overlay
+  scroll and move top actions out of view; unchanged sheets keep their existing cap and footer. (#543)
+
 ## 0.9.0
 
 ### Added

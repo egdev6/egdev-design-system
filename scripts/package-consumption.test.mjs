@@ -454,8 +454,22 @@ export function dialogPlacementFixtures(host: HTMLElement) {
   const badPadding: DialogContentProps = { title: 'Invalid', children: 'Body', bodyPadding: 'small' };
   return [contained, explicit, viewport, defaultHost, missingHost, nullHost, badPadding];
 }
-// @ts-expect-error Sheet dimensions cannot be changed using size.
+export const dialogSheetOptions: DialogContentProps[] = [
+  { title: 'Full', children: 'Body', variant: 'sheet', size: 'full' },
+  { title: 'Clamped', children: 'Body', variant: 'sheet', titleOverflow: 'clamp' },
+  { title: 'Actions', children: 'Body', variant: 'sheet', actionsPlacement: 'header' },
+  { title: 'Combined', children: 'Body', variant: 'sheet', size: 'full', titleOverflow: 'clamp', actionsPlacement: 'header' }
+];
+// @ts-expect-error Sheets reject the centered sm preset.
 const dialogInvalidSize: DialogContentProps = { title: 'Settings', children: 'Preferences', variant: 'sheet', size: 'sm' };
+// @ts-expect-error Sheets reject the centered md preset.
+const dialogInvalidMedium: DialogContentProps = { title: 'Settings', children: 'Preferences', variant: 'sheet', size: 'md' };
+// @ts-expect-error Sheets reject the centered lg preset.
+const dialogInvalidLarge: DialogContentProps = { title: 'Settings', children: 'Preferences', variant: 'sheet', size: 'lg' };
+// @ts-expect-error Clamping is sheet-only.
+const dialogCenteredClamp: DialogContentProps = { title: 'Settings', children: 'Preferences', titleOverflow: 'clamp' };
+// @ts-expect-error Header actions are sheet-only.
+const dialogCenteredActions: DialogContentProps = { title: 'Settings', children: 'Preferences', actionsPlacement: 'header' };
 // @ts-expect-error Content requires a title.
 const dialogMissingTitle: DialogContentProps = { children: 'Preferences' };
 // @ts-expect-error The modal implementation does not expose its internal scrim recipe.
@@ -5023,6 +5037,12 @@ function assertDialogConsumerCSS(css) {
   assert.match(css, /\.max-w-full\s*\{[^}]*max-width:\s*100%/);
   assert.match(css, /\.min-w-0\s*\{[^}]*min-width:\s*var\(--space-0\)/);
   assert.match(css, /\.gap-\\\[var\\\(--space-3\\\)\\\]\s*\{[^}]*gap:\s*var\(--space-3\)/);
+  assert.match(css, /\.line-clamp-2\s*\{[^}]*-webkit-line-clamp:\s*2/);
+  assert.match(css, /\.wrap-anywhere\s*\{[^}]*overflow-wrap:\s*anywhere/);
+  assert.match(css, /\.basis-0\s*\{[^}]*flex-basis:/);
+  assert.match(css, /\.min-h-min\s*\{[^}]*min-height:\s*min-content/);
+  assert.match(css, /\.max-w-none\s*\{[^}]*max-width:\s*none/);
+  assert.match(css, /\.box-border\s*\{[^}]*box-sizing:\s*border-box/);
 }
 
 function assertCollapsibleConsumerCSS(css) {
@@ -8254,6 +8274,34 @@ const { App, AttachmentFieldSamples, attachmentChanges, attachmentRejections, Bu
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
+  const { Dialog, DialogTrigger, DialogContent, DialogClose } = await import('@egdev/ui');
+  const packedTriggerRef = createRef();
+  const packedCloseRef = createRef();
+  for (const options of [
+    {}, { size: 'full' }, { titleOverflow: 'clamp' }, { actionsPlacement: 'header' },
+    { size: 'full', titleOverflow: 'clamp', actionsPlacement: 'header' }
+  ]) {
+    await act(async () => root.render(createElement(Dialog, { open: true },
+      createElement(DialogTrigger, { ref: packedTriggerRef }, 'Open packed sheet'),
+      createElement(DialogContent, { variant: 'sheet', title: 'Complete packed title', ...options,
+        actions: createElement(DialogClose, { ref: packedCloseRef }, 'Done') },
+        createElement('input', { 'aria-label': 'Packed body' }))
+    )));
+    const panel = document.querySelector('[role="dialog"]');
+    assert.ok(panel && panel.classList.contains('eg-dialog'));
+    assert.equal(packedTriggerRef.current?.textContent, 'Open packed sheet');
+    assert.equal(packedCloseRef.current?.textContent, 'Done');
+    assert.equal(panel.getAttribute('aria-labelledby'), panel.querySelector('h2').id);
+    assert.equal(panel.classList.contains('max-w-none'), options.size === 'full');
+    assert.equal(panel.querySelector('h2').classList.contains('line-clamp-2'), options.titleOverflow === 'clamp');
+    assert.equal(Boolean(panel.querySelector('header .eg-dialog__foot')), options.actionsPlacement === 'header');
+    assert.equal(Boolean(panel.querySelector('footer')), options.actionsPlacement !== 'header');
+    assert.equal(panel.hasAttribute('titleoverflow'), false);
+    assert.equal(panel.hasAttribute('actionsplacement'), false);
+    await act(async () => root.render(null));
+    assert.equal(packedTriggerRef.current, null);
+    assert.equal(packedCloseRef.current, null);
+  }
   const { TypographySamples, textTruncatedChildRef } = await import('./consumer.ts');
   await act(async () => root.render(createElement(TypographySamples)));
   const truncatedSlot = document.getElementById('text-truncated-slot');
