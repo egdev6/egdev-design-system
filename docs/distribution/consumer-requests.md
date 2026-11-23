@@ -87,6 +87,13 @@ merging. Consumer CI runs `egdev-ds doctor <project> --fail-on-pending` as the m
 npx would look `egdev-ds` up on the registry instead of the vendored `@egdev/cli`). Pending placeholders then cause DS043 to fail with exit 1.
 The local `ds:doctor` script stays warning-only for placeholders, so drafts may hold them.
 
+**DS-internal gaps without app CSS.** Sometimes the gap sits inside a DS component, and the app writes no CSS that
+`doctor` reports. For example, an internal action gap leaves two adjacent IconButton targets too close together. In
+that case do not add an allowlist entry: with no finding to back it, the entry is stale (DS042) and fails `ds:doctor`.
+File the Consumer request, leave a `// TODO(egdev-design-system#N)` comment at each affected usage so the dependency
+stays visible and traceable, and keep the composition unchanged until the DS release that resolves it. Do not override
+the component's internals to work around it, because that would be a DS046 or DS047 finding.
+
 ## 3. Implement in the DS
 
 The change follows the usual DS workflow ([CONTRIBUTING.md](../../CONTRIBUTING.md), ODD when
