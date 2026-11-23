@@ -2655,6 +2655,7 @@ const avatarBadge: AvatarProps = { badgeIcon: 'unknown' };
 export const iconDefaults: IconProps = { name: 'plus' };
 const downloadGlyph: IconName = 'download';
 const externalLinkGlyph: IconName = 'external-link';
+const arrowLeftGlyph: IconName = 'arrow-left';
 const iconPreset: IconSize = 'lg';
 type IconSampleProps = { iconName?: IconName };
 export function IconSamples({ iconName = 'plus' }: IconSampleProps) {
@@ -2663,6 +2664,7 @@ export function IconSamples({ iconName = 'plus' }: IconSampleProps) {
     createElement('p', { id: 'icon-labelled-host' },
       createElement(Icon, { name: 'search', label: 'Search status', size: 'sm', filled: true })),
     createElement(Icon, { name: downloadGlyph, id: 'icon-download' }),
+    createElement(Icon, { name: arrowLeftGlyph, id: 'icon-arrow-left' }),
     createElement('p', { id: 'icon-external-link-host' },
       createElement(Icon, { name: externalLinkGlyph, label: 'Open external link' })),
     createElement(Icon, { name: 'check', size: iconPreset, id: 'icon-override', className: 'size-4.5 text-fg-brand-default' }));
@@ -8128,6 +8130,13 @@ for (const frame of [square, wide]) {
   assert.equal(downloadIcon.querySelector('path').getAttribute('d'), 'M12 15V3');
   assert.equal(externalLinkIcon.querySelector('path').getAttribute('d'), 'M15 3h6v6');
   assert.equal(externalLinkHost.textContent, 'Open external link');
+  const arrowLeftIcon = document.getElementById('icon-arrow-left');
+  assert.ok(arrowLeftIcon, 'SSR must render arrow-left');
+  assert.equal(arrowLeftIcon.getAttribute('viewBox'), '0 0 24 24');
+  assert.equal(arrowLeftIcon.getAttribute('aria-hidden'), 'true');
+  assert.equal(arrowLeftIcon.getAttribute('focusable'), 'false');
+  assert.deepEqual([...arrowLeftIcon.querySelectorAll('path')].map((path) => path.getAttribute('d')),
+    ['M19 12h-14', 'm12 5-7 7 7 7']);
   const overrideIcon = document.getElementById('icon-override');
   assert.ok(overrideIcon, 'SSR must render the consumer-sized Icon');
   assert.ok(overrideIcon.classList.contains('size-4.5') && overrideIcon.classList.contains('text-fg-brand-default'));
@@ -8901,6 +8910,15 @@ try {
     assert.ok(glyphRoot() === glyphBefore, 'New glyph changes must keep the same svg root');
     assert.equal(glyphRoot().querySelectorAll('path').length, 3);
     assert.equal(glyphRoot().querySelector('path')?.getAttribute('d'), firstPath);
+  }
+  for (const [name, paths] of [
+    ['arrow-left', ['M19 12h-14', 'm12 5-7 7 7 7']],
+    ['arrow-right', ['M5 12h14', 'm12 5 7 7-7 7']],
+    ['arrow-left', ['M19 12h-14', 'm12 5-7 7 7 7']]
+  ]) {
+    await act(async () => root.render(createElement(App, { iconName: name })));
+    assert.ok(glyphRoot() === glyphBefore, 'Arrow changes must keep the same svg root');
+    assert.deepEqual([...glyphRoot().querySelectorAll('path')].map((path) => path.getAttribute('d')), paths);
   }
   assert.equal(glyphRoot().getAttribute('tabindex'), null, 'Default Icons never enter the tab order');
   stage('icon:rerender:complete');

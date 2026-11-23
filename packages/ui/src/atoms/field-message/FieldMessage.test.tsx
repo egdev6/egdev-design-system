@@ -61,6 +61,18 @@ describe('FieldMessage', () => {
     expect(container.querySelector('svg circle')).toBeNull();
   });
 
+  it('renders the physical left arrow as an explicit decorative icon override', () => {
+    const { container } = render(<FieldMessage icon='arrow-left'>Go back</FieldMessage>);
+    expect(screen.getByText('Go back')).toBeInTheDocument();
+    const svg = container.querySelector('svg.eg-icon');
+    expect(svg).toHaveAttribute('aria-hidden', 'true');
+    expect(svg).toHaveAttribute('focusable', 'false');
+    expect([...(svg?.querySelectorAll('path') ?? [])].map((path) => path.getAttribute('d'))).toEqual([
+      'M19 12h-14',
+      'm12 5-7 7 7 7'
+    ]);
+  });
+
   it('omits empty messages and recovers without an empty live region or icon shell', () => {
     const { container, rerender } = render(
       <FieldMessage tone='error' role='alert'>

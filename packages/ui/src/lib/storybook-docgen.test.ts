@@ -15,6 +15,56 @@ const heavyDocgenTimeoutMs = 20_000;
 
 const source = (path: string) => fileURLToPath(new URL(`../${path}`, import.meta.url));
 const normalize = (value: unknown) => String(value).replace(/^['"]+|['"]+$/g, '');
+const expectedIconNames = [
+  'github',
+  'youtube',
+  'twitch',
+  'x',
+  'linkedin',
+  'instagram',
+  'search',
+  'arrow-left',
+  'arrow-right',
+  'arrow-up-right',
+  'arrow-down',
+  'play',
+  'users',
+  'menu',
+  'radio',
+  'terminal',
+  'hammer',
+  'compass',
+  'alert',
+  'close',
+  'user',
+  'bookmark',
+  'bell',
+  'settings',
+  'log-out',
+  'chevron-down',
+  'calendar',
+  'inbox',
+  'lightbulb',
+  'shuffle',
+  'pause',
+  'pencil',
+  'send',
+  'grip',
+  'upload',
+  'flask',
+  'plug',
+  'bot',
+  'trash',
+  'copy',
+  'check',
+  'minus',
+  'plus',
+  'circle-alert',
+  'circle-check',
+  'info',
+  'download',
+  'external-link'
+];
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
 });
@@ -1313,10 +1363,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'success',
       'error'
     ]);
-    expect(props.icon).toMatchObject({ defaultValue: null, tags: { control: 'select' } });
-    const glyphs = props.icon?.type.value.map(({ value }: { value: string }) => normalize(value));
-    expect(glyphs).toHaveLength(47);
-    expect(glyphs).toEqual(expect.arrayContaining(['circle-alert', 'download', 'external-link']));
+    expect(props.icon).toMatchObject({ required: false, defaultValue: null, tags: { control: 'select' } });
+    const glyphs: string[] = props.icon?.type.value.map(({ value }: { value: string }) => normalize(value)) ?? [];
+    expect(glyphs).toHaveLength(48);
+    expect(new Set(glyphs).size).toBe(48);
+    expect([...glyphs].sort()).toEqual([...expectedIconNames].sort());
     expect(glyphs).not.toContain('external');
     expect(props.role?.defaultValue).toBeNull();
     expect(props['aria-live']?.defaultValue).toBeNull();
@@ -3428,11 +3479,9 @@ describe('Icon glyph metadata contract', () => {
     expect(props.name).toMatchObject({ required: true, defaultValue: null, tags: { control: 'select' } });
     expect(props.name?.type.name).toBe('enum');
     const glyphs = (props.name?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
-    expect(glyphs).toHaveLength(47);
-    expect(new Set(glyphs).size).toBe(47);
-    expect(glyphs).toEqual(
-      expect.arrayContaining(['check', 'minus', 'plus', 'chevron-down', 'download', 'external-link'])
-    );
+    expect(glyphs).toHaveLength(48);
+    expect(new Set(glyphs).size).toBe(48);
+    expect([...glyphs].sort()).toEqual([...expectedIconNames].sort());
     expect(glyphs).not.toContain('external');
     expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
       'lg',

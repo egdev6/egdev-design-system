@@ -8,6 +8,8 @@
  *   lucide-react 1.55.0, with the mapping grip → grip-vertical, flask → flask-conical,
  *   trash → trash-2; the rest are same-named. Lucide marks several of them as derived from Feather (MIT). See
  *   THIRD_PARTY_NOTICES.md for both notices.
+ * - `arrow-left` is a horizontal reflection of the existing Foundation `arrow-right`, not a
+ *   separately copied upstream glyph.
  *
  * All glyphs share the 24×24 viewBox; stroke width, caps and joins come from the Icon root.
  */
@@ -54,6 +56,10 @@ export const iconPaths: Readonly<Record<IconName, IconGlyph>> = {
   search: [
     ['circle', { cx: '11', cy: '11', r: '8' }],
     ['path', { d: 'm21 21-4.3-4.3' }]
+  ],
+  'arrow-left': [
+    ['path', { d: 'M19 12h-14' }],
+    ['path', { d: 'm12 5-7 7 7 7' }]
   ],
   'arrow-right': [
     ['path', { d: 'M5 12h14' }],
