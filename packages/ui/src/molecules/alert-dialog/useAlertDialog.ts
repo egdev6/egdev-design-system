@@ -15,7 +15,12 @@ import type {
   AlertDialogContentProps,
   AlertDialogTriggerProps
 } from './types';
-import { alertDialogHeadVariants, alertDialogIconVariants, alertDialogTitleRowVariants } from './types';
+import {
+  alertDialogDecisionVariants,
+  alertDialogHeadVariants,
+  alertDialogIconVariants,
+  alertDialogTitleRowVariants
+} from './types';
 
 export const AlertDialogPendingContext = createContext(false);
 
@@ -34,7 +39,7 @@ export function useAlertDialogButton(
       pending && asChild && isValidElement<{ 'aria-disabled'?: boolean | 'true' | 'false' }>(children)
         ? cloneElement(children, { 'aria-disabled': true })
         : children,
-    className,
+    className: pending ? cn(alertDialogDecisionVariants({ pending }), className) : className,
     type: 'button' as const,
     ...(pending
       ? {

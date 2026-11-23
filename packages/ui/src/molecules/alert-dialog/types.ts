@@ -87,3 +87,10 @@ export const alertDialogHeadVariants = cva(
 );
 export const alertDialogTitleRowVariants = cva('flex items-center gap-[var(--space-3)]');
 export const alertDialogIconVariants = cva('text-[var(--color-status-danger)] size-[var(--space-6)] shrink-0');
+/** Keep pending decisions hit-testable without overriding explicitly disabled buttons. */
+export const alertDialogDecisionVariants = cva('', {
+  variants: {
+    pending: { true: 'aria-disabled:[&:not(:disabled)]:pointer-events-auto', false: '' }
+  },
+  defaultVariants: { pending: false }
+});
