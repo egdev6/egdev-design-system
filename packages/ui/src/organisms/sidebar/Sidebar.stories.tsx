@@ -22,9 +22,17 @@ const navigation = (
   />
 );
 const product = { name: 'Workspace', node: <Logo variant='mark' /> };
-const footer = <IconButton label='Account' icon={<Icon name='user' />} />;
+const footer = (
+  <>
+    <IconButton label='Account' icon={<Icon name='user' />} />
+    <IconButton label='Settings' icon={<Icon name='settings' />} />
+  </>
+);
 
-/** A host-sized panel. The host owns responsive visibility and routing; NavList owns its landmark. */
+/** A host-sized panel. The host owns responsive visibility and routing; NavList owns its landmark.
+ * The non-wrapping footer clears adjacent md IconButtons with default tokens. Consumers supply
+ * additional spacing for sm/md and sm/sm pairs and enough room around targets and host edges.
+ */
 const meta: Meta<typeof Sidebar> = {
   title: 'Organisms/Sidebar',
   component: Sidebar,

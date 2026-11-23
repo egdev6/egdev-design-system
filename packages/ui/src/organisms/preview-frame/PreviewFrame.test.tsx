@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { Icon } from '../../atoms/icon';
+import { IconButton } from '../../atoms/icon-button';
 import { PreviewFrame } from './PreviewFrame';
 
 describe('PreviewFrame', () => {
@@ -21,6 +24,34 @@ describe('PreviewFrame', () => {
     expect(screen.getByText('Artwork').closest('[aria-hidden=true]')).toBeInTheDocument();
     expect(Array.from(container.querySelectorAll('button')).map((node) => node.textContent)).toEqual(['Edit', 'Save']);
     expect(container.querySelector('[data-safe-area]')).toBeInTheDocument();
+  });
+
+  it('spaces adjacent md actions and preserves the separate footer recipe', async () => {
+    const user = userEvent.setup();
+    const first = vi.fn();
+    const second = vi.fn();
+    render(
+      <PreviewFrame
+        figureCaption='Preview'
+        actions={
+          <>
+            <IconButton label='Refresh' icon={<Icon name='user' />} onClick={first} />
+            <IconButton label='Edit' icon={<Icon name='user' />} onClick={second} />
+          </>
+        }
+        footer={<button>Save</button>}
+      />
+    );
+    const refresh = screen.getByRole('button', { name: 'Refresh' });
+    const edit = screen.getByRole('button', { name: 'Edit' });
+    expect(refresh.parentElement).toBe(edit.parentElement);
+    expect(refresh.parentElement).toHaveClass('flex-wrap', 'gap-5');
+    expect(refresh.parentElement).not.toHaveClass('gap-2');
+    expect(screen.getByRole('button', { name: 'Save' }).parentElement).toHaveClass('gap-2');
+    await user.click(refresh);
+    await user.click(edit);
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).toHaveBeenCalledTimes(1);
   });
 
   it('falls back for invalid and unrepresentable ratios, retaining representable ratios', () => {

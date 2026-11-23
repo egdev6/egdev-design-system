@@ -51,7 +51,11 @@ export type TopBarProps = Omit<
   children: ReactNode;
 };
 
-/** Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. */
+/** Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics.
+ * Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default
+ * tokens, including between parts: leave one spacing token beyond their combined target outsets.
+ * See IconButton size in packages/ui/src/atoms/icon-button/types.ts.
+ */
 export type TopBarPartProps = {
   /** Consumer-supplied content. @control false
    * @controlReason React elements cannot be represented by a scalar control; see ComposedControls.
