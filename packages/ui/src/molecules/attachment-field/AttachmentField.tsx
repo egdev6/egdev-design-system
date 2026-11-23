@@ -14,11 +14,11 @@ export const AttachmentField: FC<AttachmentFieldProps> = (props) => {
   const { rootProps, rootRef, stripClassNames, items, status, label, children, dropzoneProps, rejectionMessages } =
     useAttachmentField(props);
   return (
-    <Stack asChild={true} gap={2}>
+    <Stack asChild={true} gap={4}>
       <div {...rootProps} ref={rootRef}>
         {children}
         {items.length > 0 && (
-          <Cluster asChild={true} gap={2}>
+          <Cluster asChild={true} gap={3}>
             <ul aria-label={label} className={stripClassNames.strip}>
               {items.map(({ key, alt, url, removeLabel, removeProps }) => (
                 <li key={key} className={stripClassNames.item}>

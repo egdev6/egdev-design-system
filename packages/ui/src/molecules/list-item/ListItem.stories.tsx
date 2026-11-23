@@ -148,6 +148,8 @@ function ReorderExample() {
  * Supply visible words for every non-default status and readable failure details for failed.
  * Empty requires one native button/anchor with phrasing content, never compound parts or nested controls.
  * Populated items are non-focusable containers, never whole-card buttons or links around actions.
+ * ListItemActions uses gap-5 for adjacent md/lg IconButtons; sm/md need gap-6 and sm/sm need gap-7.
+ * Reserve the full target away from text, neighboring rows, clipping and overlays.
  * Dragging is presentation only: collection owners supply accessible reorder actions and announcements.
  * Root className supports outer layout only; part classes support local placement/width, not appearance.
  *

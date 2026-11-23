@@ -11,6 +11,27 @@ a local tarball from `pnpm release:pack`.
 - Text supports opt-in single-line truncation with `truncate`. Full content remains in the DOM;
   consumers provide a bounded, shrinkable host and a visible route to the complete text. (#538)
 
+### Fixed
+
+- Standalone IconButton controls provide a centered 44.8px invisible target under default tokens,
+  including `lg`, without changing their visible box. Hosts must reserve unobstructed, non-overlapping
+  space with a one-token margin above adjacent target outsets. (#540)
+
+### Changed
+
+- IconButton press feedback no longer scales the visible control. Ghost and outline use a pressed
+  surface tone and depth; focus remains on the visible box. This changes momentary feedback in consumers. (#540)
+- SocialLinks uses at least `gap-5` for `md` and `gap-3` for `lg`; ListItemActions uses `gap-5`.
+  These visible spacing changes can widen or wrap consumer layouts. `sm` neighbors need extra clearance. (#540)
+- The invisible IconButton target extends past the visible box, so an IconButton flush against the edge of an
+  `overflow: auto` or `overflow: hidden` container can create scrollbars or be clipped. Give it clearance or let the
+  container overflow visibly. (#540)
+- Carousel control spacing and AttachmentField thumbnail-strip spacing increase to `gap-3`;
+  AttachmentField root spacing increases to `gap-4`. These visible layout changes protect adjacent targets. (#540)
+- ButtonGroup suppresses extended IconButton targets in both variants to preserve compact layout.
+  Tabs scroll buttons also suppress them; on touch-capable hybrids those controls can remain about 25.6px,
+  while the list also supports dragging. (#540)
+
 ## 0.7.1
 
 ### Changed

@@ -52,6 +52,34 @@ afterEach(() => {
 });
 
 describe('AttachmentField v0.1 — structure (AC-01, AC-02)', () => {
+  it('reserves root spacing between the consumer control and the attachment strip', () => {
+    const files = [makeFile('first.png'), makeFile('second.png')];
+    const { container } = render(field({ value: files, onValueChange: vi.fn() }));
+    expect(container.firstElementChild).toHaveClass('eg-attachment-field', 'gap-4');
+    expect(container.firstElementChild).not.toHaveClass('gap-3');
+    expect(container.firstElementChild).not.toHaveClass('gap-2');
+  });
+
+  it('spaces wrapping thumbnails without changing the remove-button geometry', () => {
+    const files = [makeFile('first.png'), makeFile('second.png')];
+    render(field({ value: files, onValueChange: vi.fn() }));
+    const list = screen.getByRole('list', { name: 'Attachments' });
+    expect(list).toHaveClass('eg-cluster', 'flex-wrap', 'gap-3');
+    expect(list).not.toHaveClass('gap-2');
+    for (const button of screen.getAllByRole('button', { name: /^Remove / })) {
+      expect(button).toHaveClass('absolute', 'top-1', 'end-1', 'after:size-14');
+    }
+  });
+
+  it('preserves one controlled removal request and the unchanged list until accepted', async () => {
+    const files = [makeFile('first.png'), makeFile('second.png')];
+    const onValueChange = vi.fn();
+    render(field({ value: files, onValueChange }));
+    await userEvent.click(screen.getByRole('button', { name: 'Remove Attachment 1, PNG, 240 KB' }));
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith([files[1]]);
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+  });
+
   it('keeps the root marker, renders children first and merges a layout className last without inline style', () => {
     const { container } = render(field({ className: 'col-span-2' }));
     const root = container.firstElementChild as HTMLElement;

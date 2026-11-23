@@ -6,9 +6,11 @@ export type ButtonGroupVariant = 'spaced' | 'attached';
 /**
  * Related independent actions with native tab stops, not a roving-focus toolbar.
  * Supply direct Button/IconButton elements; attached items must have matching heights:
- * Button md + IconButton lg (48px), or Button sm + IconButton md (40px).
+ * Button md + IconButton lg (38.4px), or Button sm + IconButton md (32px), at default tokens.
  * className supports root outer margins and parent alignment only, merged last with cn.
  * Child appearance remains owned by the atoms, except attached logical inner corners.
+ * Both group variants suppress direct IconButton hit-area extensions to preserve compact layout;
+ * those targets can be smaller than 44px. Use a different composition when larger targets are required.
  * No root ref, size propagation, child cloning or built-in menu is provided.
  */
 export type ButtonGroupProps = Omit<ComponentPropsWithoutRef<'div'>, 'role' | 'aria-label' | 'children'> & {
@@ -33,7 +35,7 @@ export type ButtonGroupProps = Omit<ComponentPropsWithoutRef<'div'>, 'role' | 'a
   children: ReactNode;
 };
 
-/** Layout only: Material, disabled appearance and focus rings belong to the children. */
+/** Group layout only; IconButton owns the direct-child compact-target utility. */
 export const buttonGroupVariants = cva('eg-button-group inline-flex items-center', {
   variants: {
     variant: {

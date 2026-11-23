@@ -34,7 +34,7 @@ describe('SocialLinks public contract', () => {
     expect(link.querySelector('.eg-icon')).toHaveAttribute('aria-hidden', 'true');
     expect(screen.getByText('GitHub profile')).toBeInTheDocument();
     expect(screen.getByText('Follow me')).toHaveClass('eg-social__label');
-    expect(list).toHaveClass('eg-social__list', 'eg-cluster', 'gap-2', 'flex-wrap');
+    expect(list).toHaveClass('eg-social__list', 'eg-cluster', 'gap-3', 'flex-wrap');
     expect(list.parentElement).toHaveClass('eg-social', 'eg-stack', 'gap-3');
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
     expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
@@ -207,9 +207,29 @@ describe('SocialLinks public contract', () => {
     render(<SocialLinks items={[item()]} inline={true} size='md' variant='ghost' gap={1} />);
     const list = screen.getByRole('list');
     expect(list.parentElement).toHaveClass('eg-cluster', 'flex-row', 'flex-wrap', 'gap-4', 'items-center');
-    expect(list).toHaveClass('gap-1');
+    expect(list).toHaveClass('gap-5');
     expect(screen.getByRole('link')).toHaveClass('size-10');
     expect(list.parentElement?.className).not.toMatch(/eg-social--/);
+  });
+
+  it.each([
+    ['md', 1, 'gap-5'],
+    ['md', 2, 'gap-5'],
+    ['lg', 1, 'gap-3'],
+    ['lg', 2, 'gap-3']
+  ] as const)('uses minimum spacing for %s links with requested gap %i', (size, gap, effective) => {
+    render(<SocialLinks items={[item(), item({ id: 'second', label: 'Second profile' })]} size={size} gap={gap} />);
+    const list = screen.getByRole('list', { name: 'Social profiles' });
+    expect(list).toHaveClass(effective, 'flex-wrap');
+    expect(screen.getAllByRole('link').map((link) => link.textContent)).toEqual(['GitHub profile', 'Second profile']);
+  });
+
+  it('preserves default lg native-link navigation semantics and naming', () => {
+    render(<SocialLinks items={[item()]} />);
+    const link = screen.getByRole('link', { name: 'GitHub profile' });
+    expect(link).toHaveAttribute('href', 'https://github.com/example');
+    expect(link).toHaveClass('size-12');
+    expect(link).not.toHaveAttribute('target');
   });
 
   it('forwards native root attributes only, supports outer sizing and keeps keys out of DOM ids', () => {

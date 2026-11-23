@@ -7,6 +7,11 @@
 - The artifact and design reference include Text's `truncate` prop and the approved
   `single-line-text-truncation` convention. (#538)
 
+### Changed
+
+- Refreshed IconButton target and press recipes, composition spacing, and the documented ButtonGroup
+  and Tabs target exceptions from the current UI sources. (#540)
+
 ## 0.9.0
 
 ### Added

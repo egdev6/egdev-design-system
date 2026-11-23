@@ -48,7 +48,7 @@ export const Tabs: FC<TabsProps> = (props) => {
   return (
     <TabsPrimitive.Root {...tabs.rootProps}>
       {tabs.scrollable ? (
-        <div className={tabs.scrollAreaClassName}>
+        <div className={tabs.scrollAreaClassName} data-icon-button-target='compact'>
           {list}
           <ScrollButton button={tabs.scrollButtons.start} />
           <ScrollButton button={tabs.scrollButtons.end} />

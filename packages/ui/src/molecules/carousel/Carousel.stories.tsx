@@ -43,7 +43,8 @@ const items: [CarouselItem, CarouselItem, CarouselItem] = [
  * A manually navigated read-only slide collection with bounded controls, native scrolling and roving focus.
  *
  * ## Dependencies
- * IconButton and Icon provide 48px navigation controls; ProgressBar shows decorative position.
+ * IconButton and Icon provide navigation controls with 38.4px visible boxes and extended targets under default tokens;
+ * ProgressBar shows decorative position.
  * VisuallyHidden supplies instructions and status. Surface is consumer content, not Carousel paint.
  *
  * ## Usage guidelines
@@ -51,6 +52,7 @@ const items: [CarouselItem, CarouselItem, CarouselItem] = [
  * Home/End reach the boundaries. Text selection is preserved; media/background supports mouse dragging.
  * Controlled requests commit only when accepted. Never drive periodic value changes to simulate autoplay.
  * Full-width tracks hide the scrollbar visually while retaining native scrolling; fit content inside each slide.
+ * The control row uses 9.6px default-token spacing to separate the expanded navigation targets.
  * Root className supports only width, margins and layout placement. No stylesheet or part override API.
  */
 const meta: Meta<typeof Carousel> = {

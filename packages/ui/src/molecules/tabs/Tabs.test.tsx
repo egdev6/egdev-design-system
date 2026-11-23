@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import { renderToString } from 'react-dom/server';
 import { build } from 'vite';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { Icon } from '../../atoms/icon';
+import { IconButton } from '../../atoms/icon-button';
 import { surfaceVariants } from '../../primitives/surface';
 import { Tabs } from './index';
 import { useTabs } from './useTabs';
@@ -909,6 +911,57 @@ describe('Tabs outline variant', () => {
 
 describe('Tabs scroll buttons (v0.4-A)', () => {
   it.each([
+    ['underline', false],
+    ['segmented', true],
+    ['outline', true]
+  ] as const)('suppresses only the %s scroll controls, including fill mode', (variant, fullWidth) => {
+    const { rerender } = render(
+      <>
+        <Tabs {...base} variant={variant} fullWidth={fullWidth} />
+        <IconButton label='Standalone' icon={<Icon name='chevron-down' />} />
+      </>
+    );
+    for (const fill of [false, true]) {
+      rerender(
+        <>
+          <Tabs {...base} variant={variant} fullWidth={fullWidth} fill={fill} />
+          <IconButton label='Standalone' icon={<Icon name='chevron-down' />} />
+        </>
+      );
+      const area = screen.getByRole('tablist').parentElement;
+      expect(area).toHaveAttribute('data-icon-button-target', 'compact');
+      expect(area).not.toHaveClass('[&>.eg-icon-btn]:after:content-none');
+      for (const side of ['start', 'end'] as const) {
+        expect(scrollButton(side).parentElement).toBe(area);
+        expect(scrollButton(side)).toHaveClass('[[data-icon-button-target=compact]>&]:after:content-none');
+      }
+      const standalone = screen.getByRole('button', { name: 'Standalone' });
+      expect(standalone).toHaveClass("after:content-['']", 'after:size-14');
+      expect(area).not.toContainElement(standalone);
+    }
+  });
+
+  it('preserves the scroll button native paging without changing selection', () => {
+    const onValueChange = vi.fn();
+    render(<Tabs {...base} onValueChange={onValueChange} />);
+    const list = screen.getByRole('tablist');
+    Object.defineProperties(list, {
+      clientWidth: { configurable: true, value: 200 },
+      scrollWidth: { configurable: true, value: 600 },
+      scrollLeft: { configurable: true, value: 0 }
+    });
+    const scrollBy = vi.fn();
+    Object.defineProperty(list, 'scrollBy', { configurable: true, value: scrollBy });
+    const end = scrollButton('end');
+    vi.spyOn(end, 'getBoundingClientRect').mockReturnValue({ width: 25.6 } as DOMRect);
+    fireEvent.scroll(list);
+    fireEvent.click(end);
+    expect(scrollBy).toHaveBeenCalledExactlyOnceWith({ left: 148.8, behavior: 'smooth' });
+    selected('Queue');
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it.each([
     ['underline', 'underline', false, true],
     ['underline with fullWidth', 'underline', true, true],
     ['full-width segmented', 'segmented', true, true],
@@ -1119,7 +1172,7 @@ describe('Tabs edge fade (v0.4)', () => {
 describe('Tabs fill contract', () => {
   // SHA-256 of JSON [root, scroll area, panel, list] class strings, captured from the unmodified v0.4-A
   // code (base 43adb70) before the fill change. Root, scroll area and panel do not vary with size or
-  // labelWrap; the list varies with variant and fullWidth only.
+  // labelWrap; the list varies with variant and fullWidth only. IconButton owns the v0.6 target exception.
   const defaultRecipes: Record<string, string> = {
     'underline|false': 'bf8d787e1e4db1185696648f401e77c698a30cda43a95b1cae3ffbd0f3f38b73',
     'underline|true': 'bf8d787e1e4db1185696648f401e77c698a30cda43a95b1cae3ffbd0f3f38b73',

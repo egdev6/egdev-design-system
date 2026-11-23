@@ -2431,6 +2431,8 @@ describe('Storybook TypeScript docgen contract', () => {
       'Default',
       'Variants',
       'Sizes',
+      'AdjacentTargets',
+      'CompactListItem',
       'Disabled',
       'States',
       'AsChildLink',

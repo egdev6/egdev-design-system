@@ -23,8 +23,9 @@ const profiles: SocialLinkItem[] = networks.map((name) => ({
  *
  * ## Usage guidelines
  * Supply stable ids, HTTPS destinations and meaningful labels; external is explicitly opt-in
- * per entry. lg is touch-sized; md is dense desktop only. Caption omission never removes the
- * accessible list name. Root className supports outer sizing/margins/placement, not appearance.
+ * per entry. Both visible sizes use an extended target under default tokens. Requested gap is a minimum:
+ * md uses at least gap-5 and lg at least gap-3, including wrapped rows. Avoid clipping and overlays.
+ * Caption omission never removes the accessible list name. Root className supports outer sizing/margins/placement, not appearance.
  */
 const meta: Meta<typeof SocialLinks> = {
   title: 'Molecules/SocialLinks',
@@ -41,7 +42,7 @@ export const Default: Story = {};
 /** Caption and list share a wrapping row, without changing DOM or keyboard order. */
 export const Inline: Story = { args: { inline: true } };
 
-/** The atom's ghost treatment with the source's tight token spacing and no caption. */
+/** The atom's ghost treatment with the minimum supported spacing and no caption. */
 export const Ghost: Story = { args: { variant: 'ghost', caption: null, gap: 1 } };
 
 /** Both null and blank captions remove visible copy while preserving the named list. */
@@ -79,7 +80,7 @@ export const Constrained: Story = {
   ]
 };
 
-/** Dense 40px desktop targets compared with default 48px touch-sized targets. */
+/** Compare 32px md and 38.4px lg visible boxes with their size-dependent target spacing. */
 export const Sizes: Story = {
   render: (args) => (
     <Stack>

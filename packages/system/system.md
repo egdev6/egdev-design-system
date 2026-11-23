@@ -974,7 +974,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native scroll and bounded roving focus)
 - Carousel (components[] · packages/ui/src/molecules/carousel/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - carouselControlsVariants base: gap-2 → --spacing-2
+    - carouselControlsVariants base: gap-3 → --spacing-3
     - carouselCounterVariants base: font-display → --font-display
     - carouselCounterVariants base: text-meta → --text-meta
     - carouselHeaderVariants base: gap-4 → --spacing-4
@@ -1189,7 +1189,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native group and
 ### ListItem
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Slot
 - ListItem (components[] · packages/ui/src/molecules/list-item/types.ts)
-  - ListItemActions: Independent trailing controls; no item-wide activation or primary navigation region. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemActions: Independent trailing controls; no item-wide activation or primary navigation region. At default tokens, adjacent sm/md IconButtons need gap-6 and sm/sm need gap-7 from the consumer. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
   - ListItemBody: Leading content, optional host handle and passive media grouping. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
   - ListItemContent: Flexible readable content; never automatically clamped or hidden. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
   - ListItemFooter: Wrapping metadata/action band for card and compact compositions. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
@@ -1225,7 +1225,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Slot
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -1640,12 +1640,12 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native anchors; 
     - socialLinksCaptionVariants base: text-label-eyebrow → --text-label-eyebrow
     - socialLinksListVariants base: p-0 → --spacing-0
   - caption: string \| null; Visible contextual copy; null or whitespace-only omits the caption without losing the list name. (components[] · packages/ui/src/molecules/social-links/types.ts)
-  - gap: enum; Token-key list spacing: 1 is 4px and 2 is 8px, including wrapped rows. (components[] · packages/ui/src/molecules/social-links/types.ts)
+  - gap: enum; Requested token-key minimum list spacing, including wrapped rows. Effective spacing is at least gap-5 (16px) for md and gap-3 (9.6px) for lg under default tokens; 1 and 2 keep those minima. (components[] · packages/ui/src/molecules/social-links/types.ts)
   - inline: boolean; Arrange caption and list in a wrapping row rather than a stack; DOM order stays unchanged. (components[] · packages/ui/src/molecules/social-links/types.ts)
   - items: SocialLinkItem[]; Ordered profile entries. Empty or all-invalid entries render nothing; invalid entries warn in development. (components[] · packages/ui/src/molecules/social-links/types.ts)
   - label: string; Accessible list name, separate from the caption. Blank input warns and uses Social profiles. (components[] · packages/ui/src/molecules/social-links/types.ts)
   - newTabText: string; Localized notice appended once to external link names. Blank input warns and uses the default notice. (components[] · packages/ui/src/molecules/social-links/types.ts)
-  - size: enum; Delegated IconButton size; lg is 48px, md is 40px for dense desktop use only. (components[] · packages/ui/src/molecules/social-links/types.ts)
+  - size: enum; Delegated visible IconButton size: lg is 38.4px and md is 32px under default tokens. (components[] · packages/ui/src/molecules/social-links/types.ts)
   - variant: enum; Delegated IconButton treatment; the collection paints no surface of its own. (components[] · packages/ui/src/molecules/social-links/types.ts)
 ### Table
 catalog[] · docs/catalog.json · @egdev/ui · molecule · ScrollArea
@@ -2061,9 +2061,11 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Slot + AccessibleIcon
     - iconButtonVariants base: focus-visible:shadow-focus → --shadow-focus
     - iconButtonVariants variant=ghost: rounded-md → --radius-md
     - iconButtonVariants variant=ghost: shadow-none → unresolved
+    - iconButtonVariants variant=ghost: [&:not([data-disabled]):active:not(:focus-visible)]:shadow-btn-pressed → --shadow-btn-pressed
     - iconButtonVariants variant=outline: rounded-full → --radius-full
     - iconButtonVariants variant=outline: shadow-[var(--shadow-edge),var(--shadow-elev-1)] → --shadow-edge, --shadow-elev-1
-    - iconButtonVariants variant=outline: [&:not([data-disabled]):hover:not(:focus-visible)]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] → --shadow-edge-strong, --shadow-elev-1, --shadow-glow-base
+    - iconButtonVariants variant=outline: [&:not([data-disabled]):hover:not(:focus-visible):not(:active)]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] → --shadow-edge-strong, --shadow-elev-1, --shadow-glow-base
+    - iconButtonVariants variant=outline: [&:not([data-disabled]):active:not(:focus-visible)]:shadow-btn-pressed → --shadow-btn-pressed
     - iconButtonVariants variant=primary: rounded-md → --radius-md
     - iconButtonVariants variant=primary: shadow-btn-primary → --shadow-btn-primary
     - iconButtonVariants variant=primary: [&:not([data-disabled]):hover:not(:focus-visible):not(:active)]:shadow-btn-primary-hover → --shadow-btn-primary-hover
@@ -2072,12 +2074,12 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Slot + AccessibleIcon
     - iconButtonVariants variant=secondary: shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)] → --shadow-edge-strong, --shadow-elev-1
     - iconButtonVariants variant=secondary: [&:not([data-disabled]):hover:not(:focus-visible):not(:active)]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] → --shadow-edge-strong, --shadow-elev-1, --shadow-glow-base
     - iconButtonVariants variant=secondary: [&:not([data-disabled]):active:not(:focus-visible)]:shadow-btn-pressed → --shadow-btn-pressed
-  - asChild: boolean; Apply the control to one child through Radix Slot. The child accepts props and forwards refs. Supply an empty anchor/router link; IconButton inserts its icon and hidden name. (components[] · packages/ui/src/atoms/icon-button/types.ts)
+  - asChild: boolean; Apply the control to one child through Radix Slot. Supply one empty anchor/router host that spreads props and forwards refs. The host must provide an unclipped positioning context, no competing ::after, overlay or stacking conflict, and no ancestor scaling. IconButton inserts its icon and hidden name. (components[] · packages/ui/src/atoms/icon-button/types.ts)
   - children: ReactElement<unknown, string \| JSXElementConstructor<any>>; Single host element when asChild is true; not visible label content. Omitted in native mode. (components[] · packages/ui/src/atoms/icon-button/types.ts)
   - icon: ReactElement<unknown, string \| JSXElementConstructor<any>>; One decorative Icon (without its own label) or SVG element, hidden from assistive technology. (components[] · packages/ui/src/atoms/icon-button/types.ts)
   - label: string; Clear, non-empty accessible name rendered as Radix visually hidden text, not aria-label. (components[] · packages/ui/src/atoms/icon-button/types.ts)
-  - size: enum; Square control: sm 25.6px, md 32px, lg 38.4px. Glyph: sm 12.8px, otherwise 16px (--icon-size). Use sm only for dense desktop toolbars; touch layouts provide a hit area of at least 44px. (components[] · packages/ui/src/atoms/icon-button/types.ts)
-  - variant: enum; Visual treatment. Outline is the round treatment; it is the web social-row treatment used at lg. Every other treatment uses radius-md. (components[] · packages/ui/src/atoms/icon-button/types.ts)
+  - size: enum; Visible square: sm 25.6px, md 32px, lg 38.4px; glyph: sm 12.8px, otherwise 16px. Enabled controls have a centered 44.8px invisible square under default tokens for all pointers. Reserve an unclipped visible gap at least one spacing token above the sum of adjacent target outsets. Under default tokens use gap-7 for sm/sm, gap-6 for sm/md, gap-5 for sm/lg or md/md, gap-4 for md/lg and gap-3 for lg/lg. Local token overrides and ancestor transforms may reduce targets. ButtonGroup and Tabs scroll controls deliberately disable the extension. (components[] · packages/ui/src/atoms/icon-button/types.ts)
+  - variant: enum; Visual treatment. Outline is the round treatment; it is the web social-row treatment used at lg. Every other treatment uses radius-md. Secondary alone retains the approved alpha-red-15 pressed background. (components[] · packages/ui/src/atoms/icon-button/types.ts)
 ### Indicator
 catalog[] · docs/catalog.json · @egdev/ui · atom · —
 - Indicator (components[] · packages/ui/src/atoms/indicator/types.ts)
@@ -3014,7 +3016,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -3067,7 +3069,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -3120,7 +3122,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -3173,7 +3175,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -3226,7 +3228,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -3279,7 +3281,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -3332,7 +3334,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -3385,7 +3387,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg
@@ -3438,7 +3440,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - listItemPartVariants part=meta: group-data-[variant=editorial]/list-item:text-label-eyebrow → --text-label-eyebrow
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:font-display → --font-display
     - listItemPartVariants part=meta: group-data-[variant=editorial-divided]/list-item:text-label-eyebrow → --text-label-eyebrow
-    - listItemPartVariants part=actions: gap-1 → --spacing-1
+    - listItemPartVariants part=actions: gap-5 → --spacing-5
     - listItemVariants base: gap-3 → --spacing-3
     - listItemVariants base: p-4 → --spacing-4
     - listItemVariants base: rounded-lg → --radius-lg

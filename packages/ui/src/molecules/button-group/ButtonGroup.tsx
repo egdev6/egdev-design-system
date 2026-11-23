@@ -5,5 +5,9 @@ import { useButtonGroup } from './useButtonGroup';
 /** Groups related actions without taking ownership of their interaction or Material. */
 export const ButtonGroup: FC<ButtonGroupProps> = (props) => {
   const { rootProps, children } = useButtonGroup(props);
-  return <div {...rootProps}>{children}</div>;
+  return (
+    <div {...rootProps} data-icon-button-target='compact'>
+      {children}
+    </div>
+  );
 };

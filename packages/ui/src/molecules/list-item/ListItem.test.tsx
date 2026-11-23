@@ -135,6 +135,53 @@ describe('ListItem public contract', () => {
     expect(result.current.rootProps).toMatchObject({ 'data-state': 'empty', 'data-variant': 'card' });
   });
 
+  it('spaces independent actions on both axes while retaining native activation', async () => {
+    const user = userEvent.setup();
+    const first = vi.fn();
+    const second = vi.fn();
+    render(
+      <ListItem>
+        <ListItemActions>
+          <button type='button' onClick={first}>
+            Edit
+          </button>
+          <button type='button' onClick={second}>
+            Share
+          </button>
+        </ListItemActions>
+      </ListItem>
+    );
+    const edit = screen.getByRole('button', { name: 'Edit' });
+    expect(edit.parentElement).toHaveClass('eg-list-item__acts', 'flex-wrap', 'gap-5');
+    expect(edit.parentElement).not.toHaveClass('gap-1', 'gap-4');
+    await user.click(edit);
+    await user.click(screen.getByRole('button', { name: 'Share' }));
+    expect(first).toHaveBeenCalledOnce();
+    expect(second).toHaveBeenCalledOnce();
+  });
+
+  it('preserves independent action order and native callbacks', async () => {
+    const user = userEvent.setup();
+    const first = vi.fn();
+    const second = vi.fn();
+    render(
+      <ListItem>
+        <ListItemActions>
+          <button type='button' onClick={first}>
+            Edit
+          </button>
+          <button type='button' onClick={second}>
+            Share
+          </button>
+        </ListItemActions>
+      </ListItem>
+    );
+    expect(screen.getAllByRole('button').map((button) => button.textContent)).toEqual(['Edit', 'Share']);
+    await user.click(screen.getByRole('button', { name: 'Share' }));
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledOnce();
+  });
+
   it('never clears new status on focus or activation', async () => {
     const user = userEvent.setup();
     render(

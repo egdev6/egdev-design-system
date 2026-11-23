@@ -50,7 +50,10 @@ export const ListItemMeta: FC<ListItemPartProps> = (props) => {
   return <div {...partProps} />;
 };
 
-/** Independent trailing controls; no item-wide activation or primary navigation region. */
+/**
+ * Independent trailing controls; no item-wide activation or primary navigation region.
+ * At default tokens, adjacent sm/md IconButtons need gap-6 and sm/sm need gap-7 from the consumer.
+ */
 export const ListItemActions: FC<ListItemPartProps> = (props) => {
   const partProps = useListItemPart('actions', props);
   return <div {...partProps} />;
