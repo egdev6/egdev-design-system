@@ -4,13 +4,20 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
-## Unreleased
+## 0.9.0
 
 ### Added
 
 - Icon includes the physical `arrow-left` glyph. Applications choose the appropriate direction in
   RTL; it does not mirror automatically. Audit exhaustive `IconName` switches and maps for the new
   member. (#537)
+
+### Changed
+
+- CollapsibleHeader actions use `gap-5` and the Trigger-to-actions row uses `gap-3`;
+  PreviewFrame actions and the Sidebar footer also use `gap-5`. These visual spacing changes
+  can widen or wrap content. Consumers must provide extra clearance for `sm` action neighbors
+  and reserve target space from surrounding controls and clipping. (#550)
 
 ## 0.8.0
 

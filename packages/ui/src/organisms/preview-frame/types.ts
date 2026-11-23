@@ -43,7 +43,9 @@ export type PreviewFrameProps = Omit<ComponentPropsWithoutRef<'figure'>, 'childr
    * @control text
    */
   figureCaption?: string;
-  /** Consumer-owned trailing controls.
+  /** Consumer-owned trailing controls. The action gap clears adjacent md/md targets under
+   * default tokens; supply extra clearance for sm/md (gap-6) and sm/sm (gap-7).
+   * Nested groups and nearby controls also need clearance; see IconButton size.
    * @control false
    * @controlReason ReactNode content is not serializable; see Default.
    */
@@ -57,7 +59,7 @@ export type PreviewFrameProps = Omit<ComponentPropsWithoutRef<'figure'>, 'childr
 
 export const rootVariants = cva('eg-stage m-0 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-3');
 export const captionVariants = cva('min-w-0');
-export const actionsVariants = cva('flex flex-wrap items-center justify-end gap-2');
+export const actionsVariants = cva('flex flex-wrap items-center justify-end gap-5');
 export const canvasVariants = cva('col-span-2 isolate w-full overflow-hidden');
 export const canvasInnerVariants = cva('relative size-full');
 export const safeAreaVariants = cva(

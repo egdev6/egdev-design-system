@@ -765,7 +765,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -1032,7 +1032,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -1272,7 +1272,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:f1e3c8748b22d624dc4cdfc69df38dbde105462aef802107bc2fafdb253dd87e"
+          "revision": "sha256:c997a450746974b751573a482de9d4e012e35f042018d2367381f878bce9ae00"
         }
       },
       {
@@ -1292,7 +1292,7 @@
         "source": {
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
-          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+          "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
         }
       },
       {
@@ -1550,7 +1550,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:f1e3c8748b22d624dc4cdfc69df38dbde105462aef802107bc2fafdb253dd87e"
+          "revision": "sha256:c997a450746974b751573a482de9d4e012e35f042018d2367381f878bce9ae00"
         }
       },
       {
@@ -1560,7 +1560,7 @@
         "source": {
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
-          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+          "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
         }
       },
       {
@@ -2145,7 +2145,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
+          "revision": "sha256:dac427123c08723af7978d2fa7ed288381347aab1c6caeaa5c7f8dccb879456d"
         }
       },
       {
@@ -2900,7 +2900,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogTriggerProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -2910,7 +2910,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogCloseProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -3914,7 +3914,7 @@
         "source": {
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
-          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+          "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
         }
       }
     ]
@@ -4111,7 +4111,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
+          "revision": "sha256:dac427123c08723af7978d2fa7ed288381347aab1c6caeaa5c7f8dccb879456d"
         }
       }
     ]
@@ -4740,7 +4740,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -4780,7 +4780,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
+          "revision": "sha256:61da0f12cd4be4e75fb99deff1db3d5170479542b951ed3d744e2304d211ae46"
         }
       }
     ]
@@ -4837,7 +4837,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -4877,7 +4877,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
+          "revision": "sha256:61da0f12cd4be4e75fb99deff1db3d5170479542b951ed3d744e2304d211ae46"
         }
       }
     ]
@@ -4934,7 +4934,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -4974,7 +4974,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
+          "revision": "sha256:61da0f12cd4be4e75fb99deff1db3d5170479542b951ed3d744e2304d211ae46"
         }
       }
     ]
@@ -5192,7 +5192,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
+          "revision": "sha256:dac427123c08723af7978d2fa7ed288381347aab1c6caeaa5c7f8dccb879456d"
         }
       }
     ]
@@ -5266,7 +5266,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -5591,7 +5591,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleHeaderProps",
-          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
+          "revision": "sha256:61da0f12cd4be4e75fb99deff1db3d5170479542b951ed3d744e2304d211ae46"
         }
       },
       {
@@ -5621,7 +5621,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -5671,7 +5671,7 @@
         "source": {
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
-          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+          "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
         }
       }
     ]
@@ -5718,7 +5718,7 @@
         "source": {
           "path": "packages/ui/src/organisms/sidebar/types.ts",
           "symbol": "SidebarProps",
-          "revision": "sha256:7f16ca178fc47c6e03d450757dc09d0b4b812ec0b2e7b68c37e62f7845d9186a"
+          "revision": "sha256:80a3f250f00ba2e2b6cd250e2892d05412ceed441c9f4111fbc4a3959042dbf0"
         }
       },
       {
@@ -5728,7 +5728,7 @@
         "source": {
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
-          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+          "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
         }
       }
     ]
@@ -6000,7 +6000,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       }
     ]
@@ -6027,7 +6027,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       }
     ]
@@ -6054,7 +6054,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -6761,7 +6761,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleContentProps",
-          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
+          "revision": "sha256:61da0f12cd4be4e75fb99deff1db3d5170479542b951ed3d744e2304d211ae46"
         }
       },
       {
@@ -6781,7 +6781,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       }
     ]
@@ -6808,7 +6808,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleContentProps",
-          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
+          "revision": "sha256:61da0f12cd4be4e75fb99deff1db3d5170479542b951ed3d744e2304d211ae46"
         }
       }
     ]
@@ -6835,7 +6835,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleTriggerProps",
-          "revision": "sha256:4bccc7704efce4ffc645e6bd7932265937ca16534bead991b764f744f7cb247d"
+          "revision": "sha256:61da0f12cd4be4e75fb99deff1db3d5170479542b951ed3d744e2304d211ae46"
         }
       }
     ]
@@ -6926,7 +6926,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -7027,7 +7027,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       },
       {
@@ -7064,7 +7064,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:631f34f582959c9049124289bc570686e0505fe03d099fb83ee18403e37d8479"
+          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
         }
       }
     ]
@@ -7388,7 +7388,7 @@
         "source": {
           "path": "packages/ui/src/organisms/sidebar/types.ts",
           "symbol": "SidebarProps",
-          "revision": "sha256:7f16ca178fc47c6e03d450757dc09d0b4b812ec0b2e7b68c37e62f7845d9186a"
+          "revision": "sha256:80a3f250f00ba2e2b6cd250e2892d05412ceed441c9f4111fbc4a3959042dbf0"
         }
       },
       {
@@ -7516,7 +7516,7 @@
         "source": {
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
-          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+          "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
         }
       }
     ]
@@ -7543,7 +7543,7 @@
         "source": {
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
-          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+          "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
         }
       }
     ]
@@ -7570,7 +7570,7 @@
         "source": {
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
-          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+          "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
         }
       }
     ]
@@ -8387,7 +8387,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
+          "revision": "sha256:dac427123c08723af7978d2fa7ed288381347aab1c6caeaa5c7f8dccb879456d"
         }
       }
     ]
@@ -8414,7 +8414,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:6106791f1c36833cd43015c98710664712a0f41dcf576f2fc970ad0580b132f3"
+          "revision": "sha256:dac427123c08723af7978d2fa7ed288381347aab1c6caeaa5c7f8dccb879456d"
         }
       }
     ]
@@ -8528,7 +8528,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:f1e3c8748b22d624dc4cdfc69df38dbde105462aef802107bc2fafdb253dd87e"
+          "revision": "sha256:c997a450746974b751573a482de9d4e012e35f042018d2367381f878bce9ae00"
         }
       }
     ]
@@ -8663,7 +8663,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:f1e3c8748b22d624dc4cdfc69df38dbde105462aef802107bc2fafdb253dd87e"
+          "revision": "sha256:c997a450746974b751573a482de9d4e012e35f042018d2367381f878bce9ae00"
         }
       },
       {

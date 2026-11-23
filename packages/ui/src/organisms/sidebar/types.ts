@@ -17,7 +17,10 @@ export type SidebarProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'r
    */
   children: ReactNode;
   /**
-   * Optional pinned utility and metadata content, not navigation.
+   * Optional pinned utility and metadata content, not navigation. The footer gap clears
+   * adjacent md/md targets under default tokens; supply extra clearance for sm/md (gap-6)
+   * and sm/sm (gap-7). The footer does not wrap; reserve sufficient space from nearby
+   * controls and clipping. See IconButton size for target spacing.
    * @control false
    * @controlReason ReactNode composition is not serializable; see WithFooter.
    */
@@ -33,5 +36,5 @@ export const sidebarContentVariants = cva('px-3 pb-4', { variants: { header: { t
 export const sidebarScrollbarVariants = cva('flex w-2 touch-none select-none p-0.5 data-[state=hidden]:hidden');
 export const sidebarThumbVariants = cva('relative flex-1 rounded-full bg-border-hairline-strong');
 export const sidebarFooterVariants = cva(
-  'flex items-center gap-2 px-4 py-3 font-sans text-label-default text-fg-muted'
+  'flex items-center gap-5 px-4 py-3 font-sans text-label-default text-fg-muted'
 );
