@@ -886,7 +886,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · AlertDialog
 - AlertDialog (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - AlertDialogAction: Decision action. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
   - AlertDialogCancel: Least-destructive decision; receives initial focus. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
-  - AlertDialogContent: Labelled modal with required consequence and actions. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
+  - AlertDialogContent: Labelled modal with required consequence and actions. A connected, positioned, non-scrolling host bounds container-scoped paint, not document-wide Radix modality. Render after the host is ready and close before removing or replacing it. Viewport scope beneath a host can still be constrained by clipping or containing blocks. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
   - AlertDialogTrigger: Optional disclosure control. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - No statically extracted anatomy.
@@ -894,6 +894,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · AlertDialog
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - onOpenChange: ((open: boolean) => void); Requested visibility changes. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - open: boolean; Controlled visibility. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
+  - pending: boolean; Locks this alert's owned dismissal controls and marks its content busy while an action is in flight. Consumers synchronously prevent the initiating action's close and provide progress and error messages; aria-busy does not guarantee an announcement. Controlled close and unmount remain possible. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
 ### ArticleFeature
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - ArticleFeature (components[] · packages/ui/src/molecules/article-feature/types.ts)
@@ -3504,7 +3505,7 @@ Not exported:
 - decorative-separation: decorative; approved; Divider (propNaming[] · skills/_shared/prop-naming.json)
 - dialog-action-placement: actionsPlacement; proposed; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - dialog-header-layout: headerLayout; approved; AlertDialogContent, DialogContent (propNaming[] · skills/_shared/prop-naming.json)
-- dialog-overlay-scope: overlayScope; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
+- dialog-overlay-scope: overlayScope; approved; AlertDialogContent, DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - dialog-title-overflow: titleOverflow; proposed; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - disclosure-motion: motion; approved; CollapsibleTrigger (propNaming[] · skills/_shared/prop-naming.json)
 - disclosure-presence: presence; approved; CollapsibleContent (propNaming[] · skills/_shared/prop-naming.json)
@@ -3571,6 +3572,7 @@ Not exported:
 - measurement-text-equivalent: valueText; approved; Gauge, GaugeGroupRing, MeterRow, ProgressBar, Slider (propNaming[] · skills/_shared/prop-naming.json)
 - menu-entry-kind: kind; approved; MenuEntry, ModuleRail, NavList (propNaming[] · skills/_shared/prop-naming.json)
 - message-summary: summary; approved; Notice, Toast (propNaming[] · skills/_shared/prop-naming.json)
+- modal-action-pending: pending; approved; AlertDialog (propNaming[] · skills/_shared/prop-naming.json)
 - move-intent: onMove; approved; CalendarGrid (propNaming[] · skills/_shared/prop-naming.json)
 - navigation-intent: onNavigate; approved; CalendarGrid, Menu, ModuleRail, NavList, SectionNav, TabBar, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - new-tab-navigation: external; approved; Chip, Link, SocialLinkItem (propNaming[] · skills/_shared/prop-naming.json)
@@ -3586,7 +3588,7 @@ Not exported:
 - paused-presentation: paused; approved; Avatar (propNaming[] · skills/_shared/prop-naming.json)
 - pending-activity: loading; approved; Button, Input (propNaming[] · skills/_shared/prop-naming.json)
 - pointer-tilt: pointerTilt; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
-- portal-container: container; approved; DialogContent, Portal (propNaming[] · skills/_shared/prop-naming.json)
+- portal-container: container; approved; AlertDialogContent, DialogContent, Portal (propNaming[] · skills/_shared/prop-naming.json)
 - preset-dimensions: size; approved; AppIcon, Avatar, Button, Countdown, DialogContent, Gauge, GaugeGroup, Icon, IconButton, Indicator, Input, ListItem, Logo, Notice, NowCard, ProgressBar, ProjectCard, Select, Skeleton, SocialLinks, Spinner, Stat, Table, Tabs, Timeline, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-change: onPressedChange; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-state: pressed; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)

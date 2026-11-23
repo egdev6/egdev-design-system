@@ -8,6 +8,8 @@ import { buttonVariants } from '../atoms/button/types';
 import { gaugeCircleVariants } from '../atoms/gauge/types';
 import {
   dialogHeaderActionsVariants,
+  dialogOverlayVariants,
+  dialogScrimVariants,
   dialogSheetBodyMinimumVariants,
   dialogSheetClampTitleVariants,
   dialogSheetFullVariants,
@@ -174,6 +176,41 @@ describe('Storybook preview CSS', () => {
       expect(recipe).not.toMatch(/\beg-dialog/);
     }
   });
+
+  it('compiles the shared AlertDialog placement and scrim from production sources without story scanning', {
+    timeout: 30_000
+  }, async () => {
+    const result = await build({
+      configFile: false,
+      envDir: false,
+      plugins: [tailwindcss({ optimize: false })],
+      logLevel: 'warn',
+      build: {
+        write: false,
+        minify: false,
+        cssMinify: false,
+        rolldownOptions: {
+          input: fileURLToPath(new URL('../styles/compiled.css', import.meta.url))
+        }
+      }
+    });
+    const assets = (Array.isArray(result) ? result : [result]).flatMap((output) =>
+      'output' in output ? output.output : []
+    );
+    const stylesheet = assets.find((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
+    if (stylesheet?.type !== 'asset') {
+      throw new Error('The production UI CSS build must emit a stylesheet');
+    }
+    const production = String(stylesheet.source);
+    expect(production).toMatch(/\.absolute\s*\{[^}]*position:\s*absolute/);
+    expect(production).toMatch(/\.fixed\s*\{[^}]*position:\s*fixed/);
+    expect(production).toMatch(/\.inset-0\s*\{[^}]*inset:\s*(?:var\(--space-0\)|0)/);
+    expect(production).toContain(String.raw`.bg-bg-scrim\/72`);
+    expect(dialogOverlayVariants({ scope: 'container', flush: false }).split(' ')).toContain('absolute');
+    expect(dialogOverlayVariants({ scope: 'viewport', flush: false }).split(' ')).toContain('fixed');
+    expect(dialogScrimVariants()).not.toContain('eg-');
+  });
+
   it('compiles compact Heading metrics and display family from existing tokens', () => {
     const compact = rule('.text-heading-small');
     for (const [property, token] of [

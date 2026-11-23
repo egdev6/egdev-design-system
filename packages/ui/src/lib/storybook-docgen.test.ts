@@ -253,6 +253,112 @@ describe('Dialog sheet layout metadata', () => {
 });
 
 describe('Dialog header-layout metadata and stories', () => {
+  it('extracts AlertDialog placement and pending declarations, defaults, controls and stories', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const file = ast(source('molecules/alert-dialog/types.ts'));
+    const expectedControls: Record<string, string> = {
+      children: 'false',
+      open: 'boolean',
+      defaultOpen: 'boolean',
+      onOpenChange: 'false',
+      pending: 'boolean',
+      container: 'false',
+      overlayScope: 'select',
+      title: 'text',
+      description: 'text',
+      headerLayout: 'select',
+      actions: 'false',
+      tone: 'select',
+      asChild: 'boolean'
+    };
+    const properties = ownProps(file, [
+      'AlertDialogProps',
+      'AlertDialogPlacement',
+      'AlertDialogContentProps',
+      'ButtonComposition'
+    ]);
+    expect(properties.map((property) => property.name.getText(file))).toEqual([
+      'children',
+      'open',
+      'defaultOpen',
+      'onOpenChange',
+      'pending',
+      'asChild',
+      'children',
+      'asChild',
+      'children',
+      'container',
+      'overlayScope',
+      'container',
+      'overlayScope',
+      'title',
+      'description',
+      'headerLayout',
+      'children',
+      'actions',
+      'tone'
+    ]);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map(({ comment }) => comment),
+        name
+      ).toEqual([expectedControls[name]]);
+      if (expectedControls[name] === 'false') {
+        expect(
+          tags.some(({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(comment)),
+          name
+        ).toBe(true);
+      }
+      if (!property.questionToken || name === 'container' || name === 'overlayScope') {
+        expect(
+          tags.some(({ tagName }) => tagName.text === 'default'),
+          name
+        ).toBe(false);
+      }
+    }
+    const extracted = parser.parse(source('molecules/alert-dialog/AlertDialog.tsx'));
+    const root = extracted.find(({ displayName }) => displayName === 'AlertDialog');
+    const content = extracted.find(({ displayName }) => displayName === 'AlertDialogContent');
+    expect(root?.props.pending).toMatchObject({
+      required: false,
+      defaultValue: { value: 'false' },
+      tags: { control: 'boolean' }
+    });
+    expect(content?.props.container).toMatchObject({ required: false, defaultValue: null });
+    const containerTags = content?.props.container?.tags as Record<string, string> | undefined;
+    expect(containerTags?.control).toMatch(/^false(?:\nfalse)*$/);
+    expect(containerTags?.controlReason).toMatch(/DOM elements.*Container and ContainerViewport/);
+    expect(content?.props.overlayScope).toMatchObject({ required: false, defaultValue: null });
+    const scopeTags = content?.props.overlayScope?.tags as Record<string, string> | undefined;
+    expect(scopeTags?.control).toMatch(/^select(?:\nselect)*$/);
+    expect(
+      content?.props.overlayScope?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()
+    ).toEqual(['container', 'viewport']);
+    for (const name of ['title', 'description', 'actions']) {
+      expect(content?.props[name]?.required, name).toBe(true);
+    }
+    for (const name of ['role', 'style', 'aria-describedby', 'aria-labelledby', 'aria-modal', 'ref']) {
+      expect(content?.props[name], name).toBeUndefined();
+    }
+    expect(exportedStoryNames(ast(source('molecules/alert-dialog/AlertDialog.stories.tsx')))).toEqual([
+      'Default',
+      'InlineHeader',
+      'StackedHeader',
+      'StackedLongTitle',
+      'InlineLongTitle',
+      'Danger',
+      'WithBody',
+      'PendingAction',
+      'Controlled',
+      'Container',
+      'ContainerViewport',
+      'NestedDelete'
+    ]);
+  });
+
   for (const [name, path, types, defaultValue] of [
     ['DialogContent', 'molecules/dialog/Dialog.tsx', 'molecules/dialog/types.ts', 'inline'],
     ['AlertDialogContent', 'molecules/alert-dialog/AlertDialog.tsx', 'molecules/alert-dialog/types.ts', 'stacked']

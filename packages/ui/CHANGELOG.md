@@ -12,6 +12,10 @@ a local tarball from `pnpm release:pack`.
   Consumers provide a visible complete-title route usable by keyboard, pointer and touch, manageable actions,
   and clear hit targets and focus rings. In an insufficient host, clamp or header actions may make the overlay
   scroll and move top actions out of view; unchanged sheets keep their existing cap and footer. (#543)
+- AlertDialog supports a ready portal `container`, derived or explicit `overlayScope`, and a root
+  `pending` lock for its own decision controls. Consumers prevent the initiating close synchronously
+  and provide progress and recovery; host-scoped paint remains document-modal. Dialog's independent
+  pending lock is deferred. Refs #544
 
 ## 0.9.0
 

@@ -1044,6 +1044,35 @@ describe('Dialog sheet layout Controls', () => {
 });
 
 describe('Dialog header-layout Controls', () => {
+  it('maps AlertDialog pending and placement through real extraction without injecting values', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const extracted = parser.parse(
+      fileURLToPath(new URL('../molecules/alert-dialog/AlertDialog.tsx', import.meta.url))
+    );
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    for (const name of ['AlertDialog', 'AlertDialogContent']) {
+      const doc = extracted.find((item) => item.displayName === name);
+      expect(doc).toBeDefined();
+      const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics, name).toEqual([]);
+      const composed = composeStory({}, { title: `Metadata/${name}`, component: metadata }, preview, 'Default');
+      expect(composed.args).toEqual({});
+      if (name === 'AlertDialog') {
+        expect(composed.argTypes.pending?.control).toEqual({ type: 'boolean' });
+        expect(composed.argTypes.pending?.table?.defaultValue?.summary).toBe('false');
+        expect(composed.argTypes.pending?.type?.required).not.toBe(true);
+      } else {
+        expect(composed.argTypes.container?.control).toBe(false);
+        expect(composed.argTypes.container?.table?.disable).toBeUndefined();
+        expect(composed.argTypes.container?.table?.defaultValue).toBeUndefined();
+        expect(composed.argTypes.overlayScope?.control).toEqual({ type: 'select' });
+        expect([...(composed.argTypes.overlayScope?.options ?? [])].sort()).toEqual(['container', 'viewport']);
+        expect(composed.argTypes.overlayScope?.table?.defaultValue).toBeUndefined();
+      }
+    }
+  });
+
   for (const [name, path, defaultValue] of [
     ['DialogContent', 'molecules/dialog/Dialog.tsx', 'inline'],
     ['AlertDialogContent', 'molecules/alert-dialog/AlertDialog.tsx', 'stacked']
