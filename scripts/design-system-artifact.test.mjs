@@ -59,6 +59,19 @@ function artifactWithTags(entries) {
 
 const buttonFixture = { path: 'packages/ui/src/atoms/button/types.ts', alias: 'ButtonProps' };
 
+test('Icon name remains a required enum without inventing a glyph-value list', () => {
+  const artifact = read('packages/system/design-system.json');
+  const icon = artifact.components.find(({ name }) => name === 'Icon');
+  assert.ok(icon);
+  const name = icon.props.find((prop) => prop.name === 'name');
+  assert.ok(name);
+  assert.equal(name.type, 'enum');
+  assert.equal(name.required, true);
+  assert.equal(name.default, null);
+  assert.ok(!Object.hasOwn(name, 'values'));
+  assert.ok(!artifact.types.some((type) => type.name === 'IconName'));
+});
+
 test('IconButton hit-area facts and composition spacing are source-derived without new public props', () => {
   const artifact = read('packages/system/design-system.json');
   const component = (name) => {

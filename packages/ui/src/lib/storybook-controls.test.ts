@@ -135,6 +135,56 @@ const components = [
   ['WebTemplate', 'templates/web-template'],
   ['AppIcon', 'atoms/app-icon']
 ] as const;
+const expectedIconNames = [
+  'github',
+  'youtube',
+  'twitch',
+  'x',
+  'linkedin',
+  'instagram',
+  'search',
+  'arrow-left',
+  'arrow-right',
+  'arrow-up-right',
+  'arrow-down',
+  'play',
+  'users',
+  'menu',
+  'radio',
+  'terminal',
+  'hammer',
+  'compass',
+  'alert',
+  'close',
+  'user',
+  'bookmark',
+  'bell',
+  'settings',
+  'log-out',
+  'chevron-down',
+  'calendar',
+  'inbox',
+  'lightbulb',
+  'shuffle',
+  'pause',
+  'pencil',
+  'send',
+  'grip',
+  'upload',
+  'flask',
+  'plug',
+  'bot',
+  'trash',
+  'copy',
+  'check',
+  'minus',
+  'plus',
+  'circle-alert',
+  'circle-check',
+  'info',
+  'download',
+  'external-link'
+];
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
 });
@@ -1654,16 +1704,29 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
   });
 
-  it('exposes both new Icon glyphs in the closed select without the external alias', () => {
-    const { argTypes } = story('Icon');
-    expect(argTypes.name?.type?.required).toBe(true);
-    expect(argTypes.name?.control).toEqual({ type: 'select' });
-    expect(argTypes.name?.options).toHaveLength(47);
-    expect(argTypes.name?.options).toEqual(
-      expect.arrayContaining(['search', 'circle-check', 'download', 'external-link'])
-    );
-    expect(argTypes.name?.options).not.toContain('external');
-    expect(argTypes.name?.options).toEqual(story('Icon', false).argTypes.name?.options);
+  it('exposes the complete Icon and FieldMessage glyph selects without changing defaults or arguments', () => {
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    for (const [name, prop, required] of [
+      ['Icon', 'name', true],
+      ['FieldMessage', 'icon', false]
+    ] as const) {
+      const metadata = component(name);
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+      const { argTypes, args } = story(name);
+      const glyph = argTypes[prop];
+      expect(glyph?.type?.required === true).toBe(required);
+      expect(glyph?.control).toEqual({ type: 'select' });
+      expect(glyph?.options).toHaveLength(48);
+      expect(new Set(glyph?.options).size).toBe(48);
+      expect([...(glyph?.options ?? [])].sort()).toEqual([...expectedIconNames].sort());
+      expect(glyph?.options).not.toContain('external');
+      expect(glyph?.options).toEqual(story(name, false).argTypes[prop]?.options);
+      expect(glyph?.table?.defaultValue).toBeUndefined();
+      expect(args).not.toHaveProperty(prop);
+    }
+    expect(story('Icon').argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
+    expect(story('Icon').argTypes.filled?.table?.defaultValue?.summary).toBe('false');
+    expect(story('FieldMessage').argTypes.tone?.table?.defaultValue?.summary).toBe('"description"');
   });
 
   it('retains IconButton required hidden naming, full choices and native button rows', () => {

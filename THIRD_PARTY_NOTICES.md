@@ -55,6 +55,7 @@ La revisión de origen de la primera adaptación no quedó registrada; no se inv
 The system's Lucide-family SVG paths include:
 
 - `packages/ui/src/atoms/icon/icon-paths.ts`: the 17 glyphs added in the Icon contract ([#58](https://github.com/egdev6/egdev-design-system/issues/58), decisions D2 and D8) are copied verbatim from `lucide-react` 1.55.0 (`grip` from `grip-vertical`, `flask` from `flask-conical`, `trash` from `trash-2`; the rest same-named). The 25 Foundation glyphs are copied verbatim from the EGDEV Foundation Icon preview, which uses the same Lucide-family paths.
+- Icon's `arrow-left` is derived by horizontally reflecting the existing Foundation `arrow-right` geometry. It is not claimed as a verbatim copy from an independently inspected upstream file; the Lucide ISC and Feather MIT notices below are retained for the underlying Lucide-family paths.
 - `packages/ui/src/atoms/spinner/Spinner.tsx`: the open arc is the Lucide `loader-circle` path, also used in the EGDEV Foundation Spinner design ([#69](https://github.com/egdev6/egdev-design-system/issues/69)).
 
 These notices cover the system icon paths, including Icon and Spinner; no Lucide package is a dependency of `@egdev/ui`. Lucide marks some glyphs (including `calendar`, `check`, `minus`, `plus`, `trash-2` and `upload`) as derived from Feather; its full license, including the Feather notice, is reproduced below.

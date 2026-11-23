@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority';
 import type { ComponentPropsWithoutRef } from 'react';
 
-/** Closed system icon set: 25 Foundation glyphs plus 22 Lucide additions. */
+/** Closed system icon set: 25 Foundation glyphs, 22 Lucide additions and one derived glyph. */
 export type IconName =
   | 'github'
   | 'youtube'
@@ -10,6 +10,7 @@ export type IconName =
   | 'linkedin'
   | 'instagram'
   | 'search'
+  | 'arrow-left'
   | 'arrow-right'
   | 'arrow-up-right'
   | 'arrow-down'

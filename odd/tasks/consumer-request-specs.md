@@ -29,7 +29,8 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 | T5 | S3, S4, S5 | worker | done: plan approved (7aa05ea) |
 | T8 | S3, S6–S12 | worker | done: b66eaf4 + follow-up; independent verify PASS; released in ui 0.8.0 (#549) |
 | T9 | S4, S13 | worker | done: Icon v0.4 approved (f5b9ce2) |
-| T10 | S4, S5, S13 | worker | drafted: docs/components/icon/v0.4/implementation-plan.md (this commit); owner approval pending |
+| T10 | S4, S5, S13 | worker | plan approved (a196a26) |
+| T11 | S13 | worker | implemented (this commit); parent build/MCP/package checks pending |
 | T6 | S2, S5, S6 | worker | done: dd033c5; independent verify PASS |
 | T7 | S3, S4, S6 | worker | done: v0.5 approved (this commit) |
 
@@ -67,3 +68,5 @@ Spec amendments (no code) for two capabilities Recado's compact note card needs,
 - L30: Released ui 0.8.0 / system 0.10.0 (#549, 3a038fa); #538 and #540 closed with availability comments; Recado and Nexo sessions notified. Owner: "si" → T9, spec for #537 on branch docs/spec-icon-arrow-left.
 - L31 (owner choice, verbatim): "Aprobar sin captura nueva (Recomendado)". Icon v0.4 arrow-left amendment approved, contentSHA256 ab4b9e389e367aaec8b9f3cffc8b8ec2969de56819638a3fc13830a531b7e94c. `arrow-left` is a horizontal reflection of `arrow-right` about x=12 and is not RTL-aware. The Icon real-capture requirement still applies to the implementation PR. Next: the implementation plan.
 - L32: T10 plan drafted (amendment digest verified; AC-01–AC-10 mapped; covers registry revisions, the Icon and FieldMessage inventories, catalog, artifact, a local packed-consumer run after build, attribution and the required real capture).
+- L33 (owner choice, verbatim): "Aprobar e implementar (Recomendado)" ("Test-first, inventarios, registro, artefacto, consumidor empaquetado en local tras el build, captura real del icono para el PR y PR; sin release hasta que lo pidas.") → T11.
+- L34: T11 by worker. `arrow-left` (a reflection of `arrow-right`) was implemented test-first: Icon 7 RED → 76/76, metadata 3 → 420/420, FieldMessage 1 → 11/11. Catalog 118 rows; registry 132/132; artifact 45/45; system 36/36; full `pnpm test` 3,468/3,468; lint and typecheck green. Captured in Chrome 148 from a scratch build (fallback fonts recorded in capture.json; visual conformity Not evaluated). Owner direction, verbatim: "coge para hacer las tareas que puedas en paralelo con subagentes. crea rama de integración para mergear y la pasamos completa a main". Integration branch `integration/consumer-requests` was created from main 3a038fa. Worktrees ../eds-wt-547 (fix/artifact-recipes-547), ../eds-wt-543 (docs/spec-543) and ../eds-wt-544 (docs/spec-544) were created for parallel work.

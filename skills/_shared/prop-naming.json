@@ -855,7 +855,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:b586847d42cc179674cf6c59bfd9434d421dc4e45759e355d770b9289b58a361"
+          "revision": "sha256:81b4efe2a2f4ec337bac642fad1bb25f6bfe1fa3e04bd12a58c0dd24e276ab97"
         }
       },
       {
@@ -1875,7 +1875,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:b586847d42cc179674cf6c59bfd9434d421dc4e45759e355d770b9289b58a361"
+          "revision": "sha256:81b4efe2a2f4ec337bac642fad1bb25f6bfe1fa3e04bd12a58c0dd24e276ab97"
         }
       },
       {
@@ -3264,12 +3264,12 @@
     "usages": [
       {
         "component": "Icon",
-        "type": "IconName (closed 47-name glyph set)",
+        "type": "IconName (closed 48-name glyph set)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:b586847d42cc179674cf6c59bfd9434d421dc4e45759e355d770b9289b58a361"
+          "revision": "sha256:81b4efe2a2f4ec337bac642fad1bb25f6bfe1fa3e04bd12a58c0dd24e276ab97"
         }
       }
     ]
@@ -3296,7 +3296,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:b586847d42cc179674cf6c59bfd9434d421dc4e45759e355d770b9289b58a361"
+          "revision": "sha256:81b4efe2a2f4ec337bac642fad1bb25f6bfe1fa3e04bd12a58c0dd24e276ab97"
         }
       }
     ]

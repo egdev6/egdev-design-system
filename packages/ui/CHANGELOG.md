@@ -4,6 +4,14 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## Unreleased
+
+### Added
+
+- Icon includes the physical `arrow-left` glyph. Applications choose the appropriate direction in
+  RTL; it does not mirror automatically. Audit exhaustive `IconName` switches and maps for the new
+  member. (#537)
+
 ## 0.8.0
 
 ### Added
