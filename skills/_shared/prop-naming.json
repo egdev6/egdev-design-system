@@ -760,12 +760,12 @@
       },
       {
         "component": "DialogContent",
-        "type": "DialogSize (sm | md | lg | full; centered only)",
+        "type": "DialogSize (sm | md | lg | full centered; sheet full or omitted)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -1032,7 +1032,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -2900,7 +2900,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogTriggerProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -2910,7 +2910,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogCloseProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -4740,7 +4740,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -4837,7 +4837,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -4934,7 +4934,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -5266,7 +5266,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -5621,7 +5621,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -6000,7 +6000,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       }
     ]
@@ -6027,7 +6027,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       }
     ]
@@ -6054,7 +6054,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -6781,7 +6781,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       }
     ]
@@ -6926,7 +6926,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -7027,7 +7027,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       },
       {
@@ -7064,7 +7064,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:3b1226c495d4690b84c76987cf398a21d2dc1fa50295db684e83c5f256b27640"
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       }
     ]
@@ -8755,6 +8755,52 @@
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps.truncate",
           "revision": "sha256:41a2d11b8fd42de6f7ec8fc8b05d203459c1dd93eb62b184b8f83e75ebe0f4fc"
+        }
+      }
+    ]
+  },
+  {
+    "id": "dialog-title-overflow",
+    "name": "titleOverflow",
+    "meaning": "Select whether a Dialog sheet's visible owned title remains unchanged or is limited to two lines without changing its string.",
+    "whenToUse": "Bound a sheet title when the consumer provides a visible route to its complete text.",
+    "avoid": "Single-line truncation, control labels, data mutation or hiding the accessible title.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "DialogContent",
+        "type": "'default' | 'clamp' (sheet only; default default)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
+        }
+      }
+    ]
+  },
+  {
+    "id": "dialog-action-placement",
+    "name": "actionsPlacement",
+    "meaning": "Select where a Dialog sheet renders its existing consumer-supplied actions.",
+    "whenToUse": "Choose the footer or header for the sheet's existing actions, without adding a slot.",
+    "avoid": "Floating-side or icon placement, a new action slot, or automatic action creation.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "DialogContent",
+        "type": "'footer' | 'header' (sheet only; default footer)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:8e23f4e3ef996d12c6c13b991fb0727676d9a7fe0119452f5fc0f127522d0ec8"
         }
       }
     ]

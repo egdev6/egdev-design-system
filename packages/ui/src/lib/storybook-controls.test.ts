@@ -1001,6 +1001,48 @@ describe('pure JSDoc Controls metadata mapping', () => {
   });
 });
 
+describe('Dialog sheet layout Controls', () => {
+  it('maps the full public rows and conditional choices without diagnostics or injected args', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(fileURLToPath(new URL('../molecules/dialog/Dialog.tsx', import.meta.url)))
+      .find((item) => item.displayName === 'DialogContent');
+    expect(doc).toBeDefined();
+    const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const composed = composeStory({}, { title: 'Metadata/DialogContent', component: metadata }, preview, 'Default');
+    for (const [name, options, defaultValue] of [
+      ['size', ['sm', 'md', 'lg', 'full'], '"md"'],
+      ['titleOverflow', ['default', 'clamp'], '"default"'],
+      ['actionsPlacement', ['footer', 'header'], '"footer"']
+    ] as const) {
+      const row = composed.argTypes[name];
+      expect(row?.control, name).toEqual({ type: 'select' });
+      expect([...(row?.options ?? [])].sort(), name).toEqual([...options].sort());
+      expect(row?.table?.defaultValue?.summary, name).toBe(defaultValue);
+      expect(row?.type?.required, name).not.toBe(true);
+    }
+    for (const name of [
+      'variant',
+      'container',
+      'overlayScope',
+      'bodyPadding',
+      'headerLayout',
+      'title',
+      'description',
+      'statusText',
+      'children',
+      'actions',
+      'dismissLabel'
+    ]) {
+      expect(composed.argTypes[name], name).toBeDefined();
+    }
+    expect(composed.args).toEqual({});
+  });
+});
+
 describe('Dialog header-layout Controls', () => {
   for (const [name, path, defaultValue] of [
     ['DialogContent', 'molecules/dialog/Dialog.tsx', 'inline'],

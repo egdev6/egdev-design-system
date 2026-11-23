@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- The source-derived artifact and reference include Dialog sheet layout options and their proposed naming
+  concepts; the centered defaults, reserved `className` properties and sibling APIs remain unchanged. (#543)
+
 ## 0.11.0
 
 ### Fixed

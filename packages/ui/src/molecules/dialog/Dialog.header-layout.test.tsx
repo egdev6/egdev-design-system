@@ -52,6 +52,45 @@ function headerStructure(header: HTMLElement) {
   };
 }
 
+describe('Dialog sheet header opt-ins', () => {
+  it.each(['inline', 'stacked'] as const)(
+    'keeps the full title and description relationships with status and top actions in %s layout',
+    (headerLayout) => {
+      const title = 'A complete long title that wraps across lines without losing its accessible name';
+      const props = {
+        variant: 'sheet',
+        title,
+        description: 'The description remains associated.',
+        statusText: 'Saved',
+        headerLayout,
+        titleOverflow: 'clamp',
+        actionsPlacement: 'header',
+        actions: <button type='button'>Apply</button>,
+        children: <p>{title}</p>
+      } as unknown as DialogContentProps;
+      render(
+        <Dialog defaultOpen={true}>
+          <DialogContent {...props} />
+        </Dialog>
+      );
+      const panel = screen.getByRole('dialog', { name: title, description: 'The description remains associated.' });
+      const header = panel.querySelector('header');
+      const heading = within(panel).getByRole('heading', { name: title });
+      const description = within(panel).getByText('The description remains associated.');
+      const action = within(panel).getByRole('button', { name: 'Apply' });
+      expect(header).toContainElement(heading);
+      expect(header).toContainElement(description);
+      expect(header).toContainElement(within(panel).getByText('Saved'));
+      expect(header).toContainElement(action);
+      expect(heading).toHaveClass('line-clamp-2');
+      expect(panel).toHaveAttribute('aria-labelledby', heading.id);
+      expect(panel).toHaveAttribute('aria-describedby', description.id);
+      expect(within(panel).getByText('Saved')).not.toHaveAttribute('aria-live');
+      expect(panel.lastElementChild).toBe(within(panel).getByRole('button', { name: 'Close' }));
+    }
+  );
+});
+
 describe('Dialog header layout', () => {
   it('keeps the original inline markup and classes for omitted, explicit and invalid values', () => {
     const { rerender } = render(<Example />);

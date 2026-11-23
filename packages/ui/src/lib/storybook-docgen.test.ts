@@ -173,6 +173,85 @@ function defaults(path: string, cva: boolean): Record<string, string> {
   return result;
 }
 
+describe('Dialog sheet layout metadata', () => {
+  it('annotates every own declaration in dimensions and placement branches', () => {
+    const file = ast(source('molecules/dialog/types.ts'));
+    const declarations = ownProps(file, ['DialogDimensions', 'DialogPlacement', 'DialogContentProps']);
+    const controls: Record<string, string> = {
+      variant: 'select',
+      size: 'select',
+      titleOverflow: 'select',
+      actionsPlacement: 'select',
+      container: 'false',
+      overlayScope: 'select',
+      bodyPadding: 'select',
+      headerLayout: 'select',
+      title: 'text',
+      description: 'text',
+      statusText: 'text',
+      children: 'false',
+      actions: 'false',
+      dismissLabel: 'text'
+    };
+    expect(declarations).toHaveLength(20);
+    expect([...new Set(declarations.map((prop) => prop.name.getText(file)))].sort()).toEqual(
+      Object.keys(controls).sort()
+    );
+    for (const property of declarations) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map(({ comment }) => comment),
+        name
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(tags.find(({ tagName }) => tagName.text === 'controlReason')?.comment, name).toBeTruthy();
+      }
+      if (!property.questionToken) {
+        expect(
+          tags.some(({ tagName }) => tagName.text === 'default'),
+          name
+        ).toBe(false);
+      }
+    }
+  });
+
+  it('extracts the conditional public choices, defaults and native boundary', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('molecules/dialog/Dialog.tsx'))
+      .find(({ displayName }) => displayName === 'DialogContent');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    for (const [name, choices, defaultValue] of [
+      ['size', ['full', 'lg', 'md', 'sm'], 'md'],
+      ['titleOverflow', ['clamp', 'default'], 'default'],
+      ['actionsPlacement', ['footer', 'header'], 'footer']
+    ] as const) {
+      expect(props[name]?.required, name).toBe(false);
+      expect(props[name]?.type.name, name).toBe('enum');
+      expect(props[name]?.type.value.map(({ value }: { value: string }) => normalize(value)).sort(), name).toEqual(
+        [...choices].sort()
+      );
+      expect(props[name]?.defaultValue?.value, name).toBe(defaultValue);
+    }
+    expect(props.size?.description).toMatch(/omitted sheet size remains capped/i);
+    expect(props.title?.required).toBe(true);
+    expect(props.children?.required).toBe(true);
+    for (const name of ['id', 'dir', 'lang', 'className', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of ['style', 'role', 'aria-labelledby', 'aria-describedby', 'aria-modal', 'ref', 'asChild']) {
+      expect(props[name], name).toBeUndefined();
+    }
+  });
+
+  it('documents distinct full sheet, title, header actions and combined examples', () => {
+    expect(exportedStoryNames(ast(source('molecules/dialog/Dialog.stories.tsx')))).toEqual(
+      expect.arrayContaining(['FullSheet', 'ClampedSheetTitle', 'HeaderActions', 'RecadoSheet'])
+    );
+  });
+});
+
 describe('Dialog header-layout metadata and stories', () => {
   for (const [name, path, types, defaultValue] of [
     ['DialogContent', 'molecules/dialog/Dialog.tsx', 'molecules/dialog/types.ts', 'inline'],

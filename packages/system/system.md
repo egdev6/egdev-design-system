@@ -1091,7 +1091,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
 - Dialog (components[] · packages/ui/src/molecules/dialog/types.ts)
   - DialogClose: Explicit close action. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
-  - DialogContent: Modal panel with an owned title and optional description. A connected, positioned, non-scrolling host bounds container-scoped paint; without one the portal uses body. A custom host does not localize Radix modality, which remains document-wide. Render after the host ref is ready and close before replacing or removing it. Viewport scope under a host is subject to ancestor clipping and fixed-position containing blocks. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
+  - DialogContent: Modal panel with an owned title and optional description. A connected, positioned, non-scrolling host bounds container-scoped paint; without one the portal uses body. A custom host does not localize Radix modality, which remains document-wide. Render after the host ref is ready and close before replacing or removing it. Viewport scope under a host is subject to ancestor clipping and fixed-position containing blocks. Sheets may fill that boundary, clamp the title and move actions to the header independently. For a clamped title, supply a visible, keyboard-, pointer- and touch-accessible route to its full text. A sufficiently sized host keeps the header fixed while the body scrolls; otherwise an opted-in clamp or header actions may make the overlay scroll. Supply manageable actions and enough space for the complete targets and focus rings, including between wrapped controls. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
   - DialogTrigger: Optional native or slotted disclosure button. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - No statically extracted anatomy.
@@ -2631,8 +2631,11 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - dialogHeadVariants base: ps-[var(--space-6)] → --space-6
     - dialogHeadVariants base: pe-[calc(var(--space-4)+var(--space-12))] → --space-4, --space-12
     - dialogHeadVariants base: gap-[var(--space-2)] → --space-2
+    - dialogHeaderActionsVariants base: gap-[var(--space-7)] → --space-7
     - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
     - dialogOverlayLayout flush=true: p-0 → --spacing-0
+    - dialogSheetHeadVariants base: p-0 → --spacing-0
+    - dialogSheetHeadVariants base: gap-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
     - dialogTitleRowVariants base: gap-[var(--space-3)] → --space-3
     - dialogTitleVariants base: font-display → --font-display
@@ -3499,8 +3502,10 @@ Not exported:
 - decorative-cover-word: coverWord; approved; ArticleFeatureCover (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-index: index; approved; ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-separation: decorative; approved; Divider (propNaming[] · skills/_shared/prop-naming.json)
+- dialog-action-placement: actionsPlacement; proposed; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - dialog-header-layout: headerLayout; approved; AlertDialogContent, DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - dialog-overlay-scope: overlayScope; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
+- dialog-title-overflow: titleOverflow; proposed; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - disclosure-motion: motion; approved; CollapsibleTrigger (propNaming[] · skills/_shared/prop-naming.json)
 - disclosure-presence: presence; approved; CollapsibleContent (propNaming[] · skills/_shared/prop-naming.json)
 - dismiss-label: dismissLabel; approved; CommandPalette, DialogContent, Toast (propNaming[] · skills/_shared/prop-naming.json)

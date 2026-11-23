@@ -876,7 +876,10 @@ const postReceiptProposals = [
   // AttachmentField v0.2 adds its independently approved reset token after the frozen receipts.
   'transient-feedback-reset-key',
   // Text v0.3 records a separately approved convention after the frozen receipts.
-  'single-line-text-truncation'
+  'single-line-text-truncation',
+  // Dialog v0.4 proposes two component-scoped concepts without global naming approval.
+  'dialog-title-overflow',
+  'dialog-action-placement'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1571,6 +1574,41 @@ test('Popover binds the approved close auto-focus convention and reviewed usage'
   validate(registry);
 });
 
+test('Dialog sheet concepts remain proposed and bind every reviewed source revision', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/molecules/dialog/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const usages = registry.flatMap((entry) => entry.usages.filter((usage) => usage.source.path === path));
+  assert.equal(usages.length, 18);
+  for (const usage of usages) {
+    assert.equal(usage.source.revision, revision);
+  }
+  for (const [id, name, type] of [
+    ['dialog-title-overflow', 'titleOverflow', "'default' | 'clamp' (sheet only; default default)"],
+    ['dialog-action-placement', 'actionsPlacement', "'footer' | 'header' (sheet only; default footer)"]
+  ]) {
+    const entry = registry.find((item) => item.id === id);
+    assert.ok(entry);
+    assert.equal(entry.name, name);
+    assert.equal(entry.status, 'proposed');
+    assert.equal(entry.approval, null);
+    assert.deepEqual(entry.aliases, []);
+    assert.deepEqual(entry.exceptions, []);
+    assert.deepEqual(entry.usages, [
+      {
+        component: 'DialogContent',
+        type,
+        status: 'existing',
+        source: { path, symbol: 'DialogContentProps', revision }
+      }
+    ]);
+    assert.deepEqual(historicalRegistry([entry]), []);
+  }
+  const size = registry.find(({ id }) => id === 'preset-dimensions');
+  assert.match(size.usages.find(({ component }) => component === 'DialogContent').type, /sheet.*full/i);
+  validate(registry);
+});
+
 test('Text truncation binds its scoped owner approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
@@ -2113,8 +2151,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // Panel and Tabs fill add one approved shared convention (host-fill).
   // PhotoFrame fit adds one approved convention (image-fit).
   // AttachmentField v0.2 adds the approved reset token; Text v0.3 adds truncation.
-  assert.equal(actual.length, 181);
-  assert.equal(beforeIndicatorConventions(actual).length, 178);
+  assert.equal(actual.length, 183);
+  assert.equal(beforeIndicatorConventions(actual).length, 180);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createRef, useState } from 'react';
+import { createRef, type ReactNode, useState } from 'react';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from '.';
 import type { DialogCloseProps, DialogContentProps, DialogProps, DialogTriggerProps } from './types';
@@ -19,6 +19,22 @@ const dialogStyle: DialogContentProps = { title: 'Title', children: null, style:
 const dialogRole: DialogContentProps = { title: 'Title', children: null, role: 'alert' };
 // @ts-expect-error Content owns its description relationship.
 const dialogDescription: DialogContentProps = { title: 'Title', children: null, 'aria-describedby': 'other' };
+const dialogFullSheet: DialogContentProps = {
+  title: 'Title',
+  children: null,
+  variant: 'sheet',
+  size: 'full',
+  titleOverflow: 'clamp',
+  actionsPlacement: 'header'
+};
+// @ts-expect-error Sheet size accepts full, not the centered md preset.
+const dialogMediumSheet: DialogContentProps = { title: 'Title', children: null, variant: 'sheet', size: 'md' };
+// @ts-expect-error Sheet size accepts full, not the centered lg preset.
+const dialogLargeSheet: DialogContentProps = { title: 'Title', children: null, variant: 'sheet', size: 'lg' };
+// @ts-expect-error Title clamping is a sheet-only option.
+const dialogCenteredClamp: DialogContentProps = { title: 'Title', children: null, titleOverflow: 'clamp' };
+// @ts-expect-error Action placement is a sheet-only option.
+const dialogCenteredHeader: DialogContentProps = { title: 'Title', children: null, actionsPlacement: 'header' };
 const dialogContainer: DialogContentProps = { title: 'Title', children: null, container: document.body };
 const dialogViewportHost: DialogContentProps = {
   title: 'Title',
@@ -58,6 +74,11 @@ const dialogCloseText: DialogCloseProps = { asChild: true, children: 'Close' };
 void [
   dialogRootId,
   dialogSheetSize,
+  dialogFullSheet,
+  dialogMediumSheet,
+  dialogLargeSheet,
+  dialogCenteredClamp,
+  dialogCenteredHeader,
   dialogMissingTitle,
   dialogStyle,
   dialogRole,
@@ -112,6 +133,160 @@ function HostedExample({
     </>
   );
 }
+
+describe('Dialog sheet layout opt-ins', () => {
+  const title = 'A long complete title for a sheet that stays available as its accessible name';
+
+  function content(options: Record<string, unknown>, actions: ReactNode = <button type='button'>Apply</button>) {
+    const props = {
+      title,
+      children: (
+        <>
+          <p>{title}</p>
+          <input aria-label='Body field' />
+        </>
+      ),
+      variant: 'sheet',
+      actions,
+      ...options
+    };
+    return <DialogContent {...(props as unknown as DialogContentProps)} />;
+  }
+
+  it('fills a sheet only when full is selected and preserves the omitted sheet cap', () => {
+    const { rerender } = render(<Dialog defaultOpen={true}>{content({})}</Dialog>);
+    expect(screen.getByRole('dialog')).toHaveClass('max-w-[calc(var(--space-24)*4)]');
+    rerender(<Dialog defaultOpen={true}>{content({ size: 'full' })}</Dialog>);
+    const panel = screen.getByRole('dialog', { name: title });
+    expect(panel).toHaveClass('max-w-none');
+    expect(panel).not.toHaveClass('max-w-[calc(var(--space-24)*4)]');
+    expect(panel.querySelector('footer')).toContainElement(screen.getByRole('button', { name: 'Apply' }));
+    expect(panel.querySelector('h2')).not.toHaveClass('line-clamp-2');
+  });
+
+  it('clamps only the title while keeping its complete name and the consumer-owned visible route', () => {
+    render(<Dialog defaultOpen={true}>{content({ titleOverflow: 'clamp' })}</Dialog>);
+    const panel = screen.getByRole('dialog', { name: title });
+    const heading = screen.getByRole('heading', { name: title });
+    expect(heading).toHaveTextContent(title);
+    expect(heading).toHaveClass('line-clamp-2');
+    expect(panel.querySelector('.eg-dialog__body')).toHaveTextContent(title);
+    expect(panel.querySelector('footer')).toContainElement(screen.getByRole('button', { name: 'Apply' }));
+    expect(panel).not.toHaveAttribute('titleoverflow');
+    expect(panel).not.toHaveClass('max-w-none');
+  });
+
+  it('moves actions once ahead of the body without changing their activation or the final close', async () => {
+    const click = vi.fn();
+    render(
+      <Dialog defaultOpen={true}>
+        {content(
+          { actionsPlacement: 'header' },
+          <button type='button' onClick={click}>
+            Apply
+          </button>
+        )}
+      </Dialog>
+    );
+    const panel = screen.getByRole('dialog', { name: title });
+    const action = screen.getByRole('button', { name: 'Apply' });
+    const header = panel.querySelector('header');
+    const part = action.closest<HTMLElement>('.eg-dialog__foot');
+    expect(header).toContainElement(part);
+    expect(part?.tagName).toBe('DIV');
+    expect(part).not.toHaveAttribute('role');
+    expect(panel.querySelector('footer')).toBeNull();
+    expect(screen.getAllByRole('button', { name: 'Apply' })).toHaveLength(1);
+    expect(
+      action.compareDocumentPosition(screen.getByRole('textbox', { name: 'Body field' })) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    expect(panel.lastElementChild).toBe(screen.getByRole('button', { name: 'Close' }));
+    expect(panel).not.toHaveAttribute('actionsplacement');
+    const user = userEvent.setup();
+    expect(action).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('textbox', { name: 'Body field' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+    await user.tab();
+    expect(action).toHaveFocus();
+    await user.click(action);
+    expect(click).toHaveBeenCalledOnce();
+  });
+
+  it.each([null, undefined])('omits a header action part for nullish value %s', (actions) => {
+    render(<Dialog defaultOpen={true}>{content({ actionsPlacement: 'header', actions })}</Dialog>);
+    expect(screen.getByRole('dialog').querySelector('.eg-dialog__foot')).toBeNull();
+  });
+
+  it.each([false, 0, ''])('retains the existing non-nullish action part for %j', (actions) => {
+    render(<Dialog defaultOpen={true}>{content({ actionsPlacement: 'header', actions })}</Dialog>);
+    const panel = screen.getByRole('dialog');
+    expect(panel.querySelector('header .eg-dialog__foot')).toBeInTheDocument();
+    expect(panel.querySelector('footer')).toBeNull();
+  });
+
+  it('gives opt-in sheets a bounded body basis without changing default or full-only sheets', () => {
+    const { rerender } = render(<Dialog defaultOpen={true}>{content({})}</Dialog>);
+    expect(screen.getByRole('dialog').querySelector('.eg-dialog__body')).not.toHaveClass('basis-0');
+    rerender(<Dialog defaultOpen={true}>{content({ size: 'full' })}</Dialog>);
+    expect(screen.getByRole('dialog').querySelector('.eg-dialog__body')).not.toHaveClass('basis-0');
+    for (const options of [{ titleOverflow: 'clamp' }, { actionsPlacement: 'header' }]) {
+      rerender(<Dialog defaultOpen={true}>{content(options)}</Dialog>);
+      expect(screen.getByRole('dialog').querySelector('.eg-dialog__body')).toHaveClass('basis-0');
+    }
+  });
+
+  it('combines the independent options and rerenders without emitting open-change requests or leaking props', () => {
+    const change = vi.fn();
+    const { rerender } = render(
+      <Dialog open={true} onOpenChange={change}>
+        {content({})}
+      </Dialog>
+    );
+    rerender(
+      <Dialog open={true} onOpenChange={change}>
+        {content({ size: 'full', titleOverflow: 'clamp', actionsPlacement: 'header' })}
+      </Dialog>
+    );
+    const panel = screen.getByRole('dialog', { name: title });
+    expect(panel).toHaveClass('max-w-none');
+    expect(screen.getByRole('heading', { name: title })).toHaveClass('line-clamp-2');
+    expect(panel.querySelector('header')).toContainElement(screen.getByRole('button', { name: 'Apply' }));
+    for (const node of [panel, ...panel.querySelectorAll('*')]) {
+      for (const attribute of ['titleoverflow', 'actionsplacement', 'size']) {
+        expect(node).not.toHaveAttribute(attribute);
+      }
+    }
+    expect(change).not.toHaveBeenCalled();
+  });
+
+  it('falls back for invalid untyped sheet inputs and ignores sheet-only inputs for centered dialogs', () => {
+    const { rerender } = render(
+      <Dialog defaultOpen={true}>
+        {content({ size: 'sm', titleOverflow: 'unknown', actionsPlacement: 'unknown' })}
+      </Dialog>
+    );
+    let panel = screen.getByRole('dialog', { name: title });
+    expect(panel).toHaveClass('max-w-[calc(var(--space-24)*4)]');
+    expect(panel.querySelector('h2')).not.toHaveClass('line-clamp-2');
+    expect(panel.querySelector('footer')).toContainElement(screen.getByRole('button', { name: 'Apply' }));
+    expect(panel).not.toHaveAttribute('titleoverflow');
+    expect(panel).not.toHaveAttribute('actionsplacement');
+    rerender(
+      <Dialog defaultOpen={true}>
+        {content({ variant: 'centered', size: 'lg', titleOverflow: 'clamp', actionsPlacement: 'header' })}
+      </Dialog>
+    );
+    panel = screen.getByRole('dialog', { name: title });
+    expect(panel).toHaveClass('max-w-[calc(var(--space-24)*10)]');
+    expect(panel.querySelector('h2')).not.toHaveClass('line-clamp-2');
+    expect(panel.querySelector('footer')).toContainElement(screen.getByRole('button', { name: 'Apply' }));
+    expect(panel).not.toHaveAttribute('titleoverflow');
+    expect(panel).not.toHaveAttribute('actionsplacement');
+  });
+});
 
 describe('Dialog placement and compact body', () => {
   it.each(['omitted', 'null'] as const)('keeps %s host in the body with viewport defaults', (host) => {

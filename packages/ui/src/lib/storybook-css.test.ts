@@ -6,6 +6,13 @@ import { build } from 'vite';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buttonVariants } from '../atoms/button/types';
 import { gaugeCircleVariants } from '../atoms/gauge/types';
+import {
+  dialogHeaderActionsVariants,
+  dialogSheetBodyMinimumVariants,
+  dialogSheetClampTitleVariants,
+  dialogSheetFullVariants,
+  dialogSheetOverflowVariants
+} from '../molecules/dialog/types';
 import { textBodyVariants, textVariants } from '../primitives/text/types';
 
 let css: string;
@@ -151,6 +158,22 @@ function rule(selector: string) {
 }
 
 describe('Storybook preview CSS', () => {
+  it('emits marker-free sheet opt-in utilities from the production Dialog recipes', () => {
+    expect(rule('.line-clamp-2')).toMatch(/-webkit-line-clamp:\s*2/);
+    expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule('.basis-0')).toMatch(/flex-basis:/);
+    expect(rule('.box-border')).toMatch(/box-sizing:\s*border-box/);
+    expect(rule('.max-w-none')).toMatch(/max-width:\s*none/);
+    for (const recipe of [
+      dialogSheetClampTitleVariants(),
+      dialogSheetFullVariants(),
+      dialogSheetOverflowVariants(),
+      dialogSheetBodyMinimumVariants(),
+      dialogHeaderActionsVariants()
+    ]) {
+      expect(recipe).not.toMatch(/\beg-dialog/);
+    }
+  });
   it('compiles compact Heading metrics and display family from existing tokens', () => {
     const compact = rule('.text-heading-small');
     for (const [property, token] of [
