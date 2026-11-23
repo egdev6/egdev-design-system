@@ -58,7 +58,11 @@ export type PanelProps = PanelNativeProps & {
   fill?: boolean;
 };
 
-/** Supplied identity/context zone; no generated heading or landmark. */
+/** Supplied identity/context zone; no generated heading or landmark.
+ * Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default
+ * tokens, in both axes: leave one spacing token beyond their combined target outsets.
+ * See IconButton size in packages/ui/src/atoms/icon-button/types.ts.
+ */
 export type PanelHeaderProps = PanelNativeProps & {
   /**
    * Meaningful supplied header content. Omit the part itself when it is not needed.
@@ -78,7 +82,11 @@ export type PanelBodyProps = PanelNativeProps & {
   children: ReactNode;
 };
 
-/** Supplementary metadata/utility zone, not a page-footer landmark. */
+/** Supplementary metadata/utility zone, not a page-footer landmark.
+ * Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default
+ * tokens, in both axes: leave one spacing token beyond their combined target outsets.
+ * See IconButton size in packages/ui/src/atoms/icon-button/types.ts.
+ */
 export type PanelFooterProps = PanelNativeProps & {
   /**
    * Supplied metadata and related utility controls. Omit the part when absent.

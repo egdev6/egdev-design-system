@@ -679,7 +679,7 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · AspectRatio
   - Catalog composition / slots: IconButton, Chip (catalog[] · docs/catalog.json)
   - Composes: AspectRatio (packages/ui/src/organisms/preview-frame/PreviewFrame.tsx), Text (packages/ui/src/organisms/preview-frame/PreviewFrame.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - actionsVariants base: gap-2 → --spacing-2
+    - actionsVariants base: gap-5 → --spacing-5
     - footerVariants base: gap-2 → --spacing-2
     - footerVariants base: font-sans → --font-sans
     - footerVariants base: text-label-default → --text-label-default
@@ -689,7 +689,7 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · AspectRatio
     - rootVariants base: gap-3 → --spacing-3
     - safeAreaVariants base: rounded-lg → --radius-lg
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'lg' }) · packages/ui/src/organisms/preview-frame/usePreviewFrame.ts; see Surface anatomy
-  - actions: ReactNode; Consumer-owned trailing controls. (components[] · packages/ui/src/organisms/preview-frame/types.ts)
+  - actions: ReactNode; Consumer-owned trailing controls. The action gap clears adjacent md/md targets under default tokens; supply extra clearance for sm/md (gap-6) and sm/sm (gap-7). Nested groups and nearby controls also need clearance; see IconButton size. (components[] · packages/ui/src/organisms/preview-frame/types.ts)
   - children: ReactNode; Decorative, non-interactive canvas content. (components[] · packages/ui/src/organisms/preview-frame/types.ts)
   - figureCaption: string; Visible native figure caption. (components[] · packages/ui/src/organisms/preview-frame/types.ts)
   - footer: ReactNode; Consumer-owned lower bar. (components[] · packages/ui/src/organisms/preview-frame/types.ts)
@@ -793,7 +793,7 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · ScrollArea
     - sidebarContentVariants base: px-3 → --spacing-3
     - sidebarContentVariants base: pb-4 → --spacing-4
     - sidebarContentVariants header=false: pt-4 → --spacing-4
-    - sidebarFooterVariants base: gap-2 → --spacing-2
+    - sidebarFooterVariants base: gap-5 → --spacing-5
     - sidebarFooterVariants base: px-4 → --spacing-4
     - sidebarFooterVariants base: py-3 → --spacing-3
     - sidebarFooterVariants base: font-sans → --font-sans
@@ -809,7 +809,7 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · ScrollArea
     - surfaceVariants({ tone: 'surface-0', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/sidebar/useSidebar.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/sidebar/useSidebar.ts; see Surface anatomy
   - children: ReactNode; In-flow content, including independently labelled NavLists. (components[] · packages/ui/src/organisms/sidebar/types.ts)
-  - footer: ReactNode; Optional pinned utility and metadata content, not navigation. (components[] · packages/ui/src/organisms/sidebar/types.ts)
+  - footer: ReactNode; Optional pinned utility and metadata content, not navigation. The footer gap clears adjacent md/md targets under default tokens; supply extra clearance for sm/md (gap-6) and sm/sm (gap-7). The footer does not wrap; reserve sufficient space from nearby controls and clipping. See IconButton size for target spacing. (components[] · packages/ui/src/organisms/sidebar/types.ts)
   - product: ProductIdentity; Optional product name and consumer artwork, optionally linked to its home. Blank names omit the header. (components[] · packages/ui/src/organisms/sidebar/types.ts)
 ### TabBar
 catalog[] · docs/catalog.json · @egdev/ui · organism · — (native navigation)
@@ -839,12 +839,12 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · — (native navigatio
 - TopBar (components[] · packages/ui/src/organisms/top-bar/types.ts)
   - Catalog composition / slots: Consumer-supplied brand, search, end, user and mobile parts; Surface recipe (catalog[] · docs/catalog.json)
   - Composes: No public JSX composition statically extracted.
-  - TopBarBrand: Consumer-supplied leading identity; a home link is customary but not required. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarEnd: Consumer-supplied trailing content, visible in both layouts. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarMobileTrigger: Consumer-supplied mobile dialog trigger. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarSearchCompact: Compact search launcher. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarSearchFull: Full-width search launcher. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarUserMenu: Consumer-supplied account control. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarBrand: Consumer-supplied leading identity; a home link is customary but not required. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default tokens, including between parts: leave one spacing token beyond their combined target outsets. See IconButton size in packages/ui/src/atoms/icon-button/types.ts. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarEnd: Consumer-supplied trailing content, visible in both layouts. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default tokens, including between parts: leave one spacing token beyond their combined target outsets. See IconButton size in packages/ui/src/atoms/icon-button/types.ts. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarMobileTrigger: Consumer-supplied mobile dialog trigger. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default tokens, including between parts: leave one spacing token beyond their combined target outsets. See IconButton size in packages/ui/src/atoms/icon-button/types.ts. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarSearchCompact: Compact search launcher. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default tokens, including between parts: leave one spacing token beyond their combined target outsets. See IconButton size in packages/ui/src/atoms/icon-button/types.ts. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarSearchFull: Full-width search launcher. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default tokens, including between parts: leave one spacing token beyond their combined target outsets. See IconButton size in packages/ui/src/atoms/icon-button/types.ts. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarUserMenu: Consumer-supplied account control. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default tokens, including between parts: leave one spacing token beyond their combined target outsets. See IconButton size in packages/ui/src/atoms/icon-button/types.ts. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - topBarLinkVariants base: font-sans → --font-sans
     - topBarLinkVariants base: text-body-large → --text-body-large
@@ -1398,8 +1398,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - Panel (components[] · packages/ui/src/molecules/panel/types.ts)
   - PanelBody: Transparent main-content zone; controls retain their native or Radix behavior. Children: Required transparent main-content zone; child controls own their behavior. Free flow content and independently labelled consumer controls. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
-  - PanelFooter: Supplied supplementary metadata/utility zone, not a footer landmark. Children: Supplementary metadata/utility zone, not a page-footer landmark. Supplied metadata and related utility controls. Omit the part when absent. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
-  - PanelHeader: Supplied identity/context, without generated heading semantics. Children: Supplied identity/context zone; no generated heading or landmark. Meaningful supplied header content. Omit the part itself when it is not needed. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
+  - PanelFooter: Supplied supplementary metadata/utility zone, not a footer landmark. Children: Supplementary metadata/utility zone, not a page-footer landmark. Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default tokens, in both axes: leave one spacing token beyond their combined target outsets. See IconButton size in packages/ui/src/atoms/icon-button/types.ts. Supplied metadata and related utility controls. Omit the part when absent. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
+  - PanelHeader: Supplied identity/context, without generated heading semantics. Children: Supplied identity/context zone; no generated heading or landmark. Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default tokens, in both axes: leave one spacing token beyond their combined target outsets. See IconButton size in packages/ui/src/atoms/icon-button/types.ts. Meaningful supplied header content. Omit the part itself when it is not needed. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - panelVariants base: gap-0 → --spacing-0
     - panelVariants base: p-0 → --spacing-0
@@ -2597,8 +2597,8 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 ### CollapsibleHeader
 - CollapsibleHeader (components[] · packages/ui/src/molecules/collapsible/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - collapsibleActionsVariants base: gap-2 → --spacing-2
-    - collapsibleHeaderVariants base: gap-2 → --spacing-2
+    - collapsibleActionsVariants base: gap-5 → --spacing-5
+    - collapsibleHeaderVariants base: gap-3 → --spacing-3
 ### CollapsibleTrigger
 - CollapsibleTrigger (components[] · packages/ui/src/molecules/collapsible/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):

@@ -158,6 +158,10 @@ export const dialogBodyVariants = cva('min-h-0 overflow-y-auto', {
   variants: { bodyPadding: { default: 'p-[var(--space-6)]', compact: 'p-[var(--space-3)]' } },
   defaultVariants: { bodyPadding: 'default' }
 });
+/** Adjacent md IconButtons need consumer-provided spacing of at least gap-5 under default
+ * tokens, in both axes: leave one spacing token beyond their combined target outsets.
+ * See IconButton size in packages/ui/src/atoms/icon-button/types.ts.
+ */
 export const dialogFootVariants = cva(
   'shrink-0 flex justify-end items-center px-[var(--space-6)] py-[var(--space-4)] gap-[var(--space-3)] border-t border-border-hairline',
   { variants: { variant: { centered: 'bg-surface-0', sheet: 'bg-surface-1' } } }

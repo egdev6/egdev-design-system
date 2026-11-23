@@ -1,5 +1,8 @@
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { Icon } from '../../atoms/icon';
+import { IconButton } from '../../atoms/icon-button';
 import { NavList } from '../../molecules/nav-list';
 import { Sidebar } from './Sidebar';
 
@@ -39,6 +42,35 @@ describe('Sidebar', () => {
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
     expect(screen.getByRole('button', { name: 'Account' })).toBeInTheDocument();
     expect(within(root as HTMLElement).queryByRole('button', { name: /collapse/i })).toBeNull();
+  });
+
+  it('spaces adjacent md footer actions while keeping them after body content', async () => {
+    const user = userEvent.setup();
+    const first = vi.fn();
+    const second = vi.fn();
+    const { container } = render(
+      <Sidebar
+        footer={
+          <>
+            <IconButton label='Account' icon={<Icon name='user' />} onClick={first} />
+            <IconButton label='Settings' icon={<Icon name='user' />} onClick={second} />
+          </>
+        }
+      >
+        <a href='#content'>Content</a>
+      </Sidebar>
+    );
+    const account = screen.getByRole('button', { name: 'Account' });
+    const settings = screen.getByRole('button', { name: 'Settings' });
+    expect(account.parentElement).toBe(settings.parentElement);
+    expect(account.parentElement).toHaveClass('gap-5', 'eg-surface');
+    expect(account.parentElement).not.toHaveClass('gap-2');
+    expect(container.firstElementChild?.lastElementChild).toBe(account.parentElement);
+    expect(screen.getByRole('link', { name: 'Content' })).toBeInTheDocument();
+    await user.click(account);
+    await user.click(settings);
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).toHaveBeenCalledTimes(1);
   });
 
   it('keeps composed links and disclosure triggers compact inside the Sidebar', () => {

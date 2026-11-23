@@ -88,6 +88,9 @@ export type CollapsibleHeaderProps = Omit<
   children: ReactNode;
   /**
    * Independent actions outside the Trigger; null or absence omits the wrapper.
+   * The action gap clears adjacent md/md targets under default tokens. Supply additional
+   * clearance for sm/md (gap-6) and sm/sm (gap-7) neighbors, and for an sm action
+   * next to the Trigger (at least gap-4 total). See IconButton size for target spacing.
    * @control false
    * @controlReason Non-serializable ReactNode; see SiblingActions and NarrowActions.
    */
@@ -150,9 +153,9 @@ export type CollapsibleContentProps = Omit<
 // Internal recipes: native state attributes select appearance, never mirrored state classes.
 export const collapsibleVariants = cva('eg-collapsible overflow-visible');
 export const collapsibleHeaderVariants = cva(
-  'eg-collapsible__header flex flex-wrap items-center gap-2 [&>:first-child]:grow [&>:first-child]:basis-14 [&>:first-child]:min-w-14'
+  'eg-collapsible__header flex flex-wrap items-center gap-3 [&>:first-child]:grow [&>:first-child]:basis-14 [&>:first-child]:min-w-14'
 );
-export const collapsibleActionsVariants = cva('eg-collapsible__actions flex flex-initial flex-wrap max-w-full gap-2');
+export const collapsibleActionsVariants = cva('eg-collapsible__actions flex flex-initial flex-wrap max-w-full gap-5');
 // Preserve the neutral Button paint and flatten only the open Trigger bottom radius.
 export const collapsibleTriggerVariants = cva(
   'eg-collapsible__trigger group/collapsible w-full justify-between text-start whitespace-normal data-[state=open]:rounded-b-none',

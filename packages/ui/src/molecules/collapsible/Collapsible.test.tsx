@@ -5,6 +5,8 @@ import { type ComponentProps, createRef, useRef, useState } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
+import { Icon } from '@/atoms/icon';
+import { IconButton } from '@/atoms/icon-button';
 import * as collapsiblePublic from './index';
 import { Collapsible, CollapsibleContent, CollapsibleHeader, CollapsibleTrigger } from './index';
 import type {
@@ -78,14 +80,14 @@ describe('Collapsible sibling actions and options', () => {
       'flex',
       'flex-wrap',
       'items-center',
-      'gap-2',
+      'gap-3',
       '[&>:first-child]:grow',
       '[&>:first-child]:basis-14',
       '[&>:first-child]:min-w-14',
       'mt-4'
     );
     expect(header).not.toHaveClass('mt-2', 'p-2', 'p-4');
-    expect(wrapper).toHaveClass('flex', 'flex-initial', 'flex-wrap', 'max-w-full', 'gap-2');
+    expect(wrapper).toHaveClass('flex', 'flex-initial', 'flex-wrap', 'max-w-full', 'gap-5');
     expect(trigger.closest('h2')?.parentElement).toBe(header);
     expect(wrapper?.parentElement).toBe(header);
     expect(trigger.contains(action)).toBe(false);
@@ -102,6 +104,42 @@ describe('Collapsible sibling actions and options', () => {
     expect(screen.getByRole('button', { name: 'Body action' })).toHaveFocus();
     await user.tab({ shift: true });
     expect(action).toHaveFocus();
+  });
+
+  it('spaces two independent md IconButton actions without toggling the disclosure', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    const first = vi.fn();
+    const second = vi.fn();
+    render(
+      <Collapsible onOpenChange={onOpenChange}>
+        <CollapsibleHeader
+          actions={
+            <>
+              <IconButton label='Refresh' icon={<Icon name='user' />} onClick={first} />
+              <IconButton label='Open' icon={<Icon name='user' />} onClick={second} />
+            </>
+          }
+        >
+          <CollapsibleTrigger>History</CollapsibleTrigger>
+        </CollapsibleHeader>
+        <CollapsibleContent>Body</CollapsibleContent>
+      </Collapsible>
+    );
+    const trigger = screen.getByRole('button', { name: 'History' });
+    const refresh = screen.getByRole('button', { name: 'Refresh' });
+    const open = screen.getByRole('button', { name: 'Open' });
+    expect(refresh.parentElement).toBe(open.parentElement);
+    expect(refresh.parentElement).toHaveClass('flex-wrap', 'gap-5');
+    expect(refresh.parentElement).not.toHaveClass('gap-2');
+    expect(trigger.parentElement).toHaveClass('gap-3');
+    expect(trigger.parentElement).not.toHaveClass('gap-2');
+    await user.click(refresh);
+    await user.click(open);
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('keeps actions enabled when Root is disabled and omits an absent actions wrapper', async () => {

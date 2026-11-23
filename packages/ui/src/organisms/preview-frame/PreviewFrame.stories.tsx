@@ -5,7 +5,10 @@ import { Icon } from '../../atoms/icon';
 import { IconButton } from '../../atoms/icon-button';
 import { PreviewFrame } from './PreviewFrame';
 
-/** Decorative canvas with consumer-owned actions and footer. */
+/** Decorative canvas with consumer-owned actions and footer.
+ * Adjacent md IconButtons have clearance under default tokens; consumers must add spacing
+ * for sm/md and sm/sm pairs and preserve clearance around nested groups and host edges.
+ */
 const meta: Meta<typeof PreviewFrame> = {
   title: 'Organisms/PreviewFrame',
   component: PreviewFrame,
@@ -15,7 +18,15 @@ const meta: Meta<typeof PreviewFrame> = {
 export default meta;
 type Story = StoryObj<typeof PreviewFrame>;
 export const Default: Story = {
-  args: { actions: <IconButton label='Refresh preview' icon={<Icon name='user' />} />, footer: <Badge>Ready</Badge> }
+  args: {
+    actions: (
+      <>
+        <IconButton label='Refresh preview' icon={<Icon name='settings' />} />
+        <IconButton label='Open preview' icon={<Icon name='external-link' />} />
+      </>
+    ),
+    footer: <Badge>Ready</Badge>
+  }
 };
 export const Plain: Story = { args: { variant: 'plain' } };
 export const Zones: Story = {

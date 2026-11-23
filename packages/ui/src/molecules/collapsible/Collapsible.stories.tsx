@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useId, useRef, useState } from 'react';
 import { action } from 'storybook/actions';
 import { Button } from '@/atoms/button';
+import { Icon } from '@/atoms/icon';
+import { IconButton } from '@/atoms/icon-button';
 import { Collapsible, CollapsibleContent, CollapsibleHeader, CollapsibleTrigger } from './Collapsible';
 
 /**
@@ -15,8 +17,10 @@ import { Collapsible, CollapsibleContent, CollapsibleHeader, CollapsibleTrigger 
  *
  * ## Usage guidelines
  * Supply exactly one Trigger/Content pair. Use a non-empty visible label without nested controls;
- * optional Header actions are independent and stay enabled when Root is disabled. The default closed
- * Content unmounts children; presence='keep-mounted' retains them in a display-hidden shell. Retained
+ * optional Header actions are independent and stay enabled when Root is disabled. The actions gap
+ * clears adjacent md IconButtons with default tokens; sm/md and sm/sm pairs need consumer spacing
+ * of gap-6 and gap-7, respectively. An sm action next to Trigger needs at least gap-4 total.
+ * The default closed Content unmounts children; presence='keep-mounted' retains them in a display-hidden shell. Retained
  * form controls still participate in submission. Closed Trigger omits aria-controls; open/reopen
  * restores the native relationship. Raw forceMount/keepMounted, public asChild, body animation,
  * automatic focus restoration and accordion navigation are not provided. Only Trigger forwards a ref.
@@ -309,6 +313,27 @@ export const SiblingActions: Story = {
         <CollapsibleContent>
           <button>Application details</button>
         </CollapsibleContent>
+      </>
+    )
+  }
+};
+
+/** Adjacent default-size icon actions retain independent targets and do not toggle the disclosure. */
+export const IconActions: Story = {
+  args: {
+    children: (
+      <>
+        <CollapsibleHeader
+          actions={
+            <>
+              <IconButton label='Refresh applications' icon={<Icon name='settings' />} onClick={action('refresh')} />
+              <IconButton label='Open application' icon={<Icon name='external-link' />} onClick={action('open')} />
+            </>
+          }
+        >
+          <CollapsibleTrigger>Installed applications</CollapsibleTrigger>
+        </CollapsibleHeader>
+        <CollapsibleContent>Application details</CollapsibleContent>
       </>
     )
   }
