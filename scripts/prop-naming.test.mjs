@@ -743,7 +743,8 @@ const postReceiptUsages = [
     'heading-eyebrow',
     'visual-treatment',
     'preset-dimensions',
-    'decorative-index'
+    'decorative-index',
+    'leading-status-badge'
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/project-card/types.ts#ProjectCardProps'
@@ -3430,12 +3431,18 @@ test('NowCard leading-status-badge receipt binds the owner decision without rewr
   assert.deepEqual(entry.exceptions, []);
   assert.deepEqual(
     entry.usages.map(({ component }) => component),
-    ['NowCard']
+    ['NowCard', 'ProjectCard']
   );
   // The usage revision is read from the reviewed working-tree file, never pinned to an older receipt byte.
   assert.equal(entry.usages[0].source.path, 'packages/ui/src/molecules/now-card/types.ts');
   assert.equal(entry.usages[0].source.symbol, 'NowCardProps');
   assert.equal(entry.usages[0].source.revision, digest(fs.readFileSync(resolve(root, entry.usages[0].source.path))));
+  // ProjectCard #558 reuses the approved convention as a usage only: no new concept, exception or receipt.
+  assert.equal(entry.usages[1].type, 'ReactNode');
+  assert.equal(entry.usages[1].status, 'existing');
+  assert.equal(entry.usages[1].source.path, 'packages/ui/src/molecules/project-card/types.ts');
+  assert.equal(entry.usages[1].source.symbol, 'ProjectCardProps');
+  assert.equal(entry.usages[1].source.revision, digest(fs.readFileSync(resolve(root, entry.usages[1].source.path))));
   assert.deepEqual(historicalRegistry([entry])[0].usages, []);
   const changed = structuredClone(registry);
   changed.find(({ id }) => id === 'leading-status-badge').meaning += ' Changed.';

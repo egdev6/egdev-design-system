@@ -18,14 +18,17 @@ import {
   type ProjectCardSize,
   type ProjectCardVariant,
   projectCardBackdropVariants,
+  projectCardBadgeVariants,
   projectCardBodyVariants,
   projectCardCodeGlyphVariants,
   projectCardCodeLineVariants,
   projectCardCodeVariants,
   projectCardEyebrowVariants,
   projectCardFootVariants,
+  projectCardHeaderVariants,
   projectCardHeadingVariants,
   projectCardIndexVariants,
+  projectCardLeadVariants,
   projectCardMarkVariants,
   projectCardScrimVariants,
   projectCardTagsVariants,
@@ -48,6 +51,12 @@ export type UseProjectCardResult = {
   indexProps: { 'aria-hidden': true; className: string };
   eyebrow: string | null;
   eyebrowProps: { className: string };
+  statusBadge: ReactNode;
+  hasStatus: boolean;
+  hasLead: boolean;
+  headerClassName: string;
+  leadClassName: string;
+  badgeClassName: string;
   children: React.ReactNode;
   backdrop: ReactNode;
   mark: ReactNode;
@@ -57,6 +66,9 @@ export type UseProjectCardResult = {
 };
 
 type Parts = { backdrop: FC<ProjectCardBackdropProps>; mark: FC<ProjectCardMarkProps> };
+
+/** Absent slot: undefined, null or a boolean. Everything else, including 0, is present; content is never inspected. */
+const present = (slot: ReactNode) => slot !== undefined && slot !== null && typeof slot !== 'boolean';
 
 function partition(node: ReactNode, parts: Parts, result: { backdrop: ReactNode; mark: ReactNode; body: ReactNode[] }) {
   // toArray assigns stable keys, so the re-rendered body array never triggers key warnings.
@@ -78,13 +90,14 @@ function partition(node: ReactNode, parts: Parts, result: { backdrop: ReactNode;
   }
 }
 
-/** Normalize name and editorial slots, strip protected native semantics and compose each part. */
+/** Normalize name and editorial slots, resolve the status row, strip protected native semantics and compose each part. */
 export function useProjectCard(
   {
     title,
     level = 3,
     eyebrow,
     index,
+    statusBadge,
     variant = 'default',
     size = 'md',
     children,
@@ -127,6 +140,8 @@ export function useProjectCard(
     partition(children, parts, extracted);
   }
   const hasParts = extracted.backdrop !== null || extracted.mark !== null;
+  // The plain branch inherits the root gap (gap-3 at sm); the upper content wrapper is fixed at gap-4.
+  const leadDensity = effectiveSize === 'sm' && !hasParts ? 'sm' : 'md';
   return {
     valid,
     backdrop: extracted.backdrop,
@@ -159,6 +174,12 @@ export function useProjectCard(
     },
     eyebrow: eyebrowText,
     eyebrowProps: { className: cn(projectCardEyebrowVariants()) },
+    statusBadge,
+    hasStatus: present(statusBadge),
+    hasLead: indexText !== null || eyebrowText !== null,
+    headerClassName: cn(projectCardHeaderVariants()),
+    leadClassName: cn(projectCardLeadVariants({ density: leadDensity })),
+    badgeClassName: cn(projectCardBadgeVariants()),
     children: hasParts ? extracted.body : children
   };
 }

@@ -1387,13 +1387,14 @@ describe('Storybook TypeScript docgen contract', () => {
       level: 'select',
       eyebrow: 'text',
       index: 'text',
+      statusBadge: 'false',
       variant: 'select',
       size: 'select',
       children: 'false',
       className: 'text'
     };
     const own = ownProps(ast(source('molecules/project-card/types.ts')), ['ProjectCardProps']);
-    expect(own).toHaveLength(8);
+    expect(own).toHaveLength(9);
     for (const declaration of own) {
       const name = declaration.name.getText();
       const tags = ts.getJSDocTags(declaration);
@@ -1415,6 +1416,10 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     expect(props.title?.required).toBe(true);
     expect(props.children?.required).toBe(false);
+    expect(props.statusBadge).toMatchObject({ required: false, defaultValue: null, tags: { control: 'false' } });
+    expect(props.statusBadge?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/ReactNode.*WithStatus/)
+    });
     for (const [name, value] of Object.entries({ level: '3', variant: 'default', size: 'md' })) {
       expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
     }
@@ -1486,7 +1491,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tags',
       'Code',
       'WithLink',
-      'LongContent'
+      'LongContent',
+      'WithStatus',
+      'StatusPlacements',
+      'StatusOverBackdrop',
+      'StatusInNarrowCard'
     ]);
     expect(stories.getText()).toMatch(/title: 'Molecules\/ProjectCard'/);
     expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);

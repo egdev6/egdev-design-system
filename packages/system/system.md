@@ -1442,11 +1442,14 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - projectCardBodyVariants base: text-body-large → --text-body-large
     - projectCardEyebrowVariants base: text-label-eyebrow → --text-label-eyebrow
+    - projectCardHeaderVariants base: gap-3 → --spacing-3
     - projectCardHeadingVariants size=md: text-heading-small → --text-heading-small
     - projectCardHeadingVariants size=sm: text-body-large → --text-body-large
     - projectCardIndexVariants base: text-transparent → unresolved
     - projectCardIndexVariants size=md: text-title-display → --text-title-display
     - projectCardIndexVariants size=sm: text-title-section → --text-title-section
+    - projectCardLeadVariants density=md: gap-4 → --spacing-4
+    - projectCardLeadVariants density=sm: gap-3 → --spacing-3
     - projectCardUpperContentVariants base: gap-4 → --spacing-4
     - projectCardUpperVariants base: rounded-xl → --radius-xl
     - projectCardUpperVariants base: gap-4 → --spacing-4
@@ -1463,6 +1466,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - index: string; Optional decorative outline number such as 01; aria-hidden and never part of the accessible name. Whitespace-only renders nothing. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - level: enum; Native heading rank only; the visual step follows the size, never the rank. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - size: enum; Density preset; every supplied part still renders, including the code block. (components[] · packages/ui/src/molecules/project-card/types.ts)
+  - statusBadge: ReactNode; Optional consumer-supplied non-interactive status node, typically a Badge composition, rendered in the card's header row at the inline end, after the index and eyebrow and before the heading. Absent, null or boolean renders nothing and creates no row. No interactive descendants, no baked-in status word, no tone ownership. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - title: string; Visible heading text and the complete article name. Blank titles warn in development and render nothing. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - variant: enum; Visual treatment: the raised default frame or the featured signature (brand edge, halo and index ink). (components[] · packages/ui/src/molecules/project-card/types.ts)
 ### SectionHeader
@@ -3563,7 +3567,7 @@ Not exported:
 - layout-gap: gap; approved; Cluster, SocialLinks, Stack (propNaming[] · skills/_shared/prop-naming.json)
 - layout-orientation: orientation; approved; Divider, RadioGroup (propNaming[] · skills/_shared/prop-naming.json)
 - leading-icon: icon; approved; Badge, Button, Chip, ChipGroupOption, CommandPaletteItem, FieldMessage, IconButton, Input, MenuEntry, ModuleCard, ModuleRail, NavList, Notice, SocialLinkItem, TabBarItem, Timeline, Toast, Toggle (propNaming[] · skills/_shared/prop-naming.json)
-- leading-status-badge: statusBadge; approved; NowCard (propNaming[] · skills/_shared/prop-naming.json)
+- leading-status-badge: statusBadge; approved; NowCard, ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - line-particle-direction: lineDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - live-presentation: live; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
 - localized-messages: messages; approved; AppShell, AttachmentField, CalendarGrid, Carousel, CommandPalette, MeterRow, ModuleCard, ModuleRail, TabBar, Table, Timeline, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)

@@ -1,13 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type ReactNode, useId } from 'react';
+import { Badge } from '../../atoms/badge';
 import { Button } from '../../atoms/button';
+import { Icon } from '../../atoms/icon';
 import { ProjectCard, ProjectCardFooter } from '../../molecules/project-card';
 import { SectionShell } from '../../templates/section-shell';
 import { LabStage } from './LabStage';
 
 /** Consumer experiment content composed from the delivered ProjectCard; LabStage paints no card. */
 const experiment = (
-  <ProjectCard eyebrow='Experiment' index='014' title='OpenDesign × Gentle AI' level={3}>
+  <ProjectCard
+    eyebrow='Experiment'
+    index='014'
+    title='OpenDesign × Gentle AI'
+    level={3}
+    statusBadge={
+      <Badge tone='warning' icon={<Icon name='alert' />}>
+        testing
+      </Badge>
+    }
+  >
     <p>Designing interfaces directly from agents.</p>
     <ProjectCardFooter>
       <Button asChild={true} size='lg' variant='secondary'>

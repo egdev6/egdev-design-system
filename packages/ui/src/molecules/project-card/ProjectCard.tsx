@@ -29,6 +29,12 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
     indexProps,
     eyebrow,
     eyebrowProps,
+    statusBadge,
+    hasStatus,
+    hasLead,
+    headerClassName,
+    leadClassName,
+    badgeClassName,
     children,
     backdrop,
     mark,
@@ -36,6 +42,21 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
     upperContentClassName,
     scrimClassName
   } = useProjectCard(props, { backdrop: ProjectCardBackdrop, mark: ProjectCardMark });
+  const lead = (
+    <>
+      {index !== null && <span {...indexProps}>{index}</span>}
+      {eyebrow !== null && <span {...eyebrowProps}>{eyebrow}</span>}
+    </>
+  );
+  // Without a status the header is the bare index and eyebrow; with one it becomes a row sharing the same lead.
+  const header = hasStatus ? (
+    <div className={headerClassName}>
+      {hasLead && <div className={leadClassName}>{lead}</div>}
+      <div className={badgeClassName}>{statusBadge}</div>
+    </div>
+  ) : (
+    lead
+  );
   return valid ? (
     <article {...rootProps}>
       {backdrop || mark ? (
@@ -44,15 +65,13 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
           {backdrop && <div aria-hidden='true' className={scrimClassName} />}
           <div className={upperContentClassName}>
             {mark}
-            {index !== null && <span {...indexProps}>{index}</span>}
-            {eyebrow !== null && <span {...eyebrowProps}>{eyebrow}</span>}
+            {header}
             <Heading {...headingProps}>{title}</Heading>
           </div>
         </div>
       ) : (
         <>
-          {index !== null && <span {...indexProps}>{index}</span>}
-          {eyebrow !== null && <span {...eyebrowProps}>{eyebrow}</span>}
+          {header}
           <Heading {...headingProps}>{title}</Heading>
         </>
       )}

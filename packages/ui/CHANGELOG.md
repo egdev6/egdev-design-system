@@ -11,6 +11,12 @@ a local tarball from `pnpm release:pack`.
 - `FooterNavigationItem` accepts the optional `'aria-current': 'page'`, rendered on that entry's link so the footer
   exposes the current page like TopBar and NavList. The host marks at most one link across the Footer; Footer does
   not infer the current page and adds no visual cue, so sighted users get no indication from the Footer itself. (#559)
+- ProjectCard accepts an optional `statusBadge` node, typically a Badge, rendered in a header row at the inline end,
+  after the index and eyebrow and before the heading, for a short non-interactive status such as a warning
+  "testing" Badge with an alert icon. Without it the card renders as before. Consumers provide short localized
+  status text, keep the node non-interactive and own any announcement of status changes. A label wider than the
+  card's content box overflows its row, and the card's legacy `overflow: hidden` clips whatever passes the card's
+  padding edge, so keep the label short. (#558)
 
 ## 0.10.0
 

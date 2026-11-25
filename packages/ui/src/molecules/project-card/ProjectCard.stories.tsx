@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Badge } from '../../atoms/badge';
+import { Icon } from '../../atoms/icon';
 import { Link } from '../../atoms/link';
 import {
   ProjectCard,
@@ -26,6 +28,11 @@ import {
  * view should use `variant="featured"`, which adds only the brand edge, halo and index ink.
  * `size="sm"` reduces density but never hides supplied content; omit `ProjectCardCode` instead.
  * `className` supports outer layout only (grid placement, margin, width), not internal appearance.
+ *
+ * `statusBadge` takes one consumer-supplied, non-interactive Badge composition, typically a short status
+ * such as a warning "testing" Badge with an alert icon. It sits in a header row at the inline end, after the
+ * index and eyebrow and before the heading. The card owns no status word, tone or icon, never inspects the
+ * node and announces nothing: the consumer supplies short localized text and any announcement of changes.
  */
 const meta: Meta<typeof ProjectCard> = {
   title: 'Molecules/ProjectCard',
@@ -198,6 +205,84 @@ export const LongContent: Story = {
             View project
           </Link>
         </ProjectCardFooter>
+      </ProjectCard>
+    </div>
+  )
+};
+
+/** The consumer-supplied warning "testing" Badge with an alert icon, shared by the status stories. */
+const testing = (
+  <Badge tone='warning' icon={<Icon name='alert' />}>
+    testing
+  </Badge>
+);
+
+/** The Lab experiment card: index and eyebrow at the start of the header row, the warning status at the end. */
+export const WithStatus: Story = {
+  args: {
+    title: 'OpenDesign × Gentle AI',
+    index: '014',
+    eyebrow: 'Experiment',
+    statusBadge: testing,
+    children: <p>Designing interfaces directly from agents.</p>
+  }
+};
+
+/** The header row with a status only, an eyebrow only, an index only and both, at the compact density. */
+export const StatusPlacements: Story = {
+  render: () => (
+    <div className='grid max-w-3xl grid-cols-2 items-start gap-6'>
+      <ProjectCard size='sm' title='Status only' statusBadge={testing}>
+        <p>The row holds only the status, at the inline end.</p>
+      </ProjectCard>
+      <ProjectCard size='sm' title='Eyebrow and status' eyebrow='Experiment' statusBadge={testing}>
+        <p>The lead holds only the eyebrow.</p>
+      </ProjectCard>
+      <ProjectCard size='sm' title='Index and status' index='014' statusBadge={testing}>
+        <p>The lead holds only the index.</p>
+      </ProjectCard>
+      <ProjectCard size='sm' title='Index, eyebrow and status' index='014' eyebrow='Experiment' statusBadge={testing}>
+        <p>The index stays above the eyebrow.</p>
+      </ProjectCard>
+    </div>
+  )
+};
+
+/** The status over a backdrop and mark; a solid Badge is the consumer's legibility choice over the scrim. */
+export const StatusOverBackdrop: Story = {
+  render: () => (
+    <ProjectCard
+      title='OpenDesign × Gentle AI'
+      index='014'
+      eyebrow='Experiment'
+      statusBadge={
+        <Badge tone='warning' variant='solid' icon={<Icon name='alert' />}>
+          testing
+        </Badge>
+      }
+    >
+      <ProjectCardBackdrop>
+        <img src='/brand/egdev-logo-with-name.png' alt='' />
+      </ProjectCardBackdrop>
+      <ProjectCardMark>
+        <img src='/brand/egdev-logo.png' alt='EGDEV' className='h-12 w-auto' />
+      </ProjectCardMark>
+      <p>The header row sits over the backdrop and its single scrim.</p>
+    </ProjectCard>
+  )
+};
+
+/** In a narrow host the row wraps: the status drops to its own line at the inline end, never truncated. */
+export const StatusInNarrowCard: Story = {
+  render: () => (
+    <div className='w-72'>
+      <ProjectCard
+        title='A very long experiment title that must wrap across several lines inside a narrow card'
+        index='014'
+        eyebrow='Experiment in early testing'
+        statusBadge={testing}
+      >
+        <p>The lead and the status share a wrapping row; nothing is clamped or clipped by the card.</p>
       </ProjectCard>
     </div>
   )

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- The source-derived artifact and reference include ProjectCard's `statusBadge` slot and its
+  `leading-status-badge` usage. (#558)
+
 ## 0.12.0
 
 ### Added
