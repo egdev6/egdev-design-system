@@ -86,6 +86,24 @@ export const Invalid: Story = {
     )
   }
 };
+/**
+ * The host marks the current page on one link, which renders `aria-current="page"`; the Footer adds no visual cue
+ * and never infers the current page. Mark at most one link across the Footer, and pass the literal `'page'` or
+ * `undefined`: a `current && 'page'` expression can yield `false`, which the type rejects.
+ */
+export const CurrentPage: Story = {
+  args: {
+    children: (
+      <FooterNavigation
+        label='Explore'
+        items={[
+          { href: '#projects', label: 'Projects' },
+          { href: '#notes', label: 'Notes', 'aria-current': 'page' }
+        ]}
+      />
+    )
+  }
+};
 /** A social heading accompanies the separately named list. */
 export const Social: Story = {
   args: {

@@ -104,6 +104,15 @@ export function useFooterNavigation({ label, level = 2, items, className, ...res
   const id = useId();
   const entries = validItems(items);
   const valid = typeof label === 'string' && label.trim().length > 0 && entries.length > 0;
+  // The current-page mark is host data: it is forwarded as supplied, never validated, counted or inferred.
+  const links = entries.map((item) => ({
+    item,
+    props: {
+      href: item.href,
+      'aria-current': item['aria-current'],
+      className: cn(footerNavigationLinkVariants())
+    }
+  }));
   const heading = `h${level}` as const;
   const {
     role: _role,
@@ -113,12 +122,11 @@ export function useFooterNavigation({ label, level = 2, items, className, ...res
   } = rest as typeof rest & Record<string, unknown>;
   return {
     valid,
-    entries,
+    links,
     label,
     heading,
     headingProps: { id, className: cn(footerHeadingVariants()) },
     listClassName: cn(footerListVariants()),
-    linkClassName: cn(footerNavigationLinkVariants()),
     props: {
       ...native,
       'aria-labelledby': id,

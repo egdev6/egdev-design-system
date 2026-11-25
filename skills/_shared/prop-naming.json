@@ -2125,7 +2125,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
+          "revision": "sha256:627ebf23897ae0f7f6b267d6cf1cc9cdef0d4053d6036bbfaf18c1e15edff36f"
         }
       },
       {
@@ -2135,7 +2135,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationItem",
-          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
+          "revision": "sha256:627ebf23897ae0f7f6b267d6cf1cc9cdef0d4053d6036bbfaf18c1e15edff36f"
         }
       },
       {
@@ -4101,7 +4101,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
+          "revision": "sha256:627ebf23897ae0f7f6b267d6cf1cc9cdef0d4053d6036bbfaf18c1e15edff36f"
         }
       },
       {
@@ -5523,7 +5523,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
+          "revision": "sha256:627ebf23897ae0f7f6b267d6cf1cc9cdef0d4053d6036bbfaf18c1e15edff36f"
         }
       },
       {

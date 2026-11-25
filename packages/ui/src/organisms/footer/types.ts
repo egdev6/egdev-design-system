@@ -13,6 +13,12 @@ export type FooterNavigationItem = {
    * @control text
    */
   label: string;
+  /**
+   * Native current-page indication on this link. The host marks at most one link across the Footer;
+   * omitted means no attribute is rendered.
+   * @control select
+   */
+  'aria-current'?: 'page';
 };
 
 /** Native heading rank for the navigation. */

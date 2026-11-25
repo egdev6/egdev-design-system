@@ -4,6 +4,14 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## Unreleased
+
+### Added
+
+- `FooterNavigationItem` accepts the optional `'aria-current': 'page'`, rendered on that entry's link so the footer
+  exposes the current page like TopBar and NavList. The host marks at most one link across the Footer; Footer does
+  not infer the current page and adds no visual cue, so sighted users get no indication from the Footer itself. (#559)
+
 ## 0.10.0
 
 ### Added

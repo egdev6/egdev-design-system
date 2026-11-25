@@ -48,21 +48,20 @@ export const FooterBrand: FC<FooterBrandProps> = (props) => {
 export const FooterNavigation: FC<FooterNavigationProps> = (props) => {
   const {
     valid,
-    entries,
+    links,
     label,
     heading: Heading,
     headingProps,
     listClassName,
-    linkClassName,
     props: native
   } = useFooterNavigation(props);
   return valid ? (
     <nav {...native}>
       <Heading {...headingProps}>{label}</Heading>
       <ul className={listClassName}>
-        {entries.map((item, index) => (
+        {links.map(({ item, props: anchorProps }, index) => (
           <li key={`${index}-${item.href}`}>
-            <Link href={item.href} arrow={false} className={linkClassName}>
+            <Link {...anchorProps} arrow={false}>
               {item.label}
             </Link>
           </li>

@@ -928,6 +928,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(properties.map((property) => property.name.getText(file))).toEqual([
       'href',
       'label',
+      "'aria-current'",
       'children',
       'children',
       'children',
