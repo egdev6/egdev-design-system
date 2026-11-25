@@ -745,7 +745,14 @@ test('Footer package SSR keeps navigation and social list separately named', asy
       children: [
         h(uiExports.FooterMotto, { key: 'motto', children: h('p', null, 'Motto') }),
         h(uiExports.FooterBrand, { key: 'brand', children: h(uiExports.Logo, { href: '/', label: 'Home' }) }),
-        h(uiExports.FooterNavigation, { key: 'nav', label: 'Explore', items: [{ href: '#one', label: 'One' }] }),
+        h(uiExports.FooterNavigation, {
+          key: 'nav',
+          label: 'Explore',
+          items: [
+            { href: '#one', label: 'One' },
+            { href: '#two', label: 'Two', 'aria-current': 'page' }
+          ]
+        }),
         h(uiExports.FooterSocial, {
           key: 'social',
           children: h(uiExports.SocialLinks, {
@@ -772,6 +779,10 @@ test('Footer package SSR keeps navigation and social list separately named', asy
     const nav = footer.querySelector('nav');
     assert.equal(doc.getElementById(nav.getAttribute('aria-labelledby')).textContent, 'Explore');
     assert.equal(nav.querySelector('a').getAttribute('href'), '#one');
+    const current = [...nav.querySelectorAll('[aria-current]')];
+    assert.equal(current.length, 1);
+    assert.equal(current[0].getAttribute('href'), '#two');
+    assert.equal(current[0].getAttribute('aria-current'), 'page');
     assert.equal(
       footer.querySelector('ul[aria-label="Profiles"] a')?.getAttribute('href'),
       'https://github.com/example'

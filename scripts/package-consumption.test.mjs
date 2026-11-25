@@ -744,10 +744,11 @@ const nowStripAria: NowStripProps = { ...nowStripProps, 'aria-label': 'Other' };
 type NowStripPrivate = (typeof import('@egdev/ui'))['nowStripVariants'];
 export type NowStripNegatives = [typeof nowStripMissing, typeof nowStripRole, typeof nowStripStyle, typeof nowStripAria, NowStripPrivate];
 const footerItem: FooterNavigationItem = { href: '#one', label: 'One' };
+const footerCurrent: FooterNavigationItem = { href: '#two', label: 'Two', 'aria-current': 'page' };
 const footerLevel: FooterNavigationLevel = 2;
 const footerMotto: FooterMottoProps = { children: createElement('p', null, 'Motto') };
 const footerBrand: FooterBrandProps = { children: createElement(Logo, { href: '/', label: 'Home' }) };
-const footerNav: FooterNavigationProps = { label: 'Explore', level: footerLevel, items: [footerItem] };
+const footerNav: FooterNavigationProps = { label: 'Explore', level: footerLevel, items: [footerItem, footerCurrent] };
 const footerSocial: FooterSocialProps = { children: createElement(SocialLinks, { label: 'Profiles', caption: null, items: [{ id: 'github', href: 'https://github.com/example', label: 'GitHub', icon: createElement(Icon, { name: 'github' }) }] }) };
 const footerLegal: FooterLegalProps = { children: createElement('a', { href: '#legal' }, 'Legal') };
 export const footerProps: FooterProps = { children: [createElement(FooterMotto, { key: 'motto', ...footerMotto }), createElement(FooterBrand, { key: 'brand', ...footerBrand }), createElement(FooterNavigation, { key: 'nav', ...footerNav }), createElement(FooterSocial, { key: 'social', ...footerSocial }), createElement(FooterLegal, { key: 'legal', ...footerLegal })] };
@@ -762,9 +763,11 @@ const footerStyle: FooterProps = { children: null, style: {} };
 const footerRank: FooterNavigationProps = { label: 'Explore', items: [], level: 1 };
 // @ts-expect-error Navigation items need destinations.
 const footerDestination: FooterNavigationItem = { label: 'Missing' };
+// @ts-expect-error The current-page token is restricted to page.
+const footerCurrentStep: FooterNavigationItem = { href: '#one', label: 'One', 'aria-current': 'step' };
 // @ts-expect-error Internal recipes are not exported.
 type FooterPrivate = (typeof import('@egdev/ui'))['footerVariants'];
-export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, FooterPrivate];
+export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, typeof footerCurrentStep, FooterPrivate];
 const topBarItem: TopBarItem = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' };
 const topBarPart: TopBarPartProps = { children: createElement('a', { href: '/' }, 'Brand') };
 export const topBarProps: TopBarProps = { label: 'Main', items: [topBarItem], initialBackground: 'solid', contentWidth: 'full', 'data-state': 'glass', style: { zIndex: 10 }, children: [
@@ -6399,6 +6402,10 @@ assert.equal(footerNav.querySelector('a').getAttribute('href'), '#one');
 assert.equal(footer.querySelector('ul[aria-label="Profiles"] a')?.getAttribute('href'), 'https://github.com/example');
 assert.equal(footer.querySelectorAll('nav').length, 1);
 assert.equal(footer.querySelector('a a'), null);
+const footerCurrentLinks = [...footerNav.querySelectorAll('[aria-current]')];
+assert.equal(footerCurrentLinks.length, 1);
+assert.equal(footerCurrentLinks[0].getAttribute('href'), '#two');
+assert.equal(footerCurrentLinks[0].getAttribute('aria-current'), 'page');
 footerDocument.window.close();
 const { NowStripSamples } = await import('./consumer.ts');
 const nowStripDocument = new JSDOM(renderToString(createElement(NowStripSamples)));
