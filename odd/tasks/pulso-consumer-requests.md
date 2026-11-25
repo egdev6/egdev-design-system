@@ -41,3 +41,20 @@ egdev-website's Pulso parity gaps (consumer issue egdev6/egdev-website#45), file
   - #556: `StepMeter`, using `role="img"` plus `label`, `value` and `steps` (default 4).
 
   The `contentSHA256` of each draft must be recomputed after the owner's answers.
+- L5 — Owner spec approvals, verbatim. All four take the drafts' recommended answers to their open questions:
+  - #559 Footer v0.3: "Aprobar con recomendaciones (Recomendado)"
+  - #558 ProjectCard v0.3: "Aprobar con recomendaciones (Recomendado)"
+  - #557 Carousel v0.4: "Aprobar con recomendaciones (Recomendado)"
+  - #556 StepMeter v0.1 + NowCard v0.3: "Aprobar con recomendaciones (Recomendado)"
+
+  Spec approval does not approve the implementation plans (S5).
+- L6 — Specs finalized as Approved, with approval.md records, and implementation plans drafted as Proposed.
+
+  Final spec SHA256:
+  - Footer v0.3: `3fe3906f`.
+  - ProjectCard v0.3: `0d346d35`.
+  - Carousel v0.4: `8f5bfbd8`.
+  - StepMeter v0.1: `1da0f307`.
+  - NowCard v0.3: `2ed402f0`.
+
+  Plan estimates: #559 about 315 lines, #558 about 585, #557 about 585, #556 about 1,250 hand-written plus about 250 generated.
