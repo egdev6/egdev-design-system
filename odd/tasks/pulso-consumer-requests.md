@@ -19,7 +19,7 @@ egdev-website's Pulso parity gaps (consumer issue egdev6/egdev-website#45), file
 | T3 | S3 | #558 spec draft `docs/components/project-card/v0.3/spec.md`; owner approval pending | parallel writer | see git log |
 | T4 | S2 | #557 spec draft `docs/components/carousel/v0.4/spec.md`; owner approval pending | parallel writer | see git log |
 | T5 | S1 | #556 spec drafts `docs/components/step-meter/v0.1/spec.md` + `docs/components/now-card/v0.3/spec.md`; owner approval pending | parallel writer | see git log |
-| T6 | S4 | #559 implementation per footer/v0.3/implementation-plan.md | sequential worker | pending |
+| T6 | S4 | #559 implementation per footer/v0.3/implementation-plan.md | sequential worker | 325a2af, 625bed5, 9ccdb9f |
 | T7 | S3 | #558 implementation per project-card/v0.3/implementation-plan.md | sequential worker | pending |
 | T8 | S2 | #557 implementation per carousel/v0.4/implementation-plan.md | sequential worker | pending |
 | T9 | S1 | #556 implementation per step-meter/v0.1/implementation-plan.md | sequential worker | pending |
@@ -61,6 +61,9 @@ egdev-website's Pulso parity gaps (consumer issue egdev6/egdev-website#45), file
   - StepMeter v0.1: `1da0f307`.
   - NowCard v0.3: `2ed402f0`.
 
+- L8 — #558 browser finding F1: the legacy `.eg-project-card{overflow:hidden}` clips an over-wide status at the card's padding edge. This contradicts spec §4, "overflows rather than being clipped". The realistic "testing" label is not affected.
+
+  Owner choice, verbatim: "A: corregir la frase de la ficha (Recomendado)". The fix amends only the §4 sentence and keeps the implementation. The owner's answer is recorded as the new approval of the amended spec and of the plan's pinned hash.
 - L7 — Owner answers, verbatim:
   - Plans: "Aprobar los cuatro (Recomendado)"
   - Delivery: "Rama de integración, una PR (Recomendado)". One commit series per issue on this branch, and a single PR. This overrides the one-PR-per-issue line in the header.
