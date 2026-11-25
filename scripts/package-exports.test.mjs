@@ -5297,6 +5297,36 @@ test('ProjectCard ships named passive article SSR and keeps its composition reci
   assert.ok(compact.includes('eg-project-card__code'), 'sm density never hides the code well');
   assert.match(compact, /class="[^\"]*\bp-3\b/);
   assert.doesNotMatch(compact, /\bp-0\b/);
+  // Without a status the card renders no row, wrapper or marker, and none of the row utilities.
+  for (const absent of ['eg-project-card__badge', 'ms-auto', 'self-stretch']) {
+    assert.ok(!html.includes(absent), `${absent} must not appear without a status`);
+  }
+  // A consumer-supplied Badge renders in one wrapper in the header row: lead, status, then the heading.
+  const status = renderToStaticMarkup(
+    createElement(exported.ProjectCard, {
+      title: 'OpenDesign \u00d7 Gentle AI',
+      index: '014',
+      eyebrow: 'Experiment',
+      statusBadge: createElement(exported.Badge, {
+        tone: 'warning',
+        icon: createElement(exported.Icon, { name: 'alert' }),
+        children: 'testing'
+      }),
+      children: createElement('p', null, 'Designing interfaces directly from agents.')
+    })
+  );
+  assert.equal(status.split('eg-project-card__badge').length - 1, 1, 'One wrapper holds the supplied status');
+  assert.match(status, /class="[^"]*\beg-project-card__badge\b[^"]*\bms-auto\b/);
+  assert.match(status, /class="[^"]*\bself-stretch\b/);
+  assert.match(status, /data-tone="warning"/);
+  assert.match(status, /aria-hidden="true"[^>]*><svg/);
+  assert.ok(status.includes('>testing<'));
+  const position = (needle) => status.indexOf(needle);
+  assert.ok(position('>014<') < position('>Experiment<'), 'The index stays above the eyebrow');
+  assert.ok(position('>Experiment<') < position('eg-project-card__badge'), 'The status follows the lead');
+  assert.ok(position('eg-project-card__badge') < position('<h3'), 'The status precedes the heading');
+  assert.doesNotMatch(status, /tabindex=|role="(?:button|region)"|aria-live=|statusbadge=/i);
+  assert.doesNotMatch(status, /\sstyle=/, 'The status row adds no inline style');
   for (const name of [
     'useProjectCard',
     'useProjectCardTags',
@@ -5304,6 +5334,9 @@ test('ProjectCard ships named passive article SSR and keeps its composition reci
     'useProjectCardFooter',
     'projectCardVariants',
     'projectCardIndexVariants',
+    'projectCardHeaderVariants',
+    'projectCardLeadVariants',
+    'projectCardBadgeVariants',
     'ProjectCardNativeProps'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, name);
@@ -5327,7 +5360,13 @@ test('ProjectCard ships scanned stroke, signature and density utilities without 
     '.text-fg-muted',
     '.text-fg-brand-raised',
     '.p-3',
-    '.p-6'
+    '.p-6',
+    '.ms-auto',
+    '.max-w-full',
+    '.self-stretch',
+    '.flex-wrap',
+    '.gap-3',
+    '.gap-4'
   ]) {
     assert.ok(utilities.includes(selector), `Missing ProjectCard utility ${selector}`);
   }
@@ -5337,6 +5376,13 @@ test('ProjectCard ships scanned stroke, signature and density utilities without 
   };
   assert.match(rule('.p-3'), /padding:[^;]*var\(--space/);
   assert.match(rule('.p-6'), /padding:[^;]*var\(--space/);
+  // The header row and status wrapper use only utilities that the shipped stylesheet already emits.
+  assert.match(rule('.ms-auto'), /margin-inline-start:\s*auto\s*;/);
+  assert.match(rule('.max-w-full'), /max-width:\s*100%\s*;/);
+  assert.match(rule('.self-stretch'), /align-self:\s*stretch\s*;/);
+  assert.match(rule('.flex-wrap'), /flex-wrap:\s*wrap\s*;/);
+  assert.match(rule('.gap-3'), /gap:\s*var\(--space-3\)\s*;/);
+  assert.match(rule('.gap-4'), /gap:\s*var\(--space-4\)\s*;/);
   assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
   assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
   assert.doesNotMatch(utilities, /\.eg-project-card[^{}]*\{/);
@@ -6618,6 +6664,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'projectCardCodeLineVariants',
     'projectCardCodeGlyphVariants',
     'projectCardFootVariants',
+    'projectCardHeaderVariants',
+    'projectCardLeadVariants',
+    'projectCardBadgeVariants',
     'ProjectCardNativeProps'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);

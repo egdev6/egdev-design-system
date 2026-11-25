@@ -1700,6 +1700,18 @@ export function ProjectCardSamples({
 }) {
   return createElement(ProjectCard, { ...projectCardBase, variant, size });
 }
+// The status is a consumer-composed Badge: the card owns no status word, tone or icon.
+const projectCardStatus: ProjectCardProps = {
+  ...projectCardBase,
+  statusBadge: createElement(Badge, {
+    tone: 'warning',
+    icon: createElement(Icon, { name: 'alert' }),
+    children: 'testing'
+  })
+};
+export function ProjectCardStatusSample() {
+  return createElement(ProjectCard, projectCardStatus);
+}
 // @ts-expect-error The generated heading owns the article name.
 const relabelledProjectCard: ProjectCardProps = { ...projectCardBase, 'aria-label': 'Other' };
 // @ts-expect-error Passive articles have no root tab stop API.
@@ -1712,6 +1724,8 @@ const referencedProjectCard: ProjectCardProps = { ...projectCardBase, ref: creat
 const slottedProjectCard: ProjectCardProps = { ...projectCardBase, asChild: true };
 // @ts-expect-error A visible heading is required.
 const unnamedProjectCard: ProjectCardProps = { children: 'Body' };
+// @ts-expect-error The status wrapper is card-owned, so it has no class surface.
+const styledStatusProjectCard: ProjectCardProps = { ...projectCardBase, statusClassName: 'ml-2' };
 // @ts-expect-error Internal hook is not public.
 type ProjectCardPrivateHook = (typeof import('@egdev/ui'))['useProjectCard'];
 // @ts-expect-error Internal root recipe is not public.
@@ -4715,6 +4729,13 @@ function assertProjectCardCSS(css) {
     assert.ok(css.includes(selector), 'Missing ProjectCard utility ' + selector);
   }
   assert.match(css, /background-color:\s*var\(--color-surface-0[,)]/);
+  // The header row and status wrapper use only utilities that the shipped stylesheet already emits.
+  assert.match(css, /\.ms-auto\s*\{[^}]*margin-inline-start:\s*auto/);
+  assert.match(css, /\.max-w-full\s*\{[^}]*max-width:\s*100%/);
+  assert.match(css, /\.self-stretch\s*\{[^}]*align-self:\s*stretch/);
+  assert.match(css, /\.flex-wrap\s*\{[^}]*flex-wrap:\s*wrap/);
+  assert.match(css, /\.gap-3\s*\{[^}]*gap:\s*var\(--space-3\)/);
+  assert.match(css, /\.gap-4\s*\{[^}]*gap:\s*var\(--space-4\)/);
 }
 
 function assertMeterRowCSS(css) {
@@ -6759,7 +6780,7 @@ import { App, AttachmentFieldSamples, ButtonGroupSamples, ButtonWrapSamples, Car
     terminalDocument.window.close();
   }
 }
-import { ProjectCardSamples } from './consumer.ts';
+import { ProjectCardSamples, ProjectCardStatusSample } from './consumer.ts';
 for (const [projectVariant, projectSize] of [
   ['default', 'md'],
   ['featured', 'sm']
@@ -6785,10 +6806,39 @@ for (const [projectVariant, projectSize] of [
     assert.equal(pre.getAttribute('aria-label'), 'Install commands');
     assert.equal(pre.querySelectorAll('span[aria-hidden="true"]').length, 1, 'One decorative prompt glyph');
     assert.ok(card.querySelector('.eg-project-card__foot a[href="#packed-project"]'), 'One supplied footer action');
+    assert.equal(card.querySelector('.eg-project-card__badge'), null, 'Without a status there is no wrapper');
     assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is the only tab stop');
   } finally {
     projectDocument.window.close();
   }
+}
+const statusDocument = new JSDOM(renderToString(createElement(ProjectCardStatusSample)));
+try {
+  const document = statusDocument.window.document;
+  const card = document.getElementById('packed-project');
+  const wrapper = card.querySelector('.eg-project-card__badge');
+  assert.ok(wrapper, 'A supplied status renders in one wrapper');
+  assert.equal(card.querySelectorAll('.eg-project-card__badge').length, 1);
+  const row = wrapper.parentElement;
+  assert.equal(row.parentElement, card, 'The row is a direct child of the card');
+  const heading = document.getElementById(card.getAttribute('aria-labelledby'));
+  assert.equal(heading.textContent, 'Packed project', 'The heading alone names the card');
+  const following = statusDocument.window.Node.DOCUMENT_POSITION_FOLLOWING;
+  assert.ok(row.compareDocumentPosition(heading) & following, 'The row precedes the heading');
+  assert.equal(row.lastElementChild, wrapper, 'The status is the last element of the row');
+  assert.equal(row.firstElementChild.querySelector('span[aria-hidden="true"]').textContent, '01', 'The lead keeps the index');
+  assert.ok(row.classList.contains('self-stretch'));
+  assert.ok(wrapper.classList.contains('ms-auto'));
+  const badge = wrapper.querySelector('.eg-badge');
+  assert.equal(badge.getAttribute('data-tone'), 'warning');
+  assert.equal(badge.textContent, 'testing');
+  assert.ok(badge.querySelector('span[aria-hidden="true"] > svg'), 'The Badge icon stays decorative');
+  assert.equal(card.hasAttribute('role'), false);
+  assert.equal(card.hasAttribute('tabindex'), false);
+  assert.equal(card.hasAttribute('statusbadge'), false);
+  assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is still the only tab stop');
+} finally {
+  statusDocument.window.close();
 }
 import { TipCardSamples } from './consumer.ts';
 for (const [tipBadge, tipLevel, tipTitle] of [

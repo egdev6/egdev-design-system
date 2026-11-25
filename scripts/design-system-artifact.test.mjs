@@ -455,6 +455,46 @@ test('Text truncation is optional, defaults false and does not widen Heading or 
   assert.ok(naming.components.includes('Text'));
 });
 
+test('ProjectCard statusBadge is an optional source-derived slot with three private layout recipes', () => {
+  const artifact = read('packages/system/design-system.json');
+  const card = artifact.components.find(({ name }) => name === 'ProjectCard');
+  assert.ok(card);
+  const prop = card.props.find(({ name }) => name === 'statusBadge');
+  assert.ok(prop);
+  assert.equal(prop.type, 'ReactNode');
+  assert.equal(prop.required, false);
+  assert.equal(prop.default, null);
+  assert.match(prop.description, /non-interactive status node/);
+  assert.match(prop.description, /header row at the inline end/);
+  assert.ok(!card.props.some(({ name }) => name === 'statusClassName'));
+  for (const field of ['variants', 'anatomy']) {
+    const names = card[field].map(({ name }) => name);
+    for (const recipe of ['projectCardHeaderVariants', 'projectCardLeadVariants', 'projectCardBadgeVariants']) {
+      assert.ok(names.includes(recipe), `${field} lists ${recipe}`);
+    }
+  }
+  assert.deepEqual(
+    card.parts.map(({ name }) => name),
+    ['ProjectCardBackdrop', 'ProjectCardCode', 'ProjectCardFooter', 'ProjectCardMark', 'ProjectCardTags']
+  );
+  // The card never imports Badge: the consumer composes it, so no composition edge appears.
+  assert.deepEqual(
+    card.composedOf.map(({ name }) => name),
+    ['Chip']
+  );
+  assert.deepEqual(card.classNameAllows, [
+    'inline-size',
+    'max-inline-size',
+    'max-width',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
+  const naming = artifact.propNaming.find(({ id }) => id === 'leading-status-badge');
+  assert.ok(naming);
+  assert.deepEqual(naming.components, ['NowCard', 'ProjectCard']);
+});
+
 test('Heading and Text expose only their own and shared recipes', () => {
   const artifact = read('packages/system/design-system.json');
   const heading = artifact.components.find(({ name }) => name === 'Heading');
