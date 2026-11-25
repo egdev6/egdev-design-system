@@ -19,7 +19,11 @@ egdev-website's Pulso parity gaps (consumer issue egdev6/egdev-website#45), file
 | T3 | S3 | #558 spec draft `docs/components/project-card/v0.3/spec.md`; owner approval pending | parallel writer | see git log |
 | T4 | S2 | #557 spec draft `docs/components/carousel/v0.4/spec.md`; owner approval pending | parallel writer | see git log |
 | T5 | S1 | #556 spec drafts `docs/components/step-meter/v0.1/spec.md` + `docs/components/now-card/v0.3/spec.md`; owner approval pending | parallel writer | see git log |
-| T6 | S1–S4 | Implementation per approved plan, one PR per issue | pending | pending |
+| T6 | S4 | #559 implementation per footer/v0.3/implementation-plan.md | sequential worker | pending |
+| T7 | S3 | #558 implementation per project-card/v0.3/implementation-plan.md | sequential worker | pending |
+| T8 | S2 | #557 implementation per carousel/v0.4/implementation-plan.md | sequential worker | pending |
+| T9 | S1 | #556 implementation per step-meter/v0.1/implementation-plan.md | sequential worker | pending |
+| T10 | S1–S4 | One integration PR from this branch; owner Storybook review | inline | pending |
 
 ## Log
 
@@ -56,5 +60,12 @@ egdev-website's Pulso parity gaps (consumer issue egdev6/egdev-website#45), file
   - Carousel v0.4: `8f5bfbd8`.
   - StepMeter v0.1: `1da0f307`.
   - NowCard v0.3: `2ed402f0`.
+
+- L7 — Owner answers, verbatim:
+  - Plans: "Aprobar los cuatro (Recomendado)"
+  - Delivery: "Rama de integración, una PR (Recomendado)". One commit series per issue on this branch, and a single PR. This overrides the one-PR-per-issue line in the header.
+  - Checks: "Autorizar ambos (Recomendado)". This covers Storybook with Playwright for geometry and forced colors, plus the packed consumer tests (package-exports and package-consumption, network or pnpm cache).
+
+  Implementation runs sequentially, because all four plans touch prop-naming.json, the system artifact and the changelogs.
 
   Plan estimates: #559 about 315 lines, #558 about 585, #557 about 585, #556 about 1,250 hand-written plus about 250 generated.
