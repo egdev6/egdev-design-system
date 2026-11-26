@@ -692,6 +692,34 @@ function cssBlock(css, opening) {
   assert.fail(`Unclosed emitted CSS block ${opening}`);
 }
 
+// Headers of the blocks that enclose a position in emitted CSS, outermost first (quote- and escape-aware).
+function enclosingBlocks(css, position) {
+  const headers = [];
+  let start = 0;
+  let quote = '';
+  for (let index = 0; index < position; index++) {
+    const char = css[index];
+    if (char === '\\') {
+      index++;
+    } else if (quote) {
+      if (char === quote) {
+        quote = '';
+      }
+    } else if (char === '"' || char === "'") {
+      quote = char;
+    } else if (char === '{') {
+      headers.push(css.slice(start, index).trim());
+      start = index + 1;
+    } else if (char === '}') {
+      headers.pop();
+      start = index + 1;
+    } else if (char === ';') {
+      start = index + 1;
+    }
+  }
+  return headers;
+}
+
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[color\\,background-color\\,border-color\\\]|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\]|\\\[color\\,transform\\\])(?=\s*\{))[\w\\]/;
@@ -706,6 +734,19 @@ test('Footer ships every scanned recipe utility and retains legacy component CSS
     true
   );
   const classes = new Set();
+  // The options object (the register axis) carries utilities too; defaultVariants only names variants.
+  function collectOptions(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collectOptions);
+    }
+  }
   function visit(node) {
     if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
       for (const argument of node.arguments) {
@@ -713,6 +754,8 @@ test('Footer ships every scanned recipe utility and retains legacy component CSS
           for (const name of argument.text.split(/\s+/).filter(Boolean)) {
             classes.add(name);
           }
+        } else {
+          collectOptions(argument);
         }
       }
     }
@@ -720,6 +763,17 @@ test('Footer ships every scanned recipe utility and retains legacy component CSS
   }
   visit(source);
   assert.ok(classes.size > 30);
+  for (const name of [
+    'bg-surface-0/50',
+    'bg-none',
+    '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0',
+    'eg-footer__wrap',
+    'max-w-[var(--content-max)]',
+    'mx-auto',
+    'px-[var(--gutter)]'
+  ]) {
+    assert.ok(classes.has(name), `The Footer recipes must declare ${name}`);
+  }
   for (const name of classes) {
     if (name.startsWith('eg-') || name === 'footer-brand') {
       continue;
@@ -733,6 +787,99 @@ test('Footer ships every scanned recipe utility and retains legacy component CSS
   assert.match(utilities, /border-(?:top|bottom)-width:\s*var\(--border-width[,)]/);
   assert.doesNotMatch(utilities, /\.eg-footer(?:__[\w-]+)?\s*\{/);
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-footer/);
+  // v0.4 (#561, #565): the Grafito wash, its solid reduced-transparency fallback and the content wrapper. The sheet
+  // may already carry these selectors through SectionShell, so this proves what the packed sheet contains.
+  const emitted = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const rule = (name) =>
+    cssBlock(utilities, new RegExp(`${emitted(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  const wash = rule('bg-surface-0/50');
+  assert.match(wash, /--color-surface-0/);
+  assert.match(wash, /50%/);
+  assert.match(rule('bg-none'), /background-image:\s*none/);
+  for (const [name, declaration] of [
+    ['box-border', /box-sizing:\s*border-box/],
+    ['w-full', /width:\s*100%/],
+    ['max-w-[var(--content-max)]', /max-width:\s*var\(--content-max\)/],
+    ['mx-auto', /margin-inline:\s*auto/],
+    ['px-[var(--gutter)]', /padding-inline:\s*var\(--gutter\)/]
+  ]) {
+    assert.match(rule(name), declaration, `Footer wrapper utility ${name}`);
+  }
+  const fallback = '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0';
+  assert.match(rule(fallback), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.ok(
+    enclosingBlocks(utilities, utilities.indexOf(emitted(fallback))).some((header) =>
+      /^@media\s*\(\s*prefers-reduced-transparency\s*:\s*reduce\s*\)$/.test(header)
+    ),
+    'The solid Grafito fallback must sit inside a prefers-reduced-transparency block'
+  );
+});
+
+test('Footer package SSR renders the wrapped Grafito footer with quiet navigation links', async () => {
+  const uiExports = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const html = renderToString(
+    h(uiExports.Footer, {
+      wrap: true,
+      register: 'grafito',
+      children: [
+        h(uiExports.FooterMotto, { key: 'motto', children: h('p', null, 'Motto') }),
+        h(uiExports.FooterNavigation, {
+          key: 'nav',
+          label: 'Explore',
+          items: [
+            { href: '#one', label: 'One' },
+            { href: '#two', label: 'Two', 'aria-current': 'page' }
+          ]
+        }),
+        h(uiExports.FooterLegal, { key: 'legal', children: h('a', { href: '#legal' }, 'Legal') })
+      ]
+    })
+  );
+  const dom = new JSDOM(html);
+  try {
+    const footer = dom.window.document.querySelector('footer');
+    assert.equal(footer.children.length, 1);
+    const wrapper = footer.firstElementChild;
+    assert.equal(wrapper.tagName, 'DIV');
+    for (const name of [
+      'eg-footer__wrap',
+      'box-border',
+      'w-full',
+      'max-w-[var(--content-max)]',
+      'mx-auto',
+      'px-[var(--gutter)]'
+    ]) {
+      assert.ok(wrapper.classList.contains(name), `Missing wrapper class ${name}`);
+    }
+    assert.ok(![...wrapper.classList].some((name) => name.includes('bg-')), 'The wash belongs to the root');
+    assert.deepEqual(
+      [...wrapper.children].map((child) => child.className.match(/eg-footer__(stage|grid|legal)/)?.[1]),
+      ['stage', 'grid', 'legal']
+    );
+    for (const name of [
+      'bg-surface-0/50',
+      'bg-none',
+      '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0',
+      'text-fg-default'
+    ]) {
+      assert.ok(footer.classList.contains(name), `Missing root class ${name}`);
+    }
+    assert.equal(footer.hasAttribute('wrap'), false);
+    assert.equal(footer.hasAttribute('register'), false);
+    assert.equal(footer.hasAttribute('role'), false);
+    const anchors = [...footer.querySelectorAll('nav a')];
+    assert.equal(anchors.length, 2);
+    for (const anchor of anchors) {
+      assert.ok(anchor.classList.contains('text-fg-default'), 'Footer links ship the quiet ink');
+      assert.ok(anchor.classList.contains('decoration-fg-brand-default'));
+      assert.ok(!anchor.classList.contains('text-link-default'));
+    }
+  } finally {
+    dom.window.close();
+  }
 });
 
 test('Footer package SSR keeps navigation and social list separately named', async () => {
@@ -6401,6 +6548,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'FooterNavigationLevel',
     'FooterNavigationProps',
     'FooterProps',
+    'FooterRegister',
     'FooterSocial',
     'FooterSocialProps',
     'Gauge',

@@ -115,7 +115,7 @@ import type { SectionNavItem, SectionNavProps } from '@egdev/ui';
 import { NowStrip } from '@egdev/ui';
 import type { NowStripProps } from '@egdev/ui';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
-import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterSocialProps } from '@egdev/ui';
+import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterRegister, FooterSocialProps } from '@egdev/ui';
 import { TopBar, TopBarBrand, TopBarEnd, TopBarMobileTrigger, TopBarSearchCompact, TopBarSearchFull, TopBarUserMenu } from '@egdev/ui';
 import type { TopBarItem, TopBarPartProps, TopBarProps } from '@egdev/ui';
 import { SectionShell } from '@egdev/ui';
@@ -806,6 +806,9 @@ const footerSocial: FooterSocialProps = { children: createElement(SocialLinks, {
 const footerLegal: FooterLegalProps = { children: createElement('a', { href: '#legal' }, 'Legal') };
 export const footerProps: FooterProps = { children: [createElement(FooterMotto, { key: 'motto', ...footerMotto }), createElement(FooterBrand, { key: 'brand', ...footerBrand }), createElement(FooterNavigation, { key: 'nav', ...footerNav }), createElement(FooterSocial, { key: 'social', ...footerSocial }), createElement(FooterLegal, { key: 'legal', ...footerLegal })] };
 export function FooterSamples() { return createElement(Footer, footerProps); }
+export const footerRegisters: readonly FooterRegister[] = ['none', 'grafito'];
+export const footerWrappedProps: FooterProps = { wrap: true, register: 'grafito', children: [createElement(FooterNavigation, { key: 'nav', ...footerNav }), createElement(FooterLegal, { key: 'legal', ...footerLegal })] };
+export function FooterWrappedSamples() { return createElement(Footer, footerWrappedProps); }
 // @ts-expect-error Children are required.
 const footerMissing: FooterProps = {};
 // @ts-expect-error Root role is protected.
@@ -820,7 +823,13 @@ const footerDestination: FooterNavigationItem = { label: 'Missing' };
 const footerCurrentStep: FooterNavigationItem = { href: '#one', label: 'One', 'aria-current': 'step' };
 // @ts-expect-error Internal recipes are not exported.
 type FooterPrivate = (typeof import('@egdev/ui'))['footerVariants'];
-export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, typeof footerCurrentStep, FooterPrivate];
+// @ts-expect-error Register accepts none and grafito only.
+const footerRegister: FooterProps = { children: null, register: 'pro' };
+// @ts-expect-error A group-edge fade input is outside the contract; the host owns the fade.
+const footerFade: FooterProps = { children: null, fade: true };
+// @ts-expect-error The wrapper recipe is not exported.
+type FooterWrapPrivate = (typeof import('@egdev/ui'))['footerWrapVariants'];
+export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, typeof footerCurrentStep, FooterPrivate, typeof footerRegister, typeof footerFade, FooterWrapPrivate];
 const topBarItem: TopBarItem = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' };
 const topBarPart: TopBarPartProps = { children: createElement('a', { href: '/' }, 'Brand') };
 export const topBarProps: TopBarProps = { label: 'Main', items: [topBarItem], initialBackground: 'solid', contentWidth: 'full', 'data-state': 'glass', style: { zIndex: 10 }, children: [
@@ -5644,6 +5653,22 @@ function assertFooterConsumerCSS(css) {
   assert.match(utilities, /border-top-style:\s*solid/);
   assert.match(utilities, /border-bottom-style:\s*solid/);
   assert.match(utilities, /border-(?:top|bottom)-width:\s*var\(--border-width[,)]/);
+  // v0.4 (#561, #565): the Grafito wash with its reduced-transparency fallback, and the content wrapper utilities.
+  for (const selector of [
+    String.raw`.bg-surface-0\/50`,
+    '.bg-none',
+    String.raw`.\[\@media\(prefers-reduced-transparency\:reduce\)\]\:bg-surface-0`,
+    '.box-border',
+    '.w-full',
+    '.mx-auto',
+    String.raw`.max-w-\[var\(--content-max\)\]`,
+    String.raw`.px-\[var\(--gutter\)\]`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Footer packed utility ' + selector);
+  }
+  assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(utilities, /max-width:\s*var\(--content-max\)/);
+  assert.match(utilities, /padding-inline:\s*var\(--gutter\)/);
 }
 
 function assertTopBarConsumerCSS(css) {
@@ -6594,6 +6619,18 @@ assert.equal(footerCurrentLinks.length, 1);
 assert.equal(footerCurrentLinks[0].getAttribute('href'), '#two');
 assert.equal(footerCurrentLinks[0].getAttribute('aria-current'), 'page');
 footerDocument.window.close();
+const { FooterWrappedSamples } = await import('./consumer.ts');
+const wrappedFooterDocument = new JSDOM(renderToString(createElement(FooterWrappedSamples)));
+const wrappedFooter = wrappedFooterDocument.window.document.querySelector('footer');
+assert.equal(wrappedFooter.children.length, 1);
+assert.ok(wrappedFooter.firstElementChild.classList.contains('eg-footer__wrap'));
+for (const name of ['bg-surface-0/50', 'bg-none', '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0']) {
+  assert.ok(wrappedFooter.classList.contains(name), 'Missing wrapped Footer root class ' + name);
+}
+assert.equal(wrappedFooter.hasAttribute('wrap'), false);
+assert.equal(wrappedFooter.hasAttribute('register'), false);
+assert.ok([...wrappedFooter.querySelectorAll('nav a')].every((anchor) => anchor.classList.contains('text-fg-default') && !anchor.classList.contains('text-link-default')));
+wrappedFooterDocument.window.close();
 const { NowStripSamples } = await import('./consumer.ts');
 const nowStripDocument = new JSDOM(renderToString(createElement(NowStripSamples)));
 const nowStripGroup = nowStripDocument.window.document.querySelector('[role="group"].eg-now-strip');

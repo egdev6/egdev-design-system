@@ -722,6 +722,16 @@ describe('Storybook preview CSS', () => {
     expect(rule('.min-w-0')).toMatch(/min-width:\s*var\(--space-0[,)]/);
   });
 
+  it('compiles the Footer HostFade host utility only because the preview scans the story source (#565)', () => {
+    // HostFade documents the host-owned fade: the host hides the footer's own wash through the stable eg-footer marker.
+    // Production code never uses this utility, so it exists only when the preview scans Footer.stories.tsx.
+    expect(rule(String.raw`.\[\&_\.eg-footer\]\:bg-transparent .eg-footer`)).toMatch(
+      /background-color:\s*(?:transparent|#0000(?:0000)?)/
+    );
+    const preview = readFileSync(new URL('../../../../.storybook/preview.css', import.meta.url), 'utf8');
+    expect(preview).toContain('@source "../packages/ui/src/organisms/footer/Footer.stories.tsx";');
+  });
+
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {
     expect(rule('.flex')).toMatch(/display:\s*flex\s*;/);
     expect(rule('.flex-wrap')).toMatch(/flex-wrap:\s*wrap\s*;/);
