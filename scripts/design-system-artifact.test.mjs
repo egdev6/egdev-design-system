@@ -553,7 +553,7 @@ test('ProjectCard statusBadge is an optional source-derived slot with three priv
   assert.deepEqual(naming.components, ['NowCard', 'ProjectCard']);
 });
 
-test('StepMeter publishes three source-derived props, two private recipes and the proposed step-count convention', () => {
+test('StepMeter publishes three source-derived props, two private recipes and the approved step-count convention', () => {
   const artifact = read('packages/system/design-system.json');
   const meter = artifact.components.find(({ name }) => name === 'StepMeter');
   assert.ok(meter);
@@ -616,7 +616,8 @@ test('StepMeter publishes three source-derived props, two private recipes and th
   const naming = artifact.propNaming.find(({ id }) => id === 'step-count');
   assert.ok(naming);
   assert.equal(naming.name, 'steps');
-  assert.equal(naming.status, 'proposed');
+  // The registry promoted the entry with its own scoped receipt, so the artifact publishes the approved status.
+  assert.equal(naming.status, 'approved');
   assert.deepEqual(naming.components, ['StepMeter']);
   for (const id of ['accessible-name', 'primary-value']) {
     const reused = artifact.propNaming.find((item) => item.id === id);

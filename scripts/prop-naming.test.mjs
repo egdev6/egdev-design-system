@@ -895,7 +895,7 @@ const postReceiptProposals = [
   // Dialog v0.4 proposes two component-scoped concepts without global naming approval.
   'dialog-title-overflow',
   'dialog-action-placement',
-  // StepMeter v0.1 proposes the step total; it stays proposed until a receipt binds its exact content.
+  // StepMeter v0.1 step total: approved by its own receipt (docs/components/step-meter/v0.1/step-count-approval.json).
   'step-count'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
@@ -1714,13 +1714,25 @@ test('Dialog sheet concepts remain proposed and bind every reviewed source revis
   validate(registry);
 });
 
-test('StepMeter step count stays proposed, reuses two approved conventions and binds every reviewed source revision', () => {
+test('StepMeter step count binds its scoped owner approval, reuses two approved conventions and binds every reviewed source revision', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/step-meter/v0.1/step-count-approval.json';
+  assert.ok(fs.existsSync(resolve(root, reference)), 'The step-count approval receipt must be recorded');
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
   const path = 'packages/ui/src/atoms/step-meter/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, path)));
   const source = { path, symbol: 'StepMeterProps', revision };
   const entry = registry.find(({ id }) => id === 'step-count');
   assert.ok(entry);
+  // The receipt carries the owner's verbatim answer and binds the approved form of the exact convention payload.
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.date, '2026-11-26');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar `step-count` (Recomendado)');
+  assert.deepEqual(receipt.priorReceipts, []);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, ['step-count']);
+  assert.deepEqual(receipt.semanticAmendments, []);
   assert.equal(entry.name, 'steps');
   assert.equal(entry.meaning, 'Total number of discrete steps of a stepped scale.');
   assert.equal(
@@ -1731,12 +1743,18 @@ test('StepMeter step count stays proposed, reuses two approved conventions and b
     entry.avoid,
     'Item or entry counts, display overflow thresholds, step increments of a continuous control, and wizard or navigation step lists.'
   );
-  // Convention approval is separate from the spec approval: no receipt exists, so the entry is only proposed.
-  assert.equal(entry.status, 'proposed');
-  assert.equal(entry.approval, null);
+  // Convention approval stays separate from the spec approval: only this scoped receipt promotes the entry.
+  assert.equal(entry.status, 'approved');
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(approval, {
+    reference,
+    scope: 'convention:step-count',
+    contentHash: props.conventionHash(entry)
+  });
+  assert.deepEqual(receipt.entries, [{ scope: approval.scope, contentHash: approval.contentHash, convention }]);
   assert.deepEqual(entry.aliases, []);
   assert.deepEqual(entry.exceptions, []);
-  assert.deepEqual(entry.usages, [
+  assert.deepEqual(usages, [
     { component: 'StepMeter', type: 'number (optional; integer 1-10, default 4)', status: 'existing', source }
   ]);
   assert.deepEqual(historicalRegistry([entry]), []);
@@ -1747,8 +1765,8 @@ test('StepMeter step count stays proposed, reuses two approved conventions and b
   ]) {
     const reused = registry.find((item) => item.id === id);
     assert.equal(reused.status, 'approved', id);
-    const usages = reused.usages.filter(({ component }) => component === 'StepMeter');
-    assert.deepEqual(usages, [{ component: 'StepMeter', type, status: 'existing', source }], id);
+    const reusedUsages = reused.usages.filter(({ component }) => component === 'StepMeter');
+    assert.deepEqual(reusedUsages, [{ component: 'StepMeter', type, status: 'existing', source }], id);
   }
   // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
   const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
@@ -1756,10 +1774,14 @@ test('StepMeter step count stays proposed, reuses two approved conventions and b
   for (const usage of own) {
     assert.equal(usage.source.revision, revision);
   }
-  const marked = structuredClone(registry);
-  marked.find(({ id }) => id === 'step-count').status = 'approved';
-  assert.throws(() => validate(marked), /approval/i);
   validate(registry);
+  // Changed semantic content or a dropped approval invalidates the entry; a recomputed digest is not consent.
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === 'step-count').meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+  const unapproved = structuredClone(registry);
+  unapproved.find(({ id }) => id === 'step-count').approval = null;
+  assert.throws(() => validate(unapproved), /approval/i);
 });
 
 test('Text truncation binds its scoped owner approval and reviewed source', () => {

@@ -1,0 +1,31 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve step-count for the optional StepMeter steps prop, the total number of discrete steps of a passive stepped indicator.",
+  "evidence": {
+    "date": "2026-11-26",
+    "channel": "Owner approval recorded in odd/tasks/round-5-consumer-requests.md L3, on the step-count naming convention proposed in docs/components/step-meter/v0.1/spec.md (OQ-8) and implementation-plan.md section 6a",
+    "ownerChoice": "Aprobar `step-count` (Recomendado)",
+    "interpretation": "Scoped naming approval only: it binds the exact convention payload below, not native review authority. It does not approve the StepMeter spec, plan or implementation, which keep their own approvals, and it grants no exception."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": ["step-count"],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:step-count",
+      "contentHash": "sha256:1492f9ca97aa60f649f6884055da88ce6210f54459a78e748347dd642a92d522",
+      "convention": {
+        "id": "step-count",
+        "name": "steps",
+        "meaning": "Total number of discrete steps of a stepped scale.",
+        "whenToUse": "A passive stepped indicator lets the consumer choose how many steps its scale has, within a bounded range, while the filled count is supplied separately as the primary value.",
+        "avoid": "Item or entry counts, display overflow thresholds, step increments of a continuous control, and wizard or navigation step lists.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}
