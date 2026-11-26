@@ -242,6 +242,55 @@ test('Footer publishes wrap and register, the register recipe axis and the wrapp
   }
 });
 
+test('SectionNav keeps its ten props, documents the zero-padded numbers and publishes the number and label recipes (#563)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const nav = artifact.components.find(({ name }) => name === 'SectionNav');
+  assert.ok(nav);
+  assert.deepEqual(
+    nav.props.map(({ name }) => name),
+    [
+      'activeId',
+      'defaultOpen',
+      'disclosureLabel',
+      'items',
+      'label',
+      'nextLabel',
+      'onNavigate',
+      'onOpenChange',
+      'open',
+      'value'
+    ]
+  );
+  assert.match(nav.props.find(({ name }) => name === 'items').description, /zero-padded/);
+  const classes = (recipeName) => {
+    const recipe = nav.variants.find(({ name }) => name === recipeName);
+    assert.ok(recipe, `SectionNav must publish ${recipeName}`);
+    return recipe.classes.join(' ').split(/\s+/).filter(Boolean);
+  };
+  assert.deepEqual(classes('sectionNavNumberVariants'), [
+    'font-display',
+    'text-meta',
+    'tabular-nums',
+    'text-fg-brand-raised'
+  ]);
+  assert.deepEqual(classes('sectionNavLabelVariants'), ['font-display', 'text-meta', 'uppercase']);
+  // The trigger keeps its reset baseline next to the new part recipes.
+  const trigger = classes('sectionNavTriggerVariants');
+  for (const utility of ['font-sans', 'text-body-default']) {
+    assert.ok(trigger.includes(utility), `sectionNavTriggerVariants must still list ${utility}`);
+  }
+  for (const name of ['sectionNavNumberVariants', 'sectionNavLabelVariants']) {
+    assert.ok(
+      nav.anatomy.some((entry) => entry.name === name),
+      `SectionNav anatomy must include ${name}`
+    );
+  }
+  const expressions = nav.layout.map(({ expression }) => expression);
+  for (const expression of ['cn(sectionNavNumberVariants())', 'cn(sectionNavLabelVariants())']) {
+    assert.ok(expressions.includes(expression), `SectionNav layout must include ${expression}`);
+  }
+});
+
 test('classNameAllows publishes sorted unique CSS properties on roots and their own or shared parts', () => {
   const result = artifactWithTags([
     {

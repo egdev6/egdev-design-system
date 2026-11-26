@@ -706,6 +706,8 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · Popover
   - Catalog composition / slots: Native section links, Pixel, ProgressBar, Icon; Surface overlay (catalog[] · docs/catalog.json)
   - Composes: Icon (packages/ui/src/organisms/section-nav/SectionNav.tsx), Pixel (packages/ui/src/organisms/section-nav/SectionNav.tsx), Popover (packages/ui/src/organisms/section-nav/SectionNav.tsx), PopoverContent (packages/ui/src/organisms/section-nav/SectionNav.tsx), PopoverTrigger (packages/ui/src/organisms/section-nav/SectionNav.tsx), ProgressBar (packages/ui/src/organisms/section-nav/SectionNav.tsx), Surface (packages/ui/src/organisms/section-nav/SectionNav.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - sectionNavLabelVariants base: font-display → --font-display
+    - sectionNavLabelVariants base: text-meta → --text-meta
     - sectionNavLinkVariants base: flex → 
     - sectionNavLinkVariants base: items-center → 
     - sectionNavLinkVariants base: gap-3 → --spacing-3
@@ -720,6 +722,8 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · Popover
     - sectionNavNextVariants base: [@media(width<=520px)]:min-w-14 → 
     - sectionNavNextVariants base: [@media(width<=520px)]:min-h-14 → 
     - sectionNavNextVariants base: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
+    - sectionNavNumberVariants base: font-display → --font-display
+    - sectionNavNumberVariants base: text-meta → --text-meta
     - sectionNavPillVariants base: relative → 
     - sectionNavPillVariants base: flex → 
     - sectionNavPillVariants base: items-center → 
@@ -759,28 +763,42 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · Popover
     - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavListVariants() → unresolved
     - Layout source: `cn(sectionNavLinkVariants())` · packages/ui/src/organisms/section-nav/useSectionNav.ts
     - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavLinkVariants() → unresolved
-    - Layout source: `{nav.items.length > 0 && ( <Popover open={nav.popoverOpen} onOpenChange={nav.requestOpen}> <Surface tone='overlay' padding='none' radius='full' className={nav.pillClass}> <PopoverTrigger aria-label={nav.disclosureLabel} className={nav.triggerClass}> {nav.current && ( <> <span>{nav.currentNumber}</span> <span>{nav.current.label}</span> </> )} <Icon name='chevron-down' /> </PopoverTrigger> {nav.next && ( <a href={nav.next.href} aria-label={nav.nextLabel} className={nav.nextClass} onClick={nav.onNextClick} onAuxClick={nav.onNextAuxClick} > <Icon name='arrow-down' /> </a> )} <ProgressBar value={nav.value} size='sm' edge={true} /> </Surface> <PopoverContent label={nav.label} side='top' align='end' onCloseAutoFocus={nav.onCloseAutoFocus}> <ol className={nav.listClass}> {nav.rows.map((row) => ( <li key={row.item.id}> <a href={row.item.href} className={nav.linkClass} aria-current={row.current} onClick={row.onClick} onAuxClick={row.onAuxClick} > <Pixel state={row.state} /> <span>{row.number}</span> <span>{row.item.label}</span> </a> </li> ))} </ol> </PopoverContent> </Popover> )}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `cn(sectionNavNumberVariants())` · packages/ui/src/organisms/section-nav/useSectionNav.ts
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavNumberVariants() → unresolved
+    - Layout source: `cn(sectionNavLabelVariants())` · packages/ui/src/organisms/section-nav/useSectionNav.ts
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavLabelVariants() → unresolved
+    - Layout source: `{nav.items.length > 0 && ( <Popover open={nav.popoverOpen} onOpenChange={nav.requestOpen}> <Surface tone='overlay' padding='none' radius='full' className={nav.pillClass}> <PopoverTrigger aria-label={nav.disclosureLabel} className={nav.triggerClass}> {nav.current && ( <> <span className={nav.numberClass}>{nav.currentNumber}</span>{' '} <span className={nav.labelClass}>{nav.current.label}</span> </> )} <Icon name='chevron-down' /> </PopoverTrigger> {nav.next && ( <a href={nav.next.href} aria-label={nav.nextLabel} className={nav.nextClass} onClick={nav.onNextClick} onAuxClick={nav.onNextAuxClick} > <Icon name='arrow-down' /> </a> )} <ProgressBar value={nav.value} size='sm' edge={true} /> </Surface> <PopoverContent label={nav.label} side='top' align='end' onCloseAutoFocus={nav.onCloseAutoFocus}> <ol className={nav.listClass}> {nav.rows.map((row) => ( <li key={row.item.id}> <a href={row.item.href} className={nav.linkClass} aria-current={row.current} onClick={row.onClick} onAuxClick={row.onAuxClick} > <Pixel state={row.state} /> <span className={nav.numberClass}>{row.number}</span>{' '} <span className={nav.labelClass}>{row.item.label}</span> </a> </li> ))} </ol> </PopoverContent> </Popover> )}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout source: `className={nav.pillClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.pillClass → unresolved
     - Layout source: `className={nav.triggerClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.triggerClass → unresolved
-    - Layout source: `{nav.current && ( <> <span>{nav.currentNumber}</span> <span>{nav.current.label}</span> </> )}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `{nav.current && ( <> <span className={nav.numberClass}>{nav.currentNumber}</span>{' '} <span className={nav.labelClass}>{nav.current.label}</span> </> )}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `className={nav.numberClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.numberClass → unresolved
     - Layout source: `{nav.currentNumber}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `{' '}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `className={nav.labelClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.labelClass → unresolved
     - Layout source: `{nav.current.label}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout source: `{nav.next && ( <a href={nav.next.href} aria-label={nav.nextLabel} className={nav.nextClass} onClick={nav.onNextClick} onAuxClick={nav.onNextAuxClick} > <Icon name='arrow-down' /> </a> )}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout source: `className={nav.nextClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.nextClass → unresolved
     - Layout source: `className={nav.listClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.listClass → unresolved
-    - Layout source: `{nav.rows.map((row) => ( <li key={row.item.id}> <a href={row.item.href} className={nav.linkClass} aria-current={row.current} onClick={row.onClick} onAuxClick={row.onAuxClick} > <Pixel state={row.state} /> <span>{row.number}</span> <span>{row.item.label}</span> </a> </li> ))}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `{nav.rows.map((row) => ( <li key={row.item.id}> <a href={row.item.href} className={nav.linkClass} aria-current={row.current} onClick={row.onClick} onAuxClick={row.onAuxClick} > <Pixel state={row.state} /> <span className={nav.numberClass}>{row.number}</span>{' '} <span className={nav.labelClass}>{row.item.label}</span> </a> </li> ))}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout source: `className={nav.linkClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
     - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.linkClass → unresolved
+    - Layout source: `className={nav.numberClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.numberClass → unresolved
     - Layout source: `{row.number}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `{' '}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `className={nav.labelClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.labelClass → unresolved
     - Layout source: `{row.item.label}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
   - activeId: string; Host-designated current section identity. (components[] · packages/ui/src/organisms/section-nav/types.ts)
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/organisms/section-nav/types.ts)
   - disclosureLabel: string; Localized disclosure name. (components[] · packages/ui/src/organisms/section-nav/types.ts)
-  - items: SectionNavItem[]; Ordered section destinations. (components[] · packages/ui/src/organisms/section-nav/types.ts)
+  - items: SectionNavItem[]; Ordered section destinations. The number shown for each section is its 1-based position in this array, zero-padded to at least two digits. (components[] · packages/ui/src/organisms/section-nav/types.ts)
   - label: string; Localized navigation and dialog name. (components[] · packages/ui/src/organisms/section-nav/types.ts)
   - nextLabel: string; Localized next destination name, updated when the destination changes. (components[] · packages/ui/src/organisms/section-nav/types.ts)
   - onNavigate: ((item: SectionNavItem, event: MouseEvent<HTMLAnchorElement, MouseEvent>) => void); Notify the host of link activation without intercepting navigation. (components[] · packages/ui/src/organisms/section-nav/types.ts)

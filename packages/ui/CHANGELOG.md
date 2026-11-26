@@ -43,6 +43,11 @@ a local tarball from `pnpm release:pack`.
 
 ### Changed
 
+- SectionNav shows each section's number with at least two digits (`01`, `09`, `10`, `100`) in the raised brand
+  colour and its label in uppercase display type, in the disclosure and in every index row. The number is the item's
+  position in `items`; the props, the label text and the `onNavigate` payload are unchanged, and each index link's
+  accessible name now reads `02 Beta`. Consumer tests that pin an exact link name such as `1 About` must change to
+  `01 About`. (#563)
 - `FooterNavigation` renders its links with Link `quiet` (neutral text with an underline) instead of `plain`, so the
   link ink and underline colour change for every Footer consumer, with no opt-out prop; the type step and the
   44.8px target recipe are unchanged. It needs Link `quiet` from the same release. (#562)

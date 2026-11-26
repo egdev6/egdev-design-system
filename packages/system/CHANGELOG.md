@@ -4,6 +4,8 @@
 
 ### Added
 
+- The source-derived artifact and reference include SectionNav's number and label recipes and the `items` description
+  of its zero-padded numbers; existing props are unchanged. (#563)
 - The artifact and design reference include Footer's `wrap` and `register` props, its `register` recipe axis and
   `footerWrapVariants`, and the `section-register` and `section-content-wrap` conventions widened to Footer; existing
   props and recipes are unchanged. (#561, #565)
