@@ -1,0 +1,155 @@
+# Component contract — SectionNav
+
+- **Version / status:** v0.3 — Proposed. Not approved and not implementation-ready. It amends the effective v0.2 contract and authorizes no component, story, test, token, dependency, registry or GitHub change.
+- **Approval / recovery:** Pending. Proposed snapshot, an uncommitted working-tree file at `docs/components/section-nav/v0.3/spec.md`, drafted on 2026-11-26 for Round 5 T5 (S3, [#563](https://github.com/egdev6/egdev-design-system/issues/563)). Approval must name this version, the digest below and its scope, and would not approve an implementation plan. Effective base, unchanged: v0.1 (approved in [#301](https://github.com/egdev6/egdev-design-system/issues/301#issuecomment-6597832507)) with its [single-landmark](../v0.1/single-landmark-amendment.md) and [compact-target](../v0.1/compact-target-amendment.md) amendments, and [v0.2](../v0.2/spec.md) (story canvas), approved on 2026-11-04 for SHA-256 `c2e7cd67552bf39ee74a7b03151ff42665ca9caa3dc02422079d57786419267d` ([record](../v0.2/approval.md)).
+- **Current situation / pending decisions:** Existing component, exported at `packages/ui/src/index.ts:184-185`. Verified: today's rendering and the evidence in block 1 (HEAD `7afaabd`, branch `integration/round-5`). Proposed: the "Exact delta" in block 1. Pending: owner answers OQ-1 to OQ-4 (end of block 7) and three visual captures. Token proposal: none. Request: #563, "Consumer request: Pulso-style numbers and labels in the section index" (consumer issue egdev6/egdev-website#45).
+- **Owner authority (verbatim):** scope, "Pulso: #560–#566, Lectura: #569–#575, Pendientes chicos"; cataloging, "Aprobar todas (Recomendado)", whose approved shape for this request is recorded in L3 as "#563: SectionNav parity, with no API change" ([`odd/tasks/round-5-consumer-requests.md`](../../../../odd/tasks/round-5-consumer-requests.md), [`odd/tasks/round-5-cataloging.md`](../../../../odd/tasks/round-5-cataloging.md)).
+- **Snapshot identity:** `version: 0.3`; `contentSHA256: c317943f9eaaedaa68ffa461eca96f5ab748e1155b776c8d2c2f209a8bfbf5b2`; `visualHashes: VIS-01 → Pending; VIS-02 → Pending; VIS-03 → Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/301`; `latestPublishedComment: Pending` (nothing is published for this snapshot).
+- **Hash definition:** SHA-256 of the UTF-8 canonical payload from `## 1. Purpose and scope` through EOF, with LF line endings and the recorded final newline. All tracking metadata stays above that heading and is excluded, avoiding a self-referential digest. Finalize the digest before publication; approval must bind this version, digest and identified visuals, not mutable prose or memory.
+
+## 1. Purpose and scope
+
+- **Need / non-goals:** The consumer asks for Pulso parity in the floating section index: zero-padded numbers (`01`) in the raised brand colour and display-style uppercase labels. Today the 1-based position is a bare integer in two places, the disclosure's current position (`useSectionNav.ts:88`, `SectionNav.tsx:21`) and each index row (`useSectionNav.ts:91`, `SectionNav.tsx:52`), and both parts use the sans body step.
+
+  **Exact delta from effective v0.2** (appearance plus one derived text value; no API change):
+  1. The number is the item's 1-based position in `items`, shown with at least two digits (`01`, `09`, `10`, `100`), derived in the hook for both surfaces.
+  2. Number part: display family, tabular figures, `text-meta`, `fg-brand-raised`. Label part: display family, `text-meta`, uppercase by CSS only.
+  3. Clarification: the number is not decorative and stays in each index link's accessible name (block 5, OQ-1). v0.2 §2 reads "decorative Pixel state and number precede each section label"; the implementation has never hidden the number, and this version says so explicitly.
+  4. Unchanged: props, events, focus, Radix disclosure, landmarks, geometry, Material, markers and every effective SN-01 to SN-08 and A7 promise.
+
+  **Non-goals:** a numbering prop, format function or locale digits; a variant or size axis; any change to label text; the Pulso reference's separator, glow, name-transition animation, pill sizes or compact type sizes; legacy CSS edits; new tokens, dependencies or stylesheet; copying the reference's pixel sizes (the global scale is ×0.8, #218; steps are used as defined).
+- **Cataloging decision / alternatives:** Approved (L3): "SectionNav parity, with no API change". Kind: amendment of the existing organism (reuse it; change its single appearance and one derived value). Rejected: *reuse unchanged*, because the output differs from the reference (bare integer, sans body step); *variant*, because there is one look and no consumer needs the old one, so an axis would only add API; *compose, extract or new*, because the number and label are two spans already inside the component and their recipes are existing utility combinations that other components declare locally (block 6).
+- **Evidence / level and package:** Organism in `@egdev/ui`; Radix base is the existing `@radix-ui/react-popover` through the Popover molecule (`packages/ui/src/molecules/popover/Popover.tsx:1`), unchanged. Verified by inspection: the six files in `packages/ui/src/organisms/section-nav/`; `packages/ui/src/molecules/popover/types.ts:127`; `packages/ui/src/lib/cn.ts`; `packages/tokens/src/theme.css:193-198,259-263,272-276`; legacy `packages/ui/src/styles/legacy/bundle.css:458,463-465,598-610,1758`; `docs/DECISIONES.md:97`; and, read-only, the Foundation reference under the evidence root recorded in [v0.1](../v0.1/spec.md) (`design-system/components/SectionNav/{README.md,preview.html}`, `reference-web/pulso-source.html:624-653`). Inspection establishes exports and current markup, not visual conformity.
+
+  Re-check of the approved cataloging evidence: no contradiction, three precision notes.
+  - **Typography source.** Only the trigger declares `font-sans text-body-default` (`types.ts:92`). The index links declare none (`types.ts:99`) and inherit the same step from `popoverContentVariants` (`popover/types.ts:127`).
+  - **Accessible name today.** The number span has no `aria-hidden` (`SectionNav.tsx:52`), so each index link's name already contains the bare number ("2" plus the label; the spacing depends on CSS because the DOM has no whitespace node). The real choice is `02 Beta` versus `Beta`, not "keep the old name". The disclosure is unaffected: its `aria-label` (`disclosureLabel`) overrides its content.
+  - **Reference scope.** The Pulso source styles the pill as display uppercase with a brand number that script zero-pads (`pulso-source.html:624-628,1258`; `preview.html:71`). Its list uses a display 800 number, muted except on the current row, with sans 600 sentence-case labels (`pulso-source.html:647-653`; legacy `bundle.css:458,463-465`), as the historical v0.1 VIS-01 board also shows. The issue asks for brand numbers and uppercase labels on the rows too, which goes beyond the reference (OQ-2). `DECISIONES.md:97` ("el número de SectionNav") is consistent with legacy `bundle.css:1758`, which recolours the pill number only.
+
+## 2. Anatomy and composition
+
+Root, pill, next link and edge are unchanged from v0.2 §2. Parts that change or matter here:
+
+| Part | Responsibility | Native element / Radix primitive | Allowed content |
+| --- | --- | --- | --- |
+| Disclosure | Opens the index and shows the current position. Its name comes from `disclosureLabel`. | `PopoverTrigger` button | Number part and label part when matched; decorative chevron. |
+| Index | Portalled dialog named by `label` with a direct list (unchanged). | `PopoverContent`; `ol`, `li`, `a` | One link per item: Pixel, number part, label part. |
+| Number (changed, internal) | The item's 1-based position, zero-padded. | `span`, no marker class | ASCII digits only, at least two. |
+| Label (changed, internal) | The host's label text, shown uppercase through CSS. | `span`, no marker class | `SectionNavItem.label` text, unchanged. |
+
+- **Radix / composition:** Unchanged: the Popover owns disclosure, portal, focus and dismissal; native anchors keep navigation. The two spans already exist in the disclosure and in every row (`SectionNav.tsx:21-22,52-53`); this version gives them recipes, not new elements. The one markup addition the name promise may need is a whitespace text node between them, which a flex container does not render.
+- **Public markers:** `eg-section-nav` is unchanged and no marker is added. The new recipes must not use `eg-section-nav__*` classes: legacy CSS styles `.eg-section-nav__num` and `.eg-section-nav__name` (`bundle.css:603,606,632,1758`), and `SectionNav.test.tsx:284` pins that no such class is rendered.
+
+## 3. Public API
+
+No new or changed own props. The rows below are the ones this amendment touches or depends on; every other row of v0.2 §3 is unchanged.
+
+| Prop | Type | Required / rule |
+| --- | --- | --- |
+| `items` | `SectionNavItem[]` | Yes; ordered `{ id: string; label: string; href: string }`. Array order defines the displayed number. |
+| `activeId` | `string` | Yes; host-designated current section. Unmatched means no current number, marker or next link. |
+| `disclosureLabel` | `string` | Yes; localized disclosure name. The visible number and label are not part of it. |
+| `onNavigate` | `(item: SectionNavItem, event: React.MouseEvent<HTMLAnchorElement>) => void` | Optional; receives the host's original item and event, never a formatted number. |
+
+- **Prop conventions:** [registry](../../../../skills/_shared/prop-naming.json), [generated view](../../../prop-naming.md) and [workflow](../../../../skills/_shared/component-contract.md#prop-naming-registry). Applied, all existing usages and unchanged: `label` → `accessible-name` (`prop-naming.json:1626`); `items` → `collection-items` (`:3953`); `activeId` → `active-section-id` (`:242`); `value` → `primary-value` (`:296`); `onNavigate` → `navigation-intent` (`:5144`); `open` → `open-state` (`:4722`); `defaultOpen` → `initial-uncontrolled-open` (`:4819`); `onOpenChange` → `open-change` (`:4916`). `disclosureLabel` and `nextLabel` remain the approved scoped `accessible-name` exceptions ([approval](../v0.1/accessible-name-exceptions-approval.json)); `hidden` and `className` are native.
+  - **Lookup for this amendment** (terms: number, ordinal, index, pad, digits, format, casing, uppercase, typography, counter, marker): no entry covers a number-format, padding or casing prop, and none is proposed, because the number is derived from `items` and casing is CSS. Closest entries, all rejected: `decorative-index` (`index`, `:8101`), a supplied editorial identifier for a content card that is explicitly not a collection position and sits outside the accessible name; `indicator-count` (`:7874`) and `character-counter` (`:4567`), item totals and text-length counters. New or changed own props, new proposals and new exceptions: none.
+  - **Reviewed source:** `packages/ui/src/organisms/section-nav/types.ts`, symbol `SectionNavProps`, `sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a`, identical to the `revision` of all eight SectionNav registry usages when inspected.
+  - **Plan prerequisite (derived, not a convention change):** the amendment edits `types.ts`, which changes that whole-file hash, and `scripts/prop-naming.mjs:152` rejects a stale usage revision. The plan must include a fresh review of `SectionNavProps`, an explicit revision refresh of the eight usages, then `pnpm props:docs`, `pnpm props:check` and `pnpm test:props`. Convention and exception approvals and hashes are unaffected, since usage observations are excluded from them. This spec edits no registry file.
+- **Native props / refs, controlled / uncontrolled:** Unchanged from v0.2 §3: root `ComponentPropsWithoutRef<'nav'>` minus `children`, `role`, `aria-label`, `aria-labelledby`, `dangerouslySetInnerHTML` and `style`; no public ref; `open` / `defaultOpen` (default `false`) with `onOpenChange`, no mode switching while mounted.
+- **Compatibility:** The barrels export `SectionNav`, `SectionNavItem` and `SectionNavProps` only (`index.ts`; `packages/ui/src/index.ts:184-185`). `useSectionNav` and the CVA exports are internal, so deriving the padded number in the hook changes no public type. Visible effect for consumers: number text and typography; any consumer test that pins an exact link name such as `1 About` must change to `01 About`. The generated `@egdev/system` artifact lists the hook and JSX expressions (`packages/system/design-system.json`, SectionNav `layout` entries; `system.md` repeats them), so both change on regeneration (`pnpm artifact`, `pnpm system:docs`, `pnpm test:system`). React 18/19 packed-consumer compatibility needs evidence, not inference from types (SN-08).
+
+## 4. Behavior
+
+| Initial state / action | Expected result | Emitted event |
+| --- | --- | --- |
+| Index opened with fewer than 100 items | Row k shows k zero-padded to two digits: `01` to `09`, then `10`, `11` and so on. | None |
+| 100 or more items | Numbers from 100 show every digit; nothing is truncated and earlier rows are not re-padded. | None |
+| An item matches `activeId` | The disclosure shows that item's padded number beside its label. Both update when the host changes `activeId`, with no scroll and no focus move. | None |
+| `activeId` unmatched, or `items` empty | The disclosure shows no number or label (no `00`). Unmatched: the open index still shows each row's own number and no row is current. Empty: no controls, as in v0.2. | None |
+| Host reorders, inserts or removes items | Numbers follow array order on the next render; they are never stored or keyed by `id`. | None |
+| Activate a row, next or the disclosure; Escape; outside dismissal; hide | Unchanged (v0.2 §4). | `onNavigate` with the host's original item and event; `onOpenChange` as before |
+| Any state | The label text in the DOM equals the host's `label`; uppercase is presentation only. | None |
+
+- **States / representation:** No new states, attributes or classes. Radix `aria-expanded`, `aria-current="location"` and Pixel `data-state` are unchanged. The number colour is the same in every row, so it carries no state.
+- **Limits / consumer responsibilities:** The host supplies labels in the case it wants read; the component never maps case in script, so CSS uppercase follows the element's `lang` rules. Digits are ASCII and not locale-formatted. There is no new truncation or wrapping policy for long labels. Position is derived from array order; stable unique ids stay host-owned.
+
+## 5. Accessibility
+
+- **Accessible name / roles / relationships:**
+  - **Decision (proposed, OQ-1):** the zero-padded number stays in each index link's accessible name and is not `aria-hidden`. The name is the number, one U+0020 space, then the host label: `02 Beta`. Today's name already carries the bare number, so padding changes the digits, not the structure.
+  - **Unchanged names:** disclosure `disclosureLabel` (its visible number and label are not in it), next link `nextLabel`, navigation and dialog `label`, current row `aria-current="location"`, `ol` and `li` list semantics.
+  - **Why keep the number in the name:** (1) minimal change: no new ARIA, same structure; (2) WCAG 2.5.3 Label in Name: the name should contain the visible text, and hiding the number would leave `Beta` for a link that reads `01 BETA` (uppercase is CSS-only and does not alter the DOM text); (3) the number is a derived collection position and an orientation cue, not editorial decoration (the registry's `decorative-index` excludes collection positions); (4) the `ol` already announces position, so the number is redundant for screen readers but harmless, while hiding it changes the name more than padding does.
+  - **Cost / risk:** assistive technology may speak `01` as "zero one"; how it is spoken is Not evaluated.
+  - **Separator:** in a unit-test DOM without the Tailwind stylesheet the two inline spans can concatenate with no space, so the promise requires the separator in the DOM text, on both surfaces.
+  - **Pre-existing, not changed or evaluated here:** the disclosure's visible number and current label are not part of its `aria-label` name, a possible Label in Name mismatch since v0.1 (OQ-4).
+- **Keyboard / focus:** Unchanged from v0.2 §5: native Tab and Enter, Radix Enter/Space/Escape and focus restoration, no menu roles, no arrow-key engine, no hover or global shortcut opening.
+- **Announcements / other conditions:** No live announcement. Non-colour cues are unchanged: the current row keeps `aria-current`, the underline (`aria-[current=location]:underline`) and the active Pixel; the number colour does not distinguish rows. Contrast, computed from the hex values in `docs/MATERIAL.md` and not measured in a renderer: `fg-brand-raised` `#FF6680` is 5.51:1 on the solid `surface-2` `#232428` used as the reduced-transparency fallback and 4.82:1 on `surface-3` `#2D2E33`, the figure `DECISIONES.md` records. The translucent overlay is not solid: composited over a pure white backdrop it is about `#46474A`, giving about 3.30:1, so number legibility in that state depends on what is behind and is host-owned, as for other overlay text. Real-page contrast, how screen readers speak the number and compact-width touch targets remain Not evaluated. Control sizes are unchanged (`min-h-14`, `min-w-14`, 44.8px).
+
+## 6. Appearance
+
+| Variant axis | Allowed values | Default or rule | Combinations / restrictions |
+| --- | --- | --- | --- |
+| Public appearance variants | None | One look, amended in place. | State is not a variant; no size, register or numbering axis is added. |
+| Compact viewport | Inclusive `width <= 520px` | Unchanged from the v0.1 compact-target amendment. | The number and label recipes have no per-width type step. |
+
+- **Tokens / Material:** proposed static token-backed utilities, declared as internal CVA recipes in `types.ts` and composed per part with `cn()`.
+
+  | Part | Utilities | Basis |
+  | --- | --- | --- |
+  | Number | `font-display text-meta tabular-nums text-fg-brand-raised` | `text-meta` is 11.2px, line height 1.3, weight 600, tracking 0.08em (`theme.css:272-276`; 14px ×0.8, #218). `font-display text-meta tabular-nums` appears in `carouselCounterVariants` (`carousel/types.ts:145`) and `font-display text-meta … text-fg-brand-raised` in `calendarGridTodayVariants` (`calendar-grid/types.ts:135`); `DECISIONES.md:97` approves the raised colour for this number. Neon `fg-brand-default` stays out: neon text is for `surface-0` only, and the overlay is `surface-2` at 84%. |
+  | Label | `font-display text-meta uppercase` | `menuLabelVariants` (`menu/types.ts:269`) and `statLabelVariants` (`stat/types.ts:67`). Colour stays inherited `text-fg-default`. Family and casing are separate utilities by token design (`theme.css:199-203`). |
+
+  `cn()` lists `meta` among the font-size tokens (`cn.ts`), so `text-meta` and `text-fg-brand-raised` are not merged away. No existing recipe string is edited: the trigger's reset baseline (`font-sans text-body-default …`) stays and the reset test (`SectionNav.test.tsx:36-54`) remains valid. Size and weight: `text-meta` is smaller than today's 12.8px body step and than the reference's 18–19px scaled by ×0.8 (14.4–15.2px), and its weight is 600 against the reference's 800; no existing step gives about 15px at weight 800. Whether this reads as parity is a visual judgement for VIS-01 to VIS-03 (OQ-3). Material is unchanged: Surface overlay, strong hairline, edge and elevation shadows, blur, and the solid `surface-2` fallback for reduced transparency or an unsupported filter. No handwritten colour, shadow or gradient and no inline appearance.
+- **Dynamic geometry:** None.
+- **Class composition / consumer layout:** Unchanged. Only the root accepts `className`: `cn(sectionNavRootVariants(), className, hidden && 'hidden')`. The number and label are internal parts with no consumer `className`; each needs a per-part merge test.
+- **Files / pending proposals:** The six existing roles. `types.ts`: two new internal CVA recipes for the number and the label, no existing recipe edited, plus one English sentence in the `items` JSDoc saying that the displayed number derives from array order and is zero-padded. `useSectionNav.ts`: derives the padded number once for the pill and the rows and returns the two part classes. `SectionNav.tsx`: applies them to the existing spans, with the separator. `SectionNav.test.tsx`: new and unchanged tests. `SectionNav.stories.tsx`: one `ManySections` story with 12 items, `defaultOpen` and the 10th section current, so the `09`/`10` boundary is reviewable. `index.ts`: unchanged. No additional internal module. **No stylesheet**, and legacy `bundle.css` is untouched. Pending confirmations: none for tokens or dependencies; the registry revision refresh and artifact regeneration are plan items (block 3).
+
+### Expected-design visual reference
+
+Follow the [capture guide](../../../design/README.md). Nothing is captured for v0.3 and no image is invented.
+
+| Visual ID | Real image / descriptive English alt text | Variant / state / props | Source and version | Status / recoverable approval |
+| --- | --- | --- | --- | --- |
+| VIS-01 | Pending. Alt text to write on capture: the pill with a padded brand-coloured number and an uppercase display label, above it the open index with padded numbers and uppercase labels. | Default width; open index with the current row among several (`ManySections`). | Storybook `Organisms/SectionNav` at the implementation commit (pending); the expected look comes from the Pulso `.fab` reference. | Proposed; spec v0.3; no approval. |
+| VIS-02 | Pending. | The same scenario at a narrow width (`width <= 520px`). | Same. | Proposed; no approval. |
+| VIS-03 | Pending. | The same scenario under `prefers-reduced-transparency: reduce` (solid `surface-2`). | Same. | Proposed; no approval. |
+
+- **Conditions / provenance per VIS ID:** none captured. Proposed conditions to agree: viewports 1280 and 390 px, device scale 2, dark theme, Barlow and Barlow Condensed loaded, no reduced motion, component-zone crop; capture with Playwright MCP on an authorized Storybook (separate permission for hosting and tooling), with `capture.json`, hashes and a scoped owner adoption.
+- **Intent / acceptance / pending evidence:** Intent: padded, tabular, brand-raised number; uppercase display label; one recipe on pill and rows; overlay Material unchanged. Related criteria: PAR-05 to PAR-07, PAR-09. Supporting source evidence, observed and not adopted, not a v0.3 capture: the historical [v0.1 VIS-01 board](../v0.1/section-nav--variants--1280--dark.png) (PNG SHA-256 `dd1f700ace732dba694fb645815b647bdada135b3a7902c64d2db86959492214`, Foundation preview, 2026-11-03). It shows the pill with a padded brand number and an uppercase display label, and the list with padded display numbers (muted, brand on the current row) and sentence-case sans labels, which is the divergence in OQ-2. Pending: capture source and permission, conditions and adoption. Tokens are never inferred from pixels.
+- Without recoverable approved references and comparable conditions, visual conformity is **Not evaluated**. Captures do not replace behavior or accessibility tests.
+
+## 7. Acceptance criteria
+
+All checks are planned; no runtime or visual result is claimed. PAR-01 to PAR-04 are expected to fail today, which is the intended RED; PAR-08 is the PRESERVE check.
+
+| ID | Observable promise | Planned test / method | Planned story / visual check | Observed evidence |
+| --- | --- | --- | --- | --- |
+| PAR-01 | Given N items, row k's number is k zero-padded to at least two digits: `01` to `09`, `10`, and `100` for the hundredth; nothing is truncated. | `SectionNav.test.tsx` with the 3-item fixture (`01 Alpha`, `02 Beta`, `03 Gamma`), a 12-item fixture (`09`, `10`, `12`) and a 100-item fixture (last row `100`), through `getByRole('link', { name })`. | `ManySections` story; VIS-01. | Pending |
+| PAR-02 | The disclosure shows the padded number and label of the item matched by `activeId` and updates on host change without moving focus; unmatched or empty items render no number or label (no `00`). | Rerender test over matched, unmatched and empty states: trigger text contains `02`, never `00`; focus stays on the trigger. | Existing `Default`, `Unmatched`, `Empty` stories; VIS-01. | Pending |
+| PAR-03 | Each index link's accessible name is the padded number, one space, then the host label (`02 Beta`); the number is not `aria-hidden`; the disclosure name stays `disclosureLabel` and the next link `nextLabel`; `aria-current="location"` is unchanged. | Exact-string `getByRole('link', { name: '02 Beta' })`; no `aria-hidden` on the number spans; existing name queries unchanged. The separator is asserted in the DOM text. Real assistive-technology output is Not evaluated. | Not applicable: non-visual promise. | Pending |
+| PAR-04 | Casing is presentation only: the label's DOM text equals the host label, the label part carries `uppercase`, there is no script case mapping, and `onNavigate` still receives the host's original item. | `textContent` equals the fixture label; class assertion; existing `onNavigate` tests unchanged (`toEqual(items[i])`). | VIS-01. | Pending |
+| PAR-05 | The number part carries `font-display`, `text-meta`, `tabular-nums` and `text-fg-brand-raised`; the label part carries `font-display`, `text-meta` and `uppercase`; on both surfaces, surviving `cn()`; no `font-sans`, `text-body-default` or arbitrary value on these parts; no `eg-section-nav__*` class. | Per-part class assertions on the pill and on a row, not full-class snapshots; existing `[class*="eg-section-nav__"]` check stays; static CVA scan and an actual CSS build show the utilities are emitted from `@egdev/tokens`. | VIS-01. | Pending |
+| PAR-06 | In a real browser with the built stylesheet, the number computes the display family, 11.2px, tabular figures and `#FF6680`; the label computes the display family, 11.2px and `text-transform: uppercase`; no legacy `.eg-section-nav__*` rule applies. | Chromium computed-style check on the built CSS in Storybook, with and without `prefers-reduced-transparency`. | VIS-01, VIS-03. | Pending |
+| PAR-07 | The current row keeps its non-colour cues (`aria-current`, underline, active Pixel); the number colour carries no state; number contrast is at least 4.5:1 on the solid fallback. | Existing SN-01 tests; contrast computed from the resolved colours (documented 5.51:1 on `surface-2`, 4.82:1 on `surface-3`). Contrast on the translucent overlay over real hosts: Not evaluated. | VIS-01, VIS-03. | Pending |
+| PAR-08 | No API or behavior change: `SectionNavProps` and the barrel exports are identical, and every existing SN-01 to SN-08 and A7 check passes unmodified. | Existing `SectionNav.test.tsx` unchanged; type tests; barrel diff; `pnpm typecheck`; after the revision refresh `pnpm props:check` and `pnpm test:props`; after regeneration `pnpm test:system`. | Not applicable. | Pending |
+| PAR-09 | At 519, 520 and 521px and at 200% and 400% zoom, the uppercase labels, including a long visible label, add no horizontal overflow or control shrinkage compared with the pre-amendment rendering, and controls stay at least 44px. | Chromium measurement as in SN-06, run before and after with a long-label fixture. | VIS-02. | Pending |
+
+### Owner decisions pending
+
+| ID | Question and evidence | Recommendation |
+| --- | --- | --- |
+| OQ-1 | Accessible name of the index links: keep the padded number in the name (`02 Beta`, as written) or `aria-hidden` it (`Beta`)? Today's name is the bare number plus the label; hiding changes the name more than padding, removes visible text from it (2.5.3), and v0.2 §2 is ambiguous ("decorative … number"). | Keep it in the name (blocks 4 and 5, PAR-03). If hidden: PAR-03 becomes name `Beta`, the number span gets `aria-hidden`, and consumer tests that pin the number need review. |
+| OQ-2 | Scope on the open list: apply the pill recipe to every row (brand-raised numbers, uppercase display labels), as the issue and approved cataloging ask, or follow the Pulso list (display number muted with brand on the current row; sentence-case sans labels)? Evidence: `pulso-source.html:647-653`, `bundle.css:458,463-465`, v0.1 VIS-01. | Follow the issue on both surfaces: one recipe per part and no number colour that depends on `aria-current`. If strict parity is chosen, row labels keep `font-sans text-body-default`, numbers become `font-display text-meta tabular-nums text-fg-muted`, the current row's number becomes `text-fg-brand-raised` through a group `aria-current` variant on the row link, and PAR-05 and PAR-06 split by surface. |
+| OQ-3 | Which existing step: `text-meta` (11.2px, 600, 0.08em, the reference's name tracking) or `text-label-eyebrow` (11.2px, 700, 0.12em)? Both are smaller than today's 12.8px and than the reference scaled by ×0.8. | `text-meta` for number and label. If VIS-01 to VIS-03 look too small, the owner chooses between another existing step (for example `text-nav-group`, 14px) and a new token. Nothing is proposed and no token is added now. |
+| OQ-4 | Pre-existing Label in Name gap: the disclosure's visible number and current label are not in its `aria-label` name. Address it separately? | Leave this amendment as it is and track a separate follow-up; a host can already pass a `disclosureLabel` that includes the current label. |
+
+### Spec closure
+
+- [ ] All seven blocks are complete; OQ-1 to OQ-4 are answered (the recommended answers are written into the blocks above).
+- [ ] No new or changed own props; registry lookup evidence is recorded in block 3 and the stale-revision plan prerequisite is acknowledged.
+- [ ] Proposals, verified evidence, planned checks and observed results are distinct; each promise has an acceptance ID.
+- [ ] VIS-01 to VIS-03 are captured with provenance, conditions and hashes; until then visual conformity stays Not evaluated.
+- [ ] The digest is finalized and human approval identifies this exact version, digest and scope; otherwise the status remains Proposed.
+- [ ] Any publication on the canonical issue #301 is a separately authorized comment; nothing has been published.
+
+**Next step:** obtain the owner's answers to OQ-1 to OQ-4 and approval of this exact snapshot, capture the pending visuals under separate authorization, then propose the bounded implementation plan for separate approval. This spec authorizes no code, token or dependency change, registry edit or external write.
