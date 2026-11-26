@@ -67,4 +67,24 @@ Integration branch `integration/round-5`. egdev-website's Pulso parity requests 
   - #560: "Sí, medir primero (Recomendado)". A browser measurement comes before the plan.
 
   Spec approval does not approve the plans (S6).
+- L6 — Owner answers, verbatim:
+  - Plans: "Aprobar los 10 (Recomendado)". All 10 drafted plans are approved: #566, #563, #561/#565, #562, #569, #573, #570, #572, #571 and #574. The approval includes browser runs, packed consumers, registry receipts for the newly named conventions, and `(#N)` changelog citations so the release resolves each issue.
+  - Versions: "tokens 0.7.0 y cli 0.5.0 (Recomendado)". This overrides L5's 0.6.2 and 0.4.1, following versioning.md.
+  - #560: "A: titleVariant y la web acorta el texto (Recomendado)". The measured `show` fits Closing at 1280 but breaks at 1440 and 1920. The website adapts its copy. The spec is to be finalized as drafted and its plan drafted, and that plan needs its own approval.
+  - #563 F1: "Mantener el token y ajustar PAR-07 (Recomendado)". `fg-brand-raised` is neon #FF0036, 3.92:1 on surface-2 and 3.42:1 on surface-3. Keep the token and amend PAR-07 with a new approval of that wording.
+
+  Implementation order, sequential:
+  1. T2, T3 and T4.
+  2. #562 Link.
+  3. #561/#565 Footer.
+  4. #563 SectionNav.
+  5. #566 anchor + CLI.
+  6. #569 Prose (tokens 0.7.0).
+  7. #573 EmptyState.
+  8. #570 Breadcrumb.
+  9. #572 DetailHeader.
+  10. #571 Pagination.
+  11. #574 Embed.
+  12. #575 story pattern.
+  13. #560 after its plan is approved.
 - L2 — Size note: 14 consumer requests, each with three owner gates. This spans several sessions; resume from this document.

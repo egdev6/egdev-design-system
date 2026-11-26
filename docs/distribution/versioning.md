@@ -76,10 +76,19 @@ Bump procedure for one package:
    `packages/<name>/CHANGELOG.md`, moving the entries collected under `## Unreleased` into it.
    Between releases, changes accumulate under an `## Unreleased` section above the last
    version; `release:pack` ignores that section and checks the first versioned one.
-4. Run `pnpm release:pack`. The command fails until the two agree, then prints one line per
+4. Refresh the `packages/mcp/README.md` usage examples, then run `pnpm test:mcp`. The README
+   documents the installed `@egdev/mcp` and `@egdev/system` versions, the `designSystem` identity in
+   every example response (the `@egdev/ui`, `@egdev/tokens` and `@egdev/effects` versions) and a
+   sha256 digest of each complete response, so a bump, or any change to the artifact or `system.md`,
+   fails the test until the examples are refreshed. Regenerate the artifact first (`pnpm artifact`,
+   `pnpm system:docs`), then run `pnpm mcp:readme`: it builds `@egdev/mcp` and rewrites the versions,
+   responses and digests from the real server, leaving requests and prose as authored.
+   `node scripts/mcp-readme-examples.mjs --check` verifies without writing. CI runs `pnpm test:mcp`
+   too, so a stale README fails the pull request.
+5. Run `pnpm release:pack`. The command fails until the two agree, then prints one line per
    tarball and one `release.json` line with the recorded commit.
-5. Commit the manifest and the changelog together, so the packed version and its section land in
-   the same review.
+6. Commit the manifest, the changelog and the refreshed README together, so the packed version, its
+   section and the examples that document it land in the same review.
 
 When several packages change together, bump each one that changed. Packages that did not change
 keep their version and their tarball name.
