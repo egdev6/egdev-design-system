@@ -553,6 +553,7 @@ test('classNameAllows preserves the reviewed component and part inventory', () =
     'CommunityCard',
     'CommunityCardAction',
     'CommunityCardMark',
+    'DetailHeader',
     'Dropzone',
     'EmptyState',
     'Field',
@@ -1139,6 +1140,178 @@ test('Breadcrumb publishes its three own props, the six static part recipes, the
       package: '@egdev/ui',
       radix: '— (native nav, ordered list and links)',
       composes: ['Link, Icon'],
+      action: 'nuevo',
+      available: true
+    }
+  );
+});
+
+test('DetailHeader publishes its nine own props, the eight static part recipes, the width allowance and its conventions (#572)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const header = artifact.components.find(({ name }) => name === 'DetailHeader');
+  assert.ok(header, 'the artifact lists DetailHeader');
+  assert.equal(header.package, '@egdev/ui');
+  assert.equal(header.source, 'packages/ui/src/molecules/detail-header/types.ts');
+  assert.deepEqual(
+    header.props.map(({ name }) => name),
+    ['eyebrow', 'lede', 'level', 'links', 'messages', 'metadata', 'newTabText', 'tags', 'title']
+  );
+  const prop = (name) => header.props.find((item) => item.name === name);
+  // Only the required title lacks a default, and only the two constants publish one.
+  assert.equal(prop('title').required, true);
+  for (const name of ['eyebrow', 'lede', 'level', 'links', 'messages', 'metadata', 'newTabText', 'tags']) {
+    assert.equal(prop(name).required, false, name);
+  }
+  assert.deepEqual(
+    header.props.map(({ name, default: value }) => [name, value]).filter(([, value]) => value !== null),
+    [
+      ['level', '1'],
+      ['newTabText', '(opens in a new tab)']
+    ]
+  );
+  assert.equal(prop('newTabText').type, 'string');
+  assert.equal(prop('tags').type, 'string[]');
+  assert.match(prop('links').type, /DetailHeaderLink\[\]/);
+  assert.match(prop('metadata').type, /DetailHeaderMetadataItem\[\]/);
+  assert.match(prop('messages').type, /DetailHeaderMessages/);
+  assert.match(prop('title').description, /page heading/);
+  // No content, role, accessible-name override, inline style, ref or asChild row: the heading names the content.
+  for (const name of [
+    'children',
+    'role',
+    'aria-label',
+    'aria-labelledby',
+    'dangerouslySetInnerHTML',
+    'style',
+    'ref',
+    'asChild'
+  ]) {
+    assert.ok(!header.props.some((item) => item.name === name), `DetailHeader must not publish ${name}`);
+  }
+  // The root className contract is the six width and size properties, sorted and unique.
+  assert.deepEqual(header.classNameAllows, [
+    'inline-size',
+    'max-inline-size',
+    'max-width',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
+  // Eight private part recipes, built from static string literals: the approved inventory and nothing else.
+  assert.deepEqual(
+    header.variants.map(({ name }) => name),
+    [
+      'detailHeaderLinkItemVariants',
+      'detailHeaderLinksVariants',
+      'detailHeaderMetaEntryVariants',
+      'detailHeaderMetaVariants',
+      'detailHeaderTagsVariants',
+      'detailHeaderTermVariants',
+      'detailHeaderValueVariants',
+      'detailHeaderVariants'
+    ]
+  );
+  const recipes = Object.fromEntries(
+    header.variants.map(({ name, classes }) => [name, classes.join(' ').split(/\s+/).filter(Boolean)])
+  );
+  assert.deepEqual(recipes.detailHeaderVariants, ['eg-detail-header', 'flex', 'min-w-0', 'flex-col', 'gap-6']);
+  assert.deepEqual(recipes.detailHeaderMetaVariants, [
+    'eg-detail-header__meta',
+    'm-0',
+    'flex',
+    'min-w-0',
+    'flex-wrap',
+    'gap-x-8',
+    'gap-y-4'
+  ]);
+  assert.deepEqual(recipes.detailHeaderMetaEntryVariants, ['flex', 'min-w-0', 'flex-col', 'gap-1']);
+  assert.deepEqual(recipes.detailHeaderTermVariants, [
+    'm-0',
+    'font-display',
+    'text-label-eyebrow',
+    'uppercase',
+    'text-fg-muted'
+  ]);
+  assert.deepEqual(recipes.detailHeaderValueVariants, [
+    'm-0',
+    'min-w-0',
+    'font-sans',
+    'text-body-default',
+    'text-fg-default',
+    'wrap-anywhere'
+  ]);
+  assert.deepEqual(recipes.detailHeaderTagsVariants, [
+    'eg-detail-header__tags',
+    'm-0',
+    'flex',
+    'min-w-0',
+    'list-none',
+    'flex-wrap',
+    'gap-1.5',
+    'p-0'
+  ]);
+  assert.deepEqual(recipes.detailHeaderLinksVariants, [
+    'eg-detail-header__links',
+    'm-0',
+    'flex',
+    'min-w-0',
+    'list-none',
+    'flex-wrap',
+    'gap-x-6',
+    'gap-y-3',
+    'p-0'
+  ]);
+  assert.deepEqual(recipes.detailHeaderLinkItemVariants, ['min-w-0']);
+  // The header paints nothing: no background, border, shadow, ring, outline, backdrop, filter or motion utility.
+  for (const [name, classes] of Object.entries(recipes)) {
+    for (const utility of classes) {
+      assert.doesNotMatch(
+        utility,
+        /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|duration|ease|transform|rounded)\b/,
+        `${name} lists the paint or motion utility ${utility}`
+      );
+    }
+  }
+  // It composes the exported SectionHeader, Chip and Link itself; no Surface, no Radix part and no part marker.
+  assert.deepEqual(header.composedOf.map(({ name }) => name).sort(), ['Chip', 'Link', 'SectionHeader']);
+  for (const composed of header.composedOf) {
+    assert.equal(composed.source, 'packages/ui/src/molecules/detail-header/DetailHeader.tsx');
+  }
+  assert.deepEqual(header.parts, []);
+  assert.deepEqual(header.surfaceUsage, []);
+  // Three new conventions, approved by their own receipt; each lists DetailHeader as its only component.
+  for (const [id, name] of [
+    ['content-metadata', 'metadata'],
+    ['content-tags', 'tags'],
+    ['external-links', 'links']
+  ]) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.ok(convention, id);
+    assert.equal(convention.name, name, id);
+    assert.equal(convention.status, 'approved', id);
+    assert.deepEqual(convention.components, ['DetailHeader'], id);
+  }
+  // The six reused conventions keep their approved status and list DetailHeader beside the other components.
+  for (const id of [
+    'heading-title',
+    'heading-level',
+    'heading-eyebrow',
+    'section-lede',
+    'localized-messages',
+    'new-tab-notice'
+  ]) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(convention.status, 'approved', id);
+    assert.ok(convention.components.includes('DetailHeader'), id);
+  }
+  assert.deepEqual(
+    artifact.catalog.find(({ name }) => name === 'DetailHeader'),
+    {
+      name: 'DetailHeader',
+      level: 'molecule',
+      package: '@egdev/ui',
+      radix: '—',
+      composes: ['SectionHeader, Chip, Link'],
       action: 'nuevo',
       available: true
     }

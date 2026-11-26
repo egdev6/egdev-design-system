@@ -54,6 +54,7 @@ const components = [
   ['SearchTrigger', 'atoms/search-trigger'],
   ['SocialLinks', 'molecules/social-links'],
   ['SectionHeader', 'molecules/section-header'],
+  ['DetailHeader', 'molecules/detail-header'],
   ['Notice', 'molecules/notice'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
@@ -481,6 +482,17 @@ const expected: Record<string, Record<string, string | false>> = {
   avatar: { src: 'text', label: 'text', size: 'select', paused: 'boolean' },
   navlist: { label: 'text', items: false, onNavigate: false },
   breadcrumb: { label: 'text', items: false, onNavigate: false },
+  detailheader: {
+    title: false,
+    eyebrow: false,
+    lede: false,
+    level: 'select',
+    metadata: false,
+    tags: false,
+    links: false,
+    newTabText: 'text',
+    messages: false
+  },
   button: {
     children: false,
     variant: 'select',
@@ -859,6 +871,7 @@ const ownPropCounts: Record<string, number> = {
   searchtrigger: 3,
   navlist: 3,
   breadcrumb: 3,
+  detailheader: 9,
   sociallinks: 8,
   sectionheader: 9,
   notice: 7,
@@ -1701,6 +1714,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       }
     ],
     ['SectionHeader', { variant: '"stack"', tone: '"canvas"', level: '2', accentBreak: 'false' }],
+    ['DetailHeader', { level: '1', newTabText: '"(opens in a new tab)"' }],
     ['Notice', { tone: '"neutral"', size: '"md"' }],
     ['ButtonGroup', { variant: '"spaced"' }],
     ['Textarea', { variant: '"default"' }],
@@ -2413,6 +2427,54 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const name of ['children', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'actions', 'layout']) {
       expect(argTypes[name]).toBeUndefined();
     }
+    expect(args).toEqual({});
+  });
+
+  it('retains DetailHeader required title, the collection and messages rows, the level select and the constant defaults', () => {
+    const { argTypes, args } = story('DetailHeader');
+    const reason = (name: string) =>
+      (component('DetailHeader').__docgenInfo.props[name]?.tags as Record<string, string> | undefined)?.controlReason;
+    expect(argTypes.title?.type).toMatchObject({ required: true });
+    // Every row without a widget stays documented, never disabled, and never gets an invented default.
+    for (const name of ['title', 'eyebrow', 'lede', 'metadata', 'tags', 'links', 'messages']) {
+      expect(argTypes[name]?.control, name).toBe(false);
+      expect(argTypes[name]?.table?.disable, name).toBeUndefined();
+      expect(argTypes[name]?.table?.defaultValue, name).toBeUndefined();
+    }
+    for (const name of ['title', 'eyebrow', 'lede']) {
+      expect(reason(name), name).toMatch(
+        /Text or structured multilingual runs cannot be represented by one control; see/
+      );
+    }
+    expect(reason('metadata')).toMatch(/Structured entries are not a scalar control; see .*Event.*Note/);
+    expect(reason('tags')).toMatch(/An array of strings is not a scalar control; see .*Project/);
+    expect(reason('links')).toMatch(/Structured entries are not a scalar control; see .*Event/);
+    expect(reason('messages')).toMatch(/A partial object of two names is not a scalar control; see Localized/);
+    expect([...(argTypes.level?.options ?? [])].sort()).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(argTypes.level?.control).toEqual({ type: 'select' });
+    expect(argTypes.level?.table?.defaultValue?.summary).toBe('1');
+    expect(argTypes.newTabText?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.newTabText?.control).toEqual({ type: 'text' });
+    expect(argTypes.newTabText?.table?.defaultValue?.summary).toBe('"(opens in a new tab)"');
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(argTypes[name], name).toBeDefined();
+      expect(argTypes[name], name).toEqual(story('DetailHeader', false).argTypes[name]);
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'style',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'tone'
+    ]) {
+      expect(argTypes[name], name).toBeUndefined();
+    }
+    // Documentation must not initialize any control just to fill the UI.
     expect(args).toEqual({});
   });
 

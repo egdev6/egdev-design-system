@@ -2337,6 +2337,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/color-swatch-group',
       './molecules/command-palette',
       './molecules/community-card',
+      './molecules/detail-header',
       './molecules/dialog',
       './molecules/empty-state',
       './molecules/field',
@@ -2434,6 +2435,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'CommunityCardAction',
       'CommunityCardMark',
       'Countdown',
+      'DetailHeader',
       'Dialog',
       'DialogClose',
       'DialogContent',
@@ -2858,6 +2860,157 @@ describe('Storybook TypeScript docgen contract', () => {
       level: '2',
       tone: 'canvas'
     });
+  });
+
+  it('extracts DetailHeader own props, entry fields, defaults, the native boundary and the documented stories (DH-14)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const file = ast(source('molecules/detail-header/types.ts'));
+    const controls: Record<string, string> = {
+      title: 'false',
+      eyebrow: 'false',
+      lede: 'false',
+      level: 'select',
+      metadata: 'false',
+      tags: 'false',
+      links: 'false',
+      newTabText: 'text',
+      messages: 'false'
+    };
+    const own = ownProps(file, ['DetailHeaderProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(Object.keys(controls));
+    // Sixteen own declarations in all: nine root props and the seven fields of the three entry types.
+    const entryTypes: [alias: string, names: string[]][] = [
+      ['DetailHeaderMetadataItem', ['label', 'value', 'dateTime']],
+      ['DetailHeaderLink', ['label', 'href']],
+      ['DetailHeaderMessages', ['tags', 'links']]
+    ];
+    let declarations = own.length;
+    for (const [alias, names] of entryTypes) {
+      const fields = ownProps(file, [alias]);
+      expect(
+        fields.map((property) => property.name.getText(file)),
+        alias
+      ).toEqual(names);
+      for (const field of fields) {
+        const tags = ts.getJSDocTags(field);
+        expect(
+          tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+          `${alias}.${field.name.getText(file)}`
+        ).toEqual(['text']);
+        expect(
+          tags.some(({ tagName }) => tagName.text === 'default'),
+          `${alias}.${field.name.getText(file)}`
+        ).toBe(false);
+      }
+      declarations += fields.length;
+    }
+    expect(declarations).toBe(16);
+    const doc = parser
+      .parse(source('molecules/detail-header/DetailHeader.tsx'))
+      .find(({ displayName }) => displayName === 'DetailHeader');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control'),
+        name
+      ).toHaveLength(1);
+      expect((props[name]?.tags as Record<string, string> | undefined)?.control, name).toBe(controls[name]);
+      // @default belongs to the two constants only; the required title never carries one.
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(name === 'level' || name === 'newTabText');
+    }
+    expect(props.title?.required).toBe(true);
+    expect(props.title?.type.name).not.toBe('string');
+    expect(props.title?.defaultValue).toBeNull();
+    for (const name of ['title', 'eyebrow', 'lede', 'metadata', 'tags', 'links', 'messages']) {
+      const reason = (props[name]?.tags as Record<string, string> | undefined)?.controlReason;
+      expect(reason, name).toEqual(expect.stringMatching(/\bsee [A-Z]/));
+      if (name !== 'title') {
+        expect(props[name]?.required, name).toBe(false);
+      }
+    }
+    for (const name of ['title', 'eyebrow', 'lede']) {
+      expect((props[name]?.tags as Record<string, string>).controlReason, name).toMatch(/Default and Localized/);
+    }
+    for (const name of ['metadata', 'tags', 'links', 'messages']) {
+      expect(props[name]?.defaultValue, name).toBeNull();
+    }
+    expect(props.level).toMatchObject({ required: false, defaultValue: { value: '1' }, tags: { control: 'select' } });
+    expect(props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(props.newTabText).toMatchObject({
+      required: false,
+      type: { name: 'string' },
+      defaultValue: { value: '(opens in a new tab)' },
+      tags: { control: 'text' }
+    });
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'style',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'tone',
+      'accent',
+      'titleId'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The own title is the heading text, not the native title attribute.
+    expect(props.title?.description).toMatch(/page title/);
+    const stories = ast(source('molecules/detail-header/DetailHeader.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Event',
+      'Project',
+      'Note',
+      'TitleOnly',
+      'Levels',
+      'Localized',
+      'LongContent'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/DetailHeader'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(defaults(source('molecules/detail-header/useDetailHeader.ts'), false)).toEqual({
+      level: '1',
+      newTabText: '(opens in a new tab)'
+    });
+    // The component and its types are public; the hook, the eight recipes and the native-props alias stay internal.
+    expect(publicAPI.DetailHeader).toBeDefined();
+    for (const name of [
+      'useDetailHeader',
+      'detailHeaderVariants',
+      'detailHeaderMetaVariants',
+      'detailHeaderMetaEntryVariants',
+      'detailHeaderTermVariants',
+      'detailHeaderValueVariants',
+      'detailHeaderTagsVariants',
+      'detailHeaderLinksVariants',
+      'detailHeaderLinkItemVariants',
+      'DetailHeaderNativeProps'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('molecules/detail-header/index.ts'), 'utf8')).not.toMatch(/Variants|useDetailHeader/);
   });
 
   it('extracts Notice required lead, native role, constant defaults and every own directive', () => {

@@ -62,6 +62,7 @@ export type { ColorSwatchGroupOption, ColorSwatchGroupProps } from './molecules/
 export { ColorSwatchGroup } from './molecules/color-swatch-group';
 export * from './molecules/command-palette';
 export * from './molecules/community-card';
+export * from './molecules/detail-header';
 export * from './molecules/dialog';
 export * from './molecules/empty-state';
 export * from './molecules/field';

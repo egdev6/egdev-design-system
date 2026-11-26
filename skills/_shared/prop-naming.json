@@ -3472,6 +3472,16 @@
           "symbol": "ChipProps",
           "revision": "sha256:8cdf8fe542702525be06a0b40c2f49b0ffc2b3f5f7f6161f829025b80690f4c8"
         }
+      },
+      {
+        "component": "DetailHeader",
+        "type": "string (localized new-tab notice appended to every link)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+        }
       }
     ]
   },
@@ -4339,6 +4349,16 @@
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
           "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
+        }
+      },
+      {
+        "component": "DetailHeader",
+        "type": "Partial<DetailHeaderMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
         }
       }
     ]
@@ -5488,6 +5508,16 @@
           "symbol": "EmptyStateProps",
           "revision": "sha256:7faf367da5ed3560fe01135f2d43a4aff9d01b110d8d7a399c460d76d497bc31"
         }
+      },
+      {
+        "component": "DetailHeader",
+        "type": "SectionHeaderText (string or readonly text runs)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+        }
       }
     ]
   },
@@ -5674,6 +5704,16 @@
           "path": "packages/ui/src/molecules/empty-state/types.ts",
           "symbol": "EmptyStateProps",
           "revision": "sha256:7faf367da5ed3560fe01135f2d43a4aff9d01b110d8d7a399c460d76d497bc31"
+        }
+      },
+      {
+        "component": "DetailHeader",
+        "type": "SectionHeaderLevel (1 to 6; default 1)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
         }
       }
     ]
@@ -6003,6 +6043,16 @@
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
           "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+        }
+      },
+      {
+        "component": "DetailHeader",
+        "type": "SectionHeaderText (string or readonly text runs)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
         }
       }
     ]
@@ -6601,6 +6651,16 @@
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
           "revision": "sha256:d143e8c03a1a9552081f2ce2e01db6f4f6f1905bb40366738bf3a77536cf49d5"
+        }
+      },
+      {
+        "component": "DetailHeader",
+        "type": "SectionHeaderText (string or readonly text runs)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
         }
       }
     ]
@@ -9055,6 +9115,87 @@
           "path": "packages/ui/src/atoms/step-meter/types.ts",
           "symbol": "StepMeterProps",
           "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
+        }
+      }
+    ]
+  },
+  {
+    "id": "content-metadata",
+    "name": "metadata",
+    "meaning": "Ordered label/value facts about a content unit, rendered as a description list.",
+    "whenToUse": "A header or card presents factual attributes such as date, place or source.",
+    "avoid": "Option detail (`meta`), one context fact (`detail`), selectable options, rich or interactive values.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/detail-header/v0.1/prop-naming-approval.json",
+      "scope": "convention:content-metadata",
+      "contentHash": "sha256:73a65e99110e56626871ca0b6ad12a6598547ec2a4ab1170cd92aa4e58be3af8"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "DetailHeader",
+        "type": "DetailHeaderMetadataItem[] (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+        }
+      }
+    ]
+  },
+  {
+    "id": "content-tags",
+    "name": "tags",
+    "meaning": "Ordered short classification labels of a content unit, rendered as non-interactive pills.",
+    "whenToUse": "A content unit lists its topics or categories.",
+    "avoid": "Filters or selection (`options`), status (`statusBadge`), navigation.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/detail-header/v0.1/prop-naming-approval.json",
+      "scope": "convention:content-tags",
+      "contentHash": "sha256:38b939fed14720a88c383690e786f5b3673e4504c71f471c30a59b741986ee76"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "DetailHeader",
+        "type": "string[] (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+        }
+      }
+    ]
+  },
+  {
+    "id": "external-links",
+    "name": "links",
+    "meaning": "Ordered external destinations related to a content unit, each opened in a new browsing context.",
+    "whenToUse": "A content unit links to canonical, source-code, demo or event pages.",
+    "avoid": "In-product navigation (`items`, `onNavigate`), social profiles, same-tab links.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/detail-header/v0.1/prop-naming-approval.json",
+      "scope": "convention:external-links",
+      "contentHash": "sha256:dc53d935bcab64953e9becb5f332274a1b8f0c23d3b1f0b349b7e6b59813f3ac"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "DetailHeader",
+        "type": "DetailHeaderLink[] (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/detail-header/types.ts",
+          "symbol": "DetailHeaderProps",
+          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
         }
       }
     ]

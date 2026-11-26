@@ -872,7 +872,14 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/breadcrumb/types.ts#BreadcrumbProps'
   })),
-  { conventionId: 'accessible-name', source: 'packages/ui/src/molecules/breadcrumb/types.ts#BreadcrumbItem' }
+  { conventionId: 'accessible-name', source: 'packages/ui/src/molecules/breadcrumb/types.ts#BreadcrumbItem' },
+  // DetailHeader #572 reuses six approved conventions as usages only: no new meaning, exception or receipt for them.
+  ...['heading-title', 'heading-level', 'heading-eyebrow', 'section-lede', 'localized-messages', 'new-tab-notice'].map(
+    (conventionId) => ({
+      conventionId,
+      source: 'packages/ui/src/molecules/detail-header/types.ts#DetailHeaderProps'
+    })
+  )
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
 const postReceiptProposals = [
@@ -919,7 +926,11 @@ const postReceiptProposals = [
   'dialog-title-overflow',
   'dialog-action-placement',
   // StepMeter v0.1 step total: approved by its own receipt (docs/components/step-meter/v0.1/step-count-approval.json).
-  'step-count'
+  'step-count',
+  // DetailHeader v0.1 content conventions: approved by their own receipt (docs/components/detail-header/v0.1/prop-naming-approval.json).
+  'content-metadata',
+  'content-tags',
+  'external-links'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1957,6 +1968,174 @@ test('Breadcrumb reuses three approved conventions as usages only and binds its 
   validate(registry);
 });
 
+test('DetailHeader binds its scoped owner approval for three new conventions, reuses six approved ones and binds every reviewed source revision (#572)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/detail-header/v0.1/prop-naming-approval.json';
+  assert.ok(fs.existsSync(resolve(root, reference)), 'The DetailHeader naming receipt must be recorded');
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const path = 'packages/ui/src/molecules/detail-header/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const source = { path, symbol: 'DetailHeaderProps', revision };
+  // The receipt carries the owner's verbatim answers and binds the approved form of the exact convention payloads.
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.deepEqual(receipt.evidence.userStatements, [
+    {
+      quote: 'Aprobar todas (Recomendado)',
+      provenance: 'odd/tasks/round-5-consumer-requests.md L5 (specs, DetailHeader v0.1 OQ-5 naming conventions)',
+      date: '2026-11-26'
+    },
+    {
+      quote: 'Aprobar los 10 (Recomendado)',
+      provenance:
+        'odd/tasks/round-5-consumer-requests.md L6 (plans, DetailHeader v0.1 D2 registry receipt for the newly named conventions)',
+      date: '2026-11-26'
+    }
+  ]);
+  const log = fs.readFileSync(resolve(root, 'odd/tasks/round-5-consumer-requests.md'), 'utf8');
+  for (const { quote } of receipt.evidence.userStatements) {
+    assert.ok(log.includes(`"${quote}"`), `The task log must hold the owner's answer: ${quote}`);
+  }
+  // The approved spec and plan payloads (their line-start first heading through EOF) are the recorded digests, and
+  // the spec quotes each convention's text verbatim in its table of new proposals.
+  const payload = (file, heading) => {
+    const text = fs.readFileSync(resolve(root, file), 'utf8');
+    return text.slice(text.search(heading));
+  };
+  const specPath = 'docs/components/detail-header/v0.1/spec.md';
+  const planPath = 'docs/components/detail-header/v0.1/implementation-plan.md';
+  const specPayload = payload(specPath, /^## 1\. Purpose and scope$/m);
+  assert.equal(receipt.evidence.specPath, specPath);
+  assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(specPayload)));
+  assert.equal(
+    receipt.evidence.specPayloadSHA256,
+    'sha256:df34b603ee5474f6019997d8f367117d2790e212511b538a6c6b289a10988ece'
+  );
+  assert.equal(receipt.evidence.planPath, planPath);
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    digest(Buffer.from(payload(planPath, /^## 1\. Authority and gates$/m)))
+  );
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    'sha256:f5cf17969cd2c77f7ef324e07410f2545d46218543f33ae9c2bccf96950a419b'
+  );
+  assert.match(receipt.evidence.interpretation, /not native review authority/i);
+  assert.deepEqual(receipt.priorReceipts, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, ['content-metadata', 'content-tags', 'external-links']);
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    ['convention:content-metadata', 'convention:content-tags', 'convention:external-links']
+  );
+  const expectedNew = [
+    [
+      'content-metadata',
+      'metadata',
+      'Ordered label/value facts about a content unit, rendered as a description list.',
+      'A header or card presents factual attributes such as date, place or source.',
+      'Option detail (`meta`), one context fact (`detail`), selectable options, rich or interactive values.',
+      'DetailHeaderMetadataItem[] (optional)'
+    ],
+    [
+      'content-tags',
+      'tags',
+      'Ordered short classification labels of a content unit, rendered as non-interactive pills.',
+      'A content unit lists its topics or categories.',
+      'Filters or selection (`options`), status (`statusBadge`), navigation.',
+      'string[] (optional)'
+    ],
+    [
+      'external-links',
+      'links',
+      'Ordered external destinations related to a content unit, each opened in a new browsing context.',
+      'A content unit links to canonical, source-code, demo or event pages.',
+      'In-product navigation (`items`, `onNavigate`), social profiles, same-tab links.',
+      'DetailHeaderLink[] (optional)'
+    ]
+  ];
+  for (const [id, name, meaning, whenToUse, avoid, type] of expectedNew) {
+    const entry = registry.find((item) => item.id === id);
+    assert.ok(entry, id);
+    assert.equal(entry.name, name, id);
+    assert.equal(entry.meaning, meaning, id);
+    assert.equal(entry.whenToUse, whenToUse, id);
+    assert.equal(entry.avoid, avoid, id);
+    // Every field of the payload is the approved spec text, so the receipt binds what the owner read.
+    for (const field of [meaning, whenToUse, avoid, name]) {
+      assert.ok(specPayload.includes(field), `${id}: ${field}`);
+    }
+    // Convention approval stays separate from the spec approval: only this scoped receipt promotes the entry.
+    assert.equal(entry.status, 'approved', id);
+    const { approval, usages, ...convention } = entry;
+    assert.deepEqual(approval, {
+      reference,
+      scope: `convention:${id}`,
+      contentHash: props.conventionHash(entry)
+    });
+    assert.deepEqual(
+      receipt.entries.find(({ scope }) => scope === approval.scope),
+      { scope: approval.scope, contentHash: approval.contentHash, convention, source },
+      id
+    );
+    assert.deepEqual(entry.aliases, [], id);
+    assert.deepEqual(entry.exceptions, [], id);
+    assert.deepEqual(usages, [{ component: 'DetailHeader', type, status: 'existing', source }], id);
+    assert.deepEqual(historicalRegistry([entry]), [], id);
+    // Changed semantic content or a dropped approval invalidates the entry; a recomputed digest is not consent.
+    const changed = structuredClone(registry);
+    changed.find((item) => item.id === id).meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i, id);
+    const unapproved = structuredClone(registry);
+    unapproved.find((item) => item.id === id).approval = null;
+    assert.throws(() => validate(unapproved), /approval/i, id);
+  }
+  // The six reused entries keep their approved status and gain exactly one DetailHeader usage each.
+  const reused = [
+    ['heading-title', 'SectionHeaderText (string or readonly text runs)'],
+    ['heading-level', 'SectionHeaderLevel (1 to 6; default 1)'],
+    ['heading-eyebrow', 'SectionHeaderText (string or readonly text runs)'],
+    ['section-lede', 'SectionHeaderText (string or readonly text runs)'],
+    ['localized-messages', 'Partial<DetailHeaderMessages>'],
+    ['new-tab-notice', 'string (localized new-tab notice appended to every link)']
+  ];
+  for (const [id, type] of reused) {
+    const entry = registry.find((item) => item.id === id);
+    assert.equal(entry.status, 'approved', id);
+    assert.deepEqual(
+      entry.exceptions.filter(({ scope }) => scope.includes('DetailHeader')),
+      [],
+      id
+    );
+    assert.deepEqual(
+      entry.usages.filter(({ component }) => component === 'DetailHeader'),
+      [{ component: 'DetailHeader', type, status: 'existing', source }],
+      id
+    );
+    // The frozen receipts compare the registry without the reviewed post-receipt usages.
+    assert.deepEqual(
+      historicalRegistry([entry]).flatMap(({ usages }) => usages.filter((usage) => usage.source.path === path)),
+      [],
+      id
+    );
+  }
+  assert.deepEqual(
+    registry
+      .filter((item) => item.usages.some((usage) => usage.source.path === path))
+      .map(({ id }) => id)
+      .sort(),
+    [...expectedNew, ...reused].map(([id]) => id).sort()
+  );
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 9);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  validate(registry);
+});
+
 test('Text truncation binds its scoped owner approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
@@ -2506,8 +2685,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // AttachmentField v0.2 adds the approved reset token; Text v0.3 adds truncation.
   // AlertDialog v0.2 adds its independently approved pending convention; Dialog v0.4 proposes two more.
   // StepMeter v0.1 proposes the step total.
-  assert.equal(actual.length, 185);
-  assert.equal(beforeIndicatorConventions(actual).length, 182);
+  // DetailHeader v0.1 adds three approved content conventions (metadata, tags, external links).
+  assert.equal(actual.length, 188);
+  assert.equal(beforeIndicatorConventions(actual).length, 185);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

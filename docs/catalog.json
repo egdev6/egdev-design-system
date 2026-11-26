@@ -695,6 +695,17 @@
   {
     "actual": "—",
     "nivelActual": "—",
+    "nombre": "DetailHeader",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "SectionHeader, Chip, Link",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/detail-header/v0.1/spec.md): passive detail-page header composing SectionHeader (optional eyebrow, a heading at `level`, default 1, and an optional lede) with an optional label/value facts list (`metadata`, with a `time` element for dates), a named list of static tag Chips and a named list of external Links (absolute HTTPS, opened in a new tab, with localizable names and notice); native `div` root with no role or name and the DOM order heading, facts, tags, links; no paint, no stylesheet, no ref or asChild. The consumer owns text, dates and localization, and invalid entries are skipped with a development warning. Browser and packed-consumer results are recorded in the [implementation evidence](components/detail-header/v0.1/implementation-evidence.md); visual conformity is not evaluated."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
     "nombre": "MeterRow",
     "nivel": "molecule",
     "destino": "ui",

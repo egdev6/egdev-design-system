@@ -205,6 +205,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   ],
   input: ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className'],
   sectionHeader: ['id', 'dir', 'lang', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick'],
+  detailHeader: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   searchTrigger: [
     'id',
     'title',

@@ -1129,6 +1129,32 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - eyebrow: string; Optional relationship line above the name. Visually limited to two lines; the full text remains in the DOM. Whitespace-only renders nothing and the top row collapses to the mark when supplied. (components[] · packages/ui/src/molecules/community-card/types.ts)
   - level: enum; Native heading rank only; the display typography never follows the rank. (components[] · packages/ui/src/molecules/community-card/types.ts)
   - title: string; Visible community name and the complete article name. Blank or whitespace-only titles warn in development and render nothing, because an unnamed article is never promised. (components[] · packages/ui/src/molecules/community-card/types.ts)
+### DetailHeader
+catalog[] · docs/catalog.json · @egdev/ui · molecule · —
+- DetailHeader (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - detailHeaderLinksVariants base: gap-x-6 → --spacing-6
+    - detailHeaderLinksVariants base: gap-y-3 → --spacing-3
+    - detailHeaderLinksVariants base: p-0 → --spacing-0
+    - detailHeaderMetaEntryVariants base: gap-1 → --spacing-1
+    - detailHeaderMetaVariants base: gap-x-8 → --spacing-8
+    - detailHeaderMetaVariants base: gap-y-4 → --spacing-4
+    - detailHeaderTagsVariants base: gap-1.5 → --spacing
+    - detailHeaderTagsVariants base: p-0 → --spacing-0
+    - detailHeaderTermVariants base: font-display → --font-display
+    - detailHeaderTermVariants base: text-label-eyebrow → --text-label-eyebrow
+    - detailHeaderValueVariants base: font-sans → --font-sans
+    - detailHeaderValueVariants base: text-body-default → --text-body-default
+    - detailHeaderVariants base: gap-6 → --spacing-6
+  - eyebrow: SectionHeaderText; Optional context line before the title, typically the kind of content such as post, article or event. A blank or decorative-only value is omitted. (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - lede: SectionHeaderText; Optional introductory paragraph after the title. A blank or decorative-only value is omitted, never a placeholder. (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - level: enum; Native heading rank of the page title, never a typography selector: the title keeps its section-scale look at every rank. A runtime value outside 1 to 6 resolves to 1. (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - links: DetailHeaderLink[]; Ordered external destinations, rendered as a named list of links that open in a new tab. Entries with a blank label or an unsafe destination are omitted with a development warning; absent, empty and all-invalid input renders no list. (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - messages: Partial<DetailHeaderMessages>; Localized accessible names of the two lists: tags falls back to Tags and links to Links. A missing key keeps its default, and a blank key warns in development and uses its default. (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - metadata: DetailHeaderMetadataItem[]; Ordered facts about the content, rendered as a description list after the heading block. Entries with a blank label or value are omitted with a development warning; absent, empty and all-invalid input renders no list. (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - newTabText: string; Localized notice appended, after one space, to the accessible name of every link, for example "Repository (opens in a new tab)". Blank input warns in development and uses the default. (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - tags: string[]; Ordered short labels, rendered as a named list of non-interactive pills. Blank entries are omitted with a development warning and duplicates both render; absent, empty and all-invalid input renders no list. (components[] · packages/ui/src/molecules/detail-header/types.ts)
+  - title: SectionHeaderText; Required page title, rendered by SectionHeader as the page heading. Plain text or ordered language-tagged runs that keep their own lang and decorative separators. A blank or decorative-only title warns in development and renders nothing: no heading, facts, tags or links. (components[] · packages/ui/src/molecules/detail-header/types.ts)
 ### Dialog
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
 - Dialog (components[] · packages/ui/src/molecules/dialog/types.ts)
@@ -3612,6 +3638,8 @@ Not exported:
 - container-edge-placement: edge; approved; ProgressBar (propNaming[] · skills/_shared/prop-naming.json)
 - content-description: description; approved; AlertDialogContent, ArticleFeature, DialogContent, EmptyState (propNaming[] · skills/_shared/prop-naming.json)
 - content-detail: detail; approved; ArticleFeature (propNaming[] · skills/_shared/prop-naming.json)
+- content-metadata: metadata; approved; DetailHeader (propNaming[] · skills/_shared/prop-naming.json)
+- content-tags: tags; approved; DetailHeader (propNaming[] · skills/_shared/prop-naming.json)
 - control-label-wrap: labelWrap; approved; Button, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - corner-badge-icon: badgeIcon; approved; Indicator (propNaming[] · skills/_shared/prop-naming.json)
 - corner-radius: radius; approved; Surface (propNaming[] · skills/_shared/prop-naming.json)
@@ -3637,6 +3665,7 @@ Not exported:
 - end-items: endItems; approved; ModuleRail (propNaming[] · skills/_shared/prop-naming.json)
 - entrance-delay: delay; approved; ScrollReveal (propNaming[] · skills/_shared/prop-naming.json)
 - expired-deadline-message: expiredText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
+- external-links: links; approved; DetailHeader (propNaming[] · skills/_shared/prop-naming.json)
 - field-error: error; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
 - field-guidance-tone: hintTone; proposed; Field (propNaming[] · skills/_shared/prop-naming.json)
 - field-hint: hint; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
@@ -3650,10 +3679,10 @@ Not exported:
 - group-caption: caption; approved; SocialLinks (propNaming[] · skills/_shared/prop-naming.json)
 - guide-zones: zones; approved; PreviewFrame (propNaming[] · skills/_shared/prop-naming.json)
 - header-status-text: statusText; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
-- heading-eyebrow: eyebrow; approved; ArticleFeature, ChapterBreak, Closing, CommunityCard, Hero, LabStage, PageHeader, ProjectCard, SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
+- heading-eyebrow: eyebrow; approved; ArticleFeature, ChapterBreak, Closing, CommunityCard, DetailHeader, Hero, LabStage, PageHeader, ProjectCard, SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
 - heading-id: titleId; approved; SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
-- heading-level: level; approved; ArticleFeature, CalendarGrid, ChapterBreak, Closing, CommunityCard, EmptyState, FooterNavigation, Heading, Hero, LabStage, ListItemTitle, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
-- heading-title: title; approved; AlertDialogContent, ArticleFeature, ChapterBreak, Closing, CommunityCard, DialogContent, EmptyState, Hero, LabStage, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
+- heading-level: level; approved; ArticleFeature, CalendarGrid, ChapterBreak, Closing, CommunityCard, DetailHeader, EmptyState, FooterNavigation, Heading, Hero, LabStage, ListItemTitle, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
+- heading-title: title; approved; AlertDialogContent, ArticleFeature, ChapterBreak, Closing, CommunityCard, DetailHeader, DialogContent, EmptyState, Hero, LabStage, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
 - host-fill: fill; approved; Panel, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - icon-glyph-name: name; approved; Icon (propNaming[] · skills/_shared/prop-naming.json)
 - icon-placement: iconPosition; approved; Button (propNaming[] · skills/_shared/prop-naming.json)
@@ -3685,7 +3714,7 @@ Not exported:
 - leading-status-badge: statusBadge; approved; NowCard, ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - line-particle-direction: lineDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - live-presentation: live; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
-- localized-messages: messages; approved; AppShell, AttachmentField, CalendarGrid, Carousel, CommandPalette, MeterRow, ModuleCard, ModuleRail, TabBar, Table, Timeline, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
+- localized-messages: messages; approved; AppShell, AttachmentField, CalendarGrid, Carousel, CommandPalette, DetailHeader, MeterRow, ModuleCard, ModuleRail, TabBar, Table, Timeline, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
 - main-axis-distribution: justifyContent; approved; Cluster, Stack (propNaming[] · skills/_shared/prop-naming.json)
 - max-file-bytes: maxFileBytes; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
 - max-file-count: maxFiles; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
@@ -3696,7 +3725,7 @@ Not exported:
 - move-intent: onMove; approved; CalendarGrid (propNaming[] · skills/_shared/prop-naming.json)
 - navigation-intent: onNavigate; approved; Breadcrumb, CalendarGrid, Menu, ModuleRail, NavList, SectionNav, TabBar, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - new-tab-navigation: external; approved; Chip, Link, SocialLinkItem (propNaming[] · skills/_shared/prop-naming.json)
-- new-tab-notice: newTabText; approved; Chip, Link, SocialLinks (propNaming[] · skills/_shared/prop-naming.json)
+- new-tab-notice: newTabText; approved; Chip, DetailHeader, Link, SocialLinks (propNaming[] · skills/_shared/prop-naming.json)
 - numeric-display-help: help; approved; MeterRow (propNaming[] · skills/_shared/prop-naming.json)
 - open-change: onOpenChange; approved; AlertDialog, Collapsible, CommandPalette, Dialog, Menu, NavList, Popover, SectionNav (propNaming[] · skills/_shared/prop-naming.json)
 - open-state: open; approved; AlertDialog, Collapsible, CommandPalette, Dialog, Menu, NavList, Popover, SectionNav (propNaming[] · skills/_shared/prop-naming.json)
@@ -3726,7 +3755,7 @@ Not exported:
 - scene-social: social; approved; Hero, WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - search-query-change: onQueryChange; approved; CommandPalette (propNaming[] · skills/_shared/prop-naming.json)
 - section-content-wrap: wrap; approved; Footer, SectionShell (propNaming[] · skills/_shared/prop-naming.json)
-- section-lede: lede; approved; ChapterBreak, Closing, Hero, LabStage, PageHeader, SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
+- section-lede: lede; approved; ChapterBreak, Closing, DetailHeader, Hero, LabStage, PageHeader, SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
 - section-register: register; approved; Footer, SectionShell (propNaming[] · skills/_shared/prop-naming.json)
 - selection-cardinality: type; approved; ChipGroup, SelectTile (propNaming[] · skills/_shared/prop-naming.json)
 - selection-placeholder: placeholder; approved; Select (propNaming[] · skills/_shared/prop-naming.json)
