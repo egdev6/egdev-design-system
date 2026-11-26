@@ -115,6 +115,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   appIcon: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
+  pagination: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   tabBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   topBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   sidebar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],

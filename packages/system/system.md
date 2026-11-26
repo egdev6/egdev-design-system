@@ -1482,6 +1482,26 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - lede: string; Optional plain page-purpose text after the heading. Blank text is omitted; nonblank text is preserved verbatim and is not added to the heading's accessible name. (components[] · packages/ui/src/molecules/page-header/types.ts)
   - level: enum; Native h1–h6 rank; never changes the compact heading-small recipe. (components[] · packages/ui/src/molecules/page-header/types.ts)
   - title: string; Visible plain-string heading, not a native tooltip. Must contain non-whitespace text; otherwise the entire header is omitted, with a development warning. (components[] · packages/ui/src/molecules/page-header/types.ts)
+### Pagination
+catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native nav, list and anchors)
+- Pagination (components[] · packages/ui/src/molecules/pagination/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - paginationItemVariants base: gap-2 → --spacing-2
+    - paginationItemVariants base: rounded-md → --radius-md
+    - paginationItemVariants base: px-2 → --spacing-2
+    - paginationItemVariants base: font-display → --font-display
+    - paginationItemVariants base: text-meta → --text-meta
+    - paginationLinkVariants base: aria-[current=page]:shadow-[var(--shadow-edge-strong)] → --shadow-edge-strong
+    - paginationLinkVariants base: focus-visible:shadow-focus → --shadow-focus
+    - paginationLinkVariants base: aria-[current=page]:focus-visible:shadow-focus → --shadow-focus
+    - paginationListVariants base: p-0 → --spacing-0
+    - paginationListVariants base: gap-1 → --spacing-1
+  - getHref: (page: number) => string; Native destination of one page, so every control is a crawlable link and the consumer encodes the route and the active filters in the URL. Called synchronously during render with an integer from 1 to pageCount for each rendered control. It must be pure, may run more than once per render and must return a non-empty string: a non-function, or a blank or non-string return for any rendered control, warns in development and renders nothing. (components[] · packages/ui/src/molecules/pagination/types.ts)
+  - label: string; Accessible name of the navigation landmark, never rendered visibly. Consumer-owned copy and language, so the component has no default: a short noun such as "Editorial pages" is enough because the navigation role is announced by itself, and the name must differ from every other landmark and every other Pagination on the page. A blank, whitespace-only or non-string label warns in development and renders nothing, so a landmark is never left unnamed. (components[] · packages/ui/src/molecules/pagination/types.ts)
+  - messages: Partial<PaginationMessages>; Partial localizable dictionary of the built-in text. Previous and next are the visible and accessible link texts (English fallbacks Previous and Next) and page names a numbered link from its page number (English fallback such as Page 3). Each omitted, blank or non-string entry falls back independently, and a page formatter that throws or returns blank text falls back for that link. The visible digits are never replaced or locale-formatted. (components[] · packages/ui/src/molecules/pagination/types.ts)
+  - onNavigate: ((page: number, event: MouseEvent<HTMLAnchorElement, MouseEvent>) => void); Native click notification of a rendered link, with its target page and the React event, called once before the default action. For client routing, call preventDefault only on unmodified primary activations: modified clicks stay native, and a middle click raises auxclick, which is not reported. The component never prevents the default itself. Unavailable placeholders, ellipses and prop updates never call it. Absent means native navigation only. (components[] · packages/ui/src/molecules/pagination/types.ts)
+  - pageCount: number; Total number of pages of the listing, supplied by the consumer. A finite number is floored; a result below 2 renders nothing and warns nothing, because there is nothing to paginate. NaN, an infinite value or a non-number warns in development and renders nothing. (components[] · packages/ui/src/molecules/pagination/types.ts)
+  - value: number; The current page, 1-based and equal to the page the route shows. A finite number is floored and then clamped to 1..pageCount, so an unvalidated page parameter never throws (the consumer still owns the 404 or redirect). NaN, an infinite value or a non-number warns in development and renders nothing. There is no uncontrolled value: a navigation changes the route and the consumer rerenders with the new value. (components[] · packages/ui/src/molecules/pagination/types.ts)
 ### Panel
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - Panel (components[] · packages/ui/src/molecules/panel/types.ts)
@@ -3607,7 +3627,7 @@ Not exported:
 - absolute-deadline-text: deadlineText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - accent-line-break: accentBreak; approved; Heading, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
 - accepted-file-types: acceptedTypes; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
-- accessible-name: label; approved; AppIcon, AttachmentField, Avatar, Breadcrumb, BreadcrumbItem, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, StepMeter, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- accessible-name: label; approved; AppIcon, AttachmentField, Avatar, Breadcrumb, BreadcrumbItem, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, Pagination, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, StepMeter, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - action-alternative-text: actionAltText; approved; Toast (propNaming[] · skills/_shared/prop-naming.json)
 - active-row: activeRowId; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - active-section-id: activeId; approved; SectionNav (propNaming[] · skills/_shared/prop-naming.json)
@@ -3714,7 +3734,7 @@ Not exported:
 - leading-status-badge: statusBadge; approved; NowCard, ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - line-particle-direction: lineDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - live-presentation: live; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
-- localized-messages: messages; approved; AppShell, AttachmentField, CalendarGrid, Carousel, CommandPalette, DetailHeader, MeterRow, ModuleCard, ModuleRail, TabBar, Table, Timeline, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
+- localized-messages: messages; approved; AppShell, AttachmentField, CalendarGrid, Carousel, CommandPalette, DetailHeader, MeterRow, ModuleCard, ModuleRail, Pagination, TabBar, Table, Timeline, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
 - main-axis-distribution: justifyContent; approved; Cluster, Stack (propNaming[] · skills/_shared/prop-naming.json)
 - max-file-bytes: maxFileBytes; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
 - max-file-count: maxFiles; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
@@ -3723,13 +3743,15 @@ Not exported:
 - message-summary: summary; approved; Notice, Toast (propNaming[] · skills/_shared/prop-naming.json)
 - modal-action-pending: pending; approved; AlertDialog, Dialog (propNaming[] · skills/_shared/prop-naming.json)
 - move-intent: onMove; approved; CalendarGrid (propNaming[] · skills/_shared/prop-naming.json)
-- navigation-intent: onNavigate; approved; Breadcrumb, CalendarGrid, Menu, ModuleRail, NavList, SectionNav, TabBar, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- navigation-intent: onNavigate; approved; Breadcrumb, CalendarGrid, Menu, ModuleRail, NavList, Pagination, SectionNav, TabBar, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - new-tab-navigation: external; approved; Chip, Link, SocialLinkItem (propNaming[] · skills/_shared/prop-naming.json)
 - new-tab-notice: newTabText; approved; Chip, DetailHeader, Link, SocialLinks (propNaming[] · skills/_shared/prop-naming.json)
 - numeric-display-help: help; approved; MeterRow (propNaming[] · skills/_shared/prop-naming.json)
 - open-change: onOpenChange; approved; AlertDialog, Collapsible, CommandPalette, Dialog, Menu, NavList, Popover, SectionNav (propNaming[] · skills/_shared/prop-naming.json)
 - open-state: open; approved; AlertDialog, Collapsible, CommandPalette, Dialog, Menu, NavList, Popover, SectionNav (propNaming[] · skills/_shared/prop-naming.json)
 - option-metadata: meta; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
+- page-count: pageCount; approved; Pagination (propNaming[] · skills/_shared/prop-naming.json)
+- page-href: getHref; approved; Pagination (propNaming[] · skills/_shared/prop-naming.json)
 - page-top-bar-slot: topBar; approved; WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
 - panel-accent-edge: accentEdge; proposed; Panel (propNaming[] · skills/_shared/prop-naming.json)
 - panel-footer: footer; approved; ModuleCard, PreviewFrame, Sidebar, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
@@ -3742,7 +3764,7 @@ Not exported:
 - pressed-change: onPressedChange; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-state: pressed; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - preview-thumbnail: thumb; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
-- primary-value: value; approved; AttachmentField, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, Gauge, GaugeGroupRing, MeterRow, ProgressBar, RadioGroup, SectionNav, Select, SelectTile, SelectTileOption, Slider, Stat, StepMeter, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
+- primary-value: value; approved; AttachmentField, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, Gauge, GaugeGroupRing, MeterRow, Pagination, ProgressBar, RadioGroup, SectionNav, Select, SelectTile, SelectTileOption, Slider, Stat, StepMeter, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - product-identity: product; approved; ModuleRail, Sidebar (propNaming[] · skills/_shared/prop-naming.json)
 - quotation-source: source; approved; PullQuote (propNaming[] · skills/_shared/prop-naming.json)
 - quotation-text: text; approved; PullQuote (propNaming[] · skills/_shared/prop-naming.json)

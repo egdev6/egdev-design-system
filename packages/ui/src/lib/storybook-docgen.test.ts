@@ -859,6 +859,109 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(readFileSync(stories, 'utf8')).toMatch(/title: 'Molecules\/Breadcrumb'/);
     expect(readFileSync(stories, 'utf8')).not.toMatch(/\b(?:argTypes|play)\s*:/);
   });
+  it('extracts Pagination own props, message fields, the shown native rows and the documented stories (PG-16)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(source('molecules/pagination/Pagination.tsx'))
+      .find(({ displayName }) => displayName === 'Pagination');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      label: 'text',
+      value: 'number',
+      pageCount: 'number',
+      getHref: 'false',
+      onNavigate: 'false',
+      messages: 'false'
+    };
+    const file = ast(source('molecules/pagination/types.ts'));
+    const own = ownProps(file, ['PaginationProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(Object.keys(controls));
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      // No @default anywhere: the normalization and absence rules live in the description bodies.
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(false);
+      expect((props[name]?.tags as Record<string, string> | undefined)?.control, name).toBe(controls[name]);
+      expect(props[name]?.defaultValue, name).toBeNull();
+    }
+    // The dictionary type carries its own three annotated fields: two text controls and one formatter.
+    const messageControls: Record<string, string> = { previous: 'text', next: 'text', page: 'false' };
+    const fields = ownProps(file, ['PaginationMessages']);
+    expect(fields.map((property) => property.name.getText(file))).toEqual(Object.keys(messageControls));
+    for (const declaration of fields) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        `PaginationMessages.${name}`
+      ).toEqual([messageControls[name]]);
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        `PaginationMessages.${name}`
+      ).toBe(false);
+    }
+    expect(props.label).toMatchObject({ required: true, type: { name: 'string' } });
+    expect(props.value).toMatchObject({ required: true, type: { name: 'number' } });
+    expect(props.pageCount).toMatchObject({ required: true, type: { name: 'number' } });
+    expect(props.getHref?.required).toBe(true);
+    expect(props.onNavigate?.required).toBe(false);
+    expect(props.messages?.required).toBe(false);
+    const reasonOf = (name: string) => (props[name]?.tags as Record<string, string> | undefined)?.controlReason;
+    expect(reasonOf('getHref')).toMatch(/A function is not serializable; see Default and ClientRouting/);
+    expect(reasonOf('onNavigate')).toMatch(/Callback functions are not serializable; see ClientRouting/);
+    expect(reasonOf('messages')).toMatch(/The dictionary includes a formatter function; see Localized/);
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'style',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone',
+      'defaultValue',
+      'onValueChange'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The component and its types are public; the hook, the eight recipes and the English defaults stay internal.
+    expect(publicAPI.Pagination).toBeDefined();
+    for (const name of [
+      'usePagination',
+      'defaultPaginationMessages',
+      'paginationVariants',
+      'paginationListVariants',
+      'paginationItemVariants',
+      'paginationLinkVariants',
+      'paginationEllipsisVariants',
+      'paginationPlaceholderVariants',
+      'paginationIconVariants'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('molecules/pagination/index.ts'), 'utf8')).not.toMatch(
+      /Variants|usePagination|defaultPaginationMessages/
+    );
+    const stories = source('molecules/pagination/Pagination.stories.tsx');
+    expect(exportedStoryNames(ast(stories))).toEqual(['Default', 'Window', 'ClientRouting', 'Localized']);
+    expect(readFileSync(stories, 'utf8')).toMatch(/title: 'Molecules\/Pagination'/);
+    expect(readFileSync(stories, 'utf8')).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
   it('extracts NotesBoard parts and sticky metadata', () => {
     const extracted = parser.parse(source('organisms/notes-board/NotesBoard.tsx'));
     const root = extracted.find(({ displayName }) => displayName === 'NotesBoard');
@@ -2350,6 +2453,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/notice',
       './molecules/now-card',
       './molecules/page-header',
+      './molecules/pagination',
       './molecules/panel',
       './molecules/popover',
       './molecules/project-card',
@@ -2495,6 +2599,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'NowCardFooter',
       'NowStrip',
       'PageHeader',
+      'Pagination',
       'Panel',
       'PanelBody',
       'PanelFooter',

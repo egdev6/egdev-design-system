@@ -879,7 +879,12 @@ const postReceiptUsages = [
       conventionId,
       source: 'packages/ui/src/molecules/detail-header/types.ts#DetailHeaderProps'
     })
-  )
+  ),
+  // Pagination #571 reuses four approved conventions as usages only: no new meaning, exception or receipt for them.
+  ...['accessible-name', 'primary-value', 'localized-messages', 'navigation-intent'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/pagination/types.ts#PaginationProps'
+  }))
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
 const postReceiptProposals = [
@@ -930,7 +935,10 @@ const postReceiptProposals = [
   // DetailHeader v0.1 content conventions: approved by their own receipt (docs/components/detail-header/v0.1/prop-naming-approval.json).
   'content-metadata',
   'content-tags',
-  'external-links'
+  'external-links',
+  // Pagination v0.1 page conventions: approved by their own receipt (docs/components/pagination/v0.1/prop-naming-approval.json).
+  'page-count',
+  'page-href'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -2136,6 +2144,173 @@ test('DetailHeader binds its scoped owner approval for three new conventions, re
   validate(registry);
 });
 
+test('Pagination binds its scoped owner approval for two new conventions, reuses four approved ones and binds every reviewed source revision (#571)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/pagination/v0.1/prop-naming-approval.json';
+  assert.ok(fs.existsSync(resolve(root, reference)), 'The Pagination naming receipt must be recorded');
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const path = 'packages/ui/src/molecules/pagination/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const source = { path, symbol: 'PaginationProps', revision };
+  // The receipt carries the owner's verbatim answers and binds the approved form of the exact convention payloads.
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.deepEqual(receipt.evidence.userStatements, [
+    {
+      quote: 'Aprobar todas (Recomendado)',
+      provenance: 'odd/tasks/round-5-consumer-requests.md L5 (specs, Pagination v0.1 OQ-5 naming conventions)',
+      date: '2026-11-26'
+    },
+    {
+      quote: 'Aprobar los 10 (Recomendado)',
+      provenance:
+        'odd/tasks/round-5-consumer-requests.md L6 (plans, Pagination v0.1 D2 registry receipt for the newly named conventions)',
+      date: '2026-11-26'
+    }
+  ]);
+  const log = fs.readFileSync(resolve(root, 'odd/tasks/round-5-consumer-requests.md'), 'utf8');
+  for (const { quote } of receipt.evidence.userStatements) {
+    assert.ok(log.includes(`"${quote}"`), `The task log must hold the owner's answer: ${quote}`);
+  }
+  // The approved spec and plan payloads (their line-start first heading through EOF) are the recorded digests, and
+  // the spec quotes each convention's text in its table of new proposals.
+  const payload = (file, heading) => {
+    const text = fs.readFileSync(resolve(root, file), 'utf8');
+    return text.slice(text.search(heading));
+  };
+  const specPath = 'docs/components/pagination/v0.1/spec.md';
+  const planPath = 'docs/components/pagination/v0.1/implementation-plan.md';
+  const specPayload = payload(specPath, /^## 1\. Purpose and scope$/m);
+  assert.equal(receipt.evidence.specPath, specPath);
+  assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(specPayload)));
+  assert.equal(
+    receipt.evidence.specPayloadSHA256,
+    'sha256:cb81738188ea161a6819027bec4bfe13703bf30c127966cf67d2c17489cd9a2f'
+  );
+  assert.equal(receipt.evidence.planPath, planPath);
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    digest(Buffer.from(payload(planPath, /^## 1\. Authority and gates$/m)))
+  );
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    'sha256:d4a494eb48896e4dbca5080ff34b77cdf1bd7e9a46a0637f8bd0362c04ddd0ff'
+  );
+  assert.match(receipt.evidence.interpretation, /not native review authority/i);
+  assert.deepEqual(receipt.priorReceipts, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, ['page-count', 'page-href']);
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    ['convention:page-count', 'convention:page-href']
+  );
+  const expectedNew = [
+    [
+      'page-count',
+      'pageCount',
+      'Total number of pages of a paginated collection, supplied by the consumer.',
+      'A component navigates between the pages of a collection that the consumer splits and counts, and renders a bounded window of page controls from the current page and this total.',
+      'Item or entry totals, supplementary item counts (use `count`), step counts of a stepped scale (use `steps`), display overflow thresholds and limits on how many page controls render.',
+      'number (required; floored, below 2 renders nothing)'
+    ],
+    [
+      'page-href',
+      'getHref',
+      'Function that returns the native destination URL of one page of a paginated collection; called during render with an integer page and expected to be pure.',
+      'A component renders crawlable anchors from a derived sequence of pages, so the consumer encodes route and filter state into each URL.',
+      "Click interception or routing (use `onNavigate`), destinations supplied as entry data (use an entry's `href` inside `items`), parsing the current location, and side effects.",
+      '(page: number) => string (required)'
+    ]
+  ];
+  // The registry texts are the approved spec wording in sentence case with a final period (plan D2, confirmed).
+  const spoken = (field) => field.replace(/\.$/, '').replace(/^./, (letter) => letter.toLowerCase());
+  for (const [id, name, meaning, whenToUse, avoid, type] of expectedNew) {
+    const entry = registry.find((item) => item.id === id);
+    assert.ok(entry, id);
+    assert.equal(entry.name, name, id);
+    assert.equal(entry.meaning, meaning, id);
+    assert.equal(entry.whenToUse, whenToUse, id);
+    assert.equal(entry.avoid, avoid, id);
+    // The meaning is quoted verbatim in the spec; the use and avoid texts are written there as lower-case clauses.
+    for (const field of [meaning, whenToUse, avoid]) {
+      assert.ok(specPayload.includes(field) || specPayload.includes(spoken(field)), `${id}: ${field}`);
+    }
+    assert.ok(specPayload.includes(`name \`${name}\``), `${id}: the spec names ${name}`);
+    // Convention approval stays separate from the spec approval: only this scoped receipt promotes the entry.
+    assert.equal(entry.status, 'approved', id);
+    const { approval, usages, ...convention } = entry;
+    assert.deepEqual(approval, {
+      reference,
+      scope: `convention:${id}`,
+      contentHash: props.conventionHash(entry)
+    });
+    assert.deepEqual(
+      receipt.entries.find(({ scope }) => scope === approval.scope),
+      { scope: approval.scope, contentHash: approval.contentHash, convention, source },
+      id
+    );
+    assert.deepEqual(entry.aliases, [], id);
+    assert.deepEqual(entry.exceptions, [], id);
+    assert.deepEqual(usages, [{ component: 'Pagination', type, status: 'existing', source }], id);
+    assert.deepEqual(historicalRegistry([entry]), [], id);
+    // Changed semantic content or a dropped approval invalidates the entry; a recomputed digest is not consent.
+    const changed = structuredClone(registry);
+    changed.find((item) => item.id === id).meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i, id);
+    const unapproved = structuredClone(registry);
+    unapproved.find((item) => item.id === id).approval = null;
+    assert.throws(() => validate(unapproved), /approval/i, id);
+  }
+  // The four reused entries keep their approved status and gain exactly one Pagination usage each.
+  const reused = [
+    ['accessible-name', 'string (required navigation landmark name)'],
+    ['primary-value', 'number (required; floored and clamped to 1..pageCount)'],
+    ['localized-messages', 'Partial<PaginationMessages>'],
+    ['navigation-intent', '(page: number, event: MouseEvent<HTMLAnchorElement>) => void']
+  ];
+  for (const [id, type] of reused) {
+    const entry = registry.find((item) => item.id === id);
+    assert.equal(entry.status, 'approved', id);
+    assert.deepEqual(
+      entry.exceptions.filter(({ scope }) => scope.includes('Pagination')),
+      [],
+      id
+    );
+    assert.deepEqual(
+      entry.usages.filter(({ component }) => component === 'Pagination'),
+      [{ component: 'Pagination', type, status: 'existing', source }],
+      id
+    );
+    // The frozen receipts compare the registry without the reviewed post-receipt usages.
+    assert.deepEqual(
+      historicalRegistry([entry]).flatMap(({ usages }) => usages.filter((usage) => usage.source.path === path)),
+      [],
+      id
+    );
+  }
+  // The navigation-intent payload adaptation (a page number instead of an entry) changes no text, hash or status.
+  const intent = registry.find((item) => item.id === 'navigation-intent');
+  assert.equal(
+    intent.meaning,
+    "Notification that the user activated a link entry rendered by the component, with the entry and the originating event; preventing the event's default lets a client-side router handle the navigation."
+  );
+  assert.deepEqual(
+    registry
+      .filter((item) => item.usages.some((usage) => usage.source.path === path))
+      .map(({ id }) => id)
+      .sort(),
+    [...expectedNew, ...reused].map(([id]) => id).sort()
+  );
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 6);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  validate(registry);
+});
+
 test('Text truncation binds its scoped owner approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
@@ -2686,8 +2861,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // AlertDialog v0.2 adds its independently approved pending convention; Dialog v0.4 proposes two more.
   // StepMeter v0.1 proposes the step total.
   // DetailHeader v0.1 adds three approved content conventions (metadata, tags, external links).
-  assert.equal(actual.length, 188);
-  assert.equal(beforeIndicatorConventions(actual).length, 185);
+  // Pagination v0.1 adds two approved page conventions (page count, page href).
+  assert.equal(actual.length, 190);
+  assert.equal(beforeIndicatorConventions(actual).length, 187);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

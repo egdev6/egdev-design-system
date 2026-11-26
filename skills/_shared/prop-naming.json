@@ -516,6 +516,16 @@
           "symbol": "StepMeterProps",
           "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
         }
+      },
+      {
+        "component": "Pagination",
+        "type": "number (required; floored and clamped to 1..pageCount)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/pagination/types.ts",
+          "symbol": "PaginationProps",
+          "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
+        }
       }
     ]
   },
@@ -2226,6 +2236,16 @@
           "path": "packages/ui/src/molecules/breadcrumb/types.ts",
           "symbol": "BreadcrumbItem",
           "revision": "sha256:560c49e7700785789a5ca8893c4330ddd90a44338ec49862b79c42bfbcd75eeb"
+        }
+      },
+      {
+        "component": "Pagination",
+        "type": "string (required navigation landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/pagination/types.ts",
+          "symbol": "PaginationProps",
+          "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
         }
       }
     ]
@@ -4360,6 +4380,16 @@
           "symbol": "DetailHeaderProps",
           "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
         }
+      },
+      {
+        "component": "Pagination",
+        "type": "Partial<PaginationMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/pagination/types.ts",
+          "symbol": "PaginationProps",
+          "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
+        }
       }
     ]
   },
@@ -5313,6 +5343,16 @@
           "path": "packages/ui/src/molecules/breadcrumb/types.ts",
           "symbol": "BreadcrumbProps",
           "revision": "sha256:560c49e7700785789a5ca8893c4330ddd90a44338ec49862b79c42bfbcd75eeb"
+        }
+      },
+      {
+        "component": "Pagination",
+        "type": "(page: number, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/pagination/types.ts",
+          "symbol": "PaginationProps",
+          "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
         }
       }
     ]
@@ -9196,6 +9236,60 @@
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
           "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+        }
+      }
+    ]
+  },
+  {
+    "id": "page-count",
+    "name": "pageCount",
+    "meaning": "Total number of pages of a paginated collection, supplied by the consumer.",
+    "whenToUse": "A component navigates between the pages of a collection that the consumer splits and counts, and renders a bounded window of page controls from the current page and this total.",
+    "avoid": "Item or entry totals, supplementary item counts (use `count`), step counts of a stepped scale (use `steps`), display overflow thresholds and limits on how many page controls render.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/pagination/v0.1/prop-naming-approval.json",
+      "scope": "convention:page-count",
+      "contentHash": "sha256:d88b7d23a8045ee7d48691070aacb5f9f45776f24a40628eb851280eb05d816d"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Pagination",
+        "type": "number (required; floored, below 2 renders nothing)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/pagination/types.ts",
+          "symbol": "PaginationProps",
+          "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
+        }
+      }
+    ]
+  },
+  {
+    "id": "page-href",
+    "name": "getHref",
+    "meaning": "Function that returns the native destination URL of one page of a paginated collection; called during render with an integer page and expected to be pure.",
+    "whenToUse": "A component renders crawlable anchors from a derived sequence of pages, so the consumer encodes route and filter state into each URL.",
+    "avoid": "Click interception or routing (use `onNavigate`), destinations supplied as entry data (use an entry's `href` inside `items`), parsing the current location, and side effects.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/pagination/v0.1/prop-naming-approval.json",
+      "scope": "convention:page-href",
+      "contentHash": "sha256:fc03c450c7e3c24b5f0182e49dd3135a23a2bccc1dc475c157fe2cff35a2d5fd"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Pagination",
+        "type": "(page: number) => string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/pagination/types.ts",
+          "symbol": "PaginationProps",
+          "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
         }
       }
     ]

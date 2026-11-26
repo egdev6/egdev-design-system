@@ -1318,6 +1318,195 @@ test('DetailHeader publishes its nine own props, the eight static part recipes, 
   );
 });
 
+test('Pagination publishes its six own props, the seven static part recipes, its two new conventions and the reused ones (#571)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const pagination = artifact.components.find(({ name }) => name === 'Pagination');
+  assert.ok(pagination, 'the artifact lists Pagination');
+  assert.equal(pagination.package, '@egdev/ui');
+  assert.equal(pagination.source, 'packages/ui/src/molecules/pagination/types.ts');
+  assert.deepEqual(
+    pagination.props.map(({ name }) => name),
+    ['getHref', 'label', 'messages', 'onNavigate', 'pageCount', 'value']
+  );
+  const prop = (name) => pagination.props.find((item) => item.name === name);
+  // The four own inputs are required; none of the six has a constant default.
+  assert.deepEqual([prop('label').type, prop('label').required], ['string', true]);
+  assert.deepEqual([prop('value').type, prop('value').required], ['number', true]);
+  assert.deepEqual([prop('pageCount').type, prop('pageCount').required], ['number', true]);
+  assert.equal(prop('getHref').required, true);
+  assert.match(prop('getHref').type, /\(page: number\) => string/);
+  assert.equal(prop('onNavigate').required, false);
+  // The artifact prints the checker's expanded form, which adds the default type argument of MouseEvent.
+  assert.match(
+    prop('onNavigate').type,
+    /\(page: number, event: MouseEvent<HTMLAnchorElement(?:, MouseEvent)?>\) => void/
+  );
+  assert.equal(prop('messages').required, false);
+  assert.match(prop('messages').type, /PaginationMessages/);
+  for (const { name, default: value } of pagination.props) {
+    assert.equal(value, null, `${name} has no constant default`);
+  }
+  assert.match(prop('label').description, /never rendered visibly/);
+  assert.match(prop('getHref').description, /crawlable link/);
+  // No content, role, accessible-name override, ref, asChild, uncontrolled value or change callback row.
+  for (const name of [
+    'children',
+    'role',
+    'aria-label',
+    'aria-labelledby',
+    'dangerouslySetInnerHTML',
+    'ref',
+    'asChild',
+    'className',
+    'style',
+    'defaultValue',
+    'onValueChange'
+  ]) {
+    assert.ok(!pagination.props.some((item) => item.name === name), `Pagination must not publish ${name}`);
+  }
+  // No @classNameAllows tag: className supports the DS046 base placement list only, so no extra property is allowed.
+  assert.equal(Object.hasOwn(pagination, 'classNameAllows'), false);
+  // Seven private part recipes, built from static string literals: the approved inventory and nothing else.
+  assert.deepEqual(
+    pagination.variants.map(({ name }) => name),
+    [
+      'paginationEllipsisVariants',
+      'paginationIconVariants',
+      'paginationItemVariants',
+      'paginationLinkVariants',
+      'paginationListVariants',
+      'paginationPlaceholderVariants',
+      'paginationVariants'
+    ]
+  );
+  const recipes = Object.fromEntries(
+    pagination.variants.map(({ name, classes }) => [name, classes.join(' ').split(/\s+/).filter(Boolean)])
+  );
+  assert.deepEqual(recipes.paginationVariants, ['eg-pagination']);
+  assert.deepEqual(recipes.paginationListVariants, [
+    'm-0',
+    'p-0',
+    'list-none',
+    'flex',
+    'flex-wrap',
+    'items-center',
+    'justify-center',
+    'gap-1'
+  ]);
+  assert.deepEqual(recipes.paginationItemVariants, [
+    'box-border',
+    'inline-flex',
+    'min-h-10',
+    'min-w-10',
+    'items-center',
+    'justify-center',
+    'gap-2',
+    'rounded-md',
+    'border',
+    'border-solid',
+    'border-transparent',
+    'px-2',
+    'pointer-coarse:min-h-14',
+    'pointer-coarse:min-w-14',
+    'font-display',
+    'text-meta'
+  ]);
+  assert.deepEqual(recipes.paginationLinkVariants, [
+    'text-fg-secondary',
+    'no-underline',
+    'transition-colors',
+    'duration-(--duration-fast)',
+    'ease-(--ease-out)',
+    'motion-reduce:transition-none',
+    'hover:bg-surface-2',
+    'hover:text-fg-default',
+    'aria-[current=page]:border-state-selected',
+    'aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
+    'aria-[current=page]:shadow-[var(--shadow-edge-strong)]',
+    'aria-[current=page]:text-fg-default',
+    'focus-visible:outline-none',
+    'focus-visible:shadow-focus',
+    'aria-[current=page]:focus-visible:shadow-focus',
+    'forced-colors:focus-visible:outline-solid',
+    'forced-colors:focus-visible:outline-(length:--focus-width)',
+    'forced-colors:focus-visible:outline-[color:Highlight]',
+    'forced-colors:aria-[current=page]:outline-solid',
+    'forced-colors:aria-[current=page]:outline-(length:--focus-width)',
+    'forced-colors:aria-[current=page]:outline-[color:Highlight]',
+    'tabular-nums',
+    'uppercase'
+  ]);
+  assert.deepEqual(recipes.paginationEllipsisVariants, ['text-fg-muted']);
+  assert.deepEqual(recipes.paginationPlaceholderVariants, [
+    'uppercase',
+    'text-fg-secondary',
+    'data-[disabled]:opacity-45'
+  ]);
+  assert.deepEqual(recipes.paginationIconVariants, ['rtl:rotate-180']);
+  // Only the link recipe carries the selected-pill paint (R1), and only behind aria-current; the root, the row, the
+  // ellipsis and the arrows paint nothing, and no recipe moves, animates or scales.
+  const paint =
+    /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|duration|ease|transform|rounded)\b/;
+  for (const name of [
+    'paginationVariants',
+    'paginationListVariants',
+    'paginationEllipsisVariants',
+    'paginationIconVariants',
+    'paginationPlaceholderVariants'
+  ]) {
+    for (const utility of recipes[name]) {
+      assert.doesNotMatch(utility, paint, `${name} lists the paint or motion utility ${utility}`);
+    }
+  }
+  for (const utility of recipes.paginationLinkVariants.filter((name) =>
+    /state-selected|gradient-chip|edge-strong/.test(name)
+  )) {
+    assert.ok(utility.startsWith('aria-[current=page]:'), `${utility} must sit behind aria-current`);
+  }
+  for (const classes of Object.values(recipes)) {
+    for (const utility of classes) {
+      assert.doesNotMatch(utility, /(?:^|:)(?:animate|transform|translate|scale|skew)\b/, utility);
+    }
+  }
+  // It composes the exported Icon itself; no Surface, no Radix part and no part marker.
+  assert.deepEqual(
+    pagination.composedOf.map(({ name }) => name),
+    ['Icon']
+  );
+  assert.equal(pagination.composedOf[0].source, 'packages/ui/src/molecules/pagination/Pagination.tsx');
+  assert.deepEqual(pagination.parts, []);
+  assert.deepEqual(pagination.surfaceUsage, []);
+  // Two new conventions, approved by their own receipt; each lists Pagination as its only component.
+  for (const [id, name] of [
+    ['page-count', 'pageCount'],
+    ['page-href', 'getHref']
+  ]) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.ok(convention, id);
+    assert.equal(convention.name, name, id);
+    assert.equal(convention.status, 'approved', id);
+    assert.deepEqual(convention.components, ['Pagination'], id);
+  }
+  // The four reused conventions keep their approved status and list Pagination beside the other components.
+  for (const id of ['accessible-name', 'primary-value', 'localized-messages', 'navigation-intent']) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(convention.status, 'approved', id);
+    assert.ok(convention.components.includes('Pagination'), id);
+  }
+  assert.deepEqual(
+    artifact.catalog.find(({ name }) => name === 'Pagination'),
+    {
+      name: 'Pagination',
+      level: 'molecule',
+      package: '@egdev/ui',
+      radix: '— (native nav, list and anchors)',
+      composes: ['Icon'],
+      action: 'nuevo',
+      available: true
+    }
+  );
+});
+
 test('NowCard footer documents one optional StepMeter without a prop, part or composition change', () => {
   const artifact = read('packages/system/design-system.json');
   const card = artifact.components.find(({ name }) => name === 'NowCard');

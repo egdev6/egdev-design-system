@@ -18,6 +18,7 @@ const components = [
   ['Timeline', 'molecules/timeline'],
   ['Avatar', 'atoms/avatar'],
   ['NavList', 'molecules/nav-list'],
+  ['Pagination', 'molecules/pagination'],
   ['Button', 'atoms/button'],
   ['Carousel', 'molecules/carousel'],
   ['ButtonGroup', 'molecules/button-group'],
@@ -482,6 +483,14 @@ const expected: Record<string, Record<string, string | false>> = {
   avatar: { src: 'text', label: 'text', size: 'select', paused: 'boolean' },
   navlist: { label: 'text', items: false, onNavigate: false },
   breadcrumb: { label: 'text', items: false, onNavigate: false },
+  pagination: {
+    label: 'text',
+    value: 'number',
+    pageCount: 'number',
+    getHref: false,
+    onNavigate: false,
+    messages: false
+  },
   detailheader: {
     title: false,
     eyebrow: false,
@@ -871,6 +880,7 @@ const ownPropCounts: Record<string, number> = {
   searchtrigger: 3,
   navlist: 3,
   breadcrumb: 3,
+  pagination: 6,
   detailheader: 9,
   sociallinks: 8,
   sectionheader: 9,
@@ -2206,6 +2216,57 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'variant',
       'size',
       'tone'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Pagination required label text, the numeric page rows and three function-like rows without widgets or defaults', () => {
+    const { argTypes, args } = story('Pagination');
+    const tags = (name: string) =>
+      component('Pagination').__docgenInfo.props[name]?.tags as Record<string, string> | undefined;
+    expect(tags('getHref')?.controlReason).toMatch(/A function is not serializable; see Default and ClientRouting/);
+    expect(tags('onNavigate')?.controlReason).toMatch(/Callback functions are not serializable; see ClientRouting/);
+    expect(tags('messages')?.controlReason).toMatch(/The dictionary includes a formatter function; see Localized/);
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    // The two numeric rows are number widgets and required: the route owns them, so no default is invented.
+    for (const name of ['value', 'pageCount']) {
+      expect(argTypes[name]?.type, name).toMatchObject({ name: 'number', required: true });
+      expect(argTypes[name]?.control, name).toEqual({ type: 'number' });
+    }
+    // The three function-like rows stay documented with no widget: a function cannot be edited as a value.
+    expect(argTypes.getHref?.type).toMatchObject({ required: true });
+    for (const name of ['getHref', 'onNavigate', 'messages']) {
+      expect(argTypes[name]?.control, name).toBe(false);
+      expect(argTypes[name]?.table?.disable, name).toBeUndefined();
+    }
+    expect(argTypes.onNavigate?.type).toMatchObject({ required: false });
+    expect(argTypes.messages?.type).toMatchObject({ required: false });
+    // No @default exists, so the Default column stays empty everywhere.
+    for (const name of ['label', 'value', 'pageCount', 'getHref', 'onNavigate', 'messages']) {
+      expect(argTypes[name]?.table?.defaultValue, name).toBeUndefined();
+    }
+    // Documentation must not initialize any control just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Pagination', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'style',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone',
+      'defaultValue',
+      'onValueChange'
     ]) {
       expect(argTypes[prop], prop).toBeUndefined();
     }

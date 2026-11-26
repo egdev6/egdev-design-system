@@ -76,6 +76,7 @@ export * from './molecules/nav-list';
 export * from './molecules/notice';
 export * from './molecules/now-card';
 export * from './molecules/page-header';
+export * from './molecules/pagination';
 export type {
   PanelBodyProps,
   PanelFooterProps,

@@ -662,6 +662,17 @@
   {
     "actual": "—",
     "nivelActual": "—",
+    "nombre": "Pagination",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "— (native nav, list and anchors)",
+    "compone": "Icon",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/pagination/v0.1/spec.md): a named navigation landmark of crawlable links over a derived constant-width window (Previous, Next, the current page, ellipses) for long listings. The consumer owns the data slice, `pageCount`, `value` and `getHref`; no state, Radix primitive, stylesheet, ref or asChild. Browser and packed-consumer results are recorded in the [implementation evidence](components/pagination/v0.1/implementation-evidence.md); visual conformity is not evaluated."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
     "nombre": "EmptyState",
     "nivel": "molecule",
     "destino": "ui",
