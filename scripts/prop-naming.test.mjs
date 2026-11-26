@@ -866,7 +866,13 @@ const postReceiptUsages = [
       conventionId,
       source: 'packages/ui/src/molecules/empty-state/types.ts#EmptyStateProps'
     })
-  )
+  ),
+  // Breadcrumb #570 reuses three approved conventions as usages only: no new meaning, exception or receipt for them.
+  ...['collection-items', 'accessible-name', 'navigation-intent'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/breadcrumb/types.ts#BreadcrumbProps'
+  })),
+  { conventionId: 'accessible-name', source: 'packages/ui/src/molecules/breadcrumb/types.ts#BreadcrumbItem' }
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
 const postReceiptProposals = [
@@ -1888,6 +1894,63 @@ test('EmptyState reuses five approved conventions as usages only and binds its r
   // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
   const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
   assert.equal(own.length, 5);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  validate(registry);
+});
+
+test('Breadcrumb reuses three approved conventions as usages only and binds its reviewed source revision (#570)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/molecules/breadcrumb/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const reviewed = [
+    [
+      'collection-items',
+      'Breadcrumb',
+      'BreadcrumbProps',
+      'BreadcrumbItem[] (required; ordered from the root to the current page)'
+    ],
+    ['accessible-name', 'Breadcrumb', 'BreadcrumbProps', 'string (required navigation landmark name)'],
+    ['accessible-name', 'BreadcrumbItem', 'BreadcrumbItem', 'string (required)'],
+    [
+      'navigation-intent',
+      'Breadcrumb',
+      'BreadcrumbProps',
+      '(item: BreadcrumbItem, event: MouseEvent<HTMLAnchorElement>) => void'
+    ]
+  ];
+  // Every entry keeps its approved status and gains exactly its Breadcrumb usages: no new entry, exception or receipt.
+  for (const [id, component, symbol, type] of reviewed) {
+    const reused = registry.find((item) => item.id === id);
+    assert.equal(reused.status, 'approved', id);
+    assert.deepEqual(
+      reused.exceptions.filter(({ scope }) => scope.includes('Breadcrumb')),
+      [],
+      id
+    );
+    assert.deepEqual(
+      reused.usages.filter((usage) => usage.component === component),
+      [{ component, type, status: 'existing', source: { path, symbol, revision } }],
+      `${id} ${component}`
+    );
+    // The frozen receipts compare the registry without the reviewed post-receipt usages.
+    assert.deepEqual(
+      historicalRegistry([reused]).flatMap(({ usages }) => usages.filter((usage) => usage.source.path === path)),
+      [],
+      id
+    );
+  }
+  assert.deepEqual(
+    registry
+      .filter((item) => item.usages.some(({ source }) => source.path === path))
+      .map(({ id }) => id)
+      .sort(),
+    ['accessible-name', 'collection-items', 'navigation-intent']
+  );
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 4);
   for (const usage of own) {
     assert.equal(usage.source.revision, revision);
   }

@@ -960,6 +960,19 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · None (composes Dropzo
   - onValueChange: ((files: File[]) => void) \| ((files: File[]) => void); Called with the next full list after a user add or remove; in controlled mode it is a request. Called with the next full list after a user add or remove. (components[] · packages/ui/src/molecules/attachment-field/types.ts)
   - resetKey: string \| number; Reset token for transient feedback. Its value at mount does nothing; each later change (compared with `Object.is`) silently clears the rejection messages and empties the hidden status region, without remounting, moving focus or changing the list. Bump it after a save, even without a form. (components[] · packages/ui/src/molecules/attachment-field/types.ts)
   - value: File[]; Controlled attachments; requires `onValueChange`. The list changes only when the parent passes a new value. Omit to leave the list uncontrolled. (components[] · packages/ui/src/molecules/attachment-field/types.ts)
+### Breadcrumb
+catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native nav, ordered list and links)
+- Breadcrumb (components[] · packages/ui/src/molecules/breadcrumb/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - breadcrumbCurrentVariants base: font-sans → --font-sans
+    - breadcrumbCurrentVariants base: text-label-default → --text-label-default
+    - breadcrumbListVariants base: p-0 → --spacing-0
+    - breadcrumbListVariants base: gap-x-2 → --spacing-2
+    - breadcrumbListVariants base: gap-y-1 → --spacing-1
+    - breadcrumbStepVariants base: gap-2 → --spacing-2
+  - items: BreadcrumbItem[]; The trail, ordered from the root to the current page: the last supplied entry is the current page, rendered as text that is never a link, and every earlier entry is an ancestor link. Entries with a blank label, and ancestors without a non-empty href, are omitted with a development warning and nobody is promoted to current. A value that is not an array, an empty array or an array without a valid entry renders nothing. (components[] · packages/ui/src/molecules/breadcrumb/types.ts)
+  - label: string; Accessible name of the navigation landmark, never rendered visibly. Consumer-owned and localized: the component has no built-in text. A short noun such as "Breadcrumb" is enough because the navigation role is announced by itself, and the name must differ from every other landmark on the page. A blank, whitespace-only or non-string label warns in development and renders nothing, so a landmark is never left unnamed. (components[] · packages/ui/src/molecules/breadcrumb/types.ts)
+  - onNavigate: ((item: BreadcrumbItem, event: MouseEvent<HTMLAnchorElement, MouseEvent>) => void); Click notification of an ancestor link, with the original entry object and the React event; never called for the current page. For client routing, call preventDefault only on unmodified primary activations; modified clicks stay native. Absent means native navigation only. (components[] · packages/ui/src/molecules/breadcrumb/types.ts)
 ### ButtonGroup
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - ButtonGroup (components[] · packages/ui/src/molecules/button-group/types.ts)
@@ -3568,7 +3581,7 @@ Not exported:
 - absolute-deadline-text: deadlineText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - accent-line-break: accentBreak; approved; Heading, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
 - accepted-file-types: acceptedTypes; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
-- accessible-name: label; approved; AppIcon, AttachmentField, Avatar, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, StepMeter, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- accessible-name: label; approved; AppIcon, AttachmentField, Avatar, Breadcrumb, BreadcrumbItem, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, StepMeter, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - action-alternative-text: actionAltText; approved; Toast (propNaming[] · skills/_shared/prop-naming.json)
 - active-row: activeRowId; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - active-section-id: activeId; approved; SectionNav (propNaming[] · skills/_shared/prop-naming.json)
@@ -3591,7 +3604,7 @@ Not exported:
 - clock-initialization-message: initializingText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - close-auto-focus: onCloseAutoFocus; approved; PopoverContent (propNaming[] · skills/_shared/prop-naming.json)
 - collection-filtering: filtering; approved; CommandPalette (propNaming[] · skills/_shared/prop-naming.json)
-- collection-items: items; approved; CalendarGrid, Carousel, CommandPalette, FooterNavigation, GaugeGroup, Menu, MenuSubmenuItem, ModuleRail, NavList, ProjectCardCode, ProjectCardTags, SectionNav, SocialLinks, TabBar, Tabs, TerminalCardList, Timeline, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- collection-items: items; approved; Breadcrumb, CalendarGrid, Carousel, CommandPalette, FooterNavigation, GaugeGroup, Menu, MenuSubmenuItem, ModuleRail, NavList, ProjectCardCode, ProjectCardTags, SectionNav, SocialLinks, TabBar, Tabs, TerminalCardList, Timeline, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - committed-value-change: onValueCommit; approved; Slider (propNaming[] · skills/_shared/prop-naming.json)
 - compact-presentation: compact; approved; SearchTrigger (propNaming[] · skills/_shared/prop-naming.json)
 - condition-description: stateText; approved; Gauge, GaugeGroupRing (propNaming[] · skills/_shared/prop-naming.json)
@@ -3681,7 +3694,7 @@ Not exported:
 - message-summary: summary; approved; Notice, Toast (propNaming[] · skills/_shared/prop-naming.json)
 - modal-action-pending: pending; approved; AlertDialog, Dialog (propNaming[] · skills/_shared/prop-naming.json)
 - move-intent: onMove; approved; CalendarGrid (propNaming[] · skills/_shared/prop-naming.json)
-- navigation-intent: onNavigate; approved; CalendarGrid, Menu, ModuleRail, NavList, SectionNav, TabBar, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- navigation-intent: onNavigate; approved; Breadcrumb, CalendarGrid, Menu, ModuleRail, NavList, SectionNav, TabBar, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - new-tab-navigation: external; approved; Chip, Link, SocialLinkItem (propNaming[] · skills/_shared/prop-naming.json)
 - new-tab-notice: newTabText; approved; Chip, Link, SocialLinks (propNaming[] · skills/_shared/prop-naming.json)
 - numeric-display-help: help; approved; MeterRow (propNaming[] · skills/_shared/prop-naming.json)

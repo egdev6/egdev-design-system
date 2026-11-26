@@ -1042,6 +1042,109 @@ test('EmptyState publishes its five own props, the static unpainted part recipes
   );
 });
 
+test('Breadcrumb publishes its three own props, the six static part recipes, the entry type and the reused conventions (#570)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const breadcrumb = artifact.components.find(({ name }) => name === 'Breadcrumb');
+  assert.ok(breadcrumb, 'the artifact lists Breadcrumb');
+  assert.equal(breadcrumb.package, '@egdev/ui');
+  assert.equal(breadcrumb.source, 'packages/ui/src/molecules/breadcrumb/types.ts');
+  assert.deepEqual(
+    breadcrumb.props.map(({ name }) => name),
+    ['items', 'label', 'onNavigate']
+  );
+  const prop = (name) => breadcrumb.props.find((item) => item.name === name);
+  assert.deepEqual([prop('label').type, prop('label').required, prop('label').default], ['string', true, null]);
+  assert.deepEqual([prop('items').required, prop('items').default], [true, null]);
+  assert.deepEqual([prop('onNavigate').required, prop('onNavigate').default], [false, null]);
+  assert.match(prop('label').description, /never rendered visibly/);
+  // No content, role, accessible-name override, ref, asChild or className row: the landmark is named by label alone.
+  for (const name of [
+    'children',
+    'role',
+    'aria-label',
+    'aria-labelledby',
+    'dangerouslySetInnerHTML',
+    'ref',
+    'asChild',
+    'className'
+  ]) {
+    assert.ok(!breadcrumb.props.some((item) => item.name === name), `Breadcrumb must not publish ${name}`);
+  }
+  // No @classNameAllows tag: className supports the DS046 base placement list only, so no extra property is allowed.
+  assert.equal(Object.hasOwn(breadcrumb, 'classNameAllows'), false);
+  // Six private part recipes, built from static string literals: the approved inventory and nothing else.
+  assert.deepEqual(
+    breadcrumb.variants.map(({ name }) => name),
+    [
+      'breadcrumbCurrentVariants',
+      'breadcrumbLinkVariants',
+      'breadcrumbListVariants',
+      'breadcrumbSeparatorVariants',
+      'breadcrumbStepVariants',
+      'breadcrumbVariants'
+    ]
+  );
+  const recipes = Object.fromEntries(
+    breadcrumb.variants.map(({ name, classes }) => [name, classes.join(' ').split(/\s+/).filter(Boolean)])
+  );
+  assert.deepEqual(recipes.breadcrumbVariants, ['eg-breadcrumb', 'min-w-0', 'wrap-anywhere']);
+  assert.deepEqual(recipes.breadcrumbListVariants, [
+    'm-0',
+    'p-0',
+    'list-none',
+    'flex',
+    'flex-wrap',
+    'items-center',
+    'gap-x-2',
+    'gap-y-1'
+  ]);
+  assert.deepEqual(recipes.breadcrumbStepVariants, ['flex', 'min-h-14', 'min-w-0', 'items-center', 'gap-2']);
+  assert.deepEqual(recipes.breadcrumbLinkVariants, ['self-stretch']);
+  assert.deepEqual(recipes.breadcrumbCurrentVariants, ['font-sans', 'text-label-default', 'text-fg-default']);
+  assert.deepEqual(recipes.breadcrumbSeparatorVariants, ['self-center', '-rotate-90', 'text-fg-muted']);
+  // The trail paints nothing: no background, border, shadow, ring, outline, backdrop, filter or motion utility.
+  for (const [name, classes] of Object.entries(recipes)) {
+    for (const utility of classes) {
+      assert.doesNotMatch(
+        utility,
+        /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|duration|ease|transform|rounded)\b/,
+        `${name} lists the paint or motion utility ${utility}`
+      );
+    }
+  }
+  // It composes the exported Link and Icon itself; no Surface, no Radix part and no part marker.
+  assert.deepEqual(breadcrumb.composedOf.map(({ name }) => name).sort(), ['Icon', 'Link']);
+  for (const composed of breadcrumb.composedOf) {
+    assert.equal(composed.source, 'packages/ui/src/molecules/breadcrumb/Breadcrumb.tsx');
+  }
+  assert.deepEqual(breadcrumb.parts, []);
+  assert.deepEqual(breadcrumb.surfaceUsage, []);
+  // The entry type is a source-derived naming type owned by Breadcrumb, in the same source file.
+  const entry = artifact.types.find(({ name }) => name === 'BreadcrumbItem');
+  assert.ok(entry, 'the artifact lists the BreadcrumbItem naming type');
+  assert.equal(entry.owner, 'Breadcrumb');
+  assert.equal(entry.source, 'packages/ui/src/molecules/breadcrumb/types.ts');
+  // The three reused conventions keep their approved status and list Breadcrumb beside the other components.
+  for (const id of ['collection-items', 'accessible-name', 'navigation-intent']) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(convention.status, 'approved', id);
+    assert.ok(convention.components.includes('Breadcrumb'), id);
+  }
+  assert.ok(artifact.propNaming.find(({ id }) => id === 'accessible-name').components.includes('BreadcrumbItem'));
+  assert.deepEqual(
+    artifact.catalog.find(({ name }) => name === 'Breadcrumb'),
+    {
+      name: 'Breadcrumb',
+      level: 'molecule',
+      package: '@egdev/ui',
+      radix: '— (native nav, ordered list and links)',
+      composes: ['Link, Icon'],
+      action: 'nuevo',
+      available: true
+    }
+  );
+});
+
 test('NowCard footer documents one optional StepMeter without a prop, part or composition change', () => {
   const artifact = read('packages/system/design-system.json');
   const card = artifact.components.find(({ name }) => name === 'NowCard');
@@ -1752,6 +1855,7 @@ test('all L9 naming types retain their source and owner', () => {
   // Explicit owner inventory: the independent oracle for the builder's owner inference.
   // Every registry naming type must appear here, so a new type requires a reviewed owner.
   const owners = new Map([
+    ['BreadcrumbItem', 'Breadcrumb'],
     ['CalendarGridEntry', 'CalendarGrid'],
     ['CarouselItem', 'Carousel'],
     ['ChipGroupOption', 'ChipGroup'],

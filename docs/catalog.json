@@ -946,6 +946,17 @@
     "notas": "Implemented in @egdev/ui under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/31): two or three independent passive readings with a decorative transparent concentric diagram and ordered visible list. No aggregate or GaugeDock extension."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Breadcrumb",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "— (native nav, ordered list and links)",
+    "compone": "Link, Icon",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/breadcrumb/v0.1/spec.md): named navigation landmark (`label`) holding an ordered trail of `items` from the root to the current page: ancestors are Link `quiet` links, the last supplied entry is the current page as plain text marked `aria-current=\"page\"`, and decorative chevrons separate the steps. The consumer supplies localized entries, and invalid entries are omitted with a development warning. Wraps instead of truncating; no router integration, ref, asChild or stylesheet. Browser and packed-consumer results are recorded in the [implementation evidence](components/breadcrumb/v0.1/implementation-evidence.md); visual conformity is not evaluated."
+  },
+  {
     "actual": "Dialog",
     "nivelActual": "organismo",
     "nombre": "Dialog",

@@ -2207,6 +2207,26 @@
           "symbol": "StepMeterProps",
           "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
         }
+      },
+      {
+        "component": "Breadcrumb",
+        "type": "string (required navigation landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/breadcrumb/types.ts",
+          "symbol": "BreadcrumbProps",
+          "revision": "sha256:560c49e7700785789a5ca8893c4330ddd90a44338ec49862b79c42bfbcd75eeb"
+        }
+      },
+      {
+        "component": "BreadcrumbItem",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/breadcrumb/types.ts",
+          "symbol": "BreadcrumbItem",
+          "revision": "sha256:560c49e7700785789a5ca8893c4330ddd90a44338ec49862b79c42bfbcd75eeb"
+        }
       }
     ]
   },
@@ -4173,6 +4193,16 @@
           "symbol": "TopBarProps",
           "revision": "sha256:dac427123c08723af7978d2fa7ed288381347aab1c6caeaa5c7f8dccb879456d"
         }
+      },
+      {
+        "component": "Breadcrumb",
+        "type": "BreadcrumbItem[] (required; ordered from the root to the current page)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/breadcrumb/types.ts",
+          "symbol": "BreadcrumbProps",
+          "revision": "sha256:560c49e7700785789a5ca8893c4330ddd90a44338ec49862b79c42bfbcd75eeb"
+        }
       }
     ]
   },
@@ -5253,6 +5283,16 @@
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
           "revision": "sha256:dac427123c08723af7978d2fa7ed288381347aab1c6caeaa5c7f8dccb879456d"
+        }
+      },
+      {
+        "component": "Breadcrumb",
+        "type": "(item: BreadcrumbItem, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/breadcrumb/types.ts",
+          "symbol": "BreadcrumbProps",
+          "revision": "sha256:560c49e7700785789a5ca8893c4330ddd90a44338ec49862b79c42bfbcd75eeb"
         }
       }
     ]

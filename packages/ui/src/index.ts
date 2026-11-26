@@ -46,6 +46,7 @@ export { cn } from './lib/cn';
 export * from './molecules/alert-dialog';
 export * from './molecules/article-feature';
 export * from './molecules/attachment-field';
+export * from './molecules/breadcrumb';
 export * from './molecules/button-group';
 export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';

@@ -9,7 +9,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Acción | Componentes |
 |---|---|
-| nuevo | 32 |
+| nuevo | 33 |
 | mantener | 30 |
 | mover | 30 |
 | extraer | 12 |
@@ -21,7 +21,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 108 |
+| @egdev/ui | 109 |
 | @egdev/effects | 5 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -124,6 +124,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **CommunityCard** | CommunityCard (molécula) | — | Surface, Button; consumer-supplied mark slot | mover | Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/281): community article with a `surface-2` header band (public `Text` eyebrow role line + consumer named-or-decorative mark slot), generated display heading, free copy and one supplied `Button`/`Link` pinned with `mt-auto`. No avatar, wordmark artwork, stylesheet, ref or card-level interaction. |
 | **Carousel** | — | — (native scroll and bounded roving focus) | IconButton, Icon, ProgressBar, VisuallyHidden | extraer | Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/80): manually navigated read-only slides with stable string identities, bounded direction-aware keyboard navigation, native scrolling and background/media mouse dragging. v0.2 ([#420](https://github.com/egdev6/egdev-design-system/issues/420)) adds an opt-in full-width track with a visually hidden scrollbar and inset focus. Controlled requests wait for acceptance; settled user changes coordinate focus and polite status. v0.4 ([#557](https://github.com/egdev6/egdev-design-system/issues/557)) adds the opt-in `variant='current-emphasis'`: on the default track the current slide (`aria-current`) gets a brand border and glow on its transparent wrapper frame; `full-width` resolves to `default`; no coverflow depth. Structural layout by default; consumer Surface content owns Material. No autoplay, stylesheet, new dependencies or legacy TipsSlider migration. |
 | **GaugeGroup** | — | — (native group and meters) | Shared private Gauge geometry | nuevo | Implemented in @egdev/ui under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/31): two or three independent passive readings with a decorative transparent concentric diagram and ordered visible list. No aggregate or GaugeDock extension. |
+| **Breadcrumb** | — | — (native nav, ordered list and links) | Link, Icon | nuevo | Implemented React molecule under the [approved v0.1 contract](components/breadcrumb/v0.1/spec.md): named navigation landmark (`label`) holding an ordered trail of `items` from the root to the current page: ancestors are Link `quiet` links, the last supplied entry is the current page as plain text marked `aria-current="page"`, and decorative chevrons separate the steps. The consumer supplies localized entries, and invalid entries are omitted with a development warning. Wraps instead of truncating; no router integration, ref, asChild or stylesheet. Browser and packed-consumer results are recorded in the [implementation evidence](components/breadcrumb/v0.1/implementation-evidence.md); visual conformity is not evaluated. |
 | **Dialog** | Dialog (organismo) | Dialog | Surface, IconButton, Icon; consumer actions | mantener | Working-tree implementation under the approved v0.1 contract (#119) and v0.2 container and compact-body amendment (#409, #421): positioned host or viewport overlay and body padding presets. Radix modality remains document-wide; Surface owns panel paint. Browser, visual and packed-consumer verification remain pending. |
 | **AlertDialog** | — | AlertDialog | Surface, Icon, Button; internal Dialog recipes | nuevo | Working-tree implementation under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/120): decision-required modal with Cancel and Action, least-destructive initial focus and Escape dismissal. Radix owns interaction; Surface owns panel Material. Browser, visual and packed-consumer verification remain pending. |
 | **CommandPalette** | CommandPalette (organismo) | Dialog (native D4 combobox) | Surface, IconButton, Icon, Kbd | mantener | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/121): native combobox and listbox inside Radix Dialog; consumer owns global shortcuts and commands. Browser, visual and packed-consumer verification remain pending. |

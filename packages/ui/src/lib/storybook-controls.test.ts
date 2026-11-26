@@ -136,7 +136,8 @@ const components = [
   ['AppIcon', 'atoms/app-icon'],
   ['StepMeter', 'atoms/step-meter'],
   ['Prose', 'primitives/prose'],
-  ['EmptyState', 'molecules/empty-state']
+  ['EmptyState', 'molecules/empty-state'],
+  ['Breadcrumb', 'molecules/breadcrumb']
 ] as const;
 const expectedIconNames = [
   'github',
@@ -479,6 +480,7 @@ const expected: Record<string, Record<string, string | false>> = {
   appicon: { monogram: 'text', src: 'text', label: 'text', size: 'select' },
   avatar: { src: 'text', label: 'text', size: 'select', paused: 'boolean' },
   navlist: { label: 'text', items: false, onNavigate: false },
+  breadcrumb: { label: 'text', items: false, onNavigate: false },
   button: {
     children: false,
     variant: 'select',
@@ -856,6 +858,7 @@ const ownPropCounts: Record<string, number> = {
   radiogroup: 9,
   searchtrigger: 3,
   navlist: 3,
+  breadcrumb: 3,
   sociallinks: 8,
   sectionheader: 9,
   notice: 7,
@@ -2149,6 +2152,46 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'onClick',
       'ref',
       'asChild'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Breadcrumb required label text, the items and onNavigate rows without widgets or defaults', () => {
+    const { argTypes, args } = story('Breadcrumb');
+    const tags = (name: string) =>
+      component('Breadcrumb').__docgenInfo.props[name]?.tags as Record<string, string> | undefined;
+    expect(tags('items')?.controlReason).toMatch(/Structured entry data is not a scalar control; see Default/);
+    expect(tags('onNavigate')?.controlReason).toMatch(/Callback functions are not serializable; see ClientRouting/);
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    // The two rows stay documented with no widget: structured data and a callback cannot be edited as a value.
+    expect(argTypes.items?.type).toMatchObject({ required: true });
+    expect(argTypes.items?.control).toBe(false);
+    expect(argTypes.items?.table?.disable).toBeUndefined();
+    expect(argTypes.items?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.onNavigate?.type).toMatchObject({ required: false });
+    expect(argTypes.onNavigate?.control).toBe(false);
+    expect(argTypes.onNavigate?.table?.disable).toBeUndefined();
+    expect(argTypes.onNavigate?.table?.defaultValue).toBeUndefined();
+    // Documentation must not initialize any control just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Breadcrumb', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone'
     ]) {
       expect(argTypes[prop], prop).toBeUndefined();
     }

@@ -769,6 +769,96 @@ describe('Storybook TypeScript docgen contract', () => {
       /\b(?:argTypes|play)\s*:/
     );
   });
+  it('extracts Breadcrumb own props with their annotations, the shown native rows and the dropped boundaries (BC-16)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(source('molecules/breadcrumb/Breadcrumb.tsx'))
+      .find(({ displayName }) => displayName === 'Breadcrumb');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = { label: 'text', items: 'false', onNavigate: 'false' };
+    const file = ast(source('molecules/breadcrumb/types.ts'));
+    const own = ownProps(file, ['BreadcrumbProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(['label', 'items', 'onNavigate']);
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      // No @default anywhere: the absence and omission rules live in the description bodies.
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(false);
+      expect((props[name]?.tags as Record<string, string> | undefined)?.control, name).toBe(controls[name]);
+      expect(props[name]?.defaultValue, name).toBeNull();
+    }
+    // The entry type carries its own two annotated fields: both text controls, neither with a default.
+    const entry = ownProps(file, ['BreadcrumbItem']);
+    expect(entry.map((property) => property.name.getText(file))).toEqual(['label', 'href']);
+    for (const declaration of entry) {
+      const tags = ts.getJSDocTags(declaration);
+      const name = declaration.name.getText(file);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        `BreadcrumbItem.${name}`
+      ).toEqual(['text']);
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        `BreadcrumbItem.${name}`
+      ).toBe(false);
+    }
+    expect(props.label).toMatchObject({ required: true, type: { name: 'string' } });
+    expect(props.items?.required).toBe(true);
+    expect(props.onNavigate?.required).toBe(false);
+    const reasonOf = (name: string) => (props[name]?.tags as Record<string, string> | undefined)?.controlReason;
+    expect(reasonOf('items')).toMatch(/Structured entry data is not a scalar control; see .*Default.*Wrapping/);
+    expect(reasonOf('onNavigate')).toMatch(/Callback functions are not serializable; see ClientRouting/);
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The component and its types are public; the six recipes and the hook stay internal.
+    expect(publicAPI.Breadcrumb).toBeDefined();
+    for (const name of [
+      'useBreadcrumb',
+      'breadcrumbVariants',
+      'breadcrumbListVariants',
+      'breadcrumbStepVariants',
+      'breadcrumbLinkVariants',
+      'breadcrumbCurrentVariants',
+      'breadcrumbSeparatorVariants'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('molecules/breadcrumb/index.ts'), 'utf8')).not.toMatch(/Variants|useBreadcrumb/);
+    const stories = source('molecules/breadcrumb/Breadcrumb.stories.tsx');
+    expect(exportedStoryNames(ast(stories))).toEqual([
+      'Default',
+      'SingleStep',
+      'Wrapping',
+      'OnSurfaces',
+      'ClientRouting'
+    ]);
+    expect(readFileSync(stories, 'utf8')).toMatch(/title: 'Molecules\/Breadcrumb'/);
+    expect(readFileSync(stories, 'utf8')).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
   it('extracts NotesBoard parts and sticky metadata', () => {
     const extracted = parser.parse(source('organisms/notes-board/NotesBoard.tsx'));
     const root = extracted.find(({ displayName }) => displayName === 'NotesBoard');
@@ -2239,6 +2329,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/alert-dialog',
       './molecules/article-feature',
       './molecules/attachment-field',
+      './molecules/breadcrumb',
       './molecules/button-group',
       './molecules/carousel',
       './molecules/chip-group',
@@ -2322,6 +2413,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'BlogGridFeature',
       'BlogGridRow',
       'BlogGridRows',
+      'Breadcrumb',
       'Button',
       'ButtonGroup',
       'CalendarGrid',
