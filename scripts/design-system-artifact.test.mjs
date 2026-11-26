@@ -291,6 +291,50 @@ test('SectionNav keeps its ten props, documents the zero-padded numbers and publ
   }
 });
 
+test('HomeTemplateAnchor publishes its box geometry as classNameAllows and no other effects entry changes (#566)', () => {
+  const { components } = read('packages/system/design-system.json');
+  const effects = components.filter((item) => item.package === '@egdev/effects');
+  assert.deepEqual(effects.map(({ name }) => name).sort(), [
+    'AmbientBackground',
+    'HomeTemplate',
+    'HomeTemplateAnchor',
+    'Isotipo3D',
+    'ScrollReveal'
+  ]);
+  const anchor = effects.find(({ name }) => name === 'HomeTemplateAnchor');
+  assert.deepEqual(anchor.classNameAllows, [
+    'aspect-ratio',
+    'block-size',
+    'height',
+    'inline-size',
+    'max-block-size',
+    'max-height',
+    'max-inline-size',
+    'max-width',
+    'min-block-size',
+    'min-height',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
+  // The tag adds no prop row: zone stays the only own prop and the root keeps its three.
+  assert.deepEqual(
+    anchor.props.map(({ name }) => name),
+    ['zone']
+  );
+  assert.deepEqual(
+    effects.find(({ name }) => name === 'HomeTemplate').props.map(({ name }) => name),
+    ['children', 'onZoneChange', 'zoneTable']
+  );
+  for (const item of effects) {
+    if (item.name !== 'HomeTemplateAnchor') {
+      assert.ok(!Object.hasOwn(item, 'classNameAllows'), `${item.name} has no published allowance`);
+    }
+    assert.ok(!JSON.stringify(item.props).includes('@classNameAllows'), item.name);
+    assert.ok(!JSON.stringify(item.parts).includes('@classNameAllows'), item.name);
+  }
+});
+
 test('classNameAllows publishes sorted unique CSS properties on roots and their own or shared parts', () => {
   const result = artifactWithTags([
     {
@@ -444,6 +488,21 @@ test('classNameAllows preserves the reviewed component and part inventory', () =
   const expected = new Map(widthComponents.map((name) => [name, widths]));
   expected.set('SelectTile', ['grid-template-columns', ...widths]);
   expected.set('TopBar', ['z-index']);
+  expected.set('HomeTemplateAnchor', [
+    'aspect-ratio',
+    'block-size',
+    'height',
+    'inline-size',
+    'max-block-size',
+    'max-height',
+    'max-inline-size',
+    'max-width',
+    'min-block-size',
+    'min-height',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
   const tagged = components.filter((item) => Object.hasOwn(item, 'classNameAllows'));
   assert.deepEqual(
     tagged.map(({ name }) => name),

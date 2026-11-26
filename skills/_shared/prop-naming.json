@@ -75,7 +75,7 @@
         "source": {
           "path": "packages/effects/src/home-template/types.ts",
           "symbol": "HomeTemplateProps.zoneTable",
-          "revision": "sha256:ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983"
+          "revision": "sha256:7a2ebcff1f56f09b5aa6c2013f22f9f307549f8261ecb1d93664c8eef7732d3e"
         }
       }
     ]
@@ -102,7 +102,7 @@
         "source": {
           "path": "packages/effects/src/home-template/types.ts",
           "symbol": "HomeTemplateAnchorProps.zone",
-          "revision": "sha256:ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983"
+          "revision": "sha256:7a2ebcff1f56f09b5aa6c2013f22f9f307549f8261ecb1d93664c8eef7732d3e"
         }
       }
     ]
@@ -129,7 +129,7 @@
         "source": {
           "path": "packages/effects/src/home-template/types.ts",
           "symbol": "HomeTemplateProps.onZoneChange",
-          "revision": "sha256:ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983"
+          "revision": "sha256:7a2ebcff1f56f09b5aa6c2013f22f9f307549f8261ecb1d93664c8eef7732d3e"
         }
       }
     ]

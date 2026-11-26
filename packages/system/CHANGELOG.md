@@ -4,6 +4,8 @@
 
 ### Added
 
+- The source-derived artifact lists `classNameAllows` for `HomeTemplateAnchor` (the thirteen published width, height
+  and aspect-ratio properties); no prop, recipe or other entry changes. (#566)
 - The source-derived artifact and reference include SectionNav's number and label recipes and the `items` description
   of its zero-padded numbers; existing props are unchanged. (#563)
 - The artifact and design reference include Footer's `wrap` and `register` props, its `register` recipe axis and

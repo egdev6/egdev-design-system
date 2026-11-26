@@ -183,7 +183,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **HomeTemplate** | HomeTemplate (plantilla) | — | Private Isotipo3D and AmbientBackground engines; consumer content | mover | Implemented React template in @egdev/effects under the [approved v0.1 plan](components/home-template/v0.1/implementation-plan.md): consumer-defined zone choreography and measured decorative anchors with fail-open fallback. Browser and packed-consumer verification remain pending. |
+| **HomeTemplate** | HomeTemplate (plantilla) | — | Private Isotipo3D and AmbientBackground engines; consumer content | mover | Implemented React template in @egdev/effects under the [approved v0.1 plan](components/home-template/v0.1/implementation-plan.md): consumer-defined zone choreography and measured decorative anchors with fail-open fallback. v0.2 ([#566](https://github.com/egdev6/egdev-design-system/issues/566)) publishes the `HomeTemplateAnchor` `className` geometry contract (`@classNameAllows`), and `egdev-ds` DS046 honors it from `@egdev/cli` 0.5.0. Browser and packed-consumer verification remain pending. |
 
 ## Mando
 

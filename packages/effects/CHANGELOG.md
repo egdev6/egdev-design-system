@@ -8,6 +8,10 @@ a local tarball from `pnpm release:pack`.
 
 - No code changes. Peer ranges follow `@egdev/ui` 0.11.0 so the effects tarball matches the current
   release set.
+- `HomeTemplateAnchor` publishes its `className` geometry contract with `@classNameAllows`: width, height, their
+  minimum and maximum constraints, the logical sizes and `aspect-ratio`, so a consumer can size the measured box to
+  its media slot and `egdev-ds doctor` (`@egdev/cli` 0.5.0) honors it. Documentation and published metadata only:
+  no runtime change. (#566)
 
 ## 0.2.11
 
