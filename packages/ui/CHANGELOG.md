@@ -8,6 +8,12 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `Breadcrumb` shows where the reader is on a detail page: a named navigation landmark (required `label`) holding an
+  ordered trail of `items`, where every ancestor is a link (`href`, optional `onNavigate`) and the last entry is the
+  current page, plain text marked `aria-current="page"`, with decorative chevrons between steps. The consumer supplies
+  the entries ordered from the root to the current page and the wording and language of `label` and every entry
+  label; invalid entries are omitted with a development warning. Long trails wrap instead of truncating, and
+  Breadcrumb adds no routing, ref or `asChild`. (#570)
 - `EmptyState` shows that a listing or a filter combination returned nothing: a native heading (`title`, rank 2 to 6,
   default 3), an optional plain-text `description`, an optional decorative `icon` and one recovery `actions` Button or
   Link, on the host backdrop with no card, border or shadow. It is passive: it renders no live region and never moves

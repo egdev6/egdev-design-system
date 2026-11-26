@@ -4,6 +4,9 @@
 
 ### Added
 
+- The source-derived artifact and reference include `Breadcrumb` (its `items`, `label` and `onNavigate` props, the
+  `BreadcrumbItem` entry type and its static recipes) and its usages of the approved `accessible-name`,
+  `collection-items` and `navigation-intent` conventions. (#570)
 - The source-derived artifact and reference include `EmptyState` (its props, static recipes and `className`
   allowance) and its five reused naming conventions. (#573)
 - The source-derived artifact and reference include `Prose` (its props and static descendant recipe), the
