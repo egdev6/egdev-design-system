@@ -35,6 +35,7 @@ export * from './atoms/slider';
 export * from './atoms/spinner';
 export * from './atoms/stat';
 export * from './atoms/status-dot';
+export * from './atoms/step-meter';
 export * from './atoms/switch';
 export * from './atoms/textarea';
 export * from './atoms/toggle';

@@ -553,6 +553,107 @@ test('ProjectCard statusBadge is an optional source-derived slot with three priv
   assert.deepEqual(naming.components, ['NowCard', 'ProjectCard']);
 });
 
+test('StepMeter publishes three source-derived props, two private recipes and the proposed step-count convention', () => {
+  const artifact = read('packages/system/design-system.json');
+  const meter = artifact.components.find(({ name }) => name === 'StepMeter');
+  assert.ok(meter);
+  assert.equal(meter.package, '@egdev/ui');
+  assert.equal(meter.source, 'packages/ui/src/atoms/step-meter/types.ts');
+  assert.deepEqual(
+    meter.props.map(({ name }) => name),
+    ['label', 'steps', 'value']
+  );
+  const label = meter.props.find(({ name }) => name === 'label');
+  const steps = meter.props.find(({ name }) => name === 'steps');
+  const value = meter.props.find(({ name }) => name === 'value');
+  assert.deepEqual([label.type, label.required, label.default], ['string', true, null]);
+  assert.deepEqual([value.type, value.required, value.default], ['number', true, null]);
+  assert.deepEqual([steps.type, steps.required, steps.default], ['number', false, '4']);
+  assert.match(label.description, /Accessible name of the image, never rendered visibly/);
+  assert.match(value.description, /floored to an integer and clamped/);
+  assert.match(steps.description, /integer from 1 to 10/);
+  for (const name of [
+    'children',
+    'role',
+    'aria-label',
+    'aria-labelledby',
+    'aria-hidden',
+    'aria-live',
+    'title',
+    'tabIndex'
+  ]) {
+    assert.ok(!meter.props.some((prop) => prop.name === name), `StepMeter must not publish ${name}`);
+  }
+  assert.deepEqual(
+    meter.variants.map(({ name }) => name),
+    ['stepMeterStepVariants', 'stepMeterVariants']
+  );
+  const step = new Set(
+    meter.variants
+      .find(({ name }) => name === 'stepMeterStepVariants')
+      .classes.join(' ')
+      .split(/\s+/)
+  );
+  for (const utility of [
+    'eg-step-meter__step',
+    'w-3.5',
+    'h-3.75',
+    '[clip-path:polygon(0_0,100%_47.6%,100%_100%,0_52.4%)]',
+    'bg-alpha-red-22',
+    'data-[state=filled]:bg-fg-brand-default',
+    'transition-none',
+    'forced-colors:forced-color-adjust-none',
+    'forced-colors:data-[state=filled]:bg-[color:CanvasText]',
+    'forced-colors:data-[state=empty]:bg-transparent'
+  ]) {
+    assert.ok(step.has(utility), `The step recipe lists ${utility}`);
+  }
+  // The atom imports neither Surface nor Pixel and has no parts, no stylesheet role and no className allowance.
+  assert.deepEqual(meter.parts, []);
+  assert.deepEqual(meter.composedOf, []);
+  assert.deepEqual(meter.surfaceUsage, []);
+  assert.equal(Object.hasOwn(meter, 'classNameAllows'), false);
+  const naming = artifact.propNaming.find(({ id }) => id === 'step-count');
+  assert.ok(naming);
+  assert.equal(naming.name, 'steps');
+  assert.equal(naming.status, 'proposed');
+  assert.deepEqual(naming.components, ['StepMeter']);
+  for (const id of ['accessible-name', 'primary-value']) {
+    const reused = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(reused.status, 'approved', id);
+    assert.ok(reused.components.includes('StepMeter'), id);
+  }
+});
+
+test('NowCard footer documents one optional StepMeter without a prop, part or composition change', () => {
+  const artifact = read('packages/system/design-system.json');
+  const card = artifact.components.find(({ name }) => name === 'NowCard');
+  assert.ok(card);
+  // v0.3 is documentation only: the card gains no prop, no part and no composition edge.
+  assert.deepEqual(
+    card.props.map(({ name }) => name),
+    ['children', 'level', 'size', 'statusBadge', 'title']
+  );
+  assert.deepEqual(
+    card.parts.map(({ name }) => name),
+    ['NowCardBody', 'NowCardDetail', 'NowCardFooter']
+  );
+  assert.deepEqual(card.composedOf, []);
+  assert.deepEqual(card.classNameAllows, [
+    'inline-size',
+    'max-inline-size',
+    'max-width',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
+  const footer = card.parts.find(({ name }) => name === 'NowCardFooter');
+  assert.match(footer.children, /optionally one StepMeter/);
+  assert.match(footer.children, /at most one other child/);
+  assert.match(footer.children, /never inspects, reorders or limits its children/);
+  assert.ok(!artifact.components.some(({ name }) => name === 'NowCardMeter'));
+});
+
 test('Heading and Text expose only their own and shared recipes', () => {
   const artifact = read('packages/system/design-system.json');
   const heading = artifact.components.find(({ name }) => name === 'Heading');

@@ -858,6 +858,124 @@ test('Pixel package SSR renders empty hidden spans in each state', async () => {
   }
 });
 
+test('StepMeter ships all scanned utilities, the clip-path literal and both forced-colors rules without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/step-meter/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size >= 15, 'The two StepMeter recipes must expose their static utilities');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing StepMeter utility ${name}`);
+    }
+  }
+  // Geometry: 11.2 x 12 px from the token spacing unit (3.5 and 3.75 steps of --space-1) and the approved slant.
+  assert.match(utilities, /\.w-3\\\.5\s*\{[^}]*width:\s*calc\(var\(--space-1\)\s*\*\s*3\.5\)/);
+  assert.match(utilities, /\.h-3\\\.75\s*\{[^}]*height:\s*calc\(var\(--space-1\)\s*\*\s*3\.75\)/);
+  assert.match(utilities, /clip-path:\s*polygon\(0\s+0,\s*100%\s+47\.6%,\s*100%\s+100%,\s*0\s+52\.4%\)/);
+  // Paint: the two token fills, with the filled state read from data-state.
+  assert.match(utilities, /\.bg-alpha-red-22\s*\{[^}]*background-color:\s*var\(--color-alpha-red-22\b/);
+  assert.match(
+    utilities,
+    /\.data-\\\[state\\=filled\\\]\\:bg-fg-brand-default\[data-state="?filled"?\]\s*\{[^}]*background-color:\s*var\(--color-fg-brand-default\b/
+  );
+  // Forced colors: filled steps paint CanvasText, empty steps are not painted, author colors are honoured.
+  const forced = [...utilities.matchAll(/@media\s*\(forced-colors:\s*active\)\s*\{/g)]
+    .map(({ index }) => cssBlock(utilities.slice(index), /@media\s*\(forced-colors:\s*active\)\s*\{/))
+    .join('\n');
+  assert.match(forced, /\.forced-colors\\:forced-color-adjust-none\s*\{[^}]*forced-color-adjust:\s*none/);
+  assert.match(
+    forced,
+    /\.forced-colors\\:data-\\\[state\\=filled\\\]\\:bg-\\\[color\\:CanvasText\\\]\[data-state="?filled"?\]\s*\{[^}]*background-color:\s*CanvasText/
+  );
+  assert.match(
+    forced,
+    /\.forced-colors\\:data-\\\[state\\=empty\\\]\\:bg-transparent\[data-state="?empty"?\]\s*\{[^}]*background-color:\s*transparent/
+  );
+  assert.match(utilities, /\.transition-none\s*\{[^}]*transition-property:\s*none/);
+  // No stylesheet: nothing in the shipped CSS selects the StepMeter markers, and the legacy meter rules stay apart.
+  assert.doesNotMatch(css, /eg-step-meter/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-now-card__meter/);
+  assert.doesNotMatch(css, /\.eg-now-card__meter[^{]*(?:\.eg-step-meter|\[data-state)/);
+});
+
+test('StepMeter package SSR renders a named image of presentational steps and nothing for invalid input', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.StepMeter, 'function');
+  for (const name of ['stepMeterVariants', 'stepMeterStepVariants', 'useStepMeter']) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to StepMeter`);
+  }
+  for (const [value, steps, filled, total] of [
+    [0, undefined, 0, 4],
+    [3, undefined, 3, 4],
+    [9, undefined, 4, 4],
+    [2.9, 6, 2, 6],
+    [4, 11, 4, 4],
+    [1, 1, 1, 1],
+    [10, 10, 10, 10]
+  ]) {
+    const dom = new JSDOM(renderToString(createElement(exported.StepMeter, { label: 'High progress', value, steps })));
+    try {
+      const image = dom.window.document.querySelector('span.eg-step-meter');
+      assert.ok(image);
+      assert.equal(image.getAttribute('role'), 'img');
+      assert.equal(image.getAttribute('aria-label'), 'High progress');
+      assert.equal(image.hasAttribute('data-state'), false);
+      assert.equal(image.hasAttribute('tabindex'), false);
+      const parts = [...image.children];
+      assert.equal(parts.length, total);
+      assert.deepEqual(
+        parts.map((part) => part.getAttribute('data-state')),
+        Array.from({ length: total }, (_, position) => (position < filled ? 'filled' : 'empty'))
+      );
+      for (const part of parts) {
+        assert.equal(part.tagName, 'SPAN');
+        assert.ok(part.classList.contains('eg-step-meter__step'));
+        assert.equal(part.childNodes.length, 0);
+        assert.equal(part.hasAttribute('role'), false);
+        assert.equal(part.hasAttribute('style'), false);
+      }
+    } finally {
+      dom.window.close();
+    }
+  }
+  // An invalid label or value renders nothing; the development warning is silenced here, not asserted.
+  const warn = console.warn;
+  console.warn = () => undefined;
+  try {
+    assert.equal(renderToString(createElement(exported.StepMeter, { label: '  ', value: 1 })), '');
+    assert.equal(renderToString(createElement(exported.StepMeter, { label: 'High progress', value: Number.NaN })), '');
+  } finally {
+    console.warn = warn;
+  }
+});
+
 test('NotesBoard ships every scanned utility and bounded responsive resets', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -5975,6 +6093,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Stack',
       'Stat',
       'StatusDot',
+      'StepMeter',
       'Surface',
       'Switch',
       'TabBar',
@@ -6528,6 +6647,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'StatusDot',
     'StatusDotProps',
     'StatusDotState',
+    'StepMeter',
+    'StepMeterProps',
     'Surface',
     'SurfaceElevation',
     'SurfacePadding',
@@ -6899,6 +7020,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'StatusDotProps',
     'StatusDotState',
     'statusDotVariants',
+    'StepMeter',
+    'StepMeterProps',
     'Stat',
     'StatProps',
     'statVariants',

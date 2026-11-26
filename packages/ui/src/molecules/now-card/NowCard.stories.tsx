@@ -3,6 +3,7 @@ import { Badge } from '../../atoms/badge';
 import { Icon } from '../../atoms/icon';
 import { IconButton } from '../../atoms/icon-button';
 import { Link } from '../../atoms/link';
+import { StepMeter } from '../../atoms/step-meter';
 import { NowCard, NowCardBody, NowCardDetail, NowCardFooter } from './NowCard';
 
 /**
@@ -119,6 +120,80 @@ export const WithNextDate: Story = {
         <IconButton label='Open stream' variant='outline' icon={<Icon name='twitch' />} />
       </NowCardFooter>
     </NowCard>
+  )
+};
+
+/**
+ * A footer may hold one StepMeter beside its supporting detail or action: the companion sits on the leading edge and
+ * the meter on the trailing edge. The meter is an informative named image, so its label states the level in words
+ * and does not repeat the card title. The card never inspects, reorders or limits its footer children, so keeping at
+ * most one other child next to the meter is the consumer's rule. The card renders no meter itself and has no prop
+ * for it.
+ */
+export const WithStepMeter: Story = {
+  render: () => (
+    <div className='grid gap-4'>
+      <NowCard
+        title='Currently building'
+        statusBadge={
+          <Badge tone='brand' variant='soft'>
+            Building
+          </Badge>
+        }
+      >
+        <NowCardBody>
+          <p>Porting the web catalog molecules into the design system.</p>
+        </NowCardBody>
+        <NowCardFooter>
+          <Link href='#building' variant='underlined'>
+            Follow along
+          </Link>
+          <StepMeter label='High progress' value={3} />
+        </NowCardFooter>
+      </NowCard>
+      <NowCard title='Currently streaming'>
+        <NowCardBody>
+          <p>Live coding session on the design system.</p>
+        </NowCardBody>
+        <NowCardFooter>
+          <IconButton label='Open stream' variant='outline' icon={<Icon name='twitch' />} />
+          <StepMeter label='Low progress' value={1} />
+        </NowCardFooter>
+      </NowCard>
+      <NowCard title='Currently shipping'>
+        <NowCardBody>
+          <p>Releasing the first public version.</p>
+        </NowCardBody>
+        <NowCardFooter>
+          <NowCardDetail>
+            Released <b>v0.1</b>
+          </NowCardDetail>
+          <StepMeter label='Full progress' value={4} />
+        </NowCardFooter>
+      </NowCard>
+      <NowCard title='Currently exploring' size='sm'>
+        <NowCardBody>
+          <p>Compact strip density with a link and a meter.</p>
+        </NowCardBody>
+        <NowCardFooter>
+          <Link href='#exploring' variant='underlined'>
+            Follow along
+          </Link>
+          <StepMeter label='High progress' value={3} />
+        </NowCardFooter>
+      </NowCard>
+      <NowCard title='Currently writing' size='sm'>
+        <NowCardBody>
+          <p>Another compact card at an earlier level.</p>
+        </NowCardBody>
+        <NowCardFooter>
+          <Link href='#writing' variant='underlined'>
+            Read the draft
+          </Link>
+          <StepMeter label='Low progress' value={1} />
+        </NowCardFooter>
+      </NowCard>
+    </div>
   )
 };
 

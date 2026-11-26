@@ -844,6 +844,11 @@ const postReceiptUsages = [
   ].map(([conventionId, prop]) => ({
     conventionId,
     source: `packages/ui/src/templates/web-template/types.ts#WebTemplateProps.${prop}`
+  })),
+  // StepMeter #556 reuses two approved conventions as usages only: no new meaning, exception or receipt for them.
+  ...['accessible-name', 'primary-value'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/step-meter/types.ts#StepMeterProps'
   }))
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
@@ -889,7 +894,9 @@ const postReceiptProposals = [
   'modal-action-pending',
   // Dialog v0.4 proposes two component-scoped concepts without global naming approval.
   'dialog-title-overflow',
-  'dialog-action-placement'
+  'dialog-action-placement',
+  // StepMeter v0.1 proposes the step total; it stays proposed until a receipt binds its exact content.
+  'step-count'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1707,6 +1714,54 @@ test('Dialog sheet concepts remain proposed and bind every reviewed source revis
   validate(registry);
 });
 
+test('StepMeter step count stays proposed, reuses two approved conventions and binds every reviewed source revision', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/atoms/step-meter/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const source = { path, symbol: 'StepMeterProps', revision };
+  const entry = registry.find(({ id }) => id === 'step-count');
+  assert.ok(entry);
+  assert.equal(entry.name, 'steps');
+  assert.equal(entry.meaning, 'Total number of discrete steps of a stepped scale.');
+  assert.equal(
+    entry.whenToUse,
+    'A passive stepped indicator lets the consumer choose how many steps its scale has, within a bounded range, while the filled count is supplied separately as the primary value.'
+  );
+  assert.equal(
+    entry.avoid,
+    'Item or entry counts, display overflow thresholds, step increments of a continuous control, and wizard or navigation step lists.'
+  );
+  // Convention approval is separate from the spec approval: no receipt exists, so the entry is only proposed.
+  assert.equal(entry.status, 'proposed');
+  assert.equal(entry.approval, null);
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  assert.deepEqual(entry.usages, [
+    { component: 'StepMeter', type: 'number (optional; integer 1-10, default 4)', status: 'existing', source }
+  ]);
+  assert.deepEqual(historicalRegistry([entry]), []);
+  // The two reused entries keep their approved status and gain exactly one StepMeter usage each.
+  for (const [id, type] of [
+    ['accessible-name', 'string (required)'],
+    ['primary-value', 'number (required; floored and clamped to 0 to steps)']
+  ]) {
+    const reused = registry.find((item) => item.id === id);
+    assert.equal(reused.status, 'approved', id);
+    const usages = reused.usages.filter(({ component }) => component === 'StepMeter');
+    assert.deepEqual(usages, [{ component: 'StepMeter', type, status: 'existing', source }], id);
+  }
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 3);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  const marked = structuredClone(registry);
+  marked.find(({ id }) => id === 'step-count').status = 'approved';
+  assert.throws(() => validate(marked), /approval/i);
+  validate(registry);
+});
+
 test('Text truncation binds its scoped owner approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
@@ -2250,8 +2305,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // PhotoFrame fit adds one approved convention (image-fit).
   // AttachmentField v0.2 adds the approved reset token; Text v0.3 adds truncation.
   // AlertDialog v0.2 adds its independently approved pending convention; Dialog v0.4 proposes two more.
-  assert.equal(actual.length, 184);
-  assert.equal(beforeIndicatorConventions(actual).length, 181);
+  // StepMeter v0.1 proposes the step total.
+  assert.equal(actual.length, 185);
+  assert.equal(beforeIndicatorConventions(actual).length, 182);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

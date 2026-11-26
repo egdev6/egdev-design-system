@@ -94,6 +94,8 @@ import { AppIcon } from '@egdev/ui';
 import type { AppIconProps, AppIconSize } from '@egdev/ui';
 import { Pixel } from '@egdev/ui';
 import type { PixelProps, PixelState } from '@egdev/ui';
+import { StepMeter } from '@egdev/ui';
+import type { StepMeterProps } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -563,6 +565,57 @@ const pixelInvalid: PixelProps = { state: 'unknown' };
 // @ts-expect-error Recipe is private.
 type PixelPrivate = (typeof import('@egdev/ui'))['pixelVariants'];
 export type PixelNegatives = [typeof pixelRole, typeof pixelHidden, typeof pixelData, typeof pixelChildren, typeof pixelHtml, typeof pixelLabel, typeof pixelLabelledBy, typeof pixelTab, typeof pixelEditable, typeof pixelClick, typeof pixelInvalid, PixelPrivate];
+
+export const stepMeterProps: StepMeterProps = { label: 'High progress', value: 3, id: 'packed-step-meter', 'aria-describedby': 'packed-hint', className: 'ms-auto' };
+export function StepMeterSamples() {
+  return createElement(Fragment, null,
+    createElement(StepMeter, stepMeterProps),
+    createElement(StepMeter, { label: 'Full progress', value: 6, steps: 6 }),
+    createElement(StepMeter, { label: 'Fractional progress', value: 2.9, steps: 10 }));
+}
+// @ts-expect-error The accessible name is required.
+const stepMeterMissingLabel: StepMeterProps = { value: 1 };
+// @ts-expect-error The level is required.
+const stepMeterMissingValue: StepMeterProps = { label: 'x' };
+// @ts-expect-error The level is a number, never a string.
+const stepMeterStringValue: StepMeterProps = { ...stepMeterProps, value: '3' };
+// @ts-expect-error The total is a number, never a string.
+const stepMeterStringSteps: StepMeterProps = { ...stepMeterProps, steps: '4' };
+// @ts-expect-error The image role is protected.
+const stepMeterRole: StepMeterProps = { ...stepMeterProps, role: 'button' };
+// @ts-expect-error The label is the only source of the accessible name.
+const stepMeterAriaLabel: StepMeterProps = { ...stepMeterProps, 'aria-label': 'x' };
+// @ts-expect-error The label is the only source of the accessible name.
+const stepMeterAriaLabelledBy: StepMeterProps = { ...stepMeterProps, 'aria-labelledby': 'x' };
+// @ts-expect-error The image is never hidden by the host.
+const stepMeterHidden: StepMeterProps = { ...stepMeterProps, 'aria-hidden': true };
+// @ts-expect-error No numeric meter semantics are exposed.
+const stepMeterValueNow: StepMeterProps = { ...stepMeterProps, 'aria-valuenow': 3 };
+// @ts-expect-error The step states are derived.
+const stepMeterData: StepMeterProps = { ...stepMeterProps, 'data-state': 'filled' };
+// @ts-expect-error The steps are the only content.
+const stepMeterChildren: StepMeterProps = { ...stepMeterProps, children: 'x' };
+// @ts-expect-error Raw HTML is protected.
+const stepMeterHtml: StepMeterProps = { ...stepMeterProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A second hover-only text source is not supported.
+const stepMeterTitle: StepMeterProps = { ...stepMeterProps, title: 'x' };
+// @ts-expect-error No tab stop.
+const stepMeterTab: StepMeterProps = { ...stepMeterProps, tabIndex: 0 };
+// @ts-expect-error No editable content.
+const stepMeterEditable: StepMeterProps = { ...stepMeterProps, contentEditable: true };
+// @ts-expect-error No interaction handlers.
+const stepMeterClick: StepMeterProps = { ...stepMeterProps, onClick: () => {} };
+// @ts-expect-error A root ref is not part of this API.
+const stepMeterRef: StepMeterProps = { ...stepMeterProps, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const stepMeterSlot: StepMeterProps = { ...stepMeterProps, asChild: true };
+// @ts-expect-error The recipes are private.
+type StepMeterPrivateRoot = (typeof import('@egdev/ui'))['stepMeterVariants'];
+// @ts-expect-error The recipes are private.
+type StepMeterPrivateStep = (typeof import('@egdev/ui'))['stepMeterStepVariants'];
+// @ts-expect-error The internal hook is not public.
+type StepMeterPrivateHook = (typeof import('@egdev/ui'))['useStepMeter'];
+export type StepMeterNegatives = [typeof stepMeterMissingLabel, typeof stepMeterMissingValue, typeof stepMeterStringValue, typeof stepMeterStringSteps, typeof stepMeterRole, typeof stepMeterAriaLabel, typeof stepMeterAriaLabelledBy, typeof stepMeterHidden, typeof stepMeterValueNow, typeof stepMeterData, typeof stepMeterChildren, typeof stepMeterHtml, typeof stepMeterTitle, typeof stepMeterTab, typeof stepMeterEditable, typeof stepMeterClick, typeof stepMeterRef, typeof stepMeterSlot, StepMeterPrivateRoot, StepMeterPrivateStep, StepMeterPrivateHook];
 
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
@@ -5247,6 +5300,61 @@ function assertPixelConsumerCSS(css) {
   assert.doesNotMatch(utilities, /\.eg-pixel\s*\{/);
 }
 
+function assertStepMeterConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  for (const name of [
+    'inline-flex',
+    'inline-block',
+    'flex-none',
+    'items-center',
+    'gap-1',
+    'w-3.5',
+    'h-3.75',
+    '[clip-path:polygon(0_0,100%_47.6%,100%_100%,0_52.4%)]',
+    'bg-alpha-red-22',
+    'data-[state=filled]:bg-fg-brand-default',
+    'transition-none',
+    'forced-colors:forced-color-adjust-none',
+    'forced-colors:data-[state=filled]:bg-[color:CanvasText]',
+    'forced-colors:data-[state=empty]:bg-transparent'
+  ]) {
+    assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), 'Missing StepMeter utility ' + name);
+  }
+  assert.match(utilities, /\.w-3\\\.5\s*\{[^}]*width:\s*calc\(var\(--space-1\)\s*\*\s*3\.5\)/);
+  assert.match(utilities, /\.h-3\\\.75\s*\{[^}]*height:\s*calc\(var\(--space-1\)\s*\*\s*3\.75\)/);
+  assert.match(utilities, /clip-path:\s*polygon\(0\s+0,\s*100%\s+47\.6%,\s*100%\s+100%,\s*0\s+52\.4%\)/);
+  assert.match(utilities, /\.bg-alpha-red-22\s*\{[^}]*background-color:\s*var\(--color-alpha-red-22\b/);
+  assert.match(
+    utilities,
+    /\.data-\\\[state\\=filled\\\]\\:bg-fg-brand-default\[data-state="?filled"?\]\s*\{[^}]*background-color:\s*var\(--color-fg-brand-default\b/
+  );
+  const forced = [...utilities.matchAll(/@media\s*\(forced-colors:\s*active\)\s*\{/g)]
+    .map((match) => {
+      let depth = 1;
+      for (let index = match.index + match[0].length; index < utilities.length; index++) {
+        if (utilities[index] === '{') {
+          depth++;
+        } else if (utilities[index] === '}' && --depth === 0) {
+          return utilities.slice(match.index, index + 1);
+        }
+      }
+      return '';
+    })
+    .join('\n');
+  assert.match(forced, /\.forced-colors\\:forced-color-adjust-none\s*\{[^}]*forced-color-adjust:\s*none/);
+  assert.match(
+    forced,
+    /\.forced-colors\\:data-\\\[state\\=filled\\\]\\:bg-\\\[color\\:CanvasText\\\]\[data-state="?filled"?\]\s*\{[^}]*background-color:\s*CanvasText/
+  );
+  assert.match(
+    forced,
+    /\.forced-colors\\:data-\\\[state\\=empty\\\]\\:bg-transparent\[data-state="?empty"?\]\s*\{[^}]*background-color:\s*transparent/
+  );
+  assert.doesNotMatch(css, /eg-step-meter/);
+}
+
 function assertNotesBoardConsumerCSS(css) {
   function block(text, opening) {
     const match = opening.exec(text);
@@ -5705,6 +5813,8 @@ ${assertNotesBoardConsumerCSS.toString()}
 assertNotesBoardConsumerCSS(shippedStyles);
 ${assertPixelConsumerCSS.toString()}
 assertPixelConsumerCSS(shippedStyles);
+${assertStepMeterConsumerCSS.toString()}
+assertStepMeterConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -5911,6 +6021,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Stack',
   'Stat',
   'StatusDot',
+  'StepMeter',
   'Surface',
   'Switch',
   'TabBar',
@@ -6287,6 +6398,27 @@ for (const pixel of pixels) {
   assert.equal(pixel.hasAttribute('role'), false);
 }
 pixelDocument.window.close();
+const { StepMeterSamples } = await import('./consumer.ts');
+const stepMeterDocument = new JSDOM(renderToString(createElement(StepMeterSamples)));
+const stepMeters = [...stepMeterDocument.window.document.querySelectorAll('span.eg-step-meter')];
+assert.deepEqual(stepMeters.map((meter) => meter.getAttribute('aria-label')), ['High progress', 'Full progress', 'Fractional progress']);
+assert.deepEqual(stepMeters.map((meter) => meter.children.length), [4, 6, 10]);
+assert.deepEqual(stepMeters.map((meter) => [...meter.children].filter((step) => step.getAttribute('data-state') === 'filled').length), [3, 6, 2]);
+assert.equal(stepMeters[0].getAttribute('id'), 'packed-step-meter');
+assert.equal(stepMeters[0].getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(stepMeters[0].classList.contains('ms-auto'));
+for (const meter of stepMeters) {
+  assert.equal(meter.getAttribute('role'), 'img');
+  assert.equal(meter.hasAttribute('data-state'), false);
+  assert.equal(meter.hasAttribute('tabindex'), false);
+  for (const step of meter.children) {
+    assert.equal(step.tagName, 'SPAN');
+    assert.ok(step.classList.contains('eg-step-meter__step'));
+    assert.equal(step.childNodes.length, 0);
+    assert.equal(step.hasAttribute('role'), false);
+  }
+}
+stepMeterDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');

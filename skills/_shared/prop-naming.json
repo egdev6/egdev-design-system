@@ -506,6 +506,16 @@
           "symbol": "AttachmentFieldProps",
           "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
         }
+      },
+      {
+        "component": "StepMeter",
+        "type": "number (required; floored and clamped to 0 to steps)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/step-meter/types.ts",
+          "symbol": "StepMeterProps",
+          "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
+        }
       }
     ]
   },
@@ -1005,7 +1015,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
+          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
         }
       }
     ]
@@ -2166,6 +2176,16 @@
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
           "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
+        }
+      },
+      {
+        "component": "StepMeter",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/step-meter/types.ts",
+          "symbol": "StepMeterProps",
+          "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
         }
       }
     ]
@@ -5336,7 +5356,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
+          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
         }
       },
       {
@@ -5503,7 +5523,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
+          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
         }
       },
       {
@@ -8126,7 +8146,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
+          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
         }
       },
       {
@@ -8878,6 +8898,29 @@
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
           "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
+        }
+      }
+    ]
+  },
+  {
+    "id": "step-count",
+    "name": "steps",
+    "meaning": "Total number of discrete steps of a stepped scale.",
+    "whenToUse": "A passive stepped indicator lets the consumer choose how many steps its scale has, within a bounded range, while the filled count is supplied separately as the primary value.",
+    "avoid": "Item or entry counts, display overflow thresholds, step increments of a continuous control, and wizard or navigation step lists.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "StepMeter",
+        "type": "number (optional; integer 1-10, default 4)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/step-meter/types.ts",
+          "symbol": "StepMeterProps",
+          "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
         }
       }
     ]

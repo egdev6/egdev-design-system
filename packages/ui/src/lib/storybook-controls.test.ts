@@ -133,7 +133,8 @@ const components = [
   ['Hero', 'organisms/hero'],
   ['WebSection', 'organisms/web-section'],
   ['WebTemplate', 'templates/web-template'],
-  ['AppIcon', 'atoms/app-icon']
+  ['AppIcon', 'atoms/app-icon'],
+  ['StepMeter', 'atoms/step-meter']
 ] as const;
 const expectedIconNames = [
   'github',
@@ -289,6 +290,7 @@ const expected: Record<string, Record<string, string | false>> = {
     onNavigate: false
   },
   pixel: { state: 'select' },
+  stepmeter: { label: 'text', value: 'number', steps: 'number' },
   notesboard: { children: false, sticky: 'boolean' },
   notesboardlist: { children: false },
   notesboardside: { children: false },
@@ -753,6 +755,7 @@ const ownPropCounts: Record<string, number> = {
   hero: 9,
   sectionnav: 10,
   pixel: 1,
+  stepmeter: 3,
   notesboard: 2,
   notesboardlist: 1,
   notesboardside: 1,
@@ -1632,6 +1635,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['FooterNavigation', { level: '2' }],
     ['NotesBoard', { sticky: 'false' }],
     ['Pixel', { state: '"idle"' }],
+    ['StepMeter', { steps: '4' }],
     ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
@@ -2098,6 +2102,45 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('StatusDot', false).argTypes[prop]);
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-label', 'aria-labelledby']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains StepMeter required label/value rows, the steps constant and passive native rows', () => {
+    const { argTypes, args } = story('StepMeter');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.value?.type).toMatchObject({ name: 'number', required: true });
+    expect(argTypes.value?.control).toEqual({ type: 'number' });
+    expect(argTypes.value?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.steps?.type).toMatchObject({ name: 'number', required: false });
+    expect(argTypes.steps?.control).toEqual({ type: 'number' });
+    expect(argTypes.steps?.table?.defaultValue?.summary).toBe('4');
+    // Documentation must not initialize the optional steps control just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('StepMeter', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'aria-live',
+      'aria-valuemin',
+      'aria-valuemax',
+      'aria-valuenow',
+      'aria-valuetext',
+      'title',
+      'tabIndex',
+      'contentEditable',
+      'onClick',
+      'ref',
+      'asChild'
+    ]) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

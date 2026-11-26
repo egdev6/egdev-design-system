@@ -21,6 +21,13 @@ a local tarball from `pnpm release:pack`.
   and glow while its neighbours keep their paint. Every slide then reserves a transparent border and the track gains
   padding for the glow, so slide geometry changes only when opted in; with `trackLayout='full-width'` it resolves to
   `default`. The default appearance is unchanged. (#557)
+- `StepMeter` shows a coarse stepped level: a named image (`role="img"`, required `label`) that fills `value` of
+  `steps` (default 4, from 1 to 10) steps from the inline start in token-backed brand paint, with a forced-colors
+  fallback that keeps filled and empty steps distinct. It is not a measurement, input or live region: the consumer
+  owns the level, the wording of `label` and any announcement when the level changes. (#556)
+- A NowCard footer may hold one `StepMeter` beside its supporting detail or action; with a meter, keep at most one
+  other footer child. NowCard renders no meter itself and gains no prop, and cards without a meter render as before.
+  (#556)
 
 ## 0.10.0
 

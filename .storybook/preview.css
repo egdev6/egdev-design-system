@@ -44,6 +44,7 @@
 @source "../packages/ui/src/atoms/spinner/Spinner.stories.tsx";
 @source "../packages/ui/src/atoms/stat/Stat.stories.tsx";
 @source "../packages/ui/src/atoms/status-dot/StatusDot.stories.tsx";
+@source "../packages/ui/src/atoms/step-meter/StepMeter.stories.tsx";
 @source "../packages/ui/src/atoms/switch/Switch.stories.tsx";
 @source "../packages/ui/src/atoms/textarea/Textarea.stories.tsx";
 @source "../packages/ui/src/atoms/toggle/Toggle.stories.tsx";

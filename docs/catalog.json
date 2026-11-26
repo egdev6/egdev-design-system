@@ -352,6 +352,17 @@
     "notas": "Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/300): passive hidden position marker with idle, past and active states, token-scaled dimensions and approved static clip-path. The host owns meaning and composition; no glow, stylesheet, ref or asChild. Browser and packed-consumer verification remain pending."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "StepMeter",
+    "nivel": "atom",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "—",
+    "accion": "nuevo",
+    "notas": "Implemented React atom under the [approved v0.1 contract](components/step-meter/v0.1/spec.md): passive named image (`role=\"img\"`, required `label`) showing a coarse stepped level, default four steps filled from the inline start, token-backed flat steps with an approved clip-path literal and a forced-colors paint. The consumer owns the level and its wording; no stylesheet, ref or asChild. Packed React 18.3.1 and 19.3.0 consumers and Chromium geometry, contrast and forced-colors observations are recorded in the [implementation evidence](components/step-meter/v0.1/implementation-evidence.md); visual conformity is not evaluated."
+  },
+  {
     "actual": "ProgressBar",
     "nivelActual": "átomo",
     "nombre": "ProgressBar",
@@ -811,7 +822,7 @@
     "radix": "—",
     "compone": "Surface, Text",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 current-status card with approved badge-first slot, smaller sm copy and a surface-0 footer band. See [approved amendment](components/now-card/v0.1/badge-order-amendment.md)."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 current-status card with approved badge-first slot, smaller sm copy and a surface-0 footer band. See [approved amendment](components/now-card/v0.1/badge-order-amendment.md). v0.3 ([approval](components/now-card/v0.3/approval.md)) documents one optional consumer-supplied StepMeter in the footer; the card renders no meter."
   },
   {
     "actual": "ProjectCard",
