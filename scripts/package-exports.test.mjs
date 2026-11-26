@@ -4487,6 +4487,8 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   for (const [selector, declaration] of [
     ['.border-0', /border-width:\s*0(?:px)?\s*;/],
     ['.text-link-default', /color:\s*var\(--color-link-default[,)]/],
+    ['.text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['.decoration-fg-brand-default', /text-decoration-color:\s*var\(--color-fg-brand-default[,)]/],
     ['.pb-0', /padding-bottom:\s*var\(--space-0\)/],
     ['.underline', /text-decoration-line:\s*underline/],
     [String.raw`.underline-offset-\(--space-1\)`, /text-underline-offset:\s*var\(--space-1\)/],
@@ -4546,6 +4548,12 @@ test('UI Link exports safe native and slotted navigation with decorative small I
   );
   assert.match(slotted, /^<a [^>]*href="#router"/);
   assert.doesNotMatch(slotted, /<svg|asChild=|external=|arrow=/);
+  const quiet = renderToString(createElement(Link, { href: '#docs', variant: 'quiet' }, 'Docs'));
+  for (const text of ['eg-link', 'text-fg-default', 'decoration-fg-brand-default']) {
+    assert.ok(quiet.includes(text), `Quiet Link SSR must render ${text}`);
+  }
+  assert.ok(!quiet.includes('text-link-default'), 'Quiet Link SSR must not render the plain ink');
+  assert.doesNotMatch(quiet, /variant=/);
 });
 
 test('AppIcon ships its scanned Surface and contained-image recipe with passive SSR', async () => {

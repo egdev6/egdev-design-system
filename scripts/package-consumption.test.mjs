@@ -2422,10 +2422,12 @@ const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>(
 );
 export const linkDefaults: LinkProps = { href: '#docs', children: 'Documentation' };
 const linkUnderlinedVariant: LinkVariant = 'underlined';
+const linkQuietVariant: LinkVariant = 'quiet';
 export function LinkSamples({ external = true }: { external?: boolean }) {
   return createElement('section', { 'aria-label': 'Text navigation' },
     createElement(Link, { ...linkDefaults, id: 'link-native', ref: linkNativeRef, className: 'mt-2 mt-4 self-start' }),
     createElement(Link, { ...linkDefaults, variant: linkUnderlinedVariant, id: 'link-underlined', children: 'Read the guide' }),
+    createElement(Link, { ...linkDefaults, variant: linkQuietVariant, id: 'link-quiet', children: 'Read the quiet guide' }),
     createElement(Link, { href: '#external', external, rel: 'author noopener', id: 'link-external', children: 'Repository' }),
     createElement(Link, { href: '#legal', arrow: false, id: 'link-plain', children: 'Legal information' }),
     createElement(Link, { asChild: true, external, rel: 'author', ref: linkSlotRef, newTabText: '(new window)',
@@ -2439,7 +2441,7 @@ const slottedLinkDestination: LinkProps = { asChild: true, href: '#docs', childr
 const missingLinkContent: LinkProps = { href: '#docs' };
 // @ts-expect-error Disabled links are not supported; use plain text without a destination.
 const disabledLink: LinkProps = { href: '#docs', children: 'Docs', disabled: true };
-// @ts-expect-error Link only accepts plain and its deprecated underlined alias.
+// @ts-expect-error Link only accepts plain, quiet and its deprecated underlined alias.
 const variantLink: LinkProps = { href: '#docs', children: 'Docs', variant: 'primary' };
 // @ts-expect-error The public ref is an anchor ref, never a button ref.
 const wrongLinkRef: ComponentProps<typeof Link> = { href: '#docs', children: 'Docs', ref: createRef<HTMLButtonElement>() };
@@ -6280,6 +6282,8 @@ function assertLinkCSS(css) {
   for (const selector of [
     '.border-0',
     '.text-link-default',
+    '.text-fg-default',
+    '.decoration-fg-brand-default',
     '.text-label-default',
     '.underline',
     String.raw`.underline-offset-\(--space-1\)`,
@@ -6299,6 +6303,7 @@ function assertLinkCSS(css) {
   ]) {
     assert.ok(css.includes(selector), 'Missing Link utility ' + selector);
   }
+  assert.match(css, /\.decoration-fg-brand-default\s*\{[^}]*text-decoration-color:\s*var\(--color-fg-brand-default/);
   assert.match(css, /\.transform-none\s*\{[^}]*transform:\s*none/);
   assert.match(css, /translate:\s*var\(--tw-translate-x\) var\(--tw-translate-y\)/);
   assert.match(css, /transition-property:\s*translate/);
@@ -7848,6 +7853,18 @@ try {
   const underlinedLink = document.getElementById('link-underlined');
   assert.deepEqual([...underlinedLink.classList].sort(), [...link.classList].filter((name) => !['mt-4', 'self-start'].includes(name)).sort());
   assert.ok(!underlinedLink.classList.contains('border-b') && !underlinedLink.classList.contains('border-border-brand'));
+  // quiet swaps only the ink and adds the brand underline colour; every other class is the default's.
+  const quietLink = document.getElementById('link-quiet');
+  assert.equal(quietLink.tagName, 'A');
+  assert.ok(quietLink.classList.contains('eg-link') && quietLink.classList.contains('text-fg-default'));
+  assert.ok(quietLink.classList.contains('decoration-fg-brand-default'));
+  assert.ok(!quietLink.classList.contains('text-link-default') && quietLink.getAttribute('variant') === null);
+  assert.ok(quietLink.classList.contains('underline') && quietLink.classList.contains('hover:no-underline'));
+  assert.ok(quietLink.classList.contains('border-0') && quietLink.classList.contains('pb-0'));
+  assert.deepEqual(
+    [...quietLink.classList].filter((name) => !['text-fg-default', 'decoration-fg-brand-default'].includes(name)).sort(),
+    [...underlinedLink.classList].filter((name) => name !== 'text-link-default').sort()
+  );
   assert.ok(link.classList.contains('border-0'));
   assert.ok(!link.classList.contains('border-b'));
   assert.equal(link.querySelector('svg').getAttribute('aria-hidden'), 'true');

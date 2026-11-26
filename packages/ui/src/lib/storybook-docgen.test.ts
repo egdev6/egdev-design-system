@@ -4196,10 +4196,28 @@ describe('Link navigation metadata contract', () => {
     // The deprecation is of one value, not of the prop: no @deprecated tag may strike the whole axis.
     expect(props.variant?.description).toMatch(/`underlined` is deprecated/);
     expect(props.variant?.tags).not.toHaveProperty('deprecated');
+    // quiet is documented as the card and footer-navigation look, and plain is no longer the only treatment.
+    expect(props.variant?.description).toMatch(/quiet/);
+    expect(props.variant?.description).not.toMatch(/only treatment/);
     for (const prop of ['disabled', 'size']) {
       expect(props[prop]).toBeUndefined();
     }
   }, 20_000);
+
+  it('documents the quiet variant with a single link, a card footer and the four tonal surfaces', () => {
+    expect(exportedStoryNames(ast(source('atoms/link/Link.stories.tsx')))).toEqual([
+      'Default',
+      'External',
+      'CustomNotice',
+      'WithoutArrow',
+      'AsChild',
+      'States',
+      'Underlined',
+      'Quiet',
+      'QuietInCardFooter',
+      'QuietOnSurfaces'
+    ]);
+  });
 });
 
 describe('Logo brand-artwork metadata contract', () => {
