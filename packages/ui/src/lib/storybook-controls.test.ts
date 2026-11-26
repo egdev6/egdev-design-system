@@ -135,7 +135,8 @@ const components = [
   ['WebTemplate', 'templates/web-template'],
   ['AppIcon', 'atoms/app-icon'],
   ['StepMeter', 'atoms/step-meter'],
-  ['Prose', 'primitives/prose']
+  ['Prose', 'primitives/prose'],
+  ['EmptyState', 'molecules/empty-state']
 ] as const;
 const expectedIconNames = [
   'github',
@@ -293,6 +294,7 @@ const expected: Record<string, Record<string, string | false>> = {
   pixel: { state: 'select' },
   stepmeter: { label: 'text', value: 'number', steps: 'number' },
   prose: { children: false, size: 'select', tone: 'select' },
+  emptystate: { title: 'text', level: 'select', description: 'text', icon: 'select', actions: false },
   notesboard: { children: false, sticky: 'boolean' },
   notesboardlist: { children: false },
   notesboardside: { children: false },
@@ -759,6 +761,7 @@ const ownPropCounts: Record<string, number> = {
   pixel: 1,
   stepmeter: 3,
   prose: 3,
+  emptystate: 5,
   notesboard: 2,
   notesboardlist: 1,
   notesboardside: 1,
@@ -1667,6 +1670,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ],
     ['Heading', { variant: '"section"', foreground: '"inherit"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
     ['Prose', { size: '"md"', tone: '"canvas"' }],
+    ['EmptyState', { level: '3' }],
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
@@ -1814,7 +1818,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     for (const [name, prop, required] of [
       ['Icon', 'name', true],
-      ['FieldMessage', 'icon', false]
+      ['FieldMessage', 'icon', false],
+      ['EmptyState', 'icon', false]
     ] as const) {
       const metadata = component(name);
       expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
@@ -2179,6 +2184,49 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'aria-labelledby',
       'dangerouslySetInnerHTML',
       'onClick',
+      'ref',
+      'asChild'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains EmptyState required title text, the level select with its constant default and the actions reason', () => {
+    const { argTypes, args } = story('EmptyState');
+    const tags = component('EmptyState').__docgenInfo.props.actions?.tags as Record<string, string> | undefined;
+    expect(tags?.controlReason).toMatch(/ReactElement\/boolean union.*Default, WithLinkAction and AsLinkButton/);
+    expect(argTypes.title?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.title?.control).toEqual({ type: 'text' });
+    expect(argTypes.title?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.level?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.level?.control).toEqual({ type: 'select' });
+    expect(argTypes.level?.options).toEqual([2, 3, 4, 5, 6]);
+    expect(argTypes.level?.options).toEqual(story('EmptyState', false).argTypes.level?.options);
+    expect(argTypes.level?.table?.defaultValue?.summary).toBe('3');
+    expect(argTypes.description?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.description?.control).toEqual({ type: 'text' });
+    expect(argTypes.description?.table?.defaultValue).toBeUndefined();
+    // The actions row stays documented but has no widget: a ReactElement/boolean union cannot be edited as a value.
+    expect(argTypes.actions?.control).toBe(false);
+    expect(argTypes.actions?.table?.disable).toBeUndefined();
+    expect(argTypes.actions?.table?.defaultValue).toBeUndefined();
+    // Documentation must not initialize the optional controls just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('EmptyState', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-live',
+      'aria-atomic',
+      'aria-relevant',
+      'aria-label',
+      'aria-labelledby',
+      'tabIndex',
+      'contentEditable',
+      'dangerouslySetInnerHTML',
       'ref',
       'asChild'
     ]) {

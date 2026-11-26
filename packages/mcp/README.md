@@ -208,5 +208,5 @@ Success response excerpt:
   ]
 }
 ```
-<!-- mcp-response-sha256: 4fd6401353e80703c97d31a48f592382890da1398e5f4951bb3510046fa6d55f -->
+<!-- mcp-response-sha256: ca62a7fedec504515d950e2ebea53144588073031a3a0498ad5a8ca39bda4bf1 -->
 <!-- /mcp-example:get_design_system_md -->

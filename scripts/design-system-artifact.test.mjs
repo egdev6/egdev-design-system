@@ -554,6 +554,7 @@ test('classNameAllows preserves the reviewed component and part inventory', () =
     'CommunityCardAction',
     'CommunityCardMark',
     'Dropzone',
+    'EmptyState',
     'Field',
     'Heading',
     'ListItem',
@@ -913,6 +914,132 @@ test('StepMeter publishes three source-derived props, two private recipes and th
     assert.equal(reused.status, 'approved', id);
     assert.ok(reused.components.includes('StepMeter'), id);
   }
+});
+
+test('EmptyState publishes its five own props, the static unpainted part recipes, the className allowance and the reused conventions (#573)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const emptyState = artifact.components.find(({ name }) => name === 'EmptyState');
+  assert.ok(emptyState, 'the artifact lists EmptyState');
+  assert.equal(emptyState.package, '@egdev/ui');
+  assert.equal(emptyState.source, 'packages/ui/src/molecules/empty-state/types.ts');
+  assert.deepEqual(
+    emptyState.props.map(({ name }) => name),
+    ['actions', 'description', 'icon', 'level', 'title']
+  );
+  const prop = (name) => emptyState.props.find((item) => item.name === name);
+  assert.deepEqual([prop('title').type, prop('title').required, prop('title').default], ['string', true, null]);
+  assert.deepEqual([prop('level').type, prop('level').required, prop('level').default], ['enum', false, '3']);
+  assert.match(prop('level').description, /never h1/);
+  for (const name of ['description', 'icon', 'actions']) {
+    assert.deepEqual([prop(name).required, prop(name).default], [false, null], name);
+  }
+  // No content, role, accessible name, ref or asChild: the root is a passive generic container.
+  for (const name of [
+    'children',
+    'role',
+    'aria-live',
+    'aria-label',
+    'aria-labelledby',
+    'ref',
+    'asChild',
+    'className'
+  ]) {
+    assert.ok(!emptyState.props.some((item) => item.name === name), `EmptyState must not publish ${name}`);
+  }
+  // The root allows outer layout and width constraints only: the six sorted width properties.
+  assert.deepEqual(emptyState.classNameAllows, [
+    'inline-size',
+    'max-inline-size',
+    'max-width',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
+  // Five private part recipes, built from static string literals: the approved inventory and nothing else.
+  assert.deepEqual(
+    emptyState.variants.map(({ name }) => name),
+    [
+      'emptyStateActionsVariants',
+      'emptyStateDescriptionVariants',
+      'emptyStateIconVariants',
+      'emptyStateTitleVariants',
+      'emptyStateVariants'
+    ]
+  );
+  const recipes = Object.fromEntries(
+    emptyState.variants.map(({ name, classes }) => [name, classes.join(' ').split(/\s+/).filter(Boolean)])
+  );
+  assert.deepEqual(recipes.emptyStateVariants, [
+    'eg-empty-state',
+    'flex',
+    'min-w-0',
+    'flex-col',
+    'items-center',
+    'gap-3',
+    'px-4',
+    'py-8',
+    'text-center',
+    'font-sans'
+  ]);
+  assert.deepEqual(recipes.emptyStateIconVariants, ['inline-flex', 'shrink-0', 'text-fg-muted']);
+  assert.deepEqual(recipes.emptyStateTitleVariants, [
+    'm-0',
+    'font-sans',
+    'text-heading-small',
+    'text-fg-default',
+    'wrap-anywhere'
+  ]);
+  assert.deepEqual(recipes.emptyStateDescriptionVariants, [
+    'm-0',
+    'max-w-[var(--bp-sm)]',
+    'font-sans',
+    'text-body-default',
+    'text-fg-secondary',
+    'wrap-anywhere'
+  ]);
+  assert.deepEqual(recipes.emptyStateActionsVariants, [
+    'flex',
+    'min-w-0',
+    'max-w-full',
+    'flex-wrap',
+    'items-center',
+    'justify-center',
+    'gap-2'
+  ]);
+  // The block paints nothing: no background, border, shadow, ring, outline, backdrop, filter or motion utility.
+  for (const [name, classes] of Object.entries(recipes)) {
+    for (const utility of classes) {
+      assert.doesNotMatch(
+        utility,
+        /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|transform|rounded)\b/,
+        `${name} lists the paint utility ${utility}`
+      );
+    }
+  }
+  // It composes the Icon itself; the Button or Link action is supplied and never counted as composition.
+  assert.deepEqual(emptyState.composedOf, [
+    { name: 'Icon', source: 'packages/ui/src/molecules/empty-state/EmptyState.tsx' }
+  ]);
+  assert.deepEqual(emptyState.parts, []);
+  assert.deepEqual(emptyState.surfaceUsage, []);
+  // The five reused conventions keep their approved status and list EmptyState beside the other components.
+  for (const id of ['heading-title', 'heading-level', 'content-description', 'trailing-actions', 'leading-icon']) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(convention.status, 'approved', id);
+    assert.ok(convention.components.includes('EmptyState'), id);
+  }
+  assert.deepEqual(
+    artifact.catalog.find(({ name }) => name === 'EmptyState'),
+    {
+      name: 'EmptyState',
+      level: 'molecule',
+      package: '@egdev/ui',
+      radix: '—',
+      composes: ['Icon; consumer Button/Link action'],
+      action: 'nuevo',
+      available: true
+    }
+  );
 });
 
 test('NowCard footer documents one optional StepMeter without a prop, part or composition change', () => {

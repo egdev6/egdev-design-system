@@ -660,6 +660,17 @@
     "notas": "Implemented compact product heading (#94 v0.1; #412 v0.2): native h1–h6, optional eyebrow, plain lede and unchanged supplied leading IconButton and trailing actions; intrinsic wrapping, no paint or stylesheet. Separate from editorial SectionHeader."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "EmptyState",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Icon; consumer Button/Link action",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/empty-state/v0.1/spec.md): passive empty state for a listing or filter combination that returns nothing: native heading (`title`, `level` 2 to 6, default 3), optional plain-text `description`, optional decorative `icon` and one consumer-supplied Button or Link in `actions`, unpainted on the host backdrop. No live region, no focus management and no built-in copy; the host announces and places focus. No stylesheet, ref or asChild. Browser, grafito contrast and packed-consumer verification remain pending until observed."
+  },
+  {
     "actual": "ModuleCard",
     "nivelActual": "molécula",
     "nombre": "ModuleCard",

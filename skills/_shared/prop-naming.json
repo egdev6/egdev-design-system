@@ -2831,6 +2831,16 @@
           "symbol": "ModuleRailLink",
           "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
         }
+      },
+      {
+        "component": "EmptyState",
+        "type": "IconName (optional decorative glyph, rendered at lg)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/empty-state/types.ts",
+          "symbol": "EmptyStateProps",
+          "revision": "sha256:7faf367da5ed3560fe01135f2d43a4aff9d01b110d8d7a399c460d76d497bc31"
+        }
       }
     ]
   },
@@ -5428,6 +5438,16 @@
           "symbol": "LabStageProps",
           "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
         }
+      },
+      {
+        "component": "EmptyState",
+        "type": "string (required; blank renders nothing with a development warning)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/empty-state/types.ts",
+          "symbol": "EmptyStateProps",
+          "revision": "sha256:7faf367da5ed3560fe01135f2d43a4aff9d01b110d8d7a399c460d76d497bc31"
+        }
       }
     ]
   },
@@ -5605,6 +5625,16 @@
           "symbol": "LabStageProps",
           "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
         }
+      },
+      {
+        "component": "EmptyState",
+        "type": "EmptyStateLevel (2 | 3 | 4 | 5 | 6; default 3)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/empty-state/types.ts",
+          "symbol": "EmptyStateProps",
+          "revision": "sha256:7faf367da5ed3560fe01135f2d43a4aff9d01b110d8d7a399c460d76d497bc31"
+        }
       }
     ]
   },
@@ -5722,6 +5752,16 @@
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
           "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
+        }
+      },
+      {
+        "component": "EmptyState",
+        "type": "one Button or Link (optional; null and booleans omit it)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/empty-state/types.ts",
+          "symbol": "EmptyStateProps",
+          "revision": "sha256:7faf367da5ed3560fe01135f2d43a4aff9d01b110d8d7a399c460d76d497bc31"
         }
       }
     ]
@@ -7145,6 +7185,16 @@
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
           "revision": "sha256:7adcf6ea1db188214aaa20f1e8c9a8706ac7a7d206d5d306ac4b5bf8d71294ac"
+        }
+      },
+      {
+        "component": "EmptyState",
+        "type": "string (optional; blank or non-string omits the paragraph)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/empty-state/types.ts",
+          "symbol": "EmptyStateProps",
+          "revision": "sha256:7faf367da5ed3560fe01135f2d43a4aff9d01b110d8d7a399c460d76d497bc31"
         }
       }
     ]

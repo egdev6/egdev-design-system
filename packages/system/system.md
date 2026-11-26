@@ -1129,6 +1129,25 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
   - onOpenChange: ((open: boolean) => void); Requested visibility changes. (components[] · packages/ui/src/molecules/dialog/types.ts)
   - open: boolean; Controlled visibility. (components[] · packages/ui/src/molecules/dialog/types.ts)
   - pending: boolean; Locks this dialog's owned dismissal controls and marks its content busy while an action is in flight. Consumers synchronously prevent the initiating close, guard duplicate starts, and provide visible progress, recovery and any needed announcement outside the busy subtree; aria-busy is not an announcement. An outside-host pointer press can move focus to body without closing; Tab re-enters through Radix's active trap. Controlled close and unmount remain possible. (components[] · packages/ui/src/molecules/dialog/types.ts)
+### EmptyState
+catalog[] · docs/catalog.json · @egdev/ui · molecule · —
+- EmptyState (components[] · packages/ui/src/molecules/empty-state/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - emptyStateActionsVariants base: gap-2 → --spacing-2
+    - emptyStateDescriptionVariants base: font-sans → --font-sans
+    - emptyStateDescriptionVariants base: text-body-default → --text-body-default
+    - emptyStateTitleVariants base: font-sans → --font-sans
+    - emptyStateTitleVariants base: text-heading-small → --text-heading-small
+    - emptyStateVariants base: gap-3 → --spacing-3
+    - emptyStateVariants base: px-4 → --spacing-4
+    - emptyStateVariants base: py-8 → --spacing-8
+    - emptyStateVariants base: text-center → unresolved
+    - emptyStateVariants base: font-sans → --font-sans
+  - actions: boolean \| EmptyStateActions \| null; One recovery action: a single Button (including asChild) or Link, rendered unchanged and never cloned. Undefined, null and booleans omit the actions area. Arrays, fragments, wrappers, groups and a second action are unsupported, and JSX type erasure cannot enforce component identity. Prefer a Button, or a Button asChild around an anchor, where a 44px touch target matters: a bare Link's hit area is only its text line. (components[] · packages/ui/src/molecules/empty-state/types.ts)
+  - description: string; Short plain-text explanation after the title, never rich or interactive content. Omitted when absent, empty, whitespace-only or not a string. (components[] · packages/ui/src/molecules/empty-state/types.ts)
+  - icon: enum; Decorative pictogram from the closed system icon set, rendered by the component before the title at the lg preset and hidden from assistive technology. No wrapper renders when absent. It never carries meaning alone: the title does. (components[] · packages/ui/src/molecules/empty-state/types.ts)
+  - level: enum; Native heading rank only, from 2 to 6 and never h1, which belongs to the page header; the heading typography never follows the rank. Any other value falls back to 3 without a warning. (components[] · packages/ui/src/molecules/empty-state/types.ts)
+  - title: string; Visible plain-text heading naming the state, never a native tooltip. Consumer-owned copy and language: there is no built-in text. A blank, whitespace-only or non-string title warns in development and renders nothing, so a state is never left unnamed. (components[] · packages/ui/src/molecules/empty-state/types.ts)
 ### Field
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Label + Slot
 - Field (components[] · packages/ui/src/molecules/field/types.ts)
@@ -3578,7 +3597,7 @@ Not exported:
 - condition-description: stateText; approved; Gauge, GaugeGroupRing (propNaming[] · skills/_shared/prop-naming.json)
 - consumer-selected-condition: state; approved; Gauge, GaugeGroupRing, Pixel, StatusDot (propNaming[] · skills/_shared/prop-naming.json)
 - container-edge-placement: edge; approved; ProgressBar (propNaming[] · skills/_shared/prop-naming.json)
-- content-description: description; approved; AlertDialogContent, ArticleFeature, DialogContent (propNaming[] · skills/_shared/prop-naming.json)
+- content-description: description; approved; AlertDialogContent, ArticleFeature, DialogContent, EmptyState (propNaming[] · skills/_shared/prop-naming.json)
 - content-detail: detail; approved; ArticleFeature (propNaming[] · skills/_shared/prop-naming.json)
 - control-label-wrap: labelWrap; approved; Button, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - corner-badge-icon: badgeIcon; approved; Indicator (propNaming[] · skills/_shared/prop-naming.json)
@@ -3620,8 +3639,8 @@ Not exported:
 - header-status-text: statusText; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - heading-eyebrow: eyebrow; approved; ArticleFeature, ChapterBreak, Closing, CommunityCard, Hero, LabStage, PageHeader, ProjectCard, SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
 - heading-id: titleId; approved; SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
-- heading-level: level; approved; ArticleFeature, CalendarGrid, ChapterBreak, Closing, CommunityCard, FooterNavigation, Heading, Hero, LabStage, ListItemTitle, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
-- heading-title: title; approved; AlertDialogContent, ArticleFeature, ChapterBreak, Closing, CommunityCard, DialogContent, Hero, LabStage, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
+- heading-level: level; approved; ArticleFeature, CalendarGrid, ChapterBreak, Closing, CommunityCard, EmptyState, FooterNavigation, Heading, Hero, LabStage, ListItemTitle, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
+- heading-title: title; approved; AlertDialogContent, ArticleFeature, ChapterBreak, Closing, CommunityCard, DialogContent, EmptyState, Hero, LabStage, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
 - host-fill: fill; approved; Panel, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - icon-glyph-name: name; approved; Icon (propNaming[] · skills/_shared/prop-naming.json)
 - icon-placement: iconPosition; approved; Button (propNaming[] · skills/_shared/prop-naming.json)
@@ -3649,7 +3668,7 @@ Not exported:
 - layer-opacity: opacity; approved; AmbientBackground, Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - layout-gap: gap; approved; Cluster, SocialLinks, Stack (propNaming[] · skills/_shared/prop-naming.json)
 - layout-orientation: orientation; approved; Divider, RadioGroup (propNaming[] · skills/_shared/prop-naming.json)
-- leading-icon: icon; approved; Badge, Button, Chip, ChipGroupOption, CommandPaletteItem, FieldMessage, IconButton, Input, MenuEntry, ModuleCard, ModuleRail, NavList, Notice, SocialLinkItem, TabBarItem, Timeline, Toast, Toggle (propNaming[] · skills/_shared/prop-naming.json)
+- leading-icon: icon; approved; Badge, Button, Chip, ChipGroupOption, CommandPaletteItem, EmptyState, FieldMessage, IconButton, Input, MenuEntry, ModuleCard, ModuleRail, NavList, Notice, SocialLinkItem, TabBarItem, Timeline, Toast, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - leading-status-badge: statusBadge; approved; NowCard, ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - line-particle-direction: lineDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - live-presentation: live; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
@@ -3718,7 +3737,7 @@ Not exported:
 - tooltip-content: content; approved; Tooltip, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
 - top-bar-content-width: contentWidth; approved; TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - top-bar-initial-background: initialBackground; approved; TopBar (propNaming[] · skills/_shared/prop-naming.json)
-- trailing-actions: actions; approved; AlertDialogContent, CollapsibleHeader, DialogContent, ModuleCard, Notice, PageHeader, PreviewFrame, Toast, WebSection (propNaming[] · skills/_shared/prop-naming.json)
+- trailing-actions: actions; approved; AlertDialogContent, CollapsibleHeader, DialogContent, EmptyState, ModuleCard, Notice, PageHeader, PreviewFrame, Toast, WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - trailing-arrow: arrow; approved; Link (propNaming[] · skills/_shared/prop-naming.json)
 - trailing-text-accent: accent; approved; ChapterBreak, Closing, Heading, Hero, LabStage, PullQuote, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
 - transient-feedback-reset-key: resetKey; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)

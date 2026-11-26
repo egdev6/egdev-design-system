@@ -859,7 +859,14 @@ const postReceiptUsages = [
   ...['preset-dimensions', 'surface-material-tone'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/primitives/prose/types.ts#ProseProps'
-  }))
+  })),
+  // EmptyState #573 reuses five approved conventions as usages only: no new meaning, exception or receipt for them.
+  ...['heading-title', 'heading-level', 'content-description', 'trailing-actions', 'leading-icon'].map(
+    (conventionId) => ({
+      conventionId,
+      source: 'packages/ui/src/molecules/empty-state/types.ts#EmptyStateProps'
+    })
+  )
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
 const postReceiptProposals = [
@@ -1567,7 +1574,7 @@ test('content description binds the owner decision and preserves dialog usage hi
   );
   assert.deepEqual(
     usages.map(({ component }) => component),
-    ['AlertDialogContent', 'DialogContent', 'ArticleFeature']
+    ['AlertDialogContent', 'DialogContent', 'ArticleFeature', 'EmptyState']
   );
 });
 
@@ -1830,6 +1837,57 @@ test('Prose reuses two approved conventions as usages only and binds its reviewe
   // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
   const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
   assert.equal(own.length, 2);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  validate(registry);
+});
+
+test('EmptyState reuses five approved conventions as usages only and binds its reviewed source revision (#573)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/molecules/empty-state/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const source = { path, symbol: 'EmptyStateProps', revision };
+  const reviewed = [
+    ['heading-title', 'string (required; blank renders nothing with a development warning)'],
+    ['heading-level', 'EmptyStateLevel (2 | 3 | 4 | 5 | 6; default 3)'],
+    ['content-description', 'string (optional; blank or non-string omits the paragraph)'],
+    ['trailing-actions', 'one Button or Link (optional; null and booleans omit it)'],
+    ['leading-icon', 'IconName (optional decorative glyph, rendered at lg)']
+  ];
+  // Every entry keeps its approved status and gains exactly one EmptyState usage: no new entry, exception or receipt.
+  for (const [id, type] of reviewed) {
+    const reused = registry.find((item) => item.id === id);
+    assert.equal(reused.status, 'approved', id);
+    assert.deepEqual(
+      reused.exceptions.filter(({ scope }) => scope.includes('EmptyState')),
+      [],
+      id
+    );
+    assert.deepEqual(
+      reused.usages.filter(({ component }) => component === 'EmptyState'),
+      [{ component: 'EmptyState', type, status: 'existing', source }],
+      id
+    );
+    // The frozen receipts compare the registry without the reviewed post-receipt usages.
+    assert.deepEqual(
+      historicalRegistry([reused]).flatMap(({ usages }) =>
+        usages.filter(({ component }) => component === 'EmptyState')
+      ),
+      [],
+      id
+    );
+  }
+  assert.deepEqual(
+    registry
+      .filter((item) => item.usages.some(({ component }) => component === 'EmptyState'))
+      .map(({ id }) => id)
+      .sort(),
+    reviewed.map(([id]) => id).sort()
+  );
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 5);
   for (const usage of own) {
     assert.equal(usage.source.revision, revision);
   }

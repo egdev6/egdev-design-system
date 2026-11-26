@@ -168,6 +168,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   meterRow: ['id', 'title', 'dir', 'lang', 'className', 'style'],
   pixel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
   stepMeter: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
+  emptyState: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   photoFrame: [
     'srcSet',
     'sizes',

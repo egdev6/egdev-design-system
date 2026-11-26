@@ -62,6 +62,7 @@ export { ColorSwatchGroup } from './molecules/color-swatch-group';
 export * from './molecules/command-palette';
 export * from './molecules/community-card';
 export * from './molecules/dialog';
+export * from './molecules/empty-state';
 export * from './molecules/field';
 export type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from './molecules/gauge-group';
 export { GaugeGroup } from './molecules/gauge-group';

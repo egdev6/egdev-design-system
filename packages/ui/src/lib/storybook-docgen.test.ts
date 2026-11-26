@@ -1689,6 +1689,111 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(stories.getText()).toMatch(/title: 'Molecules\/TipCard'/);
     expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
   });
+  it('extracts EmptyState own props with their annotations, the shown native rows and the dropped boundaries (ES-12)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(source('molecules/empty-state/EmptyState.tsx'))
+      .find(({ displayName }) => displayName === 'EmptyState');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      title: 'text',
+      level: 'select',
+      description: 'text',
+      icon: 'select',
+      actions: 'false'
+    };
+    const file = ast(source('molecules/empty-state/types.ts'));
+    const own = ownProps(file, ['EmptyStateProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual([
+      'title',
+      'level',
+      'description',
+      'icon',
+      'actions'
+    ]);
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      // Only `level` is a constant default: the absence and fallback rules live in the description bodies.
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'default').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual(name === 'level' ? ['3'] : []);
+      const extractedTags = props[name]?.tags as Record<string, string> | undefined;
+      expect(extractedTags?.control, name).toBe(controls[name]);
+    }
+    expect(props.title).toMatchObject({ required: true, defaultValue: null, type: { name: 'string' } });
+    for (const name of ['level', 'description', 'icon', 'actions']) {
+      expect(props[name]?.required, name).toBe(false);
+    }
+    expect(normalize(props.level?.defaultValue?.value)).toBe('3');
+    expect(props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    for (const name of ['description', 'icon', 'actions']) {
+      expect(props[name]?.defaultValue, name).toBeNull();
+    }
+    const glyphs: string[] = props.icon?.type.value.map(({ value }: { value: string }) => normalize(value)) ?? [];
+    expect(glyphs).toHaveLength(48);
+    expect([...glyphs].sort()).toEqual([...expectedIconNames].sort());
+    const reason = (props.actions?.tags as Record<string, string> | undefined)?.controlReason;
+    expect(reason).toMatch(/Non-serializable ReactElement\/boolean union.*Default, WithLinkAction and AsLinkButton/);
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'ref',
+      'asChild',
+      'role',
+      'aria-live',
+      'aria-atomic',
+      'aria-relevant',
+      'aria-label',
+      'aria-labelledby',
+      'tabIndex',
+      'contentEditable',
+      'dangerouslySetInnerHTML'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The component and its types are public; the recipes and the hook stay internal.
+    expect(publicAPI.EmptyState).toBeDefined();
+    for (const name of [
+      'useEmptyState',
+      'emptyStateVariants',
+      'emptyStateIconVariants',
+      'emptyStateTitleVariants',
+      'emptyStateDescriptionVariants',
+      'emptyStateActionsVariants'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('molecules/empty-state/index.ts'), 'utf8')).not.toMatch(/Variants|useEmptyState/);
+    const stories = ast(source('molecules/empty-state/EmptyState.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'TitleOnly',
+      'WithLinkAction',
+      'AsLinkButton',
+      'HeadingLevels',
+      'LongContent',
+      'FilteredListing',
+      'OnGrafitoSection'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/EmptyState'/);
+    expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
   it('extracts FieldMessage plain content, five tones and native-only opt-in announcements', () => {
     const doc = parser
       .parse(source('atoms/field-message/FieldMessage.tsx'))
@@ -2142,6 +2247,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/command-palette',
       './molecules/community-card',
       './molecules/dialog',
+      './molecules/empty-state',
       './molecules/field',
       './molecules/gauge-group',
       './molecules/list-item',
@@ -2242,6 +2348,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'DialogTrigger',
       'Divider',
       'Dropzone',
+      'EmptyState',
       'Field',
       'FieldMessage',
       'Footer',
