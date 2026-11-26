@@ -854,6 +854,11 @@ const postReceiptUsages = [
   ...['accessible-name', 'primary-value'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/atoms/step-meter/types.ts#StepMeterProps'
+  })),
+  // Prose #569 reuses two approved conventions as usages only: no new meaning, exception or receipt for them.
+  ...['preset-dimensions', 'surface-material-tone'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/primitives/prose/types.ts#ProseProps'
   }))
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
@@ -1787,6 +1792,48 @@ test('StepMeter step count binds its scoped owner approval, reuses two approved 
   const unapproved = structuredClone(registry);
   unapproved.find(({ id }) => id === 'step-count').approval = null;
   assert.throws(() => validate(unapproved), /approval/i);
+});
+
+test('Prose reuses two approved conventions as usages only and binds its reviewed source revision (#569)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/primitives/prose/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const source = { path, symbol: 'ProseProps', revision };
+  // Both entries keep their approved status and gain exactly one Prose usage each: no new entry, exception or receipt.
+  for (const [id, type] of [
+    ['preset-dimensions', "ProseSize ('sm' | 'md')"],
+    ['surface-material-tone', "ProseTone ('canvas' | 'raised')"]
+  ]) {
+    const reused = registry.find((item) => item.id === id);
+    assert.equal(reused.status, 'approved', id);
+    assert.deepEqual(
+      reused.exceptions.filter(({ scope }) => scope.includes('Prose')),
+      [],
+      id
+    );
+    assert.deepEqual(
+      reused.usages.filter(({ component }) => component === 'Prose'),
+      [{ component: 'Prose', type, status: 'existing', source }],
+      id
+    );
+    // The frozen receipts compare the registry without the reviewed post-receipt usages.
+    assert.deepEqual(
+      historicalRegistry([reused]).flatMap(({ usages }) => usages.filter(({ component }) => component === 'Prose')),
+      [],
+      id
+    );
+  }
+  assert.deepEqual(
+    registry.filter((item) => item.usages.some(({ component }) => component === 'Prose')).map(({ id }) => id),
+    ['preset-dimensions', 'surface-material-tone']
+  );
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 2);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  validate(registry);
 });
 
 test('Text truncation binds its scoped owner approval and reviewed source', () => {

@@ -1017,6 +1017,16 @@
           "symbol": "NowCardProps",
           "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
         }
+      },
+      {
+        "component": "Prose",
+        "type": "ProseSize ('sm' | 'md')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/prose/types.ts",
+          "symbol": "ProseProps",
+          "revision": "sha256:9fa0da50b17a2d7e58325c9b6447730377cc5a044668be6d199ed0da92a1527e"
+        }
       }
     ]
   },
@@ -1591,6 +1601,16 @@
           "path": "packages/ui/src/molecules/terminal-card/types.ts",
           "symbol": "TerminalCardRow",
           "revision": "sha256:8f38012a58012acd15571c9150980195448da25fcb21c6dc2da8ec3a6ce4b0d1"
+        }
+      },
+      {
+        "component": "Prose",
+        "type": "ProseTone ('canvas' | 'raised')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/prose/types.ts",
+          "symbol": "ProseProps",
+          "revision": "sha256:9fa0da50b17a2d7e58325c9b6447730377cc5a044668be6d199ed0da92a1527e"
         }
       }
     ]

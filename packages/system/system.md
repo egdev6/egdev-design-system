@@ -2445,6 +2445,52 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Portal
     - No statically extracted anatomy.
   - children: ReactNode; Layered content to render out of tree. The property is required, but ReactNode may be empty. (components[] · packages/ui/src/primitives/portal/types.ts)
   - container: Element \| DocumentFragment \| null; Ready client-side mount node. Absent or null uses document.body after mounting. To wait for a node, render Portal conditionally; null does not defer mounting. Do not supply a DOM container during server rendering. (components[] · packages/ui/src/primitives/portal/types.ts)
+### Prose
+catalog[] · docs/catalog.json · @egdev/ui · primitive · —
+- Prose (components[] · packages/ui/src/primitives/prose/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - proseVariants base: font-sans → --font-sans
+    - proseVariants base: text-pretty → unresolved
+    - proseVariants base: [&_h2]:font-display → --font-display
+    - proseVariants base: [&_h2]:text-balance → unresolved
+    - proseVariants base: [&_h2]:text-heading-section → --text-heading-section
+    - proseVariants base: [&_h3]:font-sans → --font-sans
+    - proseVariants base: [&_h3]:text-balance → unresolved
+    - proseVariants base: [&_h3]:text-heading-small → --text-heading-small
+    - proseVariants base: [&_h4]:font-sans → --font-sans
+    - proseVariants base: [&_h4]:text-balance → unresolved
+    - proseVariants base: [&_h4]:text-body-large → --text-body-large
+    - proseVariants base: [&_h4]:[font-weight:var(--text-heading-small--font-weight)] → --text-heading-small--font-weight
+    - proseVariants base: [&_a:focus-visible]:rounded-sm → --radius-sm
+    - proseVariants base: [&_a:focus-visible]:[box-shadow:var(--shadow-focus)] → --shadow-focus
+    - proseVariants base: [&_strong]:[font-weight:var(--text-heading-small--font-weight)] → --text-heading-small--font-weight
+    - proseVariants base: [&_ul]:ps-7 → --spacing-7
+    - proseVariants base: [&_ol]:ps-7 → --spacing-7
+    - proseVariants base: [&_blockquote]:ps-4.5 → --spacing
+    - proseVariants base: [&_code]:font-mono → --font-mono
+    - proseVariants base: [&_code]:text-code → --text-code
+    - proseVariants base: [&_pre]:rounded-md → --radius-md
+    - proseVariants base: [&_pre]:p-4 → --spacing-4
+    - proseVariants base: [&_pre]:shadow-[var(--shadow-well)] → --shadow-well
+    - proseVariants base: [&_pre]:font-mono → --font-mono
+    - proseVariants base: [&_pre]:text-code → --text-code
+    - proseVariants base: [&_pre:focus-visible]:[box-shadow:var(--shadow-focus)] → --shadow-focus
+    - proseVariants base: [&_img]:rounded-md → --radius-md
+    - proseVariants base: [&_figcaption]:text-body-default → --text-body-default
+    - proseVariants base: [&_th]:px-4 → --spacing-4
+    - proseVariants base: [&_th]:py-2.5 → --spacing
+    - proseVariants base: [&_th]:text-start → unresolved
+    - proseVariants base: [&_th]:font-display → --font-display
+    - proseVariants base: [&_th]:text-label-eyebrow → --text-label-eyebrow
+    - proseVariants base: [&_td]:px-4 → --spacing-4
+    - proseVariants base: [&_td]:py-3 → --spacing-3
+    - proseVariants base: [&_td]:text-start → unresolved
+    - proseVariants base: [&_td]:text-body-default → --text-body-default
+    - proseVariants size=sm: text-body-default → --text-body-default
+    - proseVariants size=md: text-body-large → --text-body-large
+  - children: ReactNode; Converted and sanitized flow content as React nodes. (components[] · packages/ui/src/primitives/prose/types.ts)
+  - size: enum; Root body step and unit of the ch measure: md is the 16px reading size, sm the compact 12.8px step. (components[] · packages/ui/src/primitives/prose/types.ts)
+  - tone: enum; Surface family hosting the prose: canvas for surface-0 and the grafito register, raised for surface-1 to surface-3 hosts. It only selects the brand colour of inline code and never paints a background. (components[] · packages/ui/src/primitives/prose/types.ts)
 ### Skeleton
 catalog[] · docs/catalog.json · @egdev/ui · primitive · —
 - Skeleton (components[] · packages/ui/src/primitives/skeleton/types.ts)
@@ -3631,7 +3677,7 @@ Not exported:
 - pending-activity: loading; approved; Button, Input (propNaming[] · skills/_shared/prop-naming.json)
 - pointer-tilt: pointerTilt; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - portal-container: container; approved; AlertDialogContent, DialogContent, Portal (propNaming[] · skills/_shared/prop-naming.json)
-- preset-dimensions: size; approved; AppIcon, Avatar, Button, Countdown, DialogContent, Gauge, GaugeGroup, Icon, IconButton, Indicator, Input, ListItem, Logo, Notice, NowCard, ProgressBar, ProjectCard, Select, Skeleton, SocialLinks, Spinner, Stat, Table, Tabs, Timeline, Toggle (propNaming[] · skills/_shared/prop-naming.json)
+- preset-dimensions: size; approved; AppIcon, Avatar, Button, Countdown, DialogContent, Gauge, GaugeGroup, Icon, IconButton, Indicator, Input, ListItem, Logo, Notice, NowCard, ProgressBar, ProjectCard, Prose, Select, Skeleton, SocialLinks, Spinner, Stat, Table, Tabs, Timeline, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-change: onPressedChange; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-state: pressed; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - preview-thumbnail: thumb; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
@@ -3661,7 +3707,7 @@ Not exported:
 - square-particle-direction: squareDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - step-count: steps; approved; StepMeter (propNaming[] · skills/_shared/prop-naming.json)
 - surface-elevation: elevation; approved; Surface (propNaming[] · skills/_shared/prop-naming.json)
-- surface-material-tone: tone; approved; AlertDialogContent, Badge, Countdown, FieldMessage, Heading, Indicator, MenuEntry, ModuleCard, NavList, Notice, Panel, PreviewFrame, PullQuote, SectionHeader, Surface, Tabs, TerminalCardRow, Text, Timeline, Toast (propNaming[] · skills/_shared/prop-naming.json)
+- surface-material-tone: tone; approved; AlertDialogContent, Badge, Countdown, FieldMessage, Heading, Indicator, MenuEntry, ModuleCard, NavList, Notice, Panel, PreviewFrame, Prose, PullQuote, SectionHeader, Surface, Tabs, TerminalCardRow, Text, Timeline, Toast (propNaming[] · skills/_shared/prop-naming.json)
 - tab-list-full-width: fullWidth; approved; Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - table-columns: columns; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - table-rows: rows; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
@@ -3707,6 +3753,7 @@ Not exported:
 | --bp-sm | 520px | root |  | tokens[] · packages/tokens/src/theme.css |
 | --breakpoint-section-header-split | 860px | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --container-calendar-grid-stack | 960px | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --container-prose | 65ch | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --container-quote-pull | 40ch | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --content-max | 1024px | root |  | tokens[] · packages/tokens/src/theme.css |
 | --delay-popover | 2s | root |  | tokens[] · packages/tokens/src/theme.css |

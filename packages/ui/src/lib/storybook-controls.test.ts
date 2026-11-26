@@ -134,7 +134,8 @@ const components = [
   ['WebSection', 'organisms/web-section'],
   ['WebTemplate', 'templates/web-template'],
   ['AppIcon', 'atoms/app-icon'],
-  ['StepMeter', 'atoms/step-meter']
+  ['StepMeter', 'atoms/step-meter'],
+  ['Prose', 'primitives/prose']
 ] as const;
 const expectedIconNames = [
   'github',
@@ -291,6 +292,7 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   pixel: { state: 'select' },
   stepmeter: { label: 'text', value: 'number', steps: 'number' },
+  prose: { children: false, size: 'select', tone: 'select' },
   notesboard: { children: false, sticky: 'boolean' },
   notesboardlist: { children: false },
   notesboardside: { children: false },
@@ -756,6 +758,7 @@ const ownPropCounts: Record<string, number> = {
   sectionnav: 10,
   pixel: 1,
   stepmeter: 3,
+  prose: 3,
   notesboard: 2,
   notesboardlist: 1,
   notesboardside: 1,
@@ -1663,6 +1666,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       }
     ],
     ['Heading', { variant: '"section"', foreground: '"inherit"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
+    ['Prose', { size: '"md"', tone: '"canvas"' }],
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
@@ -2137,6 +2141,43 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'title',
       'tabIndex',
       'contentEditable',
+      'onClick',
+      'ref',
+      'asChild'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Prose children without a widget, size and tone selects with constant defaults and passive native rows', () => {
+    const { argTypes, args } = story('Prose');
+    const tags = component('Prose').__docgenInfo.props.children?.tags as Record<string, string> | undefined;
+    expect(tags?.controlReason).toMatch(/ReactNode.*Default and Elements/);
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.disable).toBeUndefined();
+    expect(argTypes.children?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.size?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.size?.control).toEqual({ type: 'select' });
+    expect(argTypes.size?.options).toEqual(story('Prose', false).argTypes.size?.options);
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect(argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
+    expect(argTypes.tone?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.tone?.control).toEqual({ type: 'select' });
+    expect(argTypes.tone?.options).toEqual(story('Prose', false).argTypes.tone?.options);
+    expect([...(argTypes.tone?.options ?? [])].sort()).toEqual(['canvas', 'raised']);
+    expect(argTypes.tone?.table?.defaultValue?.summary).toBe('"canvas"');
+    // Documentation must not initialize the optional size and tone controls just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'lang', 'dir', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Prose', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
       'onClick',
       'ref',
       'asChild'

@@ -239,6 +239,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   cluster: ['id', 'title', 'aria-describedby', 'className', 'style'],
   text: ['id', 'title', 'aria-describedby', 'className', 'style'],
   heading: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  prose: ['id', 'title', 'lang', 'dir', 'aria-describedby', 'className', 'style'],
   icon: ['id', 'aria-describedby', 'className', 'style'],
   iconButton: [
     'id',

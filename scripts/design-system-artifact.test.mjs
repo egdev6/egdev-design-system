@@ -291,6 +291,111 @@ test('SectionNav keeps its ten props, documents the zero-padded numbers and publ
   }
 });
 
+test('Prose publishes its three own props, the static descendant recipe, the measure token and the reused conventions (#569)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const prose = artifact.components.find(({ name }) => name === 'Prose');
+  assert.ok(prose, 'the artifact lists Prose');
+  assert.equal(prose.package, '@egdev/ui');
+  assert.equal(prose.source, 'packages/ui/src/primitives/prose/types.ts');
+  assert.deepEqual(
+    prose.props.map(({ name }) => name),
+    ['children', 'size', 'tone']
+  );
+  const [children, size, tone] = ['children', 'size', 'tone'].map((name) =>
+    prose.props.find((prop) => prop.name === name)
+  );
+  assert.deepEqual([children.type, children.required, children.default], ['ReactNode', true, null]);
+  assert.deepEqual([size.type, size.required, size.default], ['enum', false, 'md']);
+  assert.deepEqual([tone.type, tone.required, tone.default], ['enum', false, 'canvas']);
+  assert.match(size.description, /Root body step and unit of the ch measure/);
+  assert.match(tone.description, /brand colour of inline code/);
+  // No landmark role, accessible name, HTML string, ref or asChild: the root is a generic div over React children.
+  for (const name of ['role', 'aria-label', 'aria-labelledby', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+    assert.ok(!prose.props.some((prop) => prop.name === name), `Prose must not publish ${name}`);
+  }
+  // One private descendant recipe, built from static string literals with the measure and representative selectors.
+  assert.deepEqual(
+    prose.variants.map(({ name }) => name),
+    ['proseVariants']
+  );
+  const published = new Set(prose.variants[0].classes.join(' ').split(/\s+/).filter(Boolean));
+  for (const utility of [
+    'eg-prose',
+    'max-w-prose',
+    'min-w-0',
+    'text-body-large',
+    'text-body-default',
+    '[&>:first-child]:mt-0',
+    '[&_h2]:text-heading-section',
+    '[&_a]:text-link-default',
+    '[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]',
+    '[&_pre]:shadow-[var(--shadow-well)]',
+    '[&_th]:bg-surface-2',
+    '[&_:not(pre)>code]:text-fg-brand-default',
+    '[&_:not(pre)>code]:text-fg-brand-raised'
+  ]) {
+    assert.ok(published.has(utility), `The Prose recipe lists ${utility}`);
+  }
+  // The component is passive and self-contained: no parts, composition, Surface use or class-name allowance.
+  assert.deepEqual(prose.parts, []);
+  assert.deepEqual(prose.composedOf, []);
+  assert.deepEqual(prose.surfaceUsage, []);
+  assert.equal(Object.hasOwn(prose, 'classNameAllows'), false);
+  // Token-backed utilities resolve to their tokens, including the owner-confirmed reading measure.
+  // The builder indexes typography, radius, shadow and padding utilities; named container utilities such as
+  // max-w-prose (like max-w-quote-pull) and colour utilities are listed in the recipe but not indexed.
+  const indexed = prose.anatomy[0].base.map((index) => artifact.anatomyUtilities[index]);
+  for (const [className, tokens] of [
+    ['[&_h2]:text-heading-section', ['--text-heading-section']],
+    ['[&_pre]:shadow-[var(--shadow-well)]', ['--shadow-well']],
+    ['[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]', ['--shadow-focus']]
+  ]) {
+    assert.deepEqual(indexed.find((utility) => utility.className === className)?.tokens, tokens, className);
+  }
+  // The only unresolved flags are the six keyword utilities that are not tokens (text-wrap and text-align), the same
+  // heuristic that already flags Table's text-start; no token-backed utility is unresolved.
+  assert.deepEqual(
+    indexed
+      .filter(({ unresolved }) => unresolved)
+      .map(({ className }) => className)
+      .sort(),
+    [
+      '[&_h2]:text-balance',
+      '[&_h3]:text-balance',
+      '[&_h4]:text-balance',
+      '[&_td]:text-start',
+      '[&_th]:text-start',
+      'text-pretty'
+    ]
+  );
+  assert.deepEqual(
+    artifact.tokens.find(({ name }) => name === '--container-prose'),
+    {
+      name: '--container-prose',
+      value: '65ch',
+      group: 'theme'
+    }
+  );
+  // The two reused conventions keep their approved status and list Prose beside the other components.
+  for (const id of ['preset-dimensions', 'surface-material-tone']) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(convention.status, 'approved', id);
+    assert.ok(convention.components.includes('Prose'), id);
+  }
+  assert.deepEqual(
+    artifact.catalog.find(({ name }) => name === 'Prose'),
+    {
+      name: 'Prose',
+      level: 'primitive',
+      package: '@egdev/ui',
+      radix: '—',
+      composes: [],
+      action: 'nuevo',
+      available: true
+    }
+  );
+});
+
 test('HomeTemplateAnchor publishes its box geometry as classNameAllows and no other effects entry changes (#566)', () => {
   const { components } = read('packages/system/design-system.json');
   const effects = components.filter((item) => item.package === '@egdev/effects');

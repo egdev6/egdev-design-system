@@ -9,7 +9,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Acción | Componentes |
 |---|---|
-| nuevo | 30 |
+| nuevo | 31 |
 | mantener | 30 |
 | mover | 30 |
 | extraer | 12 |
@@ -21,7 +21,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 106 |
+| @egdev/ui | 107 |
 | @egdev/effects | 5 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -41,6 +41,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Surface** | — | Slot | — | nuevo | Implemented in @egdev/ui: static Material v2 box with tones `surface-0…3`, `well` and `overlay` (solid reduced-transparency fallback), elevation 0–3 on raised tones, padding and radius presets, and `asChild`. Token-backed CVA, no stylesheet. Gauge keeps its own transparent native frame. Contract: [#106](https://github.com/egdev6/egdev-design-system/issues/106). |
 | **Stack / Cluster** | — | Slot | — | nuevo | Implemented in @egdev/ui: Stack (vertical flow, no wrap) and Cluster (wrapping row) with exact spacing-token gaps and flex alignment. Contract: [#105](https://github.com/egdev6/egdev-design-system/issues/105). |
 | **Text / Heading** | Title + Eyebrow (átomo) | Slot | — | fusionar | Implemented in @egdev/ui: Text (paragraph eyebrow by default, title recipes or body/body-large/lede with semantic foreground and native strong emphasis; Slot `asChild`) and Heading (native h1–h6 from `level`, independent of its `section`/`hero`/`show`/`display`/`inverse`/`compact` recipe). Compact pairs heading-small metrics with display font and inherits its host or selects semantic foreground; display accents retain canvas/raised tone. No stylesheet; legacy `.eg-title`/`.eg-eyebrow` rules are unchanged. Contract: [#108](https://github.com/egdev6/egdev-design-system/issues/108); amendments: [#396](https://github.com/egdev6/egdev-design-system/issues/396), [#424](https://github.com/egdev6/egdev-design-system/issues/424). |
+| **Prose** | — | — | — | nuevo | Implemented React primitive under the [approved v0.1 contract](components/prose/v0.1/spec.md): passive reading column (`div.eg-prose`) that gives bare semantic children (h2 to h4, paragraphs, lists, links, strong, blockquote, code, pre, images, figures, simple tables and rules) a token-backed long-form presentation, with a built-in reading measure (`--container-prose`, 65ch), `size` md or sm and a `tone` for inline code. Descendant utilities only: no stylesheet, ref, asChild, HTML-string input or part markers. The consumer converts and sanitizes content; nested recipe-owning components are unsupported. Browser, contrast and packed-consumer verification remain pending until observed. |
 | **Divider** | Divider (átomo) | Separator | — | mantener | Implemented passive span via Radix Separator with decorative default and horizontal/vertical orientation. Token-backed brand rule; no public children, ref or asChild. Legacy `.eg-rule` and `--vertical` remain unchanged. Contract: [#83](https://github.com/egdev6/egdev-design-system/issues/83). |
 | **AspectRatio** | — | AspectRatio | — | nuevo | Implemented in @egdev/ui: unpainted responsive media geometry using Radix AspectRatio. See issue #78; consumer compositions own media semantics and Material. |
 | **Portal** | — | Portal | — | nuevo | Implemented unstyled out-of-tree div with eg-portal, ready custom container and forwarded div ref. No focus, positioning, presence or z-index policy; Radix-specific components keep their own portals. Contract: issue #97 v0.1. |

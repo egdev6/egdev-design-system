@@ -2185,6 +2185,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/divider',
       './primitives/label',
       './primitives/portal',
+      './primitives/prose',
       './primitives/skeleton',
       './primitives/slot',
       './primitives/stack',
@@ -2312,6 +2313,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'ProjectCardFooter',
       'ProjectCardMark',
       'ProjectCardTags',
+      'Prose',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
@@ -3524,6 +3526,75 @@ describe('Storybook TypeScript docgen contract', () => {
       }
       expect(ts.getTextOfJSDocComment(ts.getJSDocCommentsAndTags(property)[0]?.comment), name).toBeTruthy();
     }
+  });
+
+  it('extracts Prose children, size and tone with their annotations and passive native rows', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser.parse(source('primitives/prose/Prose.tsx')).find(({ displayName }) => displayName === 'Prose');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    expect(props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect((props.children?.tags as Record<string, string> | undefined)?.controlReason).toMatch(
+      /ReactNode.*Default and Elements/
+    );
+    expect(props.size).toMatchObject({ required: false, type: { name: 'enum' }, tags: { control: 'select' } });
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect((props.size?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'md',
+      'sm'
+    ]);
+    expect(props.tone).toMatchObject({ required: false, type: { name: 'enum' }, tags: { control: 'select' } });
+    expect(normalize(props.tone?.defaultValue?.value)).toBe('canvas');
+    expect((props.tone?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'canvas',
+      'raised'
+    ]);
+    for (const name of ['id', 'title', 'lang', 'dir', 'aria-describedby', 'className', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'onClick',
+      'ref',
+      'asChild'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    const file = ast(source('primitives/prose/types.ts'));
+    const own = ownProps(file, ['ProseProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(['children', 'size', 'tone']);
+    const controls: Record<string, string> = { children: 'false', size: 'select', tone: 'select' };
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'default').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual(name === 'size' ? ['md'] : name === 'tone' ? ['canvas'] : []);
+    }
+    expect(publicAPI.Prose).toBeDefined();
+    for (const name of ['proseVariants', 'useProse']) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('primitives/prose/index.ts'), 'utf8')).not.toMatch(/Variants|useProse/);
+    expect(exportedStoryNames(ast(source('primitives/prose/Prose.stories.tsx')))).toEqual([
+      'Default',
+      'Elements',
+      'Sizes',
+      'RaisedTone',
+      'Overflow'
+    ]);
+    const stories = readFileSync(source('primitives/prose/Prose.stories.tsx'), 'utf8');
+    expect(stories).toMatch(/title: 'Primitives\/Prose'/);
+    expect(stories).not.toMatch(/\b(?:argTypes|play)\s*:/);
   });
 
   it('extracts Surface from both public branches with single constant defaults', () => {
