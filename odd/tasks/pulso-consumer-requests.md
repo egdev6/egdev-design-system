@@ -21,8 +21,8 @@ egdev-website's Pulso parity gaps (consumer issue egdev6/egdev-website#45), file
 | T5 | S1 | #556 spec drafts `docs/components/step-meter/v0.1/spec.md` + `docs/components/now-card/v0.3/spec.md`; owner approval pending | parallel writer | see git log |
 | T6 | S4 | #559 implementation per footer/v0.3/implementation-plan.md | sequential worker | 325a2af, 625bed5, 9ccdb9f |
 | T7 | S3 | #558 implementation per project-card/v0.3/implementation-plan.md | sequential worker | 510903d, a082dd3, f25c5a9, fc16b8d |
-| T8 | S2 | #557 implementation per carousel/v0.4/implementation-plan.md | sequential worker | pending |
-| T9 | S1 | #556 implementation per step-meter/v0.1/implementation-plan.md | sequential worker | pending |
+| T8 | S2 | #557 implementation per carousel/v0.4/implementation-plan.md | sequential worker | 6438fcf, cbd3a51, 8148154, 615cee7 |
+| T9 | S1 | #556 implementation per step-meter/v0.1/implementation-plan.md | sequential worker | see git log (feat/docs step-meter) |
 | T10 | S1–S4 | One integration PR from this branch; owner Storybook review | inline | pending |
 
 ## Log
