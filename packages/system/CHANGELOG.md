@@ -4,6 +4,9 @@
 
 ### Added
 
+- The artifact and design reference include Link's `quiet` variant: the widened `variant` description, a `quiet`
+  entry in the recipe anatomy and the ink listed per variant, so the shared `linkVariants` base no longer carries
+  `text-link-default`; every other Link prop is unchanged. (#562)
 - The source-derived artifact and reference include ProjectCard's `statusBadge` slot and its
   `leading-status-badge` usage. (#558)
 - The artifact and design reference include Carousel's `variant` prop and its current-slide emphasis recipes;

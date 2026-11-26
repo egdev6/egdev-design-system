@@ -8,6 +8,11 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- Link accepts `variant='quiet'`: neutral text with a brand-coloured underline, for navigation links inside cards and
+  footer navigation. It keeps the default label size, the underline removal on hover, the arrow and the focus ring,
+  so only the ink and underline colour differ, and it is not meant for inline prose, where the underline is the only
+  cue. Omitting `variant`, `plain` and the deprecated `underlined` render as before. `FooterNavigation` adopts it
+  through the Footer amendment, not through this entry. (#562)
 - `FooterNavigationItem` accepts the optional `'aria-current': 'page'`, rendered on that entry's link so the footer
   exposes the current page like TopBar and NavList. The host marks at most one link across the Footer; Footer does
   not infer the current page and adds no visual cue, so sighted users get no indication from the Footer itself. (#559)

@@ -166,6 +166,35 @@ test('Carousel publishes the opt-in current-slide emphasis variant and its recip
   assert.ok(convention.components.includes('Carousel'), 'the visual-treatment convention lists Carousel');
 });
 
+test('Link publishes the quiet variant and keeps each variant ink in its own recipe literal (#562)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const link = artifact.components.find(({ name }) => name === 'Link');
+  assert.ok(link);
+  const variant = link.props.find(({ name }) => name === 'variant');
+  assert.ok(variant, 'Link must publish its variant prop');
+  assert.equal(variant.type, 'enum');
+  assert.equal(variant.required, false);
+  assert.equal(variant.default, 'plain');
+  assert.match(variant.description, /quiet/);
+  assert.match(variant.description, /underlined/);
+  assert.doesNotMatch(variant.description, /only treatment/);
+  // The builder reads string literals inside the cva call and does not follow module-level constants. The three
+  // recipes therefore stay inline literals: a refactor into shared constants would drop every Link ink from here.
+  const recipe = link.variants.find(({ name }) => name === 'linkVariants');
+  assert.ok(recipe, 'Link must publish linkVariants');
+  const [base = ''] = recipe.classes;
+  assert.ok(!base.split(/\s+/).includes('text-link-default'), 'the shared base no longer carries the ink');
+  const published = recipe.classes.join(' ').split(/\s+/).filter(Boolean);
+  for (const utility of ['text-link-default', 'text-fg-default', 'decoration-fg-brand-default']) {
+    assert.ok(published.includes(utility), `linkVariants must list ${utility}`);
+  }
+  const anatomy = link.anatomy.find(({ name }) => name === 'linkVariants');
+  assert.ok(anatomy, 'Link must publish the linkVariants anatomy');
+  assert.deepEqual(Object.keys(anatomy.variants.variant).sort(), ['plain', 'quiet', 'underlined']);
+  const convention = artifact.propNaming.find(({ id }) => id === 'visual-treatment');
+  assert.ok(convention?.components.includes('Link'), 'the visual-treatment convention lists Link');
+});
+
 test('classNameAllows publishes sorted unique CSS properties on roots and their own or shared parts', () => {
   const result = artifactWithTags([
     {
