@@ -60,4 +60,11 @@ Integration branch `integration/round-5`. egdev-website's Pulso parity requests 
   - #560: `show` probably still breaks the Closing title at 1440px or wider, which needs a browser measurement.
   - #562: the type step should stay `text-label-default`; the draft's `body-large` was wrong under ×0.8.
   - #569: proposes the token `--container-prose: 65ch`.
+- L5 — Owner answers, verbatim:
+  - Specs: "Aprobar todas (Recomendado)". All 11 specs are approved with each draft's recommended answers to its open questions, including the new naming conventions it proposes.
+  - Token: "Sí, 65ch (Recomendado)". `--container-prose: 65ch` is confirmed for packages/tokens/src/theme.css.
+  - #566: "Incluir el CLI: cli 0.4.1 (Recomendado)". The DS046 guard also reads `classNameAllows` from `@egdev/effects`, and cli moves to 0.4.1.
+  - #560: "Sí, medir primero (Recomendado)". A browser measurement comes before the plan.
+
+  Spec approval does not approve the plans (S6).
 - L2 — Size note: 14 consumer requests, each with three owner gates. This spans several sessions; resume from this document.
