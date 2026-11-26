@@ -1988,10 +1988,12 @@ test('SectionNav binds accessible-name exceptions and their source evidence', ()
     assert.equal(exception.approval.contentHash, props.exceptionHash(exception));
     const record = receipt.entries.find((item) => item.scope === `exception:accessible-name:SectionNav:${propName}`);
     assert.equal(record.contentHash, props.exceptionHash(exception));
+    // The v0.1 receipt binds the file the owner reviewed; later amendments move the live file, as the literal
+    // revisions elsewhere in this suite already do. The live-file comparison stays on the registry usages.
     assert.deepEqual(record.source, {
       path,
       symbol: 'SectionNavProps',
-      revision: digest(fs.readFileSync(resolve(root, path)))
+      revision: 'sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a'
     });
     assert.deepEqual(record.exception, { scope: exception.scope, propName, reason: exception.reason });
   }

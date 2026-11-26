@@ -5,13 +5,20 @@ import { cn } from '../../lib/cn';
 import {
   type SectionNavItem,
   type SectionNavProps,
+  sectionNavLabelVariants,
   sectionNavLinkVariants,
   sectionNavListVariants,
   sectionNavNextVariants,
+  sectionNavNumberVariants,
   sectionNavPillVariants,
   sectionNavRootVariants,
   sectionNavTriggerVariants
 } from './types';
+
+/** Position shown beside a section: 1-based, at least two digits. */
+function formatSectionNumber(position: number) {
+  return String(position).padStart(2, '0');
+}
 
 /** Derive host state and adapt Popover requests without taking over navigation. */
 export function useSectionNav(props: SectionNavProps) {
@@ -85,10 +92,10 @@ export function useSectionNav(props: SectionNavProps) {
     nextLabel,
     items,
     current,
-    currentNumber: currentIndex + 1,
+    currentNumber: current ? formatSectionNumber(currentIndex + 1) : undefined,
     rows: items.map((item, index) => ({
       item,
-      number: index + 1,
+      number: formatSectionNumber(index + 1),
       current: index === currentIndex ? ('location' as const) : undefined,
       state: (currentIndex < 0 || index > currentIndex
         ? 'idle'
@@ -127,6 +134,8 @@ export function useSectionNav(props: SectionNavProps) {
     triggerClass: cn(sectionNavTriggerVariants()),
     nextClass: cn(sectionNavNextVariants()),
     listClass: cn(sectionNavListVariants()),
-    linkClass: cn(sectionNavLinkVariants())
+    linkClass: cn(sectionNavLinkVariants()),
+    numberClass: cn(sectionNavNumberVariants()),
+    labelClass: cn(sectionNavLabelVariants())
   };
 }

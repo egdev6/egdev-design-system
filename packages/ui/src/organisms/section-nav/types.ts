@@ -42,7 +42,8 @@ export type SectionNavProps = NativeProps & {
    */
   nextLabel: string;
   /**
-   * Ordered section destinations.
+   * Ordered section destinations. The number shown for each section is its 1-based position in this array,
+   * zero-padded to at least two digits.
    * @control false
    * @controlReason Structured items are not serializable as a control; see Default.
    */
@@ -98,3 +99,5 @@ export const sectionNavListVariants = cva('m-0 p-0 list-none');
 export const sectionNavLinkVariants = cva(
   'flex items-center gap-3 min-h-14 text-fg-default no-underline focus-visible:shadow-[var(--shadow-focus)] aria-[current=location]:underline motion-reduce:transition-none'
 );
+export const sectionNavNumberVariants = cva('font-display text-meta tabular-nums text-fg-brand-raised');
+export const sectionNavLabelVariants = cva('font-display text-meta uppercase');

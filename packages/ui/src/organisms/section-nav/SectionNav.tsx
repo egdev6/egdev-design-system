@@ -18,8 +18,8 @@ export const SectionNav: FC<SectionNavProps> = (props) => {
             <PopoverTrigger aria-label={nav.disclosureLabel} className={nav.triggerClass}>
               {nav.current && (
                 <>
-                  <span>{nav.currentNumber}</span>
-                  <span>{nav.current.label}</span>
+                  <span className={nav.numberClass}>{nav.currentNumber}</span>{' '}
+                  <span className={nav.labelClass}>{nav.current.label}</span>
                 </>
               )}
               <Icon name='chevron-down' />
@@ -49,8 +49,8 @@ export const SectionNav: FC<SectionNavProps> = (props) => {
                     onAuxClick={row.onAuxClick}
                   >
                     <Pixel state={row.state} />
-                    <span>{row.number}</span>
-                    <span>{row.item.label}</span>
+                    <span className={nav.numberClass}>{row.number}</span>{' '}
+                    <span className={nav.labelClass}>{row.item.label}</span>
                   </a>
                 </li>
               ))}

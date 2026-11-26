@@ -657,6 +657,7 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['children', 'role', 'aria-label', 'aria-labelledby', 'style', 'dangerouslySetInnerHTML']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.items?.description).toMatch(/zero-padded/);
     expect(publicAPI.SectionNav).toBeDefined();
   });
   it('extracts Pixel state and passive native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
