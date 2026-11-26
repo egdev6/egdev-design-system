@@ -6,6 +6,14 @@ import { build } from 'vite';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buttonVariants } from '../atoms/button/types';
 import { gaugeCircleVariants } from '../atoms/gauge/types';
+import {
+  breadcrumbCurrentVariants,
+  breadcrumbLinkVariants,
+  breadcrumbListVariants,
+  breadcrumbSeparatorVariants,
+  breadcrumbStepVariants,
+  breadcrumbVariants
+} from '../molecules/breadcrumb/types';
 import { carouselSlideVariants, carouselTrackVariants } from '../molecules/carousel/types';
 import {
   dialogCloseVariants,
@@ -935,6 +943,55 @@ describe('Storybook preview CSS', () => {
     }
     // The block paints nothing and ships no stylesheet: its public marker carries no rule of its own.
     expect(css).not.toMatch(/\.eg-empty-state\b/);
+  });
+
+  it('emits every Breadcrumb recipe utility from the production recipes and no rule for its marker (#570)', () => {
+    // Every utility of the six part recipes is emitted with the property and token the approved recipe names; the
+    // completeness check below fails if a recipe utility has no row.
+    const escapeClass = (token: string) => `.${token.replace(/[^\w-]/g, (character) => `\\${character}`)}`;
+    const space = (step: string) => `var\\(--space-${step}[,)]`;
+    const rows: readonly (readonly [token: string, declaration: string])[] = [
+      ['min-w-0', `min-width:\\s*${space('0')}`],
+      ['wrap-anywhere', 'overflow-wrap:\\s*anywhere'],
+      ['m-0', `margin:\\s*${space('0')}`],
+      ['p-0', `padding:\\s*${space('0')}`],
+      ['list-none', 'list-style-type:\\s*none'],
+      ['flex', 'display:\\s*flex'],
+      ['flex-wrap', 'flex-wrap:\\s*wrap'],
+      ['items-center', 'align-items:\\s*center'],
+      ['gap-x-2', `column-gap:\\s*${space('2')}`],
+      ['gap-y-1', `row-gap:\\s*${space('1')}`],
+      ['gap-2', `gap:\\s*${space('2')}`],
+      ['min-h-14', `min-height:\\s*${space('14')}`],
+      ['self-stretch', 'align-self:\\s*stretch'],
+      ['self-center', 'align-self:\\s*center'],
+      ['font-sans', 'font-family:\\s*var\\(--font-sans[,)]'],
+      ['text-label-default', 'font-size:\\s*var\\(--text-label-default[,)]'],
+      ['text-fg-default', 'color:\\s*var\\(--color-fg-default[,)]'],
+      ['text-fg-muted', 'color:\\s*var\\(--color-fg-muted[,)]'],
+      ['-rotate-90', 'rotate:\\s*-90deg']
+    ];
+    const recipe = new Set(
+      [
+        breadcrumbVariants(),
+        breadcrumbListVariants(),
+        breadcrumbStepVariants(),
+        breadcrumbLinkVariants(),
+        breadcrumbCurrentVariants(),
+        breadcrumbSeparatorVariants()
+      ]
+        .flatMap((classes) => classes.split(' '))
+        .filter((token) => token !== 'eg-breadcrumb')
+    );
+    expect([...recipe].sort()).toEqual(rows.map(([token]) => token).sort());
+    for (const [token, declaration] of rows) {
+      expect(rule(escapeClass(token)), token).toMatch(new RegExp(declaration));
+    }
+    // The type step carries the line height and weight of the label token too, not only its size.
+    expect(rule('.text-label-default')).toMatch(/line-height:[^;}]*--text-label-default--line-height/);
+    expect(rule('.text-label-default')).toMatch(/font-weight:[^;}]*--text-label-default--font-weight/);
+    // The trail paints nothing and ships no stylesheet: its public marker carries no rule of its own.
+    expect(css).not.toMatch(/\.eg-breadcrumb\b/);
   });
 
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {

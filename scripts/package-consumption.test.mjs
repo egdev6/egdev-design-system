@@ -100,6 +100,8 @@ import { Prose } from '@egdev/ui';
 import type { ProseProps, ProseSize, ProseTone } from '@egdev/ui';
 import { EmptyState } from '@egdev/ui';
 import type { EmptyStateLevel, EmptyStateProps } from '@egdev/ui';
+import { Breadcrumb } from '@egdev/ui';
+import type { BreadcrumbItem, BreadcrumbProps } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -716,6 +718,42 @@ type EmptyStatePrivateRecipe = (typeof import('@egdev/ui'))['emptyStateVariants'
 // @ts-expect-error The internal hook is not public.
 type EmptyStatePrivateHook = (typeof import('@egdev/ui'))['useEmptyState'];
 export type EmptyStateNegatives = [typeof emptyStateMissingTitle, typeof emptyStateRichTitle, typeof emptyStateLevelOne, typeof emptyStateLevelSeven, typeof emptyStateBadIcon, typeof emptyStateRichDescription, typeof emptyStateArrayActions, typeof emptyStateTextActions, typeof emptyStateChildren, typeof emptyStateRole, typeof emptyStateLive, typeof emptyStateAriaLabel, typeof emptyStateAriaLabelledBy, typeof emptyStateTab, typeof emptyStateEditable, typeof emptyStateHtml, typeof emptyStateRef, typeof emptyStateSlot, EmptyStatePrivateRecipe, EmptyStatePrivateHook];
+
+// Keep Breadcrumb samples outside App so the existing link-count/focus harness stays unchanged.
+export const breadcrumbItems: BreadcrumbItem[] = [{ label: 'Home', href: '#home' }, { label: 'Editorial', href: '#editorial' }, { label: 'Post title' }];
+export const breadcrumbProps: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, onNavigate: (item, event) => { void item.label; void event.button; }, id: 'packed-trail', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
+export function BreadcrumbSamples() {
+  return createElement(Fragment, null,
+    createElement(Breadcrumb, breadcrumbProps),
+    createElement(Breadcrumb, { label: 'Single step', items: [{ label: 'Home' }] }),
+    createElement(Breadcrumb, { label: 'Trailing href', items: [{ label: 'Home', href: '#home' }, { label: 'Post title', href: '#ignored' }] }),
+    createElement(Breadcrumb, { label: 'Long trail', items: [{ label: 'Home', href: '#home' }, { label: 'Editorial', href: '#editorial' }, { label: 'Notes', href: '#notes' }, { label: 'Architecture', href: '#architecture' }, { label: 'A long post title' }] }));
+}
+// @ts-expect-error The label is required.
+const breadcrumbMissingLabel: BreadcrumbProps = { items: breadcrumbItems };
+// @ts-expect-error The items are required.
+const breadcrumbMissingItems: BreadcrumbProps = { label: 'Breadcrumb' };
+// @ts-expect-error The landmark keeps the navigation role.
+const breadcrumbRole: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, role: 'presentation' };
+// @ts-expect-error The landmark name is label, never aria-label.
+const breadcrumbAriaLabel: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, 'aria-label': 'x' };
+// @ts-expect-error The landmark name is label, never aria-labelledby.
+const breadcrumbAriaLabelledBy: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, 'aria-labelledby': 'x' };
+// @ts-expect-error The trail is data: there are no children.
+const breadcrumbChildren: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, children: 'x' };
+// @ts-expect-error Raw HTML is protected.
+const breadcrumbHtml: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A root ref is not part of this API.
+const breadcrumbRef: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const breadcrumbSlot: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, asChild: true };
+// @ts-expect-error An entry label is a string.
+const breadcrumbNumericLabel: BreadcrumbProps = { label: 'Breadcrumb', items: [{ label: 1 }] };
+// @ts-expect-error The recipes are private.
+type BreadcrumbPrivateRecipe = (typeof import('@egdev/ui'))['breadcrumbVariants'];
+// @ts-expect-error The internal hook is not public.
+type BreadcrumbPrivateHook = (typeof import('@egdev/ui'))['useBreadcrumb'];
+export type BreadcrumbNegatives = [typeof breadcrumbMissingLabel, typeof breadcrumbMissingItems, typeof breadcrumbRole, typeof breadcrumbAriaLabel, typeof breadcrumbAriaLabelledBy, typeof breadcrumbChildren, typeof breadcrumbHtml, typeof breadcrumbRef, typeof breadcrumbSlot, typeof breadcrumbNumericLabel, BreadcrumbPrivateRecipe, BreadcrumbPrivateHook];
 
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
@@ -5471,6 +5509,38 @@ function assertEmptyStateConsumerCSS(css) {
   assert.doesNotMatch(css, /\.eg-empty-state\b/);
 }
 
+function assertBreadcrumbConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, declaration] of [
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/],
+    ['list-none', /list-style-type:\s*none/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['gap-x-2', /column-gap:\s*var\(--space-2\)/],
+    ['gap-y-1', /row-gap:\s*var\(--space-1\)/],
+    ['gap-2', /gap:\s*var\(--space-2\)/],
+    ['min-h-14', /min-height:\s*var\(--space-14\)/],
+    ['self-stretch', /align-self:\s*stretch/],
+    ['self-center', /align-self:\s*center/],
+    ['text-label-default', /font-size:\s*var\(--text-label-default[,)]/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['-rotate-90', /rotate:\s*calc\(90deg\s*\*\s*-1\)/]
+  ]) {
+    assert.match(
+      utilities,
+      new RegExp(escapeRegExp(escapeClass(token)) + '\\s*\\{[^}]*' + declaration.source),
+      'Missing Breadcrumb rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the Breadcrumb marker.
+  assert.doesNotMatch(css, /\.eg-breadcrumb\b/);
+}
+
 function assertStepMeterConsumerCSS(css) {
   const utilitiesStart = css.search(/@layer utilities\s*\{/);
   assert.ok(utilitiesStart >= 0);
@@ -6019,6 +6089,8 @@ ${assertProseConsumerCSS.toString()}
 assertProseConsumerCSS(shippedStyles);
 ${assertEmptyStateConsumerCSS.toString()}
 assertEmptyStateConsumerCSS(shippedStyles);
+${assertBreadcrumbConsumerCSS.toString()}
+assertBreadcrumbConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -6110,6 +6182,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'BlogGridFeature',
   'BlogGridRow',
   'BlogGridRows',
+  'Breadcrumb',
   'Button',
   'ButtonGroup',
   'CalendarGrid',
@@ -6673,6 +6746,38 @@ for (const root of emptyStateRoots) {
   }
 }
 emptyStateDocument.window.close();
+const { BreadcrumbSamples } = await import('./consumer.ts');
+const breadcrumbDocument = new JSDOM(renderToString(createElement(BreadcrumbSamples)));
+const breadcrumbRoots = [...breadcrumbDocument.window.document.querySelectorAll('nav.eg-breadcrumb')];
+assert.equal(breadcrumbRoots.length, 4);
+const [trailFull, trailSingle, trailTrailingHref, trailLong] = breadcrumbRoots;
+assert.equal(trailFull.getAttribute('aria-label'), 'Breadcrumb');
+assert.equal(trailFull.getAttribute('id'), 'packed-trail');
+assert.equal(trailFull.getAttribute('lang'), 'en');
+assert.equal(trailFull.getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(trailFull.classList.contains('mt-6'));
+assert.deepEqual([...trailFull.children].map((node) => node.tagName), ['OL']);
+assert.equal(trailFull.querySelectorAll('ol > li').length, 3);
+assert.deepEqual([...trailFull.querySelectorAll('a')].map((link) => link.getAttribute('href')), ['#home', '#editorial']);
+assert.equal(trailFull.querySelectorAll('[aria-current]').length, 1);
+assert.equal(trailFull.querySelector('span[aria-current="page"]').textContent, 'Post title');
+assert.equal(trailFull.querySelectorAll('svg[aria-hidden="true"][focusable="false"]').length, 2);
+assert.equal(trailFull.textContent, 'HomeEditorialPost title');
+assert.equal(trailSingle.querySelectorAll('li').length, 1);
+assert.equal(trailSingle.querySelectorAll('a, svg').length, 0);
+assert.equal(trailSingle.querySelector('span[aria-current="page"]').textContent, 'Home');
+assert.equal(trailTrailingHref.querySelectorAll('a').length, 1);
+assert.equal(trailTrailingHref.querySelector('a[href="#ignored"]'), null);
+assert.equal(trailTrailingHref.querySelector('span[aria-current="page"]').textContent, 'Post title');
+assert.equal(trailLong.querySelectorAll('ol > li').length, 5);
+assert.equal(trailLong.querySelectorAll('svg').length, 4);
+assert.equal(trailLong.querySelectorAll('a').length, 4);
+for (const root of breadcrumbRoots) {
+  for (const attribute of ['role', 'aria-labelledby', 'tabindex', 'data-state', 'style']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+}
+breadcrumbDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');

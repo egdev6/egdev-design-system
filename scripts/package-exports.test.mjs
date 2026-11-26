@@ -1405,6 +1405,193 @@ test('EmptyState package SSR renders one unmarked root, a hidden icon and nothin
   assert.deepEqual(warnings, ['EmptyState requires a non-empty title. Nothing was rendered.']);
 });
 
+test('Breadcrumb ships every static recipe utility with its token declaration and no rule of its own (#570)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/breadcrumb/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 6, 'Breadcrumb declares exactly six static recipes');
+  assert.equal(classes.size, 20, 'The approved inventory is the stable marker plus 19 utilities');
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes(escapeClass(name)), `Missing Breadcrumb utility ${name}`);
+    }
+  }
+  // Every utility reads the property and the token the approved recipe names; a row per utility keeps this complete.
+  const rows = [
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/],
+    ['m-0', /margin:\s*var\(--space-0\)/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['list-none', /list-style-type:\s*none/],
+    ['flex', /display:\s*flex/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['items-center', /align-items:\s*center/],
+    ['gap-x-2', /column-gap:\s*var\(--space-2\)/],
+    ['gap-y-1', /row-gap:\s*var\(--space-1\)/],
+    ['gap-2', /gap:\s*var\(--space-2\)/],
+    ['min-h-14', /min-height:\s*var\(--space-14\)/],
+    ['self-stretch', /align-self:\s*stretch/],
+    ['self-center', /align-self:\s*center/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-label-default', /font-size:\s*var\(--text-label-default[,)]/],
+    ['text-label-default', /font-weight:[^;}]*--text-label-default--font-weight/],
+    ['text-label-default', /line-height:[^;}]*--text-label-default--line-height/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    // The shipped CSS is not optimized, so it keeps the calc form that the optimized preview CSS folds to -90deg.
+    ['-rotate-90', /rotate:\s*calc\(90deg\s*\*\s*-1\)/]
+  ];
+  assert.deepEqual(
+    [...new Set(rows.map(([token]) => token))].sort(),
+    [...classes].filter((name) => !name.startsWith('eg-')).sort(),
+    'Every recipe utility has a declaration row'
+  );
+  for (const [token, declaration] of rows) {
+    assert.match(
+      utilities,
+      new RegExp(`${escapeRegExp(escapeClass(token))}\\s*\\{[^}]*${declaration.source}`),
+      `Missing Breadcrumb rule ${token}`
+    );
+  }
+  // The trail paints nothing and has no stylesheet: no paint or motion utility in the recipes, no rule for the marker.
+  for (const name of classes) {
+    assert.doesNotMatch(
+      name,
+      /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|duration|ease|transform|rounded)\b/
+    );
+  }
+  assert.doesNotMatch(css, /\.eg-breadcrumb\b/);
+});
+
+test('Breadcrumb package SSR renders one named landmark, a marked current page and hidden separators, and keeps its recipes internal (#570)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Breadcrumb, 'function');
+  for (const name of [
+    'useBreadcrumb',
+    'breadcrumbVariants',
+    'breadcrumbListVariants',
+    'breadcrumbStepVariants',
+    'breadcrumbLinkVariants',
+    'breadcrumbCurrentVariants',
+    'breadcrumbSeparatorVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Breadcrumb`);
+  }
+  const dom = new JSDOM(
+    renderToString(
+      createElement(exported.Breadcrumb, {
+        label: 'Breadcrumb',
+        items: [
+          { label: 'Home', href: '#home' },
+          { label: 'Editorial', href: '#editorial' },
+          { label: 'Post title', href: '#ignored' }
+        ],
+        id: 'packed-trail',
+        lang: 'en',
+        className: 'mt-6'
+      })
+    )
+  );
+  try {
+    const body = dom.window.document.body;
+    assert.equal(body.children.length, 1);
+    const nav = body.firstElementChild;
+    assert.equal(nav.tagName, 'NAV');
+    for (const name of ['eg-breadcrumb', 'mt-6']) {
+      assert.ok(nav.classList.contains(name), name);
+    }
+    assert.equal(nav.getAttribute('aria-label'), 'Breadcrumb');
+    assert.equal(nav.getAttribute('id'), 'packed-trail');
+    assert.equal(nav.getAttribute('lang'), 'en');
+    for (const attribute of ['role', 'aria-labelledby', 'tabindex', 'data-state', 'style']) {
+      assert.equal(nav.hasAttribute(attribute), false, attribute);
+    }
+    assert.deepEqual(
+      [...nav.children].map((node) => node.tagName),
+      ['OL']
+    );
+    const items = [...nav.querySelectorAll('ol > li')];
+    assert.equal(items.length, 3);
+    const links = [...nav.querySelectorAll('a')];
+    assert.deepEqual(
+      links.map((link) => [link.textContent, link.getAttribute('href')]),
+      [
+        ['Home', '#home'],
+        ['Editorial', '#editorial']
+      ]
+    );
+    for (const link of links) {
+      assert.ok(link.classList.contains('eg-link'));
+      assert.equal(link.querySelector('svg'), null);
+      assert.equal(link.hasAttribute('target'), false);
+      assert.equal(link.hasAttribute('rel'), false);
+    }
+    // The last entry is the current page: text with aria-current, never a link, whatever href it supplied.
+    const current = nav.querySelectorAll('[aria-current]');
+    assert.equal(current.length, 1);
+    assert.equal(current[0].tagName, 'SPAN');
+    assert.equal(current[0].getAttribute('aria-current'), 'page');
+    assert.equal(current[0].textContent, 'Post title');
+    assert.equal(nav.querySelector('a[href="#ignored"]'), null);
+    // One decorative separator after each ancestor and none after the current page.
+    const separators = [...nav.querySelectorAll('svg')];
+    assert.equal(separators.length, 2);
+    for (const separator of separators) {
+      assert.equal(separator.getAttribute('aria-hidden'), 'true');
+      assert.equal(separator.getAttribute('focusable'), 'false');
+    }
+    assert.equal(items[2].querySelector('svg'), null);
+    assert.equal(nav.textContent, 'HomeEditorialPost title');
+  } finally {
+    dom.window.close();
+  }
+  // A blank label renders nothing, never an unnamed landmark, and warns once in development.
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (message) => warnings.push(message);
+  try {
+    assert.equal(
+      renderToStaticMarkup(createElement(exported.Breadcrumb, { label: '   ', items: [{ label: 'Home' }] })),
+      ''
+    );
+    assert.equal(renderToStaticMarkup(createElement(exported.Breadcrumb, { label: 'Breadcrumb', items: [] })), '');
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(warnings, ['Breadcrumb requires a non-empty label. Nothing was rendered.']);
+});
+
 test('StepMeter package SSR renders a named image of presentational steps and nothing for invalid input', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -6500,6 +6687,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'BlogGridFeature',
       'BlogGridRow',
       'BlogGridRows',
+      'Breadcrumb',
       'Button',
       'ButtonGroup',
       'CalendarGrid',
@@ -6822,6 +7010,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'BlogGridRowProps',
     'BlogGridRows',
     'BlogGridRowsProps',
+    'Breadcrumb',
+    'BreadcrumbItem',
+    'BreadcrumbProps',
     'Button',
     'ButtonGroup',
     'ButtonGroupProps',
@@ -7440,6 +7631,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'EmptyState',
     'EmptyStateLevel',
     'EmptyStateProps',
+    'Breadcrumb',
+    'BreadcrumbItem',
+    'BreadcrumbProps',
     'AttachmentField',
     'AttachmentFieldMessages',
     'AttachmentFieldProps',
