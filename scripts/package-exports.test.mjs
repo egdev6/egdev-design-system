@@ -1843,6 +1843,343 @@ test('DetailHeader package SSR renders one header, a description list, two named
   assert.deepEqual(unreadable, ['DetailHeader requires a non-blank title; nothing was rendered.']);
 });
 
+test('Pagination ships every static recipe utility with its token declaration, in the right variant and media block, and no rule of its own (#571)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/pagination/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      // defaultVariants names a variant; it is not a utility.
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 7, 'Pagination declares exactly seven static recipes');
+  assert.deepEqual(
+    [...classes].filter((name) => name.startsWith('eg-')),
+    ['eg-pagination']
+  );
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  // Split a class name into its variants and base at the top-level colons: arbitrary values keep their own colon.
+  const variantsOf = (token) => {
+    const parts = [];
+    let depth = 0;
+    let start = 0;
+    for (const [index, character] of [...token].entries()) {
+      if (character === '[' || character === '(') {
+        depth += 1;
+      } else if (character === ']' || character === ')') {
+        depth -= 1;
+      } else if (character === ':' && depth === 0) {
+        parts.push(token.slice(start, index));
+        start = index + 1;
+      }
+    }
+    return parts;
+  };
+  // How the shipped, flattened stylesheet serializes each variant: a selector suffix, a media block, or both.
+  const shape = {
+    hover: { suffix: ':hover', media: '\\(hover: hover\\)' },
+    'focus-visible': { suffix: ':focus-visible' },
+    'aria-[current=page]': { suffix: '[aria-current="page"]' },
+    'data-[disabled]': { suffix: '[data-disabled]' },
+    rtl: { suffix: ':where(:dir(rtl), [dir="rtl"], [dir="rtl"] *)' },
+    'forced-colors': { media: '\\(forced-colors: active\\)' },
+    'pointer-coarse': { media: '\\(pointer: coarse\\)' },
+    'motion-reduce': { media: '\\(prefers-reduced-motion: reduce\\)' }
+  };
+  // Every block of one media query, each read to its own closing brace.
+  const mediaBlocks = (query) =>
+    [...utilities.matchAll(new RegExp(`@media ${query}\\s*\\{`, 'g'))].map(({ index }) =>
+      cssBlock(utilities.slice(index), new RegExp(`^@media ${query}\\s*\\{`))
+    );
+  // Declarations of every flat rule whose selector list holds this exact selector (top-level commas only).
+  const declarationsOf = (selector, within) => {
+    const found = [];
+    for (const [, list, body] of within.matchAll(/(?<=^|[{}])\s*([^{}]+?)\s*\{([^{}]*)\}/g)) {
+      const selectors = [];
+      let depth = 0;
+      let start = 0;
+      for (const [index, character] of [...list].entries()) {
+        if (character === '(' || character === '[') {
+          depth += 1;
+        } else if (character === ')' || character === ']') {
+          depth -= 1;
+        } else if (character === ',' && depth === 0) {
+          selectors.push(list.slice(start, index).trim());
+          start = index + 1;
+        }
+      }
+      selectors.push(list.slice(start).trim());
+      if (selectors.includes(selector)) {
+        found.push(body);
+      }
+    }
+    return found.join('\n');
+  };
+  // The focus ring is the system token, resolved inline by the installed utility: derive it from theme.css.
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  const ring = /--shadow-focus:\s*([^;]+);/.exec(theme)?.[1]?.trim();
+  assert.ok(ring, '--shadow-focus must exist in theme.css');
+  const tokenRing = ring
+    .split(/\s*,\s*/)
+    .map((layer) => layer.replace(/(#[0-9A-Fa-f]{3,8})$/, (hex) => `var(--tw-shadow-color, ${hex})`))
+    .join(', ');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const space = (step) => new RegExp(`var\\(--space-${step}[,)]`).source;
+  const rows = [
+    ['m-0', new RegExp(`margin:\\s*${space('0')}`)],
+    ['p-0', new RegExp(`padding:\\s*${space('0')}`)],
+    ['list-none', /list-style-type:\s*none/],
+    ['flex', /display:\s*flex/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['items-center', /align-items:\s*center/],
+    ['justify-center', /justify-content:\s*center/],
+    ['gap-1', new RegExp(`gap:\\s*${space('1')}`)],
+    ['gap-2', new RegExp(`gap:\\s*${space('2')}`)],
+    ['box-border', /box-sizing:\s*border-box/],
+    ['inline-flex', /display:\s*inline-flex/],
+    ['min-h-10', new RegExp(`min-height:\\s*${space('10')}`)],
+    ['min-w-10', new RegExp(`min-width:\\s*${space('10')}`)],
+    ['rounded-md', /border-radius:\s*var\(--radius-md[,)]/],
+    ['border', /border-width:\s*1px/],
+    ['border-solid', /border-style:\s*solid/],
+    ['border-transparent', /border-color:\s*(?:transparent|#0000(?:0000)?)/],
+    ['px-2', new RegExp(`padding-inline:\\s*${space('2')}`)],
+    ['pointer-coarse:min-h-14', new RegExp(`min-height:\\s*${space('14')}`)],
+    ['pointer-coarse:min-w-14', new RegExp(`min-width:\\s*${space('14')}`)],
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['text-meta', /font-size:\s*var\(--text-meta[,)]/],
+    ['text-meta', /line-height:[^;}]*--text-meta--line-height/],
+    ['text-meta', /letter-spacing:[^;}]*--text-meta--letter-spacing/],
+    ['text-meta', /font-weight:[^;}]*--text-meta--font-weight/],
+    ['tabular-nums', /--tw-numeric-spacing:\s*tabular-nums/],
+    ['uppercase', /text-transform:\s*uppercase/],
+    ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['no-underline', /text-decoration-line:\s*none/],
+    ['transition-colors', /transition-property:\s*color,\s*background-color,\s*border-color/],
+    ['duration-(--duration-fast)', /transition-duration:\s*var\(--duration-fast\)/],
+    ['ease-(--ease-out)', /transition-timing-function:\s*var\(--ease-out\)/],
+    ['motion-reduce:transition-none', /transition-property:\s*none/],
+    ['hover:bg-surface-2', /background-color:\s*var\(--color-surface-2[,)]/],
+    ['hover:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['aria-[current=page]:border-state-selected', /border-color:\s*var\(--color-state-selected[,)]/],
+    [
+      'aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
+      /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)/
+    ],
+    ['aria-[current=page]:shadow-[var(--shadow-edge-strong)]', /--tw-shadow:\s*var\(--shadow-edge-strong\)/],
+    ['aria-[current=page]:shadow-[var(--shadow-edge-strong)]', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+    ['aria-[current=page]:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['focus-visible:outline-none', /outline-style:\s*none/],
+    ['focus-visible:shadow-focus', new RegExp(`--tw-shadow:\\s*${escapeRegExp(tokenRing)}`)],
+    ['focus-visible:shadow-focus', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+    ['aria-[current=page]:focus-visible:shadow-focus', new RegExp(`--tw-shadow:\\s*${escapeRegExp(tokenRing)}`)],
+    ['aria-[current=page]:focus-visible:shadow-focus', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+    ['forced-colors:focus-visible:outline-solid', /outline-style:\s*solid/],
+    ['forced-colors:focus-visible:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+    ['forced-colors:focus-visible:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+    ['forced-colors:aria-[current=page]:outline-solid', /outline-style:\s*solid/],
+    ['forced-colors:aria-[current=page]:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+    ['forced-colors:aria-[current=page]:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+    ['data-[disabled]:opacity-45', /opacity:\s*(?:\.45|45%)/],
+    ['rtl:rotate-180', /rotate:\s*180deg/]
+  ];
+  assert.deepEqual(
+    [...new Set(rows.map(([token]) => token))].sort(),
+    [...classes].filter((name) => name !== 'eg-pagination').sort(),
+    'Every recipe utility has a declaration row'
+  );
+  for (const [token, declaration] of rows) {
+    const variants = variantsOf(token);
+    const selector = `${escapeClass(token)}${variants.map((variant) => shape[variant]?.suffix ?? '').join('')}`;
+    for (const variant of variants) {
+      assert.ok(shape[variant], `${token}: unknown variant ${variant}`);
+    }
+    const queries = variants.map((variant) => shape[variant]?.media).filter(Boolean);
+    assert.ok(queries.length <= 1, `${token} sits in at most one media block`);
+    const within = queries.length === 0 ? utilities : mediaBlocks(queries[0]).join('\n');
+    assert.match(declarationsOf(selector, within), declaration, `${token} (${selector})`);
+  }
+  // The current-page paint exists only behind the attribute: nothing unscoped carries it.
+  for (const name of ['border-state-selected', 'shadow-\\[var\\(--shadow-edge-strong\\)\\]']) {
+    assert.doesNotMatch(css, new RegExp(`(?<!\\\\:)\\.${name}\\s*[,{]`), name);
+  }
+  // No stylesheet: nothing in the shipped CSS selects the marker, and no file exists for it.
+  assert.doesNotMatch(css, /\.eg-pagination\b/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/pagination/pagination.css')), false);
+});
+
+test('Pagination package SSR renders one named landmark of crawlable links, hidden placeholders and ellipses, and nothing for invalid input, and keeps its recipes internal (#571)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Pagination, 'function');
+  for (const name of [
+    'usePagination',
+    'defaultPaginationMessages',
+    'paginationVariants',
+    'paginationListVariants',
+    'paginationItemVariants',
+    'paginationLinkVariants',
+    'paginationEllipsisVariants',
+    'paginationPlaceholderVariants',
+    'paginationIconVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Pagination`);
+  }
+  const getHref = (page) => `/editorial?topic=design&page=${page}`;
+  const props = {
+    label: 'Editorial pages',
+    value: 6,
+    pageCount: 12,
+    getHref,
+    id: 'packed-pagination',
+    lang: 'en',
+    className: 'mt-6',
+    role: 'region',
+    'aria-label': 'injected',
+    'aria-labelledby': 'other',
+    children: 'injected'
+  };
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (message) => warnings.push(message);
+  let markup;
+  try {
+    markup = renderToString(createElement(exported.Pagination, props));
+    // Deterministic markup: a second render of the same props is byte-identical.
+    assert.equal(renderToString(createElement(exported.Pagination, props)), markup);
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(warnings, []);
+  // Every destination is in the server markup without JavaScript, and nothing relies on a handler.
+  assert.equal(markup.includes('injected'), false);
+  assert.equal(/onclick|javascript:/i.test(markup), false);
+  const dom = new JSDOM(markup);
+  try {
+    const body = dom.window.document.body;
+    assert.equal(body.children.length, 1);
+    const nav = body.firstElementChild;
+    assert.equal(nav.tagName, 'NAV');
+    for (const name of ['eg-pagination', 'mt-6']) {
+      assert.ok(nav.classList.contains(name), name);
+    }
+    assert.equal(nav.getAttribute('aria-label'), 'Editorial pages');
+    assert.equal(nav.getAttribute('id'), 'packed-pagination');
+    assert.equal(nav.getAttribute('lang'), 'en');
+    for (const attribute of ['role', 'aria-labelledby', 'style', 'tabindex']) {
+      assert.equal(nav.hasAttribute(attribute), false, attribute);
+    }
+    assert.equal(nav.children.length, 1);
+    const list = nav.firstElementChild;
+    assert.equal(list.tagName, 'UL');
+    assert.equal(list.getAttribute('role'), 'list');
+    const items = [...list.children];
+    assert.deepEqual(
+      items.map((item) => item.textContent),
+      ['Previous', '1', '…', '5', '6', '7', '…', '12', 'Next']
+    );
+    assert.deepEqual(
+      items.map((item) => item.hasAttribute('aria-hidden')),
+      [false, false, true, false, false, false, true, false, false]
+    );
+    // Seven crawlable anchors in order, each with the consumer's own URL and the filter it carries.
+    const anchors = [...list.querySelectorAll('a')];
+    assert.deepEqual(
+      anchors.map((anchor) => anchor.getAttribute('href')),
+      [5, 1, 5, 6, 7, 12, 7].map(getHref)
+    );
+    assert.deepEqual(
+      anchors.map((anchor) => anchor.getAttribute('rel')),
+      ['prev', null, null, null, null, null, 'next']
+    );
+    assert.deepEqual(
+      anchors.map((anchor) => anchor.getAttribute('aria-label')),
+      [null, 'Page 1', 'Page 5', 'Page 6', 'Page 7', 'Page 12', null]
+    );
+    const current = [...list.querySelectorAll('[aria-current]')];
+    assert.equal(current.length, 1);
+    assert.equal(current[0].tagName, 'A');
+    assert.equal(current[0].getAttribute('aria-current'), 'page');
+    assert.equal(current[0].textContent, '6');
+    assert.equal(list.querySelectorAll('svg[aria-hidden="true"]').length, 2);
+    // No inline style or data-state on anything Pagination owns; the current page is told apart by the attribute.
+    assert.equal(list.querySelectorAll('[style], [data-state]').length, 0);
+    assert.equal(
+      new Set([...list.querySelectorAll('a')].filter((a) => !a.hasAttribute('rel')).map((a) => a.className)).size,
+      1
+    );
+  } finally {
+    dom.window.close();
+  }
+  // A boundary keeps its slot as a hidden placeholder: no anchor, no href, nothing to tab to.
+  const first = new JSDOM(renderToString(createElement(exported.Pagination, { ...props, value: 1 })));
+  try {
+    const item = first.window.document.querySelector('li');
+    assert.equal(item.getAttribute('aria-hidden'), 'true');
+    assert.equal(item.textContent, 'Previous');
+    assert.equal(item.querySelector('a'), null);
+    assert.equal(item.firstElementChild.tagName, 'SPAN');
+    assert.equal(item.firstElementChild.hasAttribute('data-disabled'), true);
+    assert.equal(first.window.document.querySelectorAll('a').length, 7);
+  } finally {
+    first.window.close();
+  }
+  // Invalid input renders nothing and warns once in development; a single page is a quiet no-op.
+  for (const [override, message] of [
+    [{ label: '   ' }, 'Pagination requires a non-empty label. Nothing was rendered.'],
+    [{ value: Number.NaN }, 'Pagination requires a finite numeric value. Nothing was rendered.'],
+    [{ pageCount: Number.POSITIVE_INFINITY }, 'Pagination requires a finite numeric pageCount. Nothing was rendered.'],
+    [{ getHref: undefined }, 'Pagination requires a getHref function. Nothing was rendered.'],
+    [
+      { getHref: () => '' },
+      'Pagination requires getHref to return a non-empty string for every rendered page. Nothing was rendered.'
+    ]
+  ]) {
+    const emitted = [];
+    console.warn = (text) => emitted.push(text);
+    try {
+      assert.equal(renderToStaticMarkup(createElement(exported.Pagination, { ...props, ...override })), '');
+    } finally {
+      console.warn = warn;
+    }
+    assert.deepEqual(emitted, [message]);
+  }
+  const quiet = [];
+  console.warn = (text) => quiet.push(text);
+  try {
+    assert.equal(renderToStaticMarkup(createElement(exported.Pagination, { ...props, pageCount: 1 })), '');
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(quiet, []);
+});
+
 test('StepMeter package SSR renders a named image of presentational steps and nothing for invalid input', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -7019,6 +7356,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'NowCardFooter',
       'NowStrip',
       'PageHeader',
+      'Pagination',
       'Panel',
       'PanelBody',
       'PanelFooter',
@@ -7510,6 +7848,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PageHeader',
     'PageHeaderLevel',
     'PageHeaderProps',
+    'Pagination',
+    'PaginationMessages',
+    'PaginationProps',
     'Panel',
     'PanelBody',
     'PanelBodyProps',
@@ -7805,6 +8146,20 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'usePagination',
+    'defaultPaginationMessages',
+    'paginationVariants',
+    'paginationListVariants',
+    'paginationItemVariants',
+    'paginationLinkVariants',
+    'paginationEllipsisVariants',
+    'paginationPlaceholderVariants',
+    'paginationIconVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
     'useToastProvider',
     'toastVariants',
     'toastViewportVariants',
@@ -7911,6 +8266,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'DetailHeaderMessages',
     'DetailHeaderMetadataItem',
     'DetailHeaderProps',
+    'Pagination',
+    'PaginationMessages',
+    'PaginationProps',
     'AttachmentField',
     'AttachmentFieldMessages',
     'AttachmentFieldProps',

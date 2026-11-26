@@ -104,6 +104,8 @@ import { Breadcrumb } from '@egdev/ui';
 import type { BreadcrumbItem, BreadcrumbProps } from '@egdev/ui';
 import { DetailHeader } from '@egdev/ui';
 import type { DetailHeaderLink, DetailHeaderMessages, DetailHeaderMetadataItem, DetailHeaderProps } from '@egdev/ui';
+import { Pagination } from '@egdev/ui';
+import type { PaginationMessages, PaginationProps } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -799,6 +801,51 @@ type DetailHeaderPrivateRecipe = (typeof import('@egdev/ui'))['detailHeaderVaria
 // @ts-expect-error The internal hook is not public.
 type DetailHeaderPrivateHook = (typeof import('@egdev/ui'))['useDetailHeader'];
 export type DetailHeaderNegatives = [typeof detailHeaderMissingTitle, typeof detailHeaderChildren, typeof detailHeaderRole, typeof detailHeaderAriaLabel, typeof detailHeaderAriaLabelledBy, typeof detailHeaderStyle, typeof detailHeaderHtml, typeof detailHeaderRef, typeof detailHeaderSlot, typeof detailHeaderLevel, typeof detailHeaderNoValue, typeof detailHeaderNoHref, DetailHeaderPrivateRecipe, DetailHeaderPrivateHook];
+
+// Keep Pagination samples outside App so the existing link-count/focus harness stays unchanged.
+export const paginationMessages: Partial<PaginationMessages> = { previous: 'Newer', next: 'Older', page: (page) => 'Results page ' + page };
+export const paginationHref = (page: number) => '/editorial?topic=design&page=' + page;
+export const paginationProps: PaginationProps = { label: 'Editorial pages', value: 6, pageCount: 12, getHref: paginationHref, onNavigate: (page, event) => { void page.toFixed(0); void event.button; }, id: 'packed-pagination', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
+export function PaginationSamples() {
+  return createElement(Fragment, null,
+    createElement(Pagination, paginationProps),
+    createElement(Pagination, { label: 'First page', value: 1, pageCount: 12, getHref: paginationHref }),
+    createElement(Pagination, { label: 'Last page', value: 12, pageCount: 12, getHref: paginationHref }),
+    createElement(Pagination, { label: 'Short row', value: 5, pageCount: 5, getHref: paginationHref }),
+    createElement(Pagination, { label: 'Results pages', value: 3, pageCount: 9, getHref: paginationHref, messages: paginationMessages }),
+    createElement(Pagination, { label: 'Single page', value: 1, pageCount: 1, getHref: paginationHref }));
+}
+// @ts-expect-error The landmark name is required.
+const paginationMissingLabel: PaginationProps = { value: 1, pageCount: 2, getHref: paginationHref };
+// @ts-expect-error The current page is required.
+const paginationMissingValue: PaginationProps = { label: 'x', pageCount: 2, getHref: paginationHref };
+// @ts-expect-error The page count is required.
+const paginationMissingCount: PaginationProps = { label: 'x', value: 1, getHref: paginationHref };
+// @ts-expect-error The destination builder is required.
+const paginationMissingHref: PaginationProps = { label: 'x', value: 1, pageCount: 2 };
+// @ts-expect-error The current page is a number, not text.
+const paginationStringValue: PaginationProps = { label: 'x', value: '1', pageCount: 2, getHref: paginationHref };
+// @ts-expect-error A destination is a string.
+const paginationNumericHref: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: (page: number) => page };
+// @ts-expect-error The landmark keeps the navigation role.
+const paginationRole: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, role: 'presentation' };
+// @ts-expect-error The landmark name is label, never aria-label.
+const paginationAriaLabel: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, 'aria-label': 'x' };
+// @ts-expect-error The landmark name is label, never aria-labelledby.
+const paginationAriaLabelledBy: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, 'aria-labelledby': 'x' };
+// @ts-expect-error The row is derived: there are no children.
+const paginationChildren: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, children: 'x' };
+// @ts-expect-error A root ref is not part of this API.
+const paginationRef: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const paginationSlot: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, asChild: true };
+// @ts-expect-error The navigation callback receives the page number, not an entry.
+const paginationEntryCallback: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, onNavigate: (item: { href: string }) => item.href };
+// @ts-expect-error The recipes are private.
+type PaginationPrivateRecipe = (typeof import('@egdev/ui'))['paginationVariants'];
+// @ts-expect-error The internal hook is not public.
+type PaginationPrivateHook = (typeof import('@egdev/ui'))['usePagination'];
+export type PaginationNegatives = [typeof paginationMissingLabel, typeof paginationMissingValue, typeof paginationMissingCount, typeof paginationMissingHref, typeof paginationStringValue, typeof paginationNumericHref, typeof paginationRole, typeof paginationAriaLabel, typeof paginationAriaLabelledBy, typeof paginationChildren, typeof paginationRef, typeof paginationSlot, typeof paginationEntryCallback, PaginationPrivateRecipe, PaginationPrivateHook];
 
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
@@ -5624,6 +5671,98 @@ function assertDetailHeaderCSS(css) {
   assert.doesNotMatch(css, /\.eg-detail-header\b/);
 }
 
+// Pagination ships no stylesheet: every utility of its seven recipes is emitted for native and Tailwind consumers, the
+// current-page paint sits behind aria-current, the focus ring comes after it and the forced-colours outline after outline-none.
+function assertPaginationCSS(css) {
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const space = (step) => 'var\\(--space-' + step + '[,)]';
+  for (const [token, declaration] of [
+    ['m-0', new RegExp('margin:\\s*' + space('0'))],
+    ['p-0', new RegExp('padding:\\s*' + space('0'))],
+    ['list-none', /list-style-type:\s*none/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['justify-center', /justify-content:\s*center/],
+    ['gap-1', new RegExp('gap:\\s*' + space('1'))],
+    ['gap-2', new RegExp('gap:\\s*' + space('2'))],
+    ['box-border', /box-sizing:\s*border-box/],
+    ['inline-flex', /display:\s*inline-flex/],
+    ['min-h-10', new RegExp('min-height:\\s*' + space('10'))],
+    ['min-w-10', new RegExp('min-width:\\s*' + space('10'))],
+    ['rounded-md', /border-radius:\s*var\(--radius-md[,)]/],
+    ['border-solid', /border-style:\s*solid/],
+    ['px-2', new RegExp('padding-inline:\\s*' + space('2'))],
+    ['pointer-coarse:min-h-14', new RegExp('min-height:\\s*' + space('14'))],
+    ['pointer-coarse:min-w-14', new RegExp('min-width:\\s*' + space('14'))],
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['text-meta', /font-size:\s*var\(--text-meta[,)]/],
+    ['tabular-nums', /--tw-numeric-spacing:\s*tabular-nums/],
+    ['uppercase', /text-transform:\s*uppercase/],
+    ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['no-underline', /text-decoration-line:\s*none/],
+    ['transition-colors', /transition-property:\s*color,\s*background-color,\s*border-color/],
+    ['duration-(--duration-fast)', /transition-duration:\s*var\(--duration-fast\)/],
+    ['ease-(--ease-out)', /transition-timing-function:\s*var\(--ease-out\)/],
+    ['motion-reduce:transition-none', /transition-property:\s*none/],
+    ['hover:bg-surface-2', /background-color:\s*var\(--color-surface-2[,)]/],
+    ['hover:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['aria-[current=page]:border-state-selected', /border-color:\s*var\(--color-state-selected[,)]/],
+    [
+      'aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
+      /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)/
+    ],
+    ['aria-[current=page]:shadow-[var(--shadow-edge-strong)]', /--tw-shadow:\s*var\(--shadow-edge-strong\)/],
+    ['aria-[current=page]:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['focus-visible:outline-none', /outline-style:\s*none/],
+    [
+      'focus-visible:shadow-focus',
+      /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #ff0036\)/i
+    ],
+    [
+      'aria-[current=page]:focus-visible:shadow-focus',
+      /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #ff0036\)/i
+    ],
+    ['forced-colors:focus-visible:outline-solid', /outline-style:\s*solid/],
+    ['forced-colors:focus-visible:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+    ['forced-colors:focus-visible:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+    ['forced-colors:aria-[current=page]:outline-solid', /outline-style:\s*solid/],
+    ['forced-colors:aria-[current=page]:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+    ['forced-colors:aria-[current=page]:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+    ['data-[disabled]:opacity-45', /opacity:\s*(?:\.45|45%)/],
+    ['rtl:rotate-180', /rotate:\s*180deg/]
+  ]) {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + '[^{}]*\\{[^}]*' + declaration.source, declaration.flags),
+      'Missing Pagination rule ' + token
+    );
+  }
+  // Cascade: with equal specificity the later rule wins, so the order of the emitted rules is part of the contract.
+  const at = (token, suffix) => {
+    const match = new RegExp(escapeRegExp(escapeClass(token)) + suffix + '\\s*\\{').exec(css);
+    assert.ok(match, 'Missing Pagination selector ' + token + suffix);
+    return match.index;
+  };
+  const current = '\\[aria-current="?page"?\\]';
+  const edge = at('aria-[current=page]:shadow-[var(--shadow-edge-strong)]', current);
+  const ring = at('focus-visible:shadow-focus', ':focus-visible');
+  const compound = at('aria-[current=page]:focus-visible:shadow-focus', current + ':focus-visible');
+  assert.ok(compound > edge && compound > ring, 'The focus ring must come after the current-page edge shadow');
+  assert.ok(
+    at('forced-colors:focus-visible:outline-solid', ':focus-visible') >
+      at('focus-visible:outline-none', ':focus-visible'),
+    'The forced-colours outline must come after outline-none'
+  );
+  assert.ok(
+    at('aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)]', current) >
+      at('hover:bg-surface-2', ':hover'),
+    'The current page must keep its own paint under hover'
+  );
+  // No stylesheet: nothing in the shipped CSS selects the Pagination marker.
+  assert.doesNotMatch(css, /\.eg-pagination\b/);
+}
+
 function assertStepMeterConsumerCSS(css) {
   const utilitiesStart = css.search(/@layer utilities\s*\{/);
   assert.ok(utilitiesStart >= 0);
@@ -6176,6 +6315,8 @@ ${assertBreadcrumbConsumerCSS.toString()}
 assertBreadcrumbConsumerCSS(shippedStyles);
 ${assertDetailHeaderCSS.toString()}
 assertDetailHeaderCSS(shippedStyles);
+${assertPaginationCSS.toString()}
+assertPaginationCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -6348,6 +6489,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'NowCardFooter',
   'NowStrip',
   'PageHeader',
+  'Pagination',
   'Panel',
   'PanelBody',
   'PanelFooter',
@@ -6912,6 +7054,55 @@ assert.equal(headerFacts.querySelector('time'), null);
 assert.deepEqual([...headerInvalid.children].map((node) => node.tagName), ['HEADER']);
 assert.equal(headerInvalid.querySelectorAll('a, dl, ul').length, 0);
 detailHeaderDocument.window.close();
+const { PaginationSamples } = await import('./consumer.ts');
+const paginationDocument = new JSDOM(renderToString(createElement(PaginationSamples)));
+const paginationRoots = [...paginationDocument.window.document.querySelectorAll('nav.eg-pagination')];
+// The single-page sample renders nothing, so five of the six samples are landmarks.
+assert.equal(paginationRoots.length, 5);
+const [pagesFull, pagesFirst, pagesLast, pagesShort, pagesLocalized] = paginationRoots;
+const pageRow = (root) => [...root.querySelectorAll('li')].map((item) => item.textContent);
+const pageHref = (page) => '/editorial?topic=design&page=' + page;
+for (const root of paginationRoots) {
+  assert.deepEqual([...root.children].map((node) => node.tagName), ['UL']);
+  assert.equal(root.querySelector('ul').getAttribute('role'), 'list');
+  for (const attribute of ['role', 'aria-labelledby', 'tabindex', 'data-state', 'style']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+  assert.equal(root.querySelectorAll('[style], [data-state], [tabindex], button, [role="button"]').length, 0);
+  assert.equal(root.querySelectorAll('[aria-current]').length, 1);
+  assert.equal(root.querySelector('[aria-current]').tagName, 'A');
+}
+assert.equal(pagesFull.getAttribute('aria-label'), 'Editorial pages');
+assert.equal(pagesFull.getAttribute('id'), 'packed-pagination');
+assert.equal(pagesFull.getAttribute('lang'), 'en');
+assert.equal(pagesFull.getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(pagesFull.classList.contains('mt-6'));
+assert.deepEqual(pageRow(pagesFull), ['Previous', '1', '…', '5', '6', '7', '…', '12', 'Next']);
+assert.deepEqual([...pagesFull.querySelectorAll('a')].map((link) => link.getAttribute('href')), [5, 1, 5, 6, 7, 12, 7].map(pageHref));
+assert.deepEqual([...pagesFull.querySelectorAll('a')].map((link) => link.getAttribute('rel')), ['prev', null, null, null, null, null, 'next']);
+assert.deepEqual([...pagesFull.querySelectorAll('a')].map((link) => link.getAttribute('aria-label') ?? link.textContent), ['Previous', 'Page 1', 'Page 5', 'Page 6', 'Page 7', 'Page 12', 'Next']);
+assert.equal(pagesFull.querySelector('a[aria-current="page"]').textContent, '6');
+assert.deepEqual([...pagesFull.querySelectorAll('li[aria-hidden="true"]')].map((item) => item.textContent), ['…', '…']);
+assert.equal(pagesFull.querySelectorAll('svg[aria-hidden="true"][focusable="false"]').length, 2);
+assert.deepEqual(pageRow(pagesFirst), ['Previous', '1', '2', '3', '4', '5', '…', '12', 'Next']);
+assert.equal(pagesFirst.querySelector('li').getAttribute('aria-hidden'), 'true');
+assert.equal(pagesFirst.querySelector('li:first-child a'), null);
+assert.equal(pagesFirst.querySelector('li span[data-disabled]').textContent, 'Previous');
+assert.equal(pagesFirst.querySelectorAll('a').length, 7);
+assert.equal(pagesFirst.querySelector('a[aria-current="page"]').textContent, '1');
+assert.deepEqual(pageRow(pagesLast), ['Previous', '1', '…', '8', '9', '10', '11', '12', 'Next']);
+assert.equal(pagesLast.querySelector('li:last-child').getAttribute('aria-hidden'), 'true');
+assert.equal(pagesLast.querySelector('li:last-child a'), null);
+assert.equal(pagesLast.querySelectorAll('a').length, 7);
+assert.equal(pagesLast.querySelector('a[aria-current="page"]').textContent, '12');
+assert.deepEqual(pageRow(pagesShort), ['Previous', '1', '2', '3', '4', '5', 'Next']);
+assert.equal(pagesShort.textContent.includes('…'), false);
+assert.equal(pagesShort.querySelectorAll('li[aria-hidden="true"]').length, 1);
+assert.equal(pagesShort.querySelector('a[aria-current="page"]').textContent, '5');
+assert.deepEqual([...pagesLocalized.querySelectorAll('a')].map((link) => link.getAttribute('aria-label') ?? link.textContent), ['Newer', 'Results page 1', 'Results page 2', 'Results page 3', 'Results page 4', 'Results page 5', 'Results page 9', 'Older']);
+assert.deepEqual([...pagesLocalized.querySelectorAll('a')].map((link) => link.textContent), ['Newer', '1', '2', '3', '4', '5', '9', 'Older']);
+assert.equal(pagesLocalized.querySelector('a[aria-current="page"]').getAttribute('aria-label'), 'Results page 3');
+paginationDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');
@@ -10932,6 +11123,7 @@ ${assertStatCSS.toString()}
 ${assertTimelineCSS.toString()}
 ${assertSectionHeaderCSS.toString()}
 ${assertDetailHeaderCSS.toString()}
+${assertPaginationCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertSocialLinksCSS.toString()}
 ${assertMenuCSS.toString()}
@@ -10990,6 +11182,7 @@ assertMeterRowCSS(emitted);
 assertStatCSS(emitted);
 assertSectionHeaderCSS(emitted);
 assertDetailHeaderCSS(emitted);
+assertPaginationCSS(emitted);
 ${assertListItemCSS.toString()}
 assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
@@ -11122,6 +11315,7 @@ assertStatCSS(twCss);
 assertModuleCardCSS(twCss);
 assertSectionHeaderCSS(twCss);
 assertDetailHeaderCSS(twCss);
+assertPaginationCSS(twCss);
 assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertToastCSS(twCss);

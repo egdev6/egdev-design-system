@@ -42,6 +42,15 @@ import {
   emptyStateTitleVariants,
   emptyStateVariants
 } from '../molecules/empty-state/types';
+import {
+  paginationEllipsisVariants,
+  paginationIconVariants,
+  paginationItemVariants,
+  paginationLinkVariants,
+  paginationListVariants,
+  paginationPlaceholderVariants,
+  paginationVariants
+} from '../molecules/pagination/types';
 import { proseVariants } from '../primitives/prose/types';
 import { textBodyVariants, textVariants } from '../primitives/text/types';
 
@@ -185,6 +194,34 @@ function rule(selector: string, source: string = css) {
   const matches = [...source.matchAll(new RegExp(`(?:^|[{}])\\s*${escaped}\\s*\\{([^}]+)\\}`, 'g'))];
   expect(matches.length, `Missing compiled preview rule ${selector}`).toBeGreaterThan(0);
   return matches.map((match) => match[1]).join('\n');
+}
+
+// Declarations of every flat rule whose selector list holds this exact selector, wherever it sits in the list.
+// Selector lists split at their top-level commas only: `:where(:dir(rtl), [dir="rtl"])` keeps its own. The lookbehind
+// is zero-width, so adjacent rules never consume each other's delimiter.
+function emitted(selector: string, source: string = css) {
+  const declarations: string[] = [];
+  for (const [, list = '', body = ''] of source.matchAll(/(?<=^|[{}])\s*([^{}]+?)\s*\{([^{}]*)\}/g)) {
+    const selectors: string[] = [];
+    let depth = 0;
+    let start = 0;
+    for (const [index, character] of [...list].entries()) {
+      if (character === '(' || character === '[') {
+        depth += 1;
+      } else if (character === ')' || character === ']') {
+        depth -= 1;
+      } else if (character === ',' && depth === 0) {
+        selectors.push(list.slice(start, index).trim());
+        start = index + 1;
+      }
+    }
+    selectors.push(list.slice(start).trim());
+    if (selectors.includes(selector)) {
+      declarations.push(body);
+    }
+  }
+  expect(declarations.length, `Missing compiled preview rule ${selector}`).toBeGreaterThan(0);
+  return declarations.join('\n');
 }
 
 // Inner text of every `@media <query> {…}` block, by brace matching; the rules inside stay flat.
@@ -1109,6 +1146,189 @@ describe('Storybook preview CSS', () => {
         expect(ratio, `${name} on ${surface}`).toBeCloseTo(expected[name]?.[tone] ?? 0, 2);
       }
     }
+  });
+
+  it('emits every Pagination recipe utility with its token declaration, in the right media block, and no rule for its marker (#571, E1)', () => {
+    const escapeClass = (token: string) => `.${token.replace(/[^\w-]/g, (character) => `\\${character}`)}`;
+    // Split a class name into its variants and its base utility at the top-level colons only: the arbitrary values
+    // `[background:var(…)]` and `(length:--focus-width)` keep their own colon.
+    const splitVariants = (token: string) => {
+      const parts: string[] = [];
+      let depth = 0;
+      let start = 0;
+      for (const [index, character] of [...token].entries()) {
+        if (character === '[' || character === '(') {
+          depth += 1;
+        } else if (character === ']' || character === ')') {
+          depth -= 1;
+        } else if (character === ':' && depth === 0) {
+          parts.push(token.slice(start, index));
+          start = index + 1;
+        }
+      }
+      // The last segment is the base utility; everything before it is a variant.
+      parts.push(token.slice(start));
+      return parts;
+    };
+    // How the installed optimizer serializes each variant: a selector suffix, a media block, or both.
+    const variantShape: Record<string, { suffix?: string; media?: string }> = {
+      hover: { suffix: ':hover', media: '(hover: hover)' },
+      'focus-visible': { suffix: ':focus-visible' },
+      'aria-[current=page]': { suffix: '[aria-current="page"]' },
+      'data-[disabled]': { suffix: '[data-disabled]' },
+      rtl: { suffix: ':where(:dir(rtl), [dir="rtl"], [dir="rtl"] *)' },
+      'forced-colors': { media: '(forced-colors: active)' },
+      'pointer-coarse': { media: '(pointer: coarse)' },
+      'motion-reduce': { media: '(prefers-reduced-motion: reduce)' }
+    };
+    // The focus ring is the system token, resolved inline by the installed utility: derive it from theme.css.
+    const theme = readFileSync(fileURLToPath(new URL('../../../tokens/src/theme.css', import.meta.url)), 'utf8');
+    const focusRing = /--shadow-focus:\s*([^;]+);/.exec(theme)?.[1]?.trim();
+    expect(focusRing, '--shadow-focus must exist in theme.css').toBeDefined();
+    const tokenRing = (focusRing ?? '')
+      .split(/\s*,\s*/)
+      .map((layer) => layer.replace(/(#[0-9A-Fa-f]{3,8})$/, (hex) => `var(--tw-shadow-color, ${hex.toLowerCase()})`))
+      .join(', ');
+    const space = (step: string) => `var\\(--space-${step}[,)]`;
+    const rows: readonly (readonly [token: string, declaration: RegExp])[] = [
+      ['m-0', new RegExp(`margin:\\s*${space('0')}`)],
+      ['p-0', new RegExp(`padding:\\s*${space('0')}`)],
+      ['list-none', /list-style-type:\s*none/],
+      ['flex', /display:\s*flex/],
+      ['flex-wrap', /flex-wrap:\s*wrap/],
+      ['items-center', /align-items:\s*center/],
+      ['justify-center', /justify-content:\s*center/],
+      ['gap-1', new RegExp(`gap:\\s*${space('1')}`)],
+      ['gap-2', new RegExp(`gap:\\s*${space('2')}`)],
+      ['box-border', /box-sizing:\s*border-box/],
+      ['inline-flex', /display:\s*inline-flex/],
+      ['min-h-10', new RegExp(`min-height:\\s*${space('10')}`)],
+      ['min-w-10', new RegExp(`min-width:\\s*${space('10')}`)],
+      ['rounded-md', /border-radius:\s*var\(--radius-md[,)]/],
+      ['border', /border-width:\s*1px/],
+      ['border-solid', /border-style:\s*solid/],
+      ['border-transparent', /border-color:\s*(?:transparent|#0000(?:0000)?)/],
+      ['px-2', new RegExp(`padding-inline:\\s*${space('2')}`)],
+      ['pointer-coarse:min-h-14', new RegExp(`min-height:\\s*${space('14')}`)],
+      ['pointer-coarse:min-w-14', new RegExp(`min-width:\\s*${space('14')}`)],
+      ['font-display', /font-family:\s*var\(--font-display[,)]/],
+      ['text-meta', /font-size:\s*var\(--text-meta[,)]/],
+      ['text-meta', /line-height:[^;}]*--text-meta--line-height/],
+      ['text-meta', /letter-spacing:[^;}]*--text-meta--letter-spacing/],
+      ['text-meta', /font-weight:[^;}]*--text-meta--font-weight/],
+      ['tabular-nums', /--tw-numeric-spacing:\s*tabular-nums/],
+      ['uppercase', /text-transform:\s*uppercase/],
+      ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+      ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+      ['no-underline', /text-decoration-line:\s*none/],
+      ['transition-colors', /transition-property:\s*color,\s*background-color,\s*border-color/],
+      ['duration-(--duration-fast)', /transition-duration:\s*var\(--duration-fast\)/],
+      ['ease-(--ease-out)', /transition-timing-function:\s*var\(--ease-out\)/],
+      ['motion-reduce:transition-none', /transition-property:\s*none/],
+      ['hover:bg-surface-2', /background-color:\s*var\(--color-surface-2[,)]/],
+      ['hover:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+      ['aria-[current=page]:border-state-selected', /border-color:\s*var\(--color-state-selected[,)]/],
+      [
+        'aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
+        /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)/
+      ],
+      ['aria-[current=page]:shadow-[var(--shadow-edge-strong)]', /--tw-shadow:\s*var\(--shadow-edge-strong\)/],
+      ['aria-[current=page]:shadow-[var(--shadow-edge-strong)]', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+      ['aria-[current=page]:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+      ['focus-visible:outline-none', /outline-style:\s*none/],
+      ['focus-visible:shadow-focus', new RegExp(`--tw-shadow:\\s*${tokenRing.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)],
+      ['focus-visible:shadow-focus', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+      [
+        'aria-[current=page]:focus-visible:shadow-focus',
+        new RegExp(`--tw-shadow:\\s*${tokenRing.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
+      ],
+      ['aria-[current=page]:focus-visible:shadow-focus', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+      ['forced-colors:focus-visible:outline-solid', /outline-style:\s*solid/],
+      ['forced-colors:focus-visible:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+      ['forced-colors:focus-visible:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+      ['forced-colors:aria-[current=page]:outline-solid', /outline-style:\s*solid/],
+      ['forced-colors:aria-[current=page]:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+      ['forced-colors:aria-[current=page]:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+      ['data-[disabled]:opacity-45', /opacity:\s*\.45/],
+      ['rtl:rotate-180', /rotate:\s*180deg/]
+    ];
+    const recipe = new Set(
+      [
+        paginationVariants(),
+        paginationListVariants(),
+        paginationItemVariants(),
+        paginationLinkVariants({ kind: 'page' }),
+        paginationLinkVariants({ kind: 'step' }),
+        paginationEllipsisVariants(),
+        paginationPlaceholderVariants(),
+        paginationIconVariants()
+      ]
+        .flatMap((classes) => classes.split(' '))
+        .filter((token) => token !== 'eg-pagination')
+    );
+    // Completeness: a recipe utility without a row fails here, and so does a row without a recipe utility.
+    expect([...recipe].sort()).toEqual([...new Set(rows.map(([token]) => token))].sort());
+    for (const [token, declaration] of rows) {
+      const variants = splitVariants(token).slice(0, -1);
+      const selector = `${escapeClass(token)}${variants.map((variant) => variantShape[variant]?.suffix ?? '').join('')}`;
+      for (const variant of variants) {
+        expect(variantShape[variant], `${token}: unknown variant ${variant}`).toBeDefined();
+      }
+      const media = variants.map((variant) => variantShape[variant]?.media).filter((query) => query !== undefined);
+      expect(media.length, `${token} sits in at most one media block`).toBeLessThanOrEqual(1);
+      const source = media[0] === undefined ? css : mediaBlocks(media[0]).join('\n');
+      expect(emitted(selector, source), `${token} (${selector})`).toMatch(declaration);
+    }
+    // No stylesheet: nothing in the compiled preview selects the stable marker.
+    expect(css).not.toMatch(/\.eg-pagination\b/);
+  });
+
+  it('keeps the Pagination focus ring above the current-page shadow by specificity and the outline rules after outline-none (#571, E2)', () => {
+    const plain = String.raw`.focus-visible\:shadow-focus:focus-visible`;
+    const currentOnly = String.raw`.aria-\[current\=page\]\:shadow-\[var\(--shadow-edge-strong\)\][aria-current="page"]`;
+    const compound = String.raw`.aria-\[current\=page\]\:focus-visible\:shadow-focus[aria-current="page"]:focus-visible`;
+    // A plain aria utility ties with the focus rule, so only the compound rule is a guarantee that the ring wins.
+    expect(specificity(currentOnly)).toBe(specificity(plain));
+    expect(specificity(compound)).toBeGreaterThan(specificity(plain));
+    expect(specificity(compound)).toBeGreaterThan(specificity(currentOnly));
+    // The compound ring is the same token ring as the plain one, painted through the same box-shadow property.
+    const ring = /--tw-shadow:\s*([^;]+);/;
+    expect(ring.exec(emitted(compound))?.[1]).toBe(ring.exec(emitted(plain))?.[1]);
+    expect(emitted(compound)).toMatch(/box-shadow:[^;}]*var\(--tw-shadow\)/);
+    expect(emitted(currentOnly)).toMatch(/--tw-shadow:\s*var\(--shadow-edge-strong\)/);
+    // The compound is also emitted last, so the ring would win even a tie.
+    expect(css.indexOf(compound)).toBeGreaterThan(css.indexOf(currentOnly));
+    expect(css.indexOf(compound)).toBeGreaterThan(css.indexOf(plain));
+    // The recipe pairs the compound with the plain ring, so both utilities are always emitted together.
+    const link = paginationLinkVariants({ kind: 'page' }).split(/\s+/);
+    expect(link).toContain('focus-visible:shadow-focus');
+    expect(link).toContain('aria-[current=page]:focus-visible:shadow-focus');
+    // Forced colours: the outline rules share the specificity of `outline-none` while focused, so they must come after.
+    const none = css.indexOf(String.raw`.focus-visible\:outline-none:focus-visible`);
+    expect(none).toBeGreaterThanOrEqual(0);
+    const forcedFocus = String.raw`.forced-colors\:focus-visible\:outline-solid:focus-visible`;
+    expect(specificity(forcedFocus)).toBe(specificity(String.raw`.focus-visible\:outline-none:focus-visible`));
+    for (const selector of [
+      forcedFocus,
+      String.raw`.forced-colors\:focus-visible\:outline-\(length\:--focus-width\):focus-visible`,
+      String.raw`.forced-colors\:focus-visible\:outline-\[color\:Highlight\]:focus-visible`
+    ]) {
+      expect(css.indexOf(selector), selector).toBeGreaterThan(none);
+    }
+    // The forced-colours rules live inside the forced-colors block and nowhere else.
+    expect(mediaBlocks('(forced-colors: active)').join('\n')).toContain(forcedFocus);
+    // The current page keeps its own paint while hovered: the hover background is emitted before it and ties it.
+    const hover = String.raw`.hover\:bg-surface-2:hover`;
+    const currentBackground = String.raw`.aria-\[current\=page\]\:\[background\:var\(--gradient-chip-active\)\,var\(--color-surface-1\)\][aria-current="page"]`;
+    expect(specificity(currentBackground)).toBe(specificity(hover));
+    expect(css.indexOf(currentBackground)).toBeGreaterThan(css.indexOf(hover));
+    // Every other state rule outranks its rest rule outright: the current page text, border and ring.
+    expect(
+      specificity(String.raw`.aria-\[current\=page\]\:border-state-selected[aria-current="page"]`)
+    ).toBeGreaterThan(specificity('.border-transparent'));
+    expect(specificity(String.raw`.aria-\[current\=page\]\:text-fg-default[aria-current="page"]`)).toBeGreaterThan(
+      specificity('.text-fg-secondary')
+    );
   });
 
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {
