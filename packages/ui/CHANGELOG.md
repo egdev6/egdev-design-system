@@ -8,6 +8,12 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `Prose` gives bare semantic content (`h2` to `h4`, paragraphs, lists, links, quotes, code, images, figures, simple
+  tables and rules) a readable reading column: a built-in 65ch measure, a 16px body step (`size='sm'` selects the
+  compact step) and brand-coloured inline code by `tone`. It renders one `div`, never parses or sanitizes content and
+  takes no HTML string, so the app converts and sanitizes its rich text, caps heading levels, provides `alt` text and
+  wraps wide tables in a scroll region. Components that own a recipe (`PullQuote`, `Table`, `PhotoFrame`) are not
+  supported inside it. (#569)
 - Footer accepts an optional `wrap`: when true, one centered wrapper with the page content max-width and gutters
   encloses the motto, grid and legal row, so the footer content aligns with wrapped sections while the root
   hairlines and bottom padding stay full width. The default is `false`: the footer renders as before. (#561)
