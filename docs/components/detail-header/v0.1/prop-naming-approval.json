@@ -1,0 +1,88 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the content-metadata, content-tags and external-links conventions for the DetailHeader metadata, tags and links props, and record their registry receipt.",
+  "evidence": {
+    "channel": "Owner answers forwarded in odd/tasks/round-5-consumer-requests.md (L5 and L6), 2026-11-26",
+    "userStatements": [
+      {
+        "quote": "Aprobar todas (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L5 (specs, DetailHeader v0.1 OQ-5 naming conventions)",
+        "date": "2026-11-26"
+      },
+      {
+        "quote": "Aprobar los 10 (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L6 (plans, DetailHeader v0.1 D2 registry receipt for the newly named conventions)",
+        "date": "2026-11-26"
+      }
+    ],
+    "specPath": "docs/components/detail-header/v0.1/spec.md",
+    "specPayloadSHA256": "sha256:df34b603ee5474f6019997d8f367117d2790e212511b538a6c6b289a10988ece",
+    "planPath": "docs/components/detail-header/v0.1/implementation-plan.md",
+    "planPayloadSHA256": "sha256:f5cf17969cd2c77f7ef324e07410f2545d46218543f33ae9c2bccf96950a419b",
+    "interpretation": "Scoped convention approval only: it binds the exact payloads below, which the approved DetailHeader v0.1 spec quotes in its block 3 table of new proposals (OQ-5, approved by L5 with the recommended answer) and whose receipt the approved plan (L6, decision D2) authorized. It is not native review authority. The one bound field the owner's answers did not show is status: the spec table lists id, name, meaning, use and avoid, with no alias and no exception, and the plan (section 5.1, D2) states that hashing the approved form is the step D2 adds. The receipt does not approve the DetailHeader implementation, a visual capture, an alias, an exception or any other convention, and the three entries carry no exception."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": ["content-metadata", "content-tags", "external-links"],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:content-metadata",
+      "contentHash": "sha256:73a65e99110e56626871ca0b6ad12a6598547ec2a4ab1170cd92aa4e58be3af8",
+      "convention": {
+        "id": "content-metadata",
+        "name": "metadata",
+        "meaning": "Ordered label/value facts about a content unit, rendered as a description list.",
+        "whenToUse": "A header or card presents factual attributes such as date, place or source.",
+        "avoid": "Option detail (`meta`), one context fact (`detail`), selectable options, rich or interactive values.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/detail-header/types.ts",
+        "symbol": "DetailHeaderProps",
+        "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+      }
+    },
+    {
+      "scope": "convention:content-tags",
+      "contentHash": "sha256:38b939fed14720a88c383690e786f5b3673e4504c71f471c30a59b741986ee76",
+      "convention": {
+        "id": "content-tags",
+        "name": "tags",
+        "meaning": "Ordered short classification labels of a content unit, rendered as non-interactive pills.",
+        "whenToUse": "A content unit lists its topics or categories.",
+        "avoid": "Filters or selection (`options`), status (`statusBadge`), navigation.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/detail-header/types.ts",
+        "symbol": "DetailHeaderProps",
+        "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+      }
+    },
+    {
+      "scope": "convention:external-links",
+      "contentHash": "sha256:dc53d935bcab64953e9becb5f332274a1b8f0c23d3b1f0b349b7e6b59813f3ac",
+      "convention": {
+        "id": "external-links",
+        "name": "links",
+        "meaning": "Ordered external destinations related to a content unit, each opened in a new browsing context.",
+        "whenToUse": "A content unit links to canonical, source-code, demo or event pages.",
+        "avoid": "In-product navigation (`items`, `onNavigate`), social profiles, same-tab links.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/detail-header/types.ts",
+        "symbol": "DetailHeaderProps",
+        "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+      }
+    }
+  ]
+}
