@@ -195,6 +195,53 @@ test('Link publishes the quiet variant and keeps each variant ink in its own rec
   assert.ok(convention?.components.includes('Link'), 'the visual-treatment convention lists Link');
 });
 
+test('Footer publishes wrap and register, the register recipe axis and the wrapper recipe (#561, #565)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const footer = artifact.components.find(({ name }) => name === 'Footer');
+  assert.ok(footer);
+  assert.deepEqual(
+    footer.props.map(({ name }) => name),
+    ['children', 'register', 'wrap']
+  );
+  const wrap = footer.props.find(({ name }) => name === 'wrap');
+  const register = footer.props.find(({ name }) => name === 'register');
+  assert.deepEqual([wrap.type, wrap.required, wrap.default], ['boolean', false, 'false']);
+  assert.deepEqual([register.type, register.required, register.default], ['enum', false, 'none']);
+  assert.match(wrap.description, /centered content wrapper/);
+  assert.match(register.description, /Grafito reading wash/);
+  // The builder reads string literals inside the cva calls, so the register axis and the wrapper stay inline literals.
+  const root = footer.variants.find(({ name }) => name === 'footerVariants');
+  assert.ok(root, 'Footer must publish footerVariants');
+  const published = root.classes.join(' ').split(/\s+/).filter(Boolean);
+  for (const utility of [
+    'text-fg-default',
+    'bg-surface-0/50',
+    'bg-none',
+    '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0'
+  ]) {
+    assert.ok(published.includes(utility), `footerVariants must list ${utility}`);
+  }
+  const wrapper = footer.variants.find(({ name }) => name === 'footerWrapVariants');
+  assert.ok(wrapper, 'Footer must publish footerWrapVariants');
+  assert.deepEqual(wrapper.classes.join(' ').split(/\s+/).filter(Boolean), [
+    'eg-footer__wrap',
+    'box-border',
+    'w-full',
+    'max-w-[var(--content-max)]',
+    'mx-auto',
+    'px-[var(--gutter)]'
+  ]);
+  const axis = footer.anatomy.find(({ name }) => name === 'footerVariants');
+  assert.deepEqual(Object.keys(axis.variants.register).sort(), ['grafito', 'none']);
+  assert.ok(footer.anatomy.some(({ name }) => name === 'footerWrapVariants'));
+  // Both section conventions are widened to the site footer and keep SectionShell.
+  for (const id of ['section-register', 'section-content-wrap']) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.ok(convention, id);
+    assert.deepEqual(convention.components, ['Footer', 'SectionShell'], id);
+  }
+});
+
 test('classNameAllows publishes sorted unique CSS properties on roots and their own or shared parts', () => {
   const result = artifactWithTags([
     {

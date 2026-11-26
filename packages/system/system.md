@@ -585,7 +585,10 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · — (native footer an
     - footerVariants base: p-0 → --spacing-0
     - footerVariants base: pb-8 → --spacing-8
     - footerVariants base: font-sans → --font-sans
+    - footerWrapVariants base: px-[var(--gutter)] → --gutter
   - children: ReactNode; Optional named parts, each at most once in the documented order. (components[] · packages/ui/src/organisms/footer/types.ts)
+  - register: enum; Material register of the footer root. none paints no background and the host owns it; grafito paints the Grafito reading wash and keeps the footer in normal flow at its natural height. (components[] · packages/ui/src/organisms/footer/types.ts)
+  - wrap: boolean; Supply a centered content wrapper with the page gutters and content max-width around the motto, grid and legal parts; the root hairlines and bottom padding stay full width. Leave off when the host already constrains the footer. (components[] · packages/ui/src/organisms/footer/types.ts)
 ### Hero
 catalog[] · docs/catalog.json · @egdev/ui · organism · —
 - Hero (components[] · packages/ui/src/organisms/hero/types.ts)
@@ -3626,9 +3629,9 @@ Not exported:
 - scene-media: media; approved; ChapterBreak, Closing, Hero, LabStage, WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - scene-social: social; approved; Hero, WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - search-query-change: onQueryChange; approved; CommandPalette (propNaming[] · skills/_shared/prop-naming.json)
-- section-content-wrap: wrap; approved; SectionShell (propNaming[] · skills/_shared/prop-naming.json)
+- section-content-wrap: wrap; approved; Footer, SectionShell (propNaming[] · skills/_shared/prop-naming.json)
 - section-lede: lede; approved; ChapterBreak, Closing, Hero, LabStage, PageHeader, SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
-- section-register: register; approved; SectionShell (propNaming[] · skills/_shared/prop-naming.json)
+- section-register: register; approved; Footer, SectionShell (propNaming[] · skills/_shared/prop-naming.json)
 - selection-cardinality: type; approved; ChipGroup, SelectTile (propNaming[] · skills/_shared/prop-naming.json)
 - selection-placeholder: placeholder; approved; Select (propNaming[] · skills/_shared/prop-naming.json)
 - shell-label: shell; approved; TerminalCardBar (propNaming[] · skills/_shared/prop-naming.json)

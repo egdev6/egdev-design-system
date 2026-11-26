@@ -4,6 +4,9 @@
 
 ### Added
 
+- The artifact and design reference include Footer's `wrap` and `register` props, its `register` recipe axis and
+  `footerWrapVariants`, and the `section-register` and `section-content-wrap` conventions widened to Footer; existing
+  props and recipes are unchanged. (#561, #565)
 - The artifact and design reference include Link's `quiet` variant: the widened `variant` description, a `quiet`
   entry in the recipe anatomy and the ink listed per variant, so the shared `linkVariants` base no longer carries
   `text-link-default`; every other Link prop is unchanged. (#562)

@@ -8,6 +8,13 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- Footer accepts an optional `wrap`: when true, one centered wrapper with the page content max-width and gutters
+  encloses the motto, grid and legal row, so the footer content aligns with wrapped sections while the root
+  hairlines and bottom padding stay full width. The default is `false`: the footer renders as before. (#561)
+- Footer accepts an optional `register`: `'grafito'` paints the Grafito reading wash (`surface-0` at 50 percent, solid
+  under reduced transparency) on the footer root, which stays a native `footer` at its natural height; `'none'` (the
+  default) paints nothing and the host keeps the background. The group-edge fade stays host-owned (see the `HostFade`
+  story). The `FooterRegister` type is exported. (#565)
 - Link accepts `variant='quiet'`: neutral text with a brand-coloured underline, for navigation links inside cards and
   footer navigation. It keeps the default label size, the underline removal on hover, the arrow and the focus ring,
   so only the ink and underline colour differ, and it is not meant for inline prose, where the underline is the only
@@ -33,6 +40,12 @@ a local tarball from `pnpm release:pack`.
 - A NowCard footer may hold one `StepMeter` beside its supporting detail or action; with a meter, keep at most one
   other footer child. NowCard renders no meter itself and gains no prop, and cards without a meter render as before.
   (#556)
+
+### Changed
+
+- `FooterNavigation` renders its links with Link `quiet` (neutral text with an underline) instead of `plain`, so the
+  link ink and underline colour change for every Footer consumer, with no opt-out prop; the type step and the
+  44.8px target recipe are unchanged. It needs Link `quiet` from the same release. (#562)
 
 ## 0.10.0
 

@@ -1097,7 +1097,7 @@
     "radix": "— (native footer and navigation)",
     "compone": "Link; consumer Logo and SocialLinks",
     "accion": "mover",
-    "notas": "Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/293): passive native footer with optional motto, brand, labelled navigation, social and legal parts. Navigation accepts ordered destinations; consumers supply brand, social profiles and legal content. The host owns background and placement; no choreography, stylesheet, ref or asChild."
+    "notas": "Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/293): passive native footer with optional motto, brand, labelled navigation, social and legal parts. Navigation accepts ordered destinations; consumers supply brand, social profiles and legal content. v0.4 ([#561](https://github.com/egdev6/egdev-design-system/issues/561), [#565](https://github.com/egdev6/egdev-design-system/issues/565)) adds the optional `wrap` (a centered page-width content wrapper; hairlines and bottom padding stay full width) and `register='grafito'` (the Grafito reading wash on the footer root); with `register` omitted the host owns the background, the group-edge fade is always host-owned, and navigation links render with Link `quiet`. The host owns placement; no choreography, stylesheet, ref or asChild."
   },
   {
     "actual": "Hero",
