@@ -4,6 +4,9 @@
 
 ### Added
 
+- The source-derived artifact and reference include `Pagination` (its six props and static recipes), the `page-count`
+  and `page-href` naming concepts (approved, with their receipt) and Pagination among the users of four reused
+  conventions. (#571)
 - The source-derived artifact and reference include `DetailHeader` (its props, static recipes and `classNameAllows`
   width set), the `content-metadata`, `content-tags` and `external-links` naming concepts (approved, with their
   receipt) and DetailHeader among the users of six reused conventions. (#572)

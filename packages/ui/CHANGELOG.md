@@ -8,6 +8,14 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `Pagination` splits a long listing into pages with crawlable links: a named navigation landmark (required `label`)
+  holding Previous and Next and numbered pages in a constant-width window of at most seven slots with ellipses, with
+  the current page marked `aria-current="page"`. Every control is a native anchor whose URL the consumer builds with
+  `getHref`, so each page works without JavaScript; at the first and last page the missing Previous or Next stays in
+  the row as a dimmed placeholder that leaves the accessibility tree. The consumer owns the data slice, `pageCount`,
+  `value` and the URLs, and handles client-side routing, focus and announcements through `onNavigate`. The text is
+  English by default and localizable through `messages`. Pagination keeps no state, has no size, variant or tone axis
+  and adds no stylesheet, ref or `asChild`. (#571)
 - `DetailHeader` opens a detail page with its title block and metadata. It composes SectionHeader (optional eyebrow, a
   heading at `level`, default 1, and an optional lede) with an optional label/value facts list (`metadata`, where an
   entry may carry a `dateTime` for a native `time`), a named list of static tag pills (`tags`) and a named list of
