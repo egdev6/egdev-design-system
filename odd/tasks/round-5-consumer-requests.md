@@ -87,4 +87,8 @@ Integration branch `integration/round-5`. egdev-website's Pulso parity requests 
   11. #574 Embed.
   12. #575 story pattern.
   13. #560 after its plan is approved.
+- L7 — The website reported three gaps from its listings (PR egdev6/egdev-website#50). Owner answers, verbatim: "Chip link seleccionado (Recomendado), Varias acciones en ProjectCard (Recomendado), Featured como política de app (Recomendado)" and "Sí, a round 5 (Recomendado)".
+  - Filed and added to this round: #576 (active filter on link chips) and #577 (several actions in a ProjectCard footer). Both need cataloging, a spec and a plan, and both come after the reading pieces.
+  - "Featured once per view" is app policy under MATERIAL principle 7, so no issue was filed. The website was told: only the first featured project gets the featured variant in a listing.
+  - T2–T4 are done: 9a55a01, d57066c, 48d9eb7.
 - L2 — Size note: 14 consumer requests, each with three owner gates. This spans several sessions; resume from this document.
