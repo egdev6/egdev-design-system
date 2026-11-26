@@ -4,10 +4,14 @@ import { Link } from '../../atoms/link';
 import { Logo } from '../../atoms/logo';
 import { SocialLinks } from '../../molecules/social-links';
 import { Text } from '../../primitives/text';
+import { SectionShell } from '../../templates/section-shell';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './Footer';
 import { footerHeadingVariants } from './index';
 
-/** Passive site boundary with consumer-owned content and a host-owned background. */
+/**
+ * Passive site boundary with consumer-owned content. The host owns the background unless `register` is `grafito`,
+ * and `wrap` is opt-in.
+ */
 const meta: Meta<typeof Footer> = {
   title: 'Organisms/Footer',
   component: Footer,
@@ -149,3 +153,56 @@ export const Responsive: Story = {
 export const Focus: Story = { args: { children: content } };
 /** The host may supply outer layout classes and native attributes. */
 export const Composition: Story = { args: { id: 'site-footer', className: 'w-full', children: content } };
+/**
+ * `wrap` centers the motto, grid and legal row on the page content edge, the same edge as a wrapped section above
+ * it. The root hairlines and bottom padding stay full width; the inner hairlines span the content box.
+ */
+export const Wrapped: Story = {
+  args: { wrap: true, children: content },
+  render: (args) => (
+    <>
+      <SectionShell aria-label='Wrapped section'>
+        <p className='text-body-default text-fg-secondary'>Section content on the page content edge.</p>
+      </SectionShell>
+      <Footer {...args} />
+    </>
+  )
+};
+/**
+ * `register='grafito'` paints the Grafito reading wash on the footer root, which stays a native `footer` at its
+ * natural height. The backdrop here stands in for the ambient layer, which the host owns.
+ */
+export const Grafito: Story = {
+  args: { register: 'grafito', children: content },
+  render: (args) => (
+    <div className='bg-surface-2'>
+      <Footer {...args} />
+    </div>
+  )
+};
+/** Both props are independent: the wash spans the root and the wrapper only constrains the content. */
+export const WrappedGrafito: Story = {
+  args: { wrap: true, register: 'grafito', children: content },
+  render: (args) => (
+    <div className='bg-surface-2'>
+      <Footer {...args} />
+    </div>
+  )
+};
+/**
+ * The group-edge fade is host-owned and is not Footer API. The host paints a masked `aria-hidden` underlay and
+ * suppresses the footer's own wash locally through the stable `eg-footer` marker, as the SectionShell stories do for
+ * `eg-section`.
+ */
+export const HostFade: Story = {
+  args: { wrap: true, register: 'grafito', children: content },
+  render: (args) => (
+    <div className='relative isolate [&_.eg-footer]:bg-transparent'>
+      <div
+        aria-hidden='true'
+        className='pointer-events-none absolute inset-0 -z-10 bg-surface-0/50 [mask-image:var(--mask-section-fade-top)] [-webkit-mask-image:var(--mask-section-fade-top)] [@media(prefers-reduced-transparency:reduce)]:bg-surface-0'
+      />
+      <Footer {...args} />
+    </div>
+  )
+};

@@ -957,6 +957,21 @@ describe('Storybook TypeScript docgen contract', () => {
     const extracted = parser.parse(source('organisms/footer/Footer.tsx'));
     const root = extracted.find(({ displayName }) => displayName === 'Footer');
     expect(root?.props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    // v0.4 (#561, #565): the optional content wrapper and Grafito register.
+    expect(root?.props.wrap).toMatchObject({
+      required: false,
+      defaultValue: { value: 'false' },
+      tags: { control: 'boolean' }
+    });
+    expect(root?.props.register).toMatchObject({
+      required: false,
+      defaultValue: { value: 'none' },
+      tags: { control: 'select' }
+    });
+    expect(root?.props.register?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'none',
+      'grafito'
+    ]);
     for (const name of [
       'id',
       'title',
@@ -1005,6 +1020,8 @@ describe('Storybook TypeScript docgen contract', () => {
       'href',
       'label',
       "'aria-current'",
+      'wrap',
+      'register',
       'children',
       'children',
       'children',

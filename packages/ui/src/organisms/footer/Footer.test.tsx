@@ -1,19 +1,41 @@
+import type { StoryObj } from '@storybook/react-vite';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createElement, Fragment } from 'react';
+import { type ComponentPropsWithoutRef, createElement, Fragment, type ReactElement, useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Icon } from '../../atoms/icon';
+import { Link } from '../../atoms/link';
 import { Logo } from '../../atoms/logo';
 import * as publicUi from '../../index';
+import { cn } from '../../lib/cn';
 import { SocialLinks } from '../../molecules/social-links';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './Footer';
+import * as stories from './Footer.stories';
 import { CurrentPage, Default, Invalid, Minimal, Social } from './Footer.stories';
-import type { FooterNavigationItem, FooterProps } from './types';
+import type { FooterRegister } from './index';
+import { type FooterNavigationItem, type FooterProps, footerNavigationLinkVariants } from './types';
 
 type Assert<T extends true> = T;
 // @ts-expect-error The current-page token is restricted to 'page'; 'step' is outside the contract (FT-16).
 type InvalidCurrent = Assert<'step' extends FooterNavigationItem['aria-current'] ? true : false>;
 export type TypeNegatives = [InvalidCurrent];
+
+// v0.4 (#561, #565): Footer's own inputs are exactly wrap and register (children shares its native name), a fade input
+// is outside the contract because the host owns the group-edge fade, and the register type is public (FT-27, FT-30).
+type OwnFooterKeys = Exclude<keyof FooterProps, keyof ComponentPropsWithoutRef<'footer'>>;
+type OwnKeysAreWrapAndRegister = Assert<
+  [OwnFooterKeys] extends ['wrap' | 'register'] ? (['wrap' | 'register'] extends [OwnFooterKeys] ? true : false) : false
+>;
+// @ts-expect-error A group-edge fade input is outside the contract: the host owns the fade (OQ-2, FT-27).
+type FadeInput = Assert<'fade' extends keyof FooterProps ? true : false>;
+type RegisterIsPublic = Assert<
+  [publicUi.FooterRegister] extends [FooterRegister]
+    ? [FooterRegister] extends [publicUi.FooterRegister]
+      ? true
+      : false
+    : false
+>;
+export type FooterV04TypeChecks = [OwnKeysAreWrapAndRegister, FadeInput, RegisterIsPublic];
 
 // Typed fixtures double as the FT-16 positive assertions: an entry may carry the mark and a plain
 // { href, label } entry still compiles. `pnpm typecheck` checks them; vitest does not.
@@ -480,5 +502,357 @@ describe('Footer current page', () => {
     const unmarked = screen.getByRole('link', { name: 'Two' });
     expect(unmarked).not.toHaveAttribute('aria-current');
     expect(unmarked.className).toBe(markedClassName);
+  });
+});
+
+// Footer v0.4 (#561, #565, #562): the content wrapper, the Grafito register and the quiet navigation links.
+type FooterStory = StoryObj<typeof Footer>;
+// Storybook calls render(args, context); the Footer stories only read their args.
+const renderStory = (story: FooterStory): ReactElement => {
+  const custom = story.render as ((args: FooterProps) => ReactElement) | undefined;
+  return custom ? custom(story.args as FooterProps) : createElement(Footer, story.args as FooterProps);
+};
+// Generated ids differ between renders, so each distinct id is replaced by its order of appearance.
+const normalizedMarkup = (element: HTMLElement) => {
+  const seen = new Map<string, string>();
+  return element.outerHTML.replace(/\b(id|aria-labelledby)="([^"]*)"/g, (_match, attribute: string, value: string) => {
+    if (!seen.has(value)) {
+      seen.set(value, `id-${seen.size}`);
+    }
+    return `${attribute}="${seen.get(value)}"`;
+  });
+};
+const classTokens = (element: Element) => Array.from(element.classList);
+const paintTokens = (element: Element) => classTokens(element).filter((token) => /(^|:)bg-/.test(token));
+const regions = ['eg-footer__stage', 'eg-footer__grid', 'eg-footer__legal'];
+const regionsOf = (parent: Element) =>
+  Array.from(parent.children).map((child) => regions.find((name) => child.classList.contains(name)));
+
+describe('Footer v0.4 wrap, register and quiet links', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it.each([
+    ['Default', stories.Default, regions],
+    ['Minimal', stories.Minimal, ['eg-footer__legal']],
+    ['Landmark', stories.Landmark, regions]
+  ])(
+    'keeps the unwrapped and unpainted structure of the %s story when neither prop is set (FT-19)',
+    (_name, story, expected) => {
+      render(renderStory(story));
+      const footer = screen.getByRole('contentinfo');
+      expect(regionsOf(footer)).toEqual(expected);
+      expect(footer.querySelector('.eg-footer__wrap')).toBeNull();
+      expect(paintTokens(footer)).toEqual([]);
+      expect(footer).not.toHaveAttribute('wrap');
+      expect(footer).not.toHaveAttribute('register');
+    }
+  );
+
+  it.each([
+    ['Default', stories.Default],
+    ['Minimal', stories.Minimal]
+  ])(
+    'renders the %s args identically with the explicit default values and never forwards either prop (FT-19)',
+    (_name, story) => {
+      const baseline = render(<Footer {...(story.args as FooterProps)} />);
+      const expected = normalizedMarkup(screen.getByRole('contentinfo'));
+      baseline.unmount();
+      render(<Footer wrap={false} register='none' {...(story.args as FooterProps)} />);
+      const footer = screen.getByRole('contentinfo');
+      expect(footer).not.toHaveAttribute('wrap');
+      expect(footer).not.toHaveAttribute('register');
+      expect(normalizedMarkup(footer)).toBe(expected);
+    }
+  );
+
+  it('wraps the motto, grid and legal row in exactly one centered content wrapper (FT-20)', () => {
+    render(<Footer wrap={true}>{Default.args?.children}</Footer>);
+    const footer = screen.getByRole('contentinfo');
+    expect(footer.children).toHaveLength(1);
+    const wrapper = footer.children[0] as HTMLElement;
+    expect(wrapper.tagName).toBe('DIV');
+    expect(wrapper).toHaveClass(
+      'eg-footer__wrap',
+      'box-border',
+      'w-full',
+      'max-w-[var(--content-max)]',
+      'mx-auto',
+      'px-[var(--gutter)]'
+    );
+    expect(classTokens(wrapper).filter((token) => token.startsWith('overflow-'))).toEqual([]);
+    for (const name of ['role', 'id', 'tabindex']) {
+      expect(wrapper, name).not.toHaveAttribute(name);
+    }
+    expect(wrapper.getAttributeNames().filter((name) => name.startsWith('aria-'))).toEqual([]);
+    expect(regionsOf(wrapper)).toEqual(regions);
+    expect(wrapper.querySelector('.eg-footer__stage')).toHaveClass('px-0', 'pt-10', 'pb-8');
+    expect(wrapper.querySelector('.eg-footer__grid')).toHaveClass(
+      'grid',
+      'gap-x-10',
+      'pt-10',
+      'border-t-border-hairline'
+    );
+    expect(wrapper.querySelector('.eg-footer__legal')).toHaveClass('flex', 'gap-4', 'mt-10', 'pt-4');
+    // The root keeps its full-width boundary: bottom padding and both hairlines.
+    expect(footer).toHaveClass('pb-8', 'border-t-border-hairline', 'border-b-border-hairline');
+  });
+
+  it('renders no wrapper when no part renders and keeps every other legacy marker absent (FT-20)', () => {
+    const { rerender } = render(<Footer wrap={true}>{null}</Footer>);
+    const footer = screen.getByRole('contentinfo');
+    expect(footer.children).toHaveLength(0);
+    rerender(
+      <Footer wrap={true}>
+        <FooterNavigation label='Empty' items={[]} />
+      </Footer>
+    );
+    expect(footer.children).toHaveLength(0);
+    expect(footer.querySelector('.eg-footer__wrap')).toBeNull();
+    rerender(<Footer wrap={true}>{Default.args?.children}</Footer>);
+    expect(footer.querySelectorAll('.eg-footer__wrap')).toHaveLength(1);
+    for (const marker of ['motto', 'tagline', 'heading', 'list', 'link', 'social']) {
+      expect(footer.querySelector(`.eg-footer__${marker}`), marker).toBeNull();
+    }
+  });
+
+  it.each([['true'], [1]])('treats wrap=%j outside the boolean contract as absent (FT-21)', (value) => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(() =>
+      render(
+        <Footer wrap={value as unknown as boolean}>
+          <FooterLegal>Legal</FooterLegal>
+        </Footer>
+      )
+    ).not.toThrow();
+    const footer = screen.getByRole('contentinfo');
+    expect(footer.querySelector('.eg-footer__wrap')).toBeNull();
+    expect(regionsOf(footer)).toEqual(['eg-footer__legal']);
+    expect(footer).not.toHaveAttribute('wrap');
+    expect(warn).not.toHaveBeenCalled();
+    expect(error).not.toHaveBeenCalled();
+  });
+
+  it.each([['pro'], ['show'], ['Grafito']])('treats register=%j outside the union as none (FT-21)', (value) => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(() =>
+      render(
+        <Footer register={value as unknown as FooterRegister}>
+          <FooterLegal>Legal</FooterLegal>
+        </Footer>
+      )
+    ).not.toThrow();
+    const footer = screen.getByRole('contentinfo');
+    expect(paintTokens(footer)).toEqual([]);
+    expect(footer).not.toHaveAttribute('register');
+    expect(warn).not.toHaveBeenCalled();
+    expect(error).not.toHaveBeenCalled();
+  });
+
+  it('paints the Grafito wash on the footer root without changing its flow, height or landmark (FT-24)', () => {
+    render(
+      <Footer register='grafito'>
+        <FooterLegal>Legal</FooterLegal>
+      </Footer>
+    );
+    const footer = screen.getByRole('contentinfo');
+    expect(footer).toHaveClass(
+      'bg-surface-0/50',
+      'bg-none',
+      '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0',
+      'text-fg-default',
+      'border-t-border-hairline',
+      'border-b-border-hairline'
+    );
+    const foreign = classTokens(footer).filter(
+      (token) =>
+        /^(min-h-|shadow-|pt-\[calc\()/.test(token) ||
+        ['flex', 'isolate', 'absolute', 'fixed', 'sticky'].includes(token)
+    );
+    expect(foreign).toEqual([]);
+    expect(footer.tagName).toBe('FOOTER');
+    expect(footer).not.toHaveAttribute('role');
+    expect(footer).not.toHaveAttribute('register');
+    expect(screen.getAllByRole('contentinfo')).toEqual([footer]);
+  });
+
+  it('paints no background with register none or without it (FT-24)', () => {
+    const { rerender } = render(
+      <Footer register='none'>
+        <FooterLegal>Legal</FooterLegal>
+      </Footer>
+    );
+    expect(paintTokens(screen.getByRole('contentinfo'))).toEqual([]);
+    rerender(
+      <Footer>
+        <FooterLegal>Legal</FooterLegal>
+      </Footer>
+    );
+    expect(paintTokens(screen.getByRole('contentinfo'))).toEqual([]);
+  });
+
+  it.each([
+    [false, 'none'],
+    [true, 'none'],
+    [false, 'grafito'],
+    [true, 'grafito']
+  ] as const)('composes wrap=%s with register=%s and keeps the consumer classes (FT-26)', (wrap, register) => {
+    render(
+      <Footer wrap={wrap} register={register} className='mt-4 w-full'>
+        <FooterBrand>Brand</FooterBrand>
+        <FooterLegal className='mt-4'>Legal</FooterLegal>
+      </Footer>
+    );
+    const footer = screen.getByRole('contentinfo');
+    expect(footer).toHaveClass(
+      'eg-footer',
+      'mt-4',
+      'w-full',
+      'pb-8',
+      'border-t-border-hairline',
+      'border-b-border-hairline'
+    );
+    const legal = footer.querySelector('.eg-footer__legal');
+    expect(legal).toHaveClass('mt-4', 'flex', 'border-t-border-hairline');
+    const wrapper = footer.querySelector('.eg-footer__wrap');
+    expect(wrapper !== null).toBe(wrap);
+    expect(footer.children).toHaveLength(wrap ? 1 : 2);
+    // The wash belongs to the root and never to the wrapper; the wrapper constrains content only.
+    expect(paintTokens(footer).length > 0).toBe(register === 'grafito');
+    if (wrapper) {
+      expect(paintTokens(wrapper)).toEqual([]);
+      expect(wrapper).not.toHaveClass('mt-4', 'w-full');
+      expect(wrapper).toContainElement(legal as HTMLElement);
+    }
+  });
+
+  it('has no fade input, underlay part or mask utility, and documents the host-owned fade (FT-27)', () => {
+    const { unmount } = render(
+      <Footer wrap={true} register='grafito'>
+        {Default.args?.children}
+      </Footer>
+    );
+    const footer = screen.getByRole('contentinfo');
+    const owned = [
+      footer,
+      footer.querySelector('.eg-footer__wrap'),
+      ...regions.map((r) => footer.querySelector(`.${r}`))
+    ];
+    for (const element of owned) {
+      expect(element?.getAttribute('class') ?? '').not.toMatch(/mask/);
+    }
+    unmount();
+    render(renderStory(stories.HostFade));
+    const host = screen.getByRole('contentinfo').parentElement as HTMLElement;
+    expect(host).toHaveClass('relative', 'isolate', '[&_.eg-footer]:bg-transparent');
+    const underlay = host.firstElementChild as HTMLElement;
+    expect(underlay).toHaveAttribute('aria-hidden', 'true');
+    expect(underlay.className).toContain('[mask-image:var(--mask-section-fade-top)]');
+    // The footer itself is the unchanged Grafito root; the host only suppresses its wash locally.
+    expect(screen.getByRole('contentinfo')).toHaveClass('bg-surface-0/50');
+  });
+
+  it('renders every navigation anchor as a quiet Link with the Footer target recipe (FT-28)', () => {
+    render(
+      <Footer>
+        <FooterNavigation
+          label='Explore'
+          items={[
+            { href: '#projects', label: 'Projects' },
+            { href: '#notes', label: 'Notes', 'aria-current': 'page' }
+          ]}
+        />
+      </Footer>
+    );
+    const standalone = render(
+      <Link href='#standalone' variant='quiet' arrow={false} className={cn(footerNavigationLinkVariants())}>
+        Standalone
+      </Link>
+    );
+    const expected = standalone.getByRole('link', { name: 'Standalone' }).className;
+    const anchors = within(screen.getByRole('navigation', { name: 'Explore' })).getAllByRole('link');
+    expect(anchors).toHaveLength(2);
+    for (const anchor of anchors) {
+      expect(anchor.className).toBe(expected);
+      expect(anchor).toHaveClass(
+        'text-fg-default',
+        'min-h-14',
+        'min-w-14',
+        'inline-flex',
+        'items-center',
+        'justify-start'
+      );
+      expect(anchor).not.toHaveClass('text-link-default');
+      expect(anchor.querySelector('svg')).toBeNull();
+    }
+    expect(anchors[0]).not.toHaveAttribute('aria-current');
+    expect(anchors[1]).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('leaves consumer-supplied brand and legal links untouched by the quiet adoption (FT-28)', () => {
+    render(
+      <Footer>
+        <FooterBrand>
+          <a href='/'>Home</a>
+        </FooterBrand>
+        <FooterLegal>
+          <Link href='#privacy' arrow={false}>
+            Privacy
+          </Link>
+        </FooterLegal>
+      </Footer>
+    );
+    const standalone = render(
+      <Link href='#standalone' arrow={false}>
+        Standalone
+      </Link>
+    );
+    expect(screen.getByRole('link', { name: 'Privacy' }).className).toBe(
+      standalone.getByRole('link', { name: 'Standalone' }).className
+    );
+    expect(screen.getByRole('link', { name: 'Home' })).not.toHaveAttribute('class');
+  });
+
+  it('remounts the parts when wrap is toggled, so a consumer part loses its local state (spec section 4)', async () => {
+    const user = userEvent.setup();
+    const Counter = () => {
+      const [count, setCount] = useState(0);
+      return (
+        <button type='button' onClick={() => setCount(count + 1)}>
+          Count {count}
+        </button>
+      );
+    };
+    const tree = (wrap: boolean) => (
+      <Footer wrap={wrap}>
+        <FooterBrand>
+          <Counter />
+        </FooterBrand>
+      </Footer>
+    );
+    const { rerender } = render(tree(false));
+    await user.click(screen.getByRole('button'));
+    expect(screen.getByRole('button')).toHaveTextContent('Count 1');
+    rerender(tree(true));
+    expect(screen.getByRole('button')).toHaveTextContent('Count 0');
+  });
+
+  it('renders the args of every story, existing and new, without a React key warning (FT-32)', () => {
+    const entries = Object.entries(stories).filter(([name]) => name !== 'default') as [string, FooterStory][];
+    expect(entries.map(([name]) => name)).toEqual(
+      expect.arrayContaining(['Wrapped', 'Grafito', 'WrappedGrafito', 'HostFade'])
+    );
+    expect(entries).toHaveLength(15);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    for (const [, story] of entries) {
+      const { unmount } = render(renderStory(story));
+      expect(screen.getAllByRole('contentinfo').length).toBeGreaterThan(0);
+      unmount();
+    }
+    const keyWarnings = error.mock.calls.filter(([message]) => String(message).includes('unique "key" prop'));
+    expect(keyWarnings).toEqual([]);
   });
 });

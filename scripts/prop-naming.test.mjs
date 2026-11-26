@@ -797,6 +797,11 @@ const postReceiptUsages = [
     source: 'packages/ui/src/organisms/footer/types.ts#FooterNavigationProps'
   })),
   { conventionId: 'accessible-name', source: 'packages/ui/src/organisms/footer/types.ts#FooterNavigationItem' },
+  // Footer v0.4 (#561, #565) reuses the two section conventions as usages only; the v0.4 receipt binds their widened text.
+  ...['section-register', 'section-content-wrap'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/footer/types.ts#FooterProps'
+  })),
   // TopBar DI2 adds usages only; existing receipts bind convention content, not usages.
   ...['accessible-name', 'collection-items', 'navigation-intent'].map((conventionId) => ({
     conventionId,
@@ -2229,7 +2234,7 @@ test('NowStrip records only its approved accessible-name usage', () => {
     ]
   );
 });
-test('Footer records only its four approved navigation usages', () => {
+test('Footer records only its four approved navigation usages and the two approved section usages', () => {
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const path = 'packages/ui/src/organisms/footer/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, path)));
@@ -2237,7 +2242,10 @@ test('Footer records only its four approved navigation usages', () => {
     ['collection-items', 'FooterNavigation', 'FooterNavigationItem[] (required)', 'FooterNavigationProps'],
     ['accessible-name', 'FooterNavigation', 'string (required landmark name)', 'FooterNavigationProps'],
     ['accessible-name', 'FooterNavigationItem', 'string (required destination name)', 'FooterNavigationItem'],
-    ['heading-level', 'FooterNavigation', 'FooterNavigationLevel (default 2)', 'FooterNavigationProps']
+    ['heading-level', 'FooterNavigation', 'FooterNavigationLevel (default 2)', 'FooterNavigationProps'],
+    // Footer v0.4 (#561, #565): the two section conventions widened by its receipt.
+    ['section-content-wrap', 'Footer', 'boolean (default false)', 'FooterProps'],
+    ['section-register', 'Footer', "FooterRegister ('none' | 'grafito'; default none)", 'FooterProps']
   ];
   const sort = (a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b));
   assert.deepEqual(
@@ -2510,7 +2518,8 @@ const receiptChain = [
   'docs/components/text/v0.2/foreground-exception-approval.json',
   'docs/components/dialog/v0.2/prop-naming-approval.json',
   'docs/components/panel/v0.3/heading-foreground-exception-approval.json',
-  'docs/components/color-swatch-group/v0.1/prop-naming-approval.json'
+  'docs/components/color-swatch-group/v0.1/prop-naming-approval.json',
+  'docs/components/footer/v0.4/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -3341,8 +3350,12 @@ test('organism naming receipt binds delegated decisions and the menu-entry-kind 
   // 123 entries at this receipt; later receipts that pin it may only add new IDs.
   const later = laterReceipts(reference);
   const knownIds = new Set([...historicalIds, ...receipt.entries.map(({ convention }) => convention.id)]);
+  // A later receipt that only amends a convention (the Footer v0.4 widening of the SectionShell pair) adds no ID.
   const laterAdded = [...later.values()].flatMap((laterReceipt) =>
-    receiptConventions(laterReceipt).filter(({ convention }) => !knownIds.has(convention.id))
+    receiptConventions(laterReceipt).filter(
+      ({ convention }) =>
+        !knownIds.has(convention.id) && !laterReceipt.semanticAmendments.some(({ id }) => id === convention.id)
+    )
   );
   assert.equal(historicalRegistry(actual).length, 123 + laterAdded.length + parallelNowCardReceipt.entries.length);
 });
@@ -3975,7 +3988,8 @@ test('SectionShell binds approved plan conventions and only its reviewed own-pro
     expected.map(([id]) => `convention:${id}`)
   );
   for (const [id, type] of expected) {
-    const entry = actual.find((item) => item.id === id);
+    // The Footer v0.4 receipt widened both conventions later: compare the pre-image this receipt approved.
+    const entry = registryBeforeSemanticAmendments([actual.find((item) => item.id === id)], reference)[0];
     const record = receipt.entries.find(({ scope }) => scope === `convention:${id}`);
     const proposal = proposals.find((item) => item.id === id);
     const { approval, usages, ...convention } = entry;
@@ -3984,9 +3998,10 @@ test('SectionShell binds approved plan conventions and only its reviewed own-pro
     assert.deepEqual(record.convention, convention);
     assert.equal(record.contentHash, props.conventionHash(entry));
     assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
-    assert.deepEqual(usages, [
-      { component: 'SectionShell', type, status: 'existing', source: { path, symbol: 'SectionShellProps', revision } }
-    ]);
+    assert.deepEqual(
+      usages.filter(({ component }) => component === 'SectionShell'),
+      [{ component: 'SectionShell', type, status: 'existing', source: { path, symbol: 'SectionShellProps', revision } }]
+    );
     assert.deepEqual(historicalRegistry([entry])[0].usages, []);
     const changed = structuredClone(actual);
     changed.find((item) => item.id === id).meaning += ' Changed.';
@@ -4002,6 +4017,102 @@ test('SectionShell binds approved plan conventions and only its reviewed own-pro
       .sort(),
     expected.map(([id]) => id).sort()
   );
+});
+
+test('Footer v0.4 receipt binds the section register and wrap amendments to the owner decisions', () => {
+  const reference = 'docs/components/footer/v0.4/prop-naming-approval.json';
+  const specPath = 'docs/components/footer/v0.4/spec.md';
+  const shellReference = 'docs/components/section-shell/v0.1/prop-naming-approval.json';
+  const swatchReference = 'docs/components/color-swatch-group/v0.1/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.deepEqual(receipt.evidence.userStatements, [
+    {
+      quote: 'Sí, ampliarlo (Recomendado)',
+      provenance: 'odd/tasks/round-5-consumer-requests.md L3 (register convention widening)',
+      date: '2026-11-26'
+    },
+    {
+      quote: 'Aprobar todas (Recomendado)',
+      provenance: 'odd/tasks/round-5-consumer-requests.md L5 (specs, Footer v0.4 OQ-1 convention scope)',
+      date: '2026-11-26'
+    }
+  ]);
+  // The approved spec payload (its line-start first heading through EOF) quotes the amended text verbatim.
+  const specText = fs.readFileSync(resolve(root, specPath), 'utf8');
+  const payload = specText.slice(specText.search(/^## 1\. Purpose and scope$/m));
+  assert.equal(receipt.evidence.specPath, specPath);
+  assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(payload)));
+  assert.equal(
+    receipt.evidence.specPayloadSHA256,
+    'sha256:331bad27caec2d85105c724e0656addb15ff7cc9c49d0944b3d09491084d279a'
+  );
+  assert.match(receipt.evidence.interpretation, /not native review authority/i);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(
+    receipt.priorReceipts.map(({ path }) => path),
+    [swatchReference, shellReference]
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))), prior.path);
+  }
+  assert.ok(laterReceipts(swatchReference).has(reference));
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    ['convention:section-register', 'convention:section-content-wrap']
+  );
+  assert.deepEqual(
+    receipt.semanticAmendments.map(({ id }) => id),
+    ['section-register', 'section-content-wrap']
+  );
+  const amended = {
+    'section-register': {
+      meaning:
+        'The combined visual register selected for a section frame or for the site footer; values and recipes are component-specific.',
+      whenToUse: "Select a section's coordinated scene and material treatment, or the site footer's material treatment."
+    },
+    'section-content-wrap': {
+      meaning: 'Whether a section frame or the site footer supplies its own centered content wrapper.',
+      whenToUse: 'Choose whether section or footer children receive the page content max-width and gutters.'
+    }
+  };
+  const shell = JSON.parse(fs.readFileSync(resolve(root, shellReference), 'utf8'));
+  for (const amendment of receipt.semanticAmendments) {
+    const previous = shell.entries.find(({ convention }) => convention.id === amendment.id);
+    const current = registry.find(({ id }) => id === amendment.id);
+    const record = receipt.entries.find(({ scope }) => scope === `convention:${amendment.id}`);
+    assert.equal(amendment.previousReference, shellReference, amendment.id);
+    assert.equal(amendment.previousContentHash, previous.contentHash, amendment.id);
+    assert.equal(previous.contentHash, props.conventionHash(previous.convention), amendment.id);
+    assert.deepEqual(amendment.changedFields, ['meaning', 'whenToUse'], amendment.id);
+    for (const field of amendment.changedFields) {
+      assert.equal(amendment.before[field], previous.convention[field], `${amendment.id} before ${field}`);
+      assert.equal(amendment.after[field], current[field], `${amendment.id} after ${field}`);
+      assert.equal(amendment.after[field], amended[amendment.id][field], `${amendment.id} spec text ${field}`);
+      assert.ok(payload.includes(amendment.before[field]), `${amendment.id} spec before ${field}`);
+      assert.ok(payload.includes(amendment.after[field]), `${amendment.id} spec after ${field}`);
+    }
+    // Only meaning and whenToUse change: identity, avoid, status, aliases and exceptions stay as approved before.
+    for (const field of ['id', 'name', 'avoid', 'status', 'aliases', 'exceptions']) {
+      assert.deepEqual(current[field], previous.convention[field], `${amendment.id} unchanged ${field}`);
+    }
+    assert.match(amendment.boundary, /SectionShell and Footer only/);
+    const { approval, usages: _usages, ...convention } = current;
+    assert.deepEqual(record.convention, convention, amendment.id);
+    assert.equal(record.contentHash, props.conventionHash(current), amendment.id);
+    assert.notEqual(record.contentHash, previous.contentHash, amendment.id);
+    assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash }, amendment.id);
+    // A later edit of the amended text without a renewed receipt is rejected.
+    for (const field of ['meaning', 'whenToUse']) {
+      const changed = structuredClone(registry);
+      changed.find(({ id }) => id === amendment.id)[field] += ' Changed.';
+      assert.throws(() => validate(changed), /approval/i, `${amendment.id} ${field}`);
+    }
+  }
 });
 
 test('template naming receipt pins the organism receipt and binds two new layout slots', () => {
@@ -4075,7 +4186,9 @@ test('template naming receipt pins the organism receipt and binds two new layout
   const laterAdded = [...later.values()].flatMap((laterReceipt) =>
     receiptConventions(laterReceipt).filter(
       ({ convention }) =>
-        !historicalIds.has(convention.id) && !receipt.entries.some((r) => r.convention.id === convention.id)
+        !historicalIds.has(convention.id) &&
+        !receipt.entries.some((r) => r.convention.id === convention.id) &&
+        !laterReceipt.semanticAmendments.some(({ id }) => id === convention.id)
     )
   );
   assert.equal(historicalRegistry(actual).length, 125 + laterAdded.length + parallelNowCardReceipt.entries.length);

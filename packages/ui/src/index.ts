@@ -144,6 +144,7 @@ export type {
   FooterNavigationLevel,
   FooterNavigationProps,
   FooterProps,
+  FooterRegister,
   FooterSocialProps
 } from './organisms/footer';
 export {

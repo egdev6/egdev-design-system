@@ -30,8 +30,26 @@ type RootNative = Omit<
 >;
 type PartNative = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'dangerouslySetInnerHTML'>;
 
+/** Material register of the footer root. */
+export type FooterRegister = 'none' | 'grafito';
+
 /** Site footer; place outside main and sectioning content for a contentinfo landmark. */
 export type FooterProps = RootNative & {
+  /**
+   * Supply a centered content wrapper with the page gutters and content max-width around the motto, grid and
+   * legal parts; the root hairlines and bottom padding stay full width. Leave off when the host already
+   * constrains the footer.
+   * @default false
+   * @control boolean
+   */
+  wrap?: boolean;
+  /**
+   * Material register of the footer root. none paints no background and the host owns it; grafito paints
+   * the Grafito reading wash and keeps the footer in normal flow at its natural height.
+   * @default none
+   * @control select
+   */
+  register?: FooterRegister;
   /**
    * Optional named parts, each at most once in the documented order.
    * @control false
@@ -107,9 +125,22 @@ export type FooterLegalProps = PartNative & {
   children: ReactNode;
 };
 
-/** Root boundary on a host-owned background. */
+/** Root boundary; the host owns the background unless the Grafito register paints its wash. */
 export const footerVariants = cva(
-  'eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline'
+  'eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline',
+  {
+    variants: {
+      register: {
+        none: '',
+        grafito: 'bg-surface-0/50 bg-none [@media(prefers-reduced-transparency:reduce)]:bg-surface-0'
+      }
+    },
+    defaultVariants: { register: 'none' }
+  }
+);
+/** Centered page-width content wrapper; it paints nothing and declares no overflow. */
+export const footerWrapVariants = cva(
+  'eg-footer__wrap box-border w-full max-w-[var(--content-max)] mx-auto px-[var(--gutter)]'
 );
 /** Motto stage resets the legacy spacing. */
 export const footerMottoVariants = cva('eg-footer__stage min-w-0 px-0 pt-10 pb-8');

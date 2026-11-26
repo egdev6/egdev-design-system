@@ -7,6 +7,7 @@ export type {
   FooterNavigationLevel,
   FooterNavigationProps,
   FooterProps,
+  FooterRegister,
   FooterSocialProps
 } from './types';
 export { footerHeadingVariants } from './types';

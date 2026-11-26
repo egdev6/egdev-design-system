@@ -25,7 +25,8 @@ import {
   footerNavigationLinkVariants,
   footerNavigationVariants,
   footerSocialVariants,
-  footerVariants
+  footerVariants,
+  footerWrapVariants
 } from './types';
 
 type Parts = {
@@ -82,7 +83,7 @@ function collect(
 }
 
 /** Partition named parts while suppressing an empty grid and protecting native semantics. */
-export function useFooter({ children, className, ...native }: FooterProps, parts: Parts) {
+export function useFooter({ children, className, wrap, register, ...native }: FooterProps, parts: Parts) {
   const {
     role: _role,
     tabIndex: _tabIndex,
@@ -97,7 +98,14 @@ export function useFooter({ children, className, ...native }: FooterProps, parts
   const legal: ReactNode[] = [];
   collect(children, parts, stage, grid, legal);
   return {
-    rootProps: { ...rest, className: cn(footerVariants(), className) } as ComponentPropsWithoutRef<'footer'>,
+    rootProps: {
+      ...rest,
+      // Only the literal 'grafito' selects the wash; any other runtime value behaves as none, silently.
+      className: cn(footerVariants({ register: register === 'grafito' ? 'grafito' : 'none' }), className)
+    } as ComponentPropsWithoutRef<'footer'>,
+    // Only the boolean true opts in, and only when at least one part renders (no empty wrapper).
+    wrapped: wrap === true && stage.length + grid.length + legal.length > 0,
+    wrapClassName: cn(footerWrapVariants()),
     stage,
     grid,
     legal,
@@ -124,6 +132,7 @@ export function useFooterNavigation({ label, level = 2, items, className, ...res
     props: {
       href: item.href,
       'aria-current': item['aria-current'],
+      variant: 'quiet' as const,
       className: cn(footerNavigationLinkVariants())
     }
   }));
