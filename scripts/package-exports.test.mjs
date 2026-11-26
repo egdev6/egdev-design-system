@@ -1069,6 +1069,175 @@ test('StepMeter ships all scanned utilities, the clip-path literal and both forc
   assert.doesNotMatch(css, /\.eg-now-card__meter[^{]*(?:\.eg-step-meter|\[data-state)/);
 });
 
+test('Prose ships the measure and one rule per descendant selector without a stylesheet (#569)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/primitives/prose/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      // Default variant values are axis names, not utilities.
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size >= 100, 'The Prose recipe must expose its static utilities');
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes(escapeClass(name)), `Missing Prose utility ${name}`);
+    }
+  }
+  // The measure reads the owner-confirmed token and keeps its ch fallback, as .max-w-quote-pull does.
+  assert.match(utilities, /\.max-w-prose\s*\{[^}]*max-width:\s*var\(--container-prose,\s*65ch\)/);
+  // One rule per target selector, each reading the token it is meant to read.
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, target, declaration] of [
+    ['[&>:first-child]:mt-0', '> :first-child', /margin-top:\s*var\(--space-0\)/],
+    ['[&>:last-child]:mb-0', '> :last-child', /margin-bottom:\s*var\(--space-0\)/],
+    ['[&_h2]:mt-12', 'h2', /margin-top:\s*var\(--space-12\)/],
+    ['[&_h3]:text-heading-small', 'h3', /font-size:\s*var\(--text-heading-small[,)]/],
+    [
+      '[&_h4]:[font-weight:var(--text-heading-small--font-weight)]',
+      'h4',
+      /font-weight:\s*var\(--text-heading-small--font-weight\)/
+    ],
+    ['[&_p]:mb-5', 'p', /margin-bottom:\s*var\(--space-5\)/],
+    ['[&_a]:text-link-default', 'a', /color:\s*var\(--color-link-default[,)]/],
+    ['[&_a:hover]:no-underline', 'a:hover', /text-decoration-line:\s*none/],
+    ['[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]', 'a:focus-visible', /box-shadow:\s*var\(--shadow-focus\)/],
+    [
+      '[&_strong]:[font-weight:var(--text-heading-small--font-weight)]',
+      'strong',
+      /font-weight:\s*var\(--text-heading-small--font-weight\)/
+    ],
+    ['[&_ul]:list-disc', 'ul', /list-style-type:\s*disc/],
+    ['[&_ol]:list-decimal', 'ol', /list-style-type:\s*decimal/],
+    ['[&_li]:mt-2', 'li', /margin-top:\s*var\(--space-2\)/],
+    ['[&_li::marker]:text-fg-muted', 'li::marker', /color:\s*var\(--color-fg-muted[,)]/],
+    [
+      '[&_blockquote]:border-s-[length:calc(var(--border-width)*2)]',
+      'blockquote',
+      /border-inline-start-width:\s*calc\(var\(--border-width\)\s*\*\s*2\)/
+    ],
+    ['[&_code]:text-code', 'code', /font-size:\s*var\(--text-code[,)]/],
+    ['[&_:not(pre)>code]:text-fg-brand-default', ':not(pre) > code', /color:\s*var\(--color-fg-brand-default[,)]/],
+    ['[&_:not(pre)>code]:text-fg-brand-raised', ':not(pre) > code', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    ['[&_pre]:shadow-[var(--shadow-well)]', 'pre', /--tw-shadow:\s*var\(--shadow-well\)/],
+    [
+      '[&_pre:focus-visible]:[box-shadow:var(--shadow-focus)]',
+      'pre:focus-visible',
+      /box-shadow:\s*var\(--shadow-focus\)/
+    ],
+    ['[&_img]:rounded-md', 'img', /border-radius:\s*var\(--radius-md[,)]/],
+    ['[&_figure]:my-8', 'figure', /margin-block:\s*var\(--space-8\)/],
+    ['[&_figcaption]:text-fg-muted', 'figcaption', /color:\s*var\(--color-fg-muted[,)]/],
+    ['[&_table]:border-collapse', 'table', /border-collapse:\s*collapse/],
+    ['[&_th]:bg-surface-2', 'th', /background-color:\s*var\(--color-surface-2[,)]/],
+    ['[&_td]:border-border-subtle', 'td', /border-color:\s*var\(--color-border-subtle[,)]/],
+    ['[&_hr]:border-t', 'hr', /border-top-width:\s*1px/]
+  ]) {
+    assert.match(
+      utilities,
+      new RegExp(`${escapeRegExp(`${escapeClass(token)} ${target}`)}\\s*\\{[^}]*${declaration.source}`),
+      `Missing Prose rule ${token} ${target}`
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the Prose marker.
+  assert.doesNotMatch(css, /\.eg-prose\b/);
+});
+
+test('Prose package SSR renders one unmarked root around the unchanged children and keeps its recipe internal (#569)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Prose, 'function');
+  for (const name of ['proseVariants', 'useProse']) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Prose`);
+  }
+  const content = () => [
+    createElement('h2', { key: 'title' }, 'Title'),
+    createElement(
+      'p',
+      { key: 'body' },
+      'Body with ',
+      createElement('a', { href: '#packed' }, 'a link'),
+      ' and ',
+      createElement('code', null, 'code'),
+      '.'
+    )
+  ];
+  const render = (html) => new JSDOM(html);
+  const plain = render(renderToString(createElement('div', null, ...content())));
+  for (const [props, step, brand] of [
+    [undefined, 'text-body-large', '[&_:not(pre)>code]:text-fg-brand-default'],
+    [
+      { size: 'sm', tone: 'raised', id: 'packed-prose', lang: 'en', className: 'mx-auto' },
+      'text-body-default',
+      '[&_:not(pre)>code]:text-fg-brand-raised'
+    ]
+  ]) {
+    const dom = render(renderToString(createElement(exported.Prose, props, ...content())));
+    try {
+      const body = dom.window.document.body;
+      assert.equal(body.children.length, 1);
+      const root = body.firstElementChild;
+      assert.equal(root.tagName, 'DIV');
+      assert.ok(root.classList.contains('eg-prose'));
+      assert.ok(root.classList.contains('max-w-prose'));
+      assert.ok(root.classList.contains(step));
+      assert.ok(root.classList.contains(brand));
+      for (const attribute of ['role', 'tabindex', 'data-state', 'aria-label', 'aria-labelledby']) {
+        assert.equal(root.hasAttribute(attribute), false, attribute);
+      }
+      assert.equal(root.hasAttribute('size'), false);
+      assert.equal(root.hasAttribute('tone'), false);
+      assert.equal(root.innerHTML, plain.window.document.body.firstElementChild.innerHTML);
+      if (props) {
+        assert.equal(root.getAttribute('id'), 'packed-prose');
+        assert.equal(root.getAttribute('lang'), 'en');
+        assert.ok(root.classList.contains('mx-auto'));
+      }
+    } finally {
+      dom.window.close();
+    }
+  }
+  plain.window.close();
+  // An untyped HTML string is discarded: the children render and React does not throw.
+  const html = render(
+    renderToString(
+      createElement(exported.Prose, { dangerouslySetInnerHTML: { __html: '<b>injected</b>' } }, 'Rendered text')
+    )
+  );
+  try {
+    assert.equal(html.window.document.body.firstElementChild.textContent, 'Rendered text');
+    assert.equal(html.window.document.querySelector('b'), null);
+  } finally {
+    html.window.close();
+  }
+});
+
 test('StepMeter package SSR renders a named image of presentational steps and nothing for invalid input', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -6261,6 +6430,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ProjectCardFooter',
       'ProjectCardMark',
       'ProjectCardTags',
+      'Prose',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
@@ -6774,6 +6944,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ProjectCardTags',
     'ProjectCardTagsProps',
     'ProjectCardVariant',
+    'Prose',
+    'ProseProps',
+    'ProseSize',
+    'ProseTone',
     'PullQuote',
     'PullQuoteProps',
     'PullQuoteTone',
@@ -7186,6 +7360,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'MeterRowVariant',
     'Portal',
     'PortalProps',
+    'Prose',
+    'ProseProps',
+    'ProseSize',
+    'ProseTone',
     'RadioGroup',
     'RadioGroupOption',
     'RadioGroupOrientation',

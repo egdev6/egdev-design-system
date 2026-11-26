@@ -96,6 +96,8 @@ import { Pixel } from '@egdev/ui';
 import type { PixelProps, PixelState } from '@egdev/ui';
 import { StepMeter } from '@egdev/ui';
 import type { StepMeterProps } from '@egdev/ui';
+import { Prose } from '@egdev/ui';
+import type { ProseProps, ProseSize, ProseTone } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -616,6 +618,47 @@ type StepMeterPrivateStep = (typeof import('@egdev/ui'))['stepMeterStepVariants'
 // @ts-expect-error The internal hook is not public.
 type StepMeterPrivateHook = (typeof import('@egdev/ui'))['useStepMeter'];
 export type StepMeterNegatives = [typeof stepMeterMissingLabel, typeof stepMeterMissingValue, typeof stepMeterStringValue, typeof stepMeterStringSteps, typeof stepMeterRole, typeof stepMeterAriaLabel, typeof stepMeterAriaLabelledBy, typeof stepMeterHidden, typeof stepMeterValueNow, typeof stepMeterData, typeof stepMeterChildren, typeof stepMeterHtml, typeof stepMeterTitle, typeof stepMeterTab, typeof stepMeterEditable, typeof stepMeterClick, typeof stepMeterRef, typeof stepMeterSlot, StepMeterPrivateRoot, StepMeterPrivateStep, StepMeterPrivateHook];
+
+export const proseProps: ProseProps = { size: 'sm', tone: 'raised', id: 'packed-prose', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mx-auto', children: 'Reading text' };
+export const proseSizes: ProseSize[] = ['sm', 'md'];
+export const proseTones: ProseTone[] = ['canvas', 'raised'];
+export function ProseSamples() {
+  return createElement(Fragment, null,
+    createElement(Prose, {
+      id: 'packed-prose',
+      lang: 'en',
+      className: 'mx-auto',
+      size: 'sm',
+      tone: 'raised',
+      children: createElement(Fragment, null,
+        createElement('h2', null, 'Title'),
+        createElement('p', null, 'Body with ', createElement('a', { href: '#packed' }, 'a link'), ' and ', createElement('code', null, 'code'), '.'))
+    }),
+    createElement(Prose, { children: createElement('p', null, 'Default root') }));
+}
+// @ts-expect-error The content is required.
+const proseMissingChildren: ProseProps = {};
+// @ts-expect-error The root is a generic div: a landmark wraps Prose.
+const proseRole: ProseProps = { children: 'x', role: 'article' };
+// @ts-expect-error The root carries no accessible name.
+const proseAriaLabel: ProseProps = { children: 'x', 'aria-label': 'x' };
+// @ts-expect-error The root carries no accessible name.
+const proseAriaLabelledBy: ProseProps = { children: 'x', 'aria-labelledby': 'x' };
+// @ts-expect-error Raw HTML is protected: the app converts and sanitizes its content.
+const proseHtml: ProseProps = { children: 'x', dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Slot composition is not supported.
+const proseSlot: ProseProps = { children: 'x', asChild: true };
+// @ts-expect-error A root ref is not part of this API.
+const proseRef: ProseProps = { children: 'x', ref: null };
+// @ts-expect-error The size is a closed set.
+const proseBadSize: ProseProps = { children: 'x', size: 'lg' };
+// @ts-expect-error The tone is a closed set.
+const proseBadTone: ProseProps = { children: 'x', tone: 'flood' };
+// @ts-expect-error The descendant recipe is private.
+type ProsePrivateRecipe = (typeof import('@egdev/ui'))['proseVariants'];
+// @ts-expect-error The internal hook is not public.
+type ProsePrivateHook = (typeof import('@egdev/ui'))['useProse'];
+export type ProseNegatives = [typeof proseMissingChildren, typeof proseRole, typeof proseAriaLabel, typeof proseAriaLabelledBy, typeof proseHtml, typeof proseSlot, typeof proseRef, typeof proseBadSize, typeof proseBadTone, ProsePrivateRecipe, ProsePrivateHook];
 
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
@@ -5311,6 +5354,35 @@ function assertPixelConsumerCSS(css) {
   assert.doesNotMatch(utilities, /\.eg-pixel\s*\{/);
 }
 
+function assertProseConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // The measure reads the owner-confirmed token and keeps its ch fallback for apps on an older tokens version.
+  assert.match(utilities, /\.max-w-prose\s*\{[^}]*max-width:\s*var\(--container-prose,\s*65ch\)/);
+  for (const [token, target, declaration] of [
+    ['[&>:first-child]:mt-0', '> :first-child', /margin-top:\s*var\(--space-0\)/],
+    ['[&_h2]:text-heading-section', 'h2', /font-size:\s*var\(--text-heading-section[,)]/],
+    ['[&_a:hover]:no-underline', 'a:hover', /text-decoration-line:\s*none/],
+    ['[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]', 'a:focus-visible', /box-shadow:\s*var\(--shadow-focus\)/],
+    ['[&_li::marker]:text-fg-muted', 'li::marker', /color:\s*var\(--color-fg-muted[,)]/],
+    ['[&_:not(pre)>code]:text-fg-brand-default', ':not(pre) > code', /color:\s*var\(--color-fg-brand-default[,)]/],
+    ['[&_pre]:shadow-[var(--shadow-well)]', 'pre', /--tw-shadow:\s*var\(--shadow-well\)/],
+    ['[&_th]:bg-surface-2', 'th', /background-color:\s*var\(--color-surface-2[,)]/],
+    ['[&_hr]:border-t', 'hr', /border-top-width:\s*1px/]
+  ]) {
+    assert.match(
+      utilities,
+      new RegExp(escapeRegExp(escapeClass(token) + ' ' + target) + '\\s*\\{[^}]*' + declaration.source),
+      'Missing Prose rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the Prose marker.
+  assert.doesNotMatch(css, /\.eg-prose\b/);
+}
+
 function assertStepMeterConsumerCSS(css) {
   const utilitiesStart = css.search(/@layer utilities\s*\{/);
   assert.ok(utilitiesStart >= 0);
@@ -5855,6 +5927,8 @@ ${assertPixelConsumerCSS.toString()}
 assertPixelConsumerCSS(shippedStyles);
 ${assertStepMeterConsumerCSS.toString()}
 assertStepMeterConsumerCSS(shippedStyles);
+${assertProseConsumerCSS.toString()}
+assertProseConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -6043,6 +6117,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ProjectCardFooter',
   'ProjectCardMark',
   'ProjectCardTags',
+  'Prose',
   'PullQuote',
   'RadioGroup',
   'SearchTrigger',
@@ -6462,6 +6537,27 @@ for (const meter of stepMeters) {
   }
 }
 stepMeterDocument.window.close();
+const { ProseSamples } = await import('./consumer.ts');
+const proseDocument = new JSDOM(renderToString(createElement(ProseSamples)));
+const proseRoots = [...proseDocument.window.document.querySelectorAll('div.eg-prose')];
+assert.equal(proseRoots.length, 2);
+const [proseRaised, proseDefault] = proseRoots;
+assert.equal(proseRaised.getAttribute('id'), 'packed-prose');
+assert.equal(proseRaised.getAttribute('lang'), 'en');
+for (const name of ['mx-auto', 'max-w-prose', 'text-body-default', '[&_:not(pre)>code]:text-fg-brand-raised']) {
+  assert.ok(proseRaised.classList.contains(name), name);
+}
+for (const name of ['max-w-prose', 'text-body-large', '[&_:not(pre)>code]:text-fg-brand-default']) {
+  assert.ok(proseDefault.classList.contains(name), name);
+}
+for (const root of proseRoots) {
+  for (const attribute of ['role', 'tabindex', 'data-state', 'aria-label', 'aria-labelledby', 'size', 'tone']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+}
+assert.deepEqual([...proseRaised.children].map((node) => node.tagName), ['H2', 'P']);
+assert.equal(proseRaised.querySelector('a[href="#packed"]').textContent, 'a link');
+proseDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');
@@ -10603,7 +10699,8 @@ const partialTypography = ${JSON.stringify(partialTypography)};
 // #425 adds 14 owner-confirmed semantic role aliases: 297 + 14 = 311.
 // #465 adds the owner-approved --gradient-spectrum: 311 + 1 = 312.
 // Tabs v0.4 adds the owner-approved --mask-scroll-fade-inline: 312 + 1 = 313.
-assert.equal(names.length, 313, 'Packed native artifact must expose 313 variables');
+// Prose v0.1 adds the owner-confirmed --container-prose reading measure (#569): 313 + 1 = 314.
+assert.equal(names.length, 314, 'Packed native artifact must expose 314 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {

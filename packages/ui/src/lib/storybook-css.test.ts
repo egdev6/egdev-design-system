@@ -17,6 +17,7 @@ import {
   dialogSheetFullVariants,
   dialogSheetOverflowVariants
 } from '../molecules/dialog/types';
+import { proseVariants } from '../primitives/prose/types';
 import { textBodyVariants, textVariants } from '../primitives/text/types';
 
 let css: string;
@@ -730,6 +731,154 @@ describe('Storybook preview CSS', () => {
     );
     const preview = readFileSync(new URL('../../../../.storybook/preview.css', import.meta.url), 'utf8');
     expect(preview).toContain('@source "../packages/ui/src/organisms/footer/Footer.stories.tsx";');
+  });
+
+  it('compiles the Prose measure and every descendant selector from the production recipe (#569)', () => {
+    // Every utility of the recipe is emitted as `.<escaped class> <target>`; each row names the property it must set
+    // and the token it must read. The completeness check below fails if a recipe utility has no row.
+    const escapeClass = (token: string) => `.${token.replace(/[^\w-]/g, (character) => `\\${character}`)}`;
+    const space = (step: string) => `var\\(--space-${step}[,)]`;
+    const color = (token: string) => `color:\\s*var\\(--color-${token}[,)]`;
+    const face = (token: string) => `font-family:\\s*var\\(--font-${token}[,)]`;
+    const step = (token: string) => `font-size:\\s*var\\(--text-${token}[,)]`;
+    const weight = 'font-weight:\\s*var\\(--text-heading-small--font-weight\\)';
+    const focus = 'box-shadow:\\s*var\\(--shadow-focus\\)';
+    const noOutline = 'outline-style:\\s*none';
+    const rows: readonly (readonly [token: string, target: string, declaration: string])[] = [
+      ['max-w-prose', '', 'max-width:\\s*var\\(--container-prose,\\s*65ch\\)'],
+      ['box-border', '', 'box-sizing:\\s*border-box'],
+      ['min-w-0', '', `min-width:\\s*${space('0')}`],
+      ['font-sans', '', face('sans')],
+      ['wrap-break-word', '', 'overflow-wrap:\\s*break-word'],
+      ['text-pretty', '', 'text-wrap:\\s*pretty'],
+      ['text-body-large', '', step('body-large')],
+      ['text-body-default', '', step('body-default')],
+      ['[&>:first-child]:mt-0', '> :first-child', `margin-top:\\s*${space('0')}`],
+      ['[&>:last-child]:mb-0', '> :last-child', `margin-bottom:\\s*${space('0')}`],
+      ['[&_h2]:m-0', 'h2', `margin:\\s*${space('0')}`],
+      ['[&_h2]:mt-12', 'h2', `margin-top:\\s*${space('12')}`],
+      ['[&_h2]:mb-4', 'h2', `margin-bottom:\\s*${space('4')}`],
+      ['[&_h2]:font-display', 'h2', face('display')],
+      ['[&_h2]:uppercase', 'h2', 'text-transform:\\s*uppercase'],
+      ['[&_h2]:text-balance', 'h2', 'text-wrap:\\s*balance'],
+      ['[&_h2]:text-heading-section', 'h2', step('heading-section')],
+      ['[&_h2]:text-fg-default', 'h2', color('fg-default')],
+      ['[&_h3]:m-0', 'h3', `margin:\\s*${space('0')}`],
+      ['[&_h3]:mt-8', 'h3', `margin-top:\\s*${space('8')}`],
+      ['[&_h3]:mb-3', 'h3', `margin-bottom:\\s*${space('3')}`],
+      ['[&_h3]:font-sans', 'h3', face('sans')],
+      ['[&_h3]:normal-case', 'h3', 'text-transform:\\s*none'],
+      ['[&_h3]:text-balance', 'h3', 'text-wrap:\\s*balance'],
+      ['[&_h3]:text-heading-small', 'h3', step('heading-small')],
+      ['[&_h3]:text-fg-default', 'h3', color('fg-default')],
+      ['[&_h4]:m-0', 'h4', `margin:\\s*${space('0')}`],
+      ['[&_h4]:mt-6', 'h4', `margin-top:\\s*${space('6')}`],
+      ['[&_h4]:mb-2', 'h4', `margin-bottom:\\s*${space('2')}`],
+      ['[&_h4]:font-sans', 'h4', face('sans')],
+      ['[&_h4]:normal-case', 'h4', 'text-transform:\\s*none'],
+      ['[&_h4]:text-balance', 'h4', 'text-wrap:\\s*balance'],
+      ['[&_h4]:text-body-large', 'h4', step('body-large')],
+      ['[&_h4]:text-fg-default', 'h4', color('fg-default')],
+      ['[&_h4]:[font-weight:var(--text-heading-small--font-weight)]', 'h4', weight],
+      ['[&_p]:m-0', 'p', `margin:\\s*${space('0')}`],
+      ['[&_p]:mb-5', 'p', `margin-bottom:\\s*${space('5')}`],
+      ['[&_a]:text-link-default', 'a', color('link-default')],
+      ['[&_a]:underline', 'a', 'text-decoration-line:\\s*underline'],
+      ['[&_a]:underline-offset-(--space-1)', 'a', 'text-underline-offset:\\s*var\\(--space-1\\)'],
+      ['[&_a:hover]:no-underline', 'a:hover', 'text-decoration-line:\\s*none'],
+      ['[&_a:focus-visible]:outline-none', 'a:focus-visible', noOutline],
+      ['[&_a:focus-visible]:rounded-sm', 'a:focus-visible', 'border-radius:\\s*var\\(--radius-sm[,)]'],
+      ['[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]', 'a:focus-visible', focus],
+      ['[&_strong]:[font-weight:var(--text-heading-small--font-weight)]', 'strong', weight],
+      ['[&_ul]:m-0', 'ul', `margin:\\s*${space('0')}`],
+      ['[&_ul]:mb-5', 'ul', `margin-bottom:\\s*${space('5')}`],
+      ['[&_ul]:ps-7', 'ul', `padding-inline-start:\\s*${space('7')}`],
+      ['[&_ul]:list-disc', 'ul', 'list-style-type:\\s*disc'],
+      ['[&_ol]:m-0', 'ol', `margin:\\s*${space('0')}`],
+      ['[&_ol]:mb-5', 'ol', `margin-bottom:\\s*${space('5')}`],
+      ['[&_ol]:ps-7', 'ol', `padding-inline-start:\\s*${space('7')}`],
+      ['[&_ol]:list-decimal', 'ol', 'list-style-type:\\s*decimal'],
+      ['[&_li]:mt-2', 'li', `margin-top:\\s*${space('2')}`],
+      ['[&_li:first-child]:mt-0', 'li:first-child', `margin-top:\\s*${space('0')}`],
+      ['[&_li::marker]:text-fg-muted', 'li::marker', color('fg-muted')],
+      ['[&_blockquote]:m-0', 'blockquote', `margin:\\s*${space('0')}`],
+      ['[&_blockquote]:my-8', 'blockquote', `margin-block:\\s*${space('8')}`],
+      ['[&_blockquote]:ps-4.5', 'blockquote', `padding-inline-start:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*4\\.5\\)`],
+      ['[&_blockquote]:text-fg-secondary', 'blockquote', color('fg-secondary')],
+      [
+        '[&_blockquote]:border-s-[length:calc(var(--border-width)*2)]',
+        'blockquote',
+        'border-inline-start-width:\\s*calc\\(var\\(--border-width\\)\\s*\\*\\s*2\\)'
+      ],
+      ['[&_blockquote]:border-fg-brand-default', 'blockquote', 'border-color:\\s*var\\(--color-fg-brand-default[,)]'],
+      ['[&_code]:font-mono', 'code', face('mono')],
+      ['[&_code]:text-code', 'code', step('code')],
+      ['[&_:not(pre)>code]:text-fg-brand-default', ':not(pre) > code', color('fg-brand-default')],
+      ['[&_:not(pre)>code]:text-fg-brand-raised', ':not(pre) > code', color('fg-brand-raised')],
+      ['[&_pre]:my-6', 'pre', `margin-block:\\s*${space('6')}`],
+      ['[&_pre]:overflow-x-auto', 'pre', 'overflow-x:\\s*auto'],
+      ['[&_pre]:rounded-md', 'pre', 'border-radius:\\s*var\\(--radius-md[,)]'],
+      ['[&_pre]:border', 'pre', 'border-width:\\s*1px'],
+      ['[&_pre]:border-border-hairline', 'pre', 'border-color:\\s*var\\(--color-border-hairline[,)]'],
+      ['[&_pre]:bg-surface-0', 'pre', 'background-color:\\s*var\\(--color-surface-0[,)]'],
+      ['[&_pre]:p-4', 'pre', `padding:\\s*${space('4')}`],
+      ['[&_pre]:shadow-[var(--shadow-well)]', 'pre', '--tw-shadow:\\s*var\\(--shadow-well\\)'],
+      ['[&_pre]:font-mono', 'pre', face('mono')],
+      ['[&_pre]:text-code', 'pre', step('code')],
+      ['[&_pre]:text-fg-secondary', 'pre', color('fg-secondary')],
+      ['[&_pre:focus-visible]:outline-none', 'pre:focus-visible', noOutline],
+      ['[&_pre:focus-visible]:[box-shadow:var(--shadow-focus)]', 'pre:focus-visible', focus],
+      ['[&_img]:block', 'img', 'display:\\s*block'],
+      ['[&_img]:h-auto', 'img', 'height:\\s*auto'],
+      ['[&_img]:max-w-full', 'img', 'max-width:\\s*100%'],
+      ['[&_img]:rounded-md', 'img', 'border-radius:\\s*var\\(--radius-md[,)]'],
+      ['[&_figure]:m-0', 'figure', `margin:\\s*${space('0')}`],
+      ['[&_figure]:my-8', 'figure', `margin-block:\\s*${space('8')}`],
+      ['[&_figcaption]:mt-2', 'figcaption', `margin-top:\\s*${space('2')}`],
+      ['[&_figcaption]:text-body-default', 'figcaption', step('body-default')],
+      ['[&_figcaption]:text-fg-muted', 'figcaption', color('fg-muted')],
+      ['[&_table]:my-8', 'table', `margin-block:\\s*${space('8')}`],
+      ['[&_table]:w-full', 'table', 'width:\\s*100%'],
+      ['[&_table]:border-collapse', 'table', 'border-collapse:\\s*collapse'],
+      ['[&_th]:border-b', 'th', 'border-bottom-width:\\s*1px'],
+      ['[&_th]:border-border-default', 'th', 'border-color:\\s*var\\(--color-border-default[,)]'],
+      ['[&_th]:bg-surface-2', 'th', 'background-color:\\s*var\\(--color-surface-2[,)]'],
+      ['[&_th]:px-4', 'th', `padding-inline:\\s*${space('4')}`],
+      ['[&_th]:py-2.5', 'th', 'padding-block:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*2\\.5\\)'],
+      ['[&_th]:text-start', 'th', 'text-align:\\s*start'],
+      ['[&_th]:font-display', 'th', face('display')],
+      ['[&_th]:text-label-eyebrow', 'th', step('label-eyebrow')],
+      ['[&_th]:uppercase', 'th', 'text-transform:\\s*uppercase'],
+      ['[&_th]:text-fg-muted', 'th', color('fg-muted')],
+      ['[&_td]:border-b', 'td', 'border-bottom-width:\\s*1px'],
+      ['[&_td]:border-border-subtle', 'td', 'border-color:\\s*var\\(--color-border-subtle[,)]'],
+      ['[&_td]:px-4', 'td', `padding-inline:\\s*${space('4')}`],
+      ['[&_td]:py-3', 'td', `padding-block:\\s*${space('3')}`],
+      ['[&_td]:text-start', 'td', 'text-align:\\s*start'],
+      ['[&_td]:align-top', 'td', 'vertical-align:\\s*top'],
+      ['[&_td]:wrap-break-word', 'td', 'overflow-wrap:\\s*break-word'],
+      ['[&_td]:text-body-default', 'td', step('body-default')],
+      ['[&_td]:text-fg-secondary', 'td', color('fg-secondary')],
+      ['[&_hr]:m-0', 'hr', `margin:\\s*${space('0')}`],
+      ['[&_hr]:my-10', 'hr', `margin-block:\\s*${space('10')}`],
+      ['[&_hr]:border-0', 'hr', 'border-width:\\s*0'],
+      ['[&_hr]:border-t', 'hr', 'border-top-width:\\s*1px'],
+      ['[&_hr]:border-solid', 'hr', 'border-style:\\s*solid'],
+      ['[&_hr]:border-border-hairline', 'hr', 'border-color:\\s*var\\(--color-border-hairline[,)]']
+    ];
+    const recipe = new Set(
+      (['sm', 'md'] as const)
+        .flatMap((size) => (['canvas', 'raised'] as const).map((tone) => proseVariants({ size, tone })))
+        .flatMap((classes) => classes.split(' '))
+        .filter((token) => token !== 'eg-prose')
+    );
+    expect([...recipe].sort()).toEqual(rows.map(([token]) => token).sort());
+    for (const [token, target, declaration] of rows) {
+      const selector = target === '' ? escapeClass(token) : `${escapeClass(token)} ${target}`;
+      expect(rule(selector), token).toMatch(new RegExp(declaration));
+    }
+    // The root marker is public API but carries no rule of its own: Prose has no stylesheet.
+    expect(css).not.toMatch(/\.eg-prose\b/);
   });
 
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {
