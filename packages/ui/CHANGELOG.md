@@ -4,7 +4,7 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
-## Unreleased
+## 0.11.0
 
 ### Added
 
