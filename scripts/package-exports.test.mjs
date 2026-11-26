@@ -1238,6 +1238,173 @@ test('Prose package SSR renders one unmarked root around the unchanged children 
   }
 });
 
+test('EmptyState ships every static recipe utility with its token declaration and no rule of its own (#573)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/empty-state/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 5, 'EmptyState declares exactly five static recipes');
+  assert.equal(classes.size, 24, 'The approved inventory is the stable marker plus 23 utilities');
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes(escapeClass(name)), `Missing EmptyState utility ${name}`);
+    }
+  }
+  // Every utility reads the property and the token the approved recipe names; a row per utility keeps this complete.
+  const rows = [
+    ['flex', /display:\s*flex/],
+    ['inline-flex', /display:\s*inline-flex/],
+    ['flex-col', /flex-direction:\s*column/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['items-center', /align-items:\s*center/],
+    ['justify-center', /justify-content:\s*center/],
+    ['shrink-0', /flex-shrink:\s*0/],
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['max-w-full', /max-width:\s*100%/],
+    ['text-center', /text-align:\s*center/],
+    ['gap-3', /gap:\s*var\(--space-3\)/],
+    ['gap-2', /gap:\s*var\(--space-2\)/],
+    ['px-4', /padding-inline:\s*var\(--space-4\)/],
+    ['py-8', /padding-block:\s*var\(--space-8\)/],
+    ['m-0', /margin:\s*var\(--space-0\)/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-heading-small', /font-size:\s*var\(--text-heading-small[,)]/],
+    ['text-heading-small', /font-weight:[^;}]*--text-heading-small--font-weight/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/],
+    ['text-body-default', /font-weight:[^;}]*--text-body-default--font-weight/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['max-w-[var(--bp-sm)]', /max-width:\s*var\(--bp-sm\)/]
+  ];
+  assert.deepEqual(
+    [...new Set(rows.map(([token]) => token))].sort(),
+    [...classes].filter((name) => !name.startsWith('eg-')).sort(),
+    'Every recipe utility has a declaration row'
+  );
+  for (const [token, declaration] of rows) {
+    assert.match(
+      utilities,
+      new RegExp(`${escapeRegExp(escapeClass(token))}\\s*\\{[^}]*${declaration.source}`),
+      `Missing EmptyState rule ${token}`
+    );
+  }
+  // The block paints nothing and has no stylesheet: no paint utility in the recipes, no rule for the marker.
+  for (const name of classes) {
+    assert.doesNotMatch(
+      name,
+      /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|transform|rounded)\b/
+    );
+  }
+  assert.doesNotMatch(css, /\.eg-empty-state\b/);
+});
+
+test('EmptyState package SSR renders one unmarked root, a hidden icon and nothing for a blank title, and keeps its recipes internal (#573)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.EmptyState, 'function');
+  for (const name of [
+    'useEmptyState',
+    'emptyStateVariants',
+    'emptyStateIconVariants',
+    'emptyStateTitleVariants',
+    'emptyStateDescriptionVariants',
+    'emptyStateActionsVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to EmptyState`);
+  }
+  const action = createElement(exported.Button, { variant: 'secondary' }, 'Clear filters');
+  const dom = new JSDOM(
+    renderToString(
+      createElement(exported.EmptyState, {
+        title: 'No posts',
+        level: 2,
+        description: 'Try another filter.',
+        icon: 'search',
+        actions: action,
+        id: 'packed-empty',
+        lang: 'en',
+        className: 'mt-6'
+      })
+    )
+  );
+  try {
+    const body = dom.window.document.body;
+    assert.equal(body.children.length, 1);
+    const root = body.firstElementChild;
+    assert.equal(root.tagName, 'DIV');
+    for (const name of ['eg-empty-state', 'mt-6']) {
+      assert.ok(root.classList.contains(name), name);
+    }
+    for (const attribute of ['role', 'title', 'tabindex', 'aria-label', 'aria-labelledby', 'aria-live', 'data-state']) {
+      assert.equal(root.hasAttribute(attribute), false, attribute);
+    }
+    assert.equal(root.getAttribute('id'), 'packed-empty');
+    assert.equal(root.getAttribute('lang'), 'en');
+    assert.deepEqual(
+      [...root.children].map((node) => node.tagName),
+      ['SPAN', 'H2', 'P', 'DIV']
+    );
+    const [icon, heading, description, actions] = root.children;
+    assert.equal(icon.getAttribute('aria-hidden'), 'true');
+    assert.ok(icon.querySelector('svg.eg-icon.size-7'));
+    assert.equal(heading.textContent, 'No posts');
+    assert.equal(description.textContent, 'Try another filter.');
+    assert.equal(actions.children.length, 1);
+    assert.equal(actions.querySelector('button').textContent, 'Clear filters');
+  } finally {
+    dom.window.close();
+  }
+  // A title-only state holds the heading and nothing else.
+  const titleOnly = new JSDOM(renderToString(createElement(exported.EmptyState, { title: 'Nothing here' })));
+  try {
+    assert.equal(titleOnly.window.document.body.firstElementChild.children.length, 1);
+    assert.equal(titleOnly.window.document.querySelector('h3').textContent, 'Nothing here');
+  } finally {
+    titleOnly.window.close();
+  }
+  // A blank title renders nothing and warns once in development.
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (message) => warnings.push(message);
+  try {
+    assert.equal(renderToStaticMarkup(createElement(exported.EmptyState, { title: '   ' })), '');
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(warnings, ['EmptyState requires a non-empty title. Nothing was rendered.']);
+});
+
 test('StepMeter package SSR renders a named image of presentational steps and nothing for invalid input', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -6359,6 +6526,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'DialogTrigger',
       'Divider',
       'Dropzone',
+      'EmptyState',
       'Field',
       'FieldMessage',
       'Footer',
@@ -6730,6 +6898,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'DividerProps',
     'Dropzone',
     'DropzoneProps',
+    'EmptyState',
+    'EmptyStateLevel',
+    'EmptyStateProps',
     'Field',
     'FieldCounter',
     'FieldLayout',
@@ -7266,6 +7437,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'EmptyState',
+    'EmptyStateLevel',
+    'EmptyStateProps',
     'AttachmentField',
     'AttachmentFieldMessages',
     'AttachmentFieldProps',

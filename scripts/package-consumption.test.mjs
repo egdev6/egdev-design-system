@@ -98,6 +98,8 @@ import { StepMeter } from '@egdev/ui';
 import type { StepMeterProps } from '@egdev/ui';
 import { Prose } from '@egdev/ui';
 import type { ProseProps, ProseSize, ProseTone } from '@egdev/ui';
+import { EmptyState } from '@egdev/ui';
+import type { EmptyStateLevel, EmptyStateProps } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -659,6 +661,61 @@ type ProsePrivateRecipe = (typeof import('@egdev/ui'))['proseVariants'];
 // @ts-expect-error The internal hook is not public.
 type ProsePrivateHook = (typeof import('@egdev/ui'))['useProse'];
 export type ProseNegatives = [typeof proseMissingChildren, typeof proseRole, typeof proseAriaLabel, typeof proseAriaLabelledBy, typeof proseHtml, typeof proseSlot, typeof proseRef, typeof proseBadSize, typeof proseBadTone, ProsePrivateRecipe, ProsePrivateHook];
+
+// Keep EmptyState samples outside App so the existing button-count/focus harness stays unchanged.
+// createElement erases the exotic Button and Link target identity; restore only these known factory targets.
+const emptyStateButton = createElement(Button, { variant: 'secondary', children: 'Clear filters' }) as ReactElement<ButtonProps, typeof Button>;
+const emptyStateLink = createElement(Link, { href: '#all-posts', children: 'Browse all posts' }) as ReactElement<LinkProps, typeof Link>;
+export const emptyStateProps: EmptyStateProps = { title: 'No posts match', level: 2, description: 'Try another filter.', icon: 'search', actions: emptyStateButton, id: 'packed-empty', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
+export const emptyStateLevels: EmptyStateLevel[] = [2, 3, 4, 5, 6];
+export function EmptyStateSamples() {
+  return createElement(Fragment, null,
+    createElement(EmptyState, emptyStateProps),
+    createElement(EmptyState, { title: 'Nothing here' }),
+    createElement(EmptyState, { title: 'No posts yet', icon: 'inbox', actions: emptyStateLink }),
+    createElement(EmptyState, { title: 'Hidden extras', description: '   ', actions: null }));
+}
+// @ts-expect-error The title is required.
+const emptyStateMissingTitle: EmptyStateProps = {};
+// @ts-expect-error The title is plain text, never a rich node.
+const emptyStateRichTitle: EmptyStateProps = { title: createElement('em', null, 'x') };
+// @ts-expect-error The heading rank starts at 2: h1 belongs to the page header.
+const emptyStateLevelOne: EmptyStateProps = { title: 'x', level: 1 };
+// @ts-expect-error The heading rank stops at 6.
+const emptyStateLevelSeven: EmptyStateProps = { title: 'x', level: 7 };
+// @ts-expect-error The pictogram is a name of the closed icon set.
+const emptyStateBadIcon: EmptyStateProps = { title: 'x', icon: 'sparkles' };
+// @ts-expect-error The explanation is plain text.
+const emptyStateRichDescription: EmptyStateProps = { title: 'x', description: createElement('em', null, 'x') };
+// @ts-expect-error An array is not one supported action element.
+const emptyStateArrayActions: EmptyStateProps = { title: 'x', actions: [emptyStateButton] };
+// @ts-expect-error Text is not a supported action element.
+const emptyStateTextActions: EmptyStateProps = { title: 'x', actions: 'Clear' };
+// @ts-expect-error There is no children slot.
+const emptyStateChildren: EmptyStateProps = { title: 'x', children: 'x' };
+// @ts-expect-error The root is a generic container: no role.
+const emptyStateRole: EmptyStateProps = { title: 'x', role: 'status' };
+// @ts-expect-error The component renders no live region.
+const emptyStateLive: EmptyStateProps = { title: 'x', 'aria-live': 'polite' };
+// @ts-expect-error A generic container takes no accessible name.
+const emptyStateAriaLabel: EmptyStateProps = { title: 'x', 'aria-label': 'x' };
+// @ts-expect-error A generic container takes no accessible name.
+const emptyStateAriaLabelledBy: EmptyStateProps = { title: 'x', 'aria-labelledby': 'x' };
+// @ts-expect-error The root is not a tab stop.
+const emptyStateTab: EmptyStateProps = { title: 'x', tabIndex: 0 };
+// @ts-expect-error No editable content.
+const emptyStateEditable: EmptyStateProps = { title: 'x', contentEditable: true };
+// @ts-expect-error Raw HTML is protected.
+const emptyStateHtml: EmptyStateProps = { title: 'x', dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A root ref is not part of this API.
+const emptyStateRef: EmptyStateProps = { title: 'x', ref: null };
+// @ts-expect-error Slot composition is not supported.
+const emptyStateSlot: EmptyStateProps = { title: 'x', asChild: true };
+// @ts-expect-error The recipes are private.
+type EmptyStatePrivateRecipe = (typeof import('@egdev/ui'))['emptyStateVariants'];
+// @ts-expect-error The internal hook is not public.
+type EmptyStatePrivateHook = (typeof import('@egdev/ui'))['useEmptyState'];
+export type EmptyStateNegatives = [typeof emptyStateMissingTitle, typeof emptyStateRichTitle, typeof emptyStateLevelOne, typeof emptyStateLevelSeven, typeof emptyStateBadIcon, typeof emptyStateRichDescription, typeof emptyStateArrayActions, typeof emptyStateTextActions, typeof emptyStateChildren, typeof emptyStateRole, typeof emptyStateLive, typeof emptyStateAriaLabel, typeof emptyStateAriaLabelledBy, typeof emptyStateTab, typeof emptyStateEditable, typeof emptyStateHtml, typeof emptyStateRef, typeof emptyStateSlot, EmptyStatePrivateRecipe, EmptyStatePrivateHook];
 
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
@@ -5383,6 +5440,37 @@ function assertProseConsumerCSS(css) {
   assert.doesNotMatch(css, /\.eg-prose\b/);
 }
 
+function assertEmptyStateConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, declaration] of [
+    ['flex-col', /flex-direction:\s*column/],
+    ['inline-flex', /display:\s*inline-flex/],
+    ['gap-3', /gap:\s*var\(--space-3\)/],
+    ['gap-2', /gap:\s*var\(--space-2\)/],
+    ['px-4', /padding-inline:\s*var\(--space-4\)/],
+    ['py-8', /padding-block:\s*var\(--space-8\)/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/],
+    ['text-heading-small', /font-size:\s*var\(--text-heading-small[,)]/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['max-w-[var(--bp-sm)]', /max-width:\s*var\(--bp-sm\)/]
+  ]) {
+    assert.match(
+      utilities,
+      new RegExp(escapeRegExp(escapeClass(token)) + '\\s*\\{[^}]*' + declaration.source),
+      'Missing EmptyState rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the EmptyState marker.
+  assert.doesNotMatch(css, /\.eg-empty-state\b/);
+}
+
 function assertStepMeterConsumerCSS(css) {
   const utilitiesStart = css.search(/@layer utilities\s*\{/);
   assert.ok(utilitiesStart >= 0);
@@ -5929,6 +6017,8 @@ ${assertStepMeterConsumerCSS.toString()}
 assertStepMeterConsumerCSS(shippedStyles);
 ${assertProseConsumerCSS.toString()}
 assertProseConsumerCSS(shippedStyles);
+${assertEmptyStateConsumerCSS.toString()}
+assertEmptyStateConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -6046,6 +6136,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'DialogTrigger',
   'Divider',
   'Dropzone',
+  'EmptyState',
   'Field',
   'FieldMessage',
   'Footer',
@@ -6558,6 +6649,30 @@ for (const root of proseRoots) {
 assert.deepEqual([...proseRaised.children].map((node) => node.tagName), ['H2', 'P']);
 assert.equal(proseRaised.querySelector('a[href="#packed"]').textContent, 'a link');
 proseDocument.window.close();
+const { EmptyStateSamples } = await import('./consumer.ts');
+const emptyStateDocument = new JSDOM(renderToString(createElement(EmptyStateSamples)));
+const emptyStateRoots = [...emptyStateDocument.window.document.querySelectorAll('div.eg-empty-state')];
+assert.equal(emptyStateRoots.length, 4);
+const [emptyFull, emptyTitleOnly, emptyLink, emptyBlankDescription] = emptyStateRoots;
+assert.equal(emptyFull.getAttribute('id'), 'packed-empty');
+assert.equal(emptyFull.getAttribute('lang'), 'en');
+assert.equal(emptyFull.getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(emptyFull.classList.contains('mt-6'));
+assert.deepEqual([...emptyFull.children].map((node) => node.tagName), ['SPAN', 'H2', 'P', 'DIV']);
+assert.equal(emptyFull.children[0].getAttribute('aria-hidden'), 'true');
+assert.ok(emptyFull.children[0].querySelector('svg.eg-icon.size-7'));
+assert.equal(emptyFull.querySelector('h2').textContent, 'No posts match');
+assert.equal(emptyFull.querySelector('button').textContent, 'Clear filters');
+assert.deepEqual([...emptyTitleOnly.children].map((node) => node.tagName), ['H3']);
+assert.deepEqual([...emptyLink.children].map((node) => node.tagName), ['SPAN', 'H3', 'DIV']);
+assert.ok(emptyLink.querySelector('a[href="#all-posts"]').textContent.includes('Browse all posts'));
+assert.deepEqual([...emptyBlankDescription.children].map((node) => node.tagName), ['H3']);
+for (const root of emptyStateRoots) {
+  for (const attribute of ['role', 'title', 'tabindex', 'aria-label', 'aria-labelledby', 'aria-live', 'data-state']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+}
+emptyStateDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');

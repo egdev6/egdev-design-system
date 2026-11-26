@@ -17,6 +17,13 @@ import {
   dialogSheetFullVariants,
   dialogSheetOverflowVariants
 } from '../molecules/dialog/types';
+import {
+  emptyStateActionsVariants,
+  emptyStateDescriptionVariants,
+  emptyStateIconVariants,
+  emptyStateTitleVariants,
+  emptyStateVariants
+} from '../molecules/empty-state/types';
 import { proseVariants } from '../primitives/prose/types';
 import { textBodyVariants, textVariants } from '../primitives/text/types';
 
@@ -879,6 +886,55 @@ describe('Storybook preview CSS', () => {
     }
     // The root marker is public API but carries no rule of its own: Prose has no stylesheet.
     expect(css).not.toMatch(/\.eg-prose\b/);
+  });
+
+  it('emits every EmptyState recipe utility from the production recipes and no rule for its marker (#573)', () => {
+    // Every utility of the five part recipes is emitted with the property and token the approved recipe names; the
+    // completeness check below fails if a recipe utility has no row.
+    const escapeClass = (token: string) => `.${token.replace(/[^\w-]/g, (character) => `\\${character}`)}`;
+    const space = (step: string) => `var\\(--space-${step}[,)]`;
+    const rows: readonly (readonly [token: string, declaration: string])[] = [
+      ['flex', 'display:\\s*flex'],
+      ['inline-flex', 'display:\\s*inline-flex'],
+      ['flex-col', 'flex-direction:\\s*column'],
+      ['flex-wrap', 'flex-wrap:\\s*wrap'],
+      ['items-center', 'align-items:\\s*center'],
+      ['justify-center', 'justify-content:\\s*center'],
+      ['shrink-0', 'flex-shrink:\\s*0'],
+      ['min-w-0', `min-width:\\s*${space('0')}`],
+      ['max-w-full', 'max-width:\\s*100%'],
+      ['text-center', 'text-align:\\s*center'],
+      ['gap-3', `gap:\\s*${space('3')}`],
+      ['gap-2', `gap:\\s*${space('2')}`],
+      ['px-4', `padding-inline:\\s*${space('4')}`],
+      ['py-8', `padding-block:\\s*${space('8')}`],
+      ['m-0', `margin:\\s*${space('0')}`],
+      ['wrap-anywhere', 'overflow-wrap:\\s*anywhere'],
+      ['font-sans', 'font-family:\\s*var\\(--font-sans[,)]'],
+      ['text-heading-small', 'font-size:\\s*var\\(--text-heading-small[,)]'],
+      ['text-body-default', 'font-size:\\s*var\\(--text-body-default[,)]'],
+      ['text-fg-default', 'color:\\s*var\\(--color-fg-default[,)]'],
+      ['text-fg-secondary', 'color:\\s*var\\(--color-fg-secondary[,)]'],
+      ['text-fg-muted', 'color:\\s*var\\(--color-fg-muted[,)]'],
+      ['max-w-[var(--bp-sm)]', 'max-width:\\s*var\\(--bp-sm\\)']
+    ];
+    const recipe = new Set(
+      [
+        emptyStateVariants(),
+        emptyStateIconVariants(),
+        emptyStateTitleVariants(),
+        emptyStateDescriptionVariants(),
+        emptyStateActionsVariants()
+      ]
+        .flatMap((classes) => classes.split(' '))
+        .filter((token) => token !== 'eg-empty-state')
+    );
+    expect([...recipe].sort()).toEqual(rows.map(([token]) => token).sort());
+    for (const [token, declaration] of rows) {
+      expect(rule(escapeClass(token)), token).toMatch(new RegExp(declaration));
+    }
+    // The block paints nothing and ships no stylesheet: its public marker carries no rule of its own.
+    expect(css).not.toMatch(/\.eg-empty-state\b/);
   });
 
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {
