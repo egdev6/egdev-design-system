@@ -2020,7 +2020,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
     }
     expect(argTypes.variant?.control).toEqual({ type: 'select' });
-    expect(argTypes.variant?.options).toEqual(['plain', 'underlined']);
+    expect(argTypes.variant?.options).toEqual(['plain', 'underlined', 'quiet']);
     for (const prop of ['id', 'title', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style']) {
       expect(argTypes[prop], prop).toBeDefined();
       expect(argTypes[prop], prop).toEqual(story('Link', false).argTypes[prop]);

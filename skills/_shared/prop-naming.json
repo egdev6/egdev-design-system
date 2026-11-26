@@ -1307,12 +1307,12 @@
       },
       {
         "component": "Link",
-        "type": "LinkVariant ('plain' | 'underlined')",
+        "type": "LinkVariant ('plain' | 'underlined' | 'quiet')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
+          "revision": "sha256:38f79b26ada7091484423cec50726c9094c1321c51938dedbe6bcd8524ffffc9"
         }
       },
       {
@@ -3020,7 +3020,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
+          "revision": "sha256:38f79b26ada7091484423cec50726c9094c1321c51938dedbe6bcd8524ffffc9"
         }
       },
       {
@@ -3363,7 +3363,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
+          "revision": "sha256:38f79b26ada7091484423cec50726c9094c1321c51938dedbe6bcd8524ffffc9"
         }
       },
       {
@@ -3410,7 +3410,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
+          "revision": "sha256:38f79b26ada7091484423cec50726c9094c1321c51938dedbe6bcd8524ffffc9"
         }
       },
       {
@@ -3447,7 +3447,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
+          "revision": "sha256:38f79b26ada7091484423cec50726c9094c1321c51938dedbe6bcd8524ffffc9"
         }
       }
     ]
