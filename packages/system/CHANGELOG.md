@@ -4,6 +4,8 @@
 
 ### Added
 
+- The source-derived artifact and reference include `EmptyState` (its props, static recipes and `className`
+  allowance) and its five reused naming conventions. (#573)
 - The source-derived artifact and reference include `Prose` (its props and static descendant recipe), the
   `--container-prose` token and the two reused naming conventions. (#569)
 - The source-derived artifact lists `classNameAllows` for `HomeTemplateAnchor` (the thirteen published width, height

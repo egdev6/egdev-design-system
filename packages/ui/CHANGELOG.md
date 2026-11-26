@@ -8,6 +8,11 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `EmptyState` shows that a listing or a filter combination returned nothing: a native heading (`title`, rank 2 to 6,
+  default 3), an optional plain-text `description`, an optional decorative `icon` and one recovery `actions` Button or
+  Link, on the host backdrop with no card, border or shadow. It is passive: it renders no live region and never moves
+  focus, so the host announces "no results" if it wants speech and places focus when the action removes the state.
+  There is no built-in copy: consumers provide localized text. (#573)
 - `Prose` gives bare semantic content (`h2` to `h4`, paragraphs, lists, links, quotes, code, images, figures, simple
   tables and rules) a readable reading column: a built-in 65ch measure, a 16px body step (`size='sm'` selects the
   compact step) and brand-coloured inline code by `tone`. It renders one `div`, never parses or sanitizes content and
