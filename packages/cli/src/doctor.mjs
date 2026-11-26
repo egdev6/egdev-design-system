@@ -5,6 +5,7 @@ import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'n
 import { createRequire } from 'node:module';
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { allowanceKey, GUARDED_PACKAGES } from './appearance-guard.mjs';
 import { findCssEntry } from './css.mjs';
 import {
   collectSpecifiers,
@@ -60,7 +61,8 @@ const SYSTEM_MD_HEADER = /^<!-- Generated from EGDEV design system ([0-9a-f]{7,4
 /**
  * Read the installed artifact via the same project-rooted resolver as the guard engines. Older,
  * absent or invalid artifacts silently keep the base DS046 contract. Read JSON directly instead
- * of requiring it so repeated doctor runs observe updates without Node's module cache.
+ * of requiring it so repeated doctor runs observe updates without Node's module cache. Entries
+ * are keyed by package and export name (`allowanceKey`) for the packages DS046 checks.
  * @param {NodeJS.Require} require
  * @returns {Map<string, Set<string>>}
  */
@@ -87,8 +89,8 @@ function readClassNameAllows(require) {
       ) {
         return new Map();
       }
-      if (component.package === '@egdev/ui' && Array.isArray(component.classNameAllows)) {
-        allowed.set(component.name, new Set(component.classNameAllows));
+      if (GUARDED_PACKAGES.includes(component.package) && Array.isArray(component.classNameAllows)) {
+        allowed.set(allowanceKey(component.package, component.name), new Set(component.classNameAllows));
       }
     }
   } catch {

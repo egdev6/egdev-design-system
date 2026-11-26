@@ -40,7 +40,8 @@ import { createDomGuard } from './dom-guard.mjs';
  * `localRepo`: repository name used for local issue references (`<localRepo>#N`, `<localRepo>#TBD-slug`).
  * `themeDirectory`: app theme layer, the only place where CSS may target DS internals.
  * `sourceDirectory`: guarded tree, without a trailing slash.
- * `classNameAllows`: per-export properties supplied by the consumer's installed system artifact.
+ * `classNameAllows`: per-component properties supplied by the consumer's installed system artifact, keyed
+ * `<package>:<export>` (`allowanceKey`) so an allowance applies only to imports from its own package.
  * @typedef {{ localRepo?: string, themeDirectory?: string, sourceDirectory?: string, classNameAllows?: ReadonlyMap<string, ReadonlySet<string>> }} GuardOptions
  */
 

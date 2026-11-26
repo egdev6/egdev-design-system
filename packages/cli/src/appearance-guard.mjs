@@ -8,10 +8,36 @@
 /** @typedef {{ file: string, line: number, snippet: string, component: string, selectors: string[] }} StructuralViolation */
 /** @typedef {{ tsx: RegExp, css: RegExp, test: RegExp }} SourcePatterns */
 /** @typedef {{ component?: string, ancestor?: string, owned: boolean, internal: boolean }} SelectorState */
-/** @typedef {{ component: string, exportName: string }} ClassOwner */
+/** @typedef {{ component: string, exportName: string, packageName: string }} ClassOwner */
 
 /** @type {WeakMap<object, number>} */
 export const ruleOffsets = new WeakMap();
+
+/**
+ * The packages whose components DS046 checks, and whose published `classNameAllows` it honors. The
+ * doctor's artifact reader and the guard both use this list and `allowanceKey`, so they agree.
+ * @type {readonly string[]}
+ */
+export const GUARDED_PACKAGES = ['@egdev/ui', '@egdev/effects'];
+
+// DS047 keeps scanning `@egdev/ui` components only: effects owners never enter its class map.
+const STRUCTURAL_PACKAGE = '@egdev/ui';
+
+/**
+ * The key of one component's published allowance. An allowance applies only to imports from its
+ * own package, so a same-named export of another package cannot extend or borrow it.
+ * @param {string} packageName
+ * @param {string} exportName
+ * @returns {string}
+ */
+export const allowanceKey = (packageName, exportName) => `${packageName}:${exportName}`;
+
+/**
+ * @param {ClassOwner} left
+ * @param {ClassOwner} right
+ */
+const isSameOwner = (left, right) =>
+  left.component === right.component && left.exportName === right.exportName && left.packageName === right.packageName;
 
 const CONDITIONAL_RULES = new Set(['media', 'supports', 'container', 'layer', 'scope', 'starting-style']);
 const CSS_LENGTH_UNITS = new Set([
@@ -513,30 +539,32 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
     const program = ts.createProgram([...sources.keys()], { noLib: true, noResolve: true, types: [] }, host);
     const checker = program.getTypeChecker();
     for (const source of sources.values()) {
-      /** @type {Map<import('typescript').Symbol, string>} */
+      /** @type {Map<import('typescript').Symbol, { exportName: string, packageName: string }>} */
       const named = new Map();
-      /** @type {Set<import('typescript').Symbol>} */
-      const namespaces = new Set();
+      /** @type {Map<import('typescript').Symbol, string>} */
+      const namespaces = new Map();
       for (const statement of source.statements) {
         if (
           !ts.isImportDeclaration(statement) ||
           !ts.isStringLiteral(statement.moduleSpecifier) ||
-          statement.moduleSpecifier.text !== '@egdev/ui' ||
+          !GUARDED_PACKAGES.includes(statement.moduleSpecifier.text) ||
           statement.importClause?.isTypeOnly
         ) {
           continue;
         }
+        // `package` is a reserved word in strict mode, so the binding is named `packageName`.
+        const packageName = statement.moduleSpecifier.text;
         const bindings = statement.importClause?.namedBindings;
         if (bindings && ts.isNamespaceImport(bindings)) {
           const symbol = checker.getSymbolAtLocation(bindings.name);
           if (symbol) {
-            namespaces.add(symbol);
+            namespaces.set(symbol, packageName);
           }
         } else if (bindings && ts.isNamedImports(bindings)) {
           for (const binding of bindings.elements) {
             const symbol = checker.getSymbolAtLocation(binding.name);
             if (!binding.isTypeOnly && symbol) {
-              named.set(symbol, (binding.propertyName ?? binding.name).text);
+              named.set(symbol, { exportName: (binding.propertyName ?? binding.name).text, packageName });
             }
           }
         }
@@ -547,13 +575,11 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
           if (name) {
             appClasses.add(name);
             if (owner) {
-              if (!classes.has(name)) {
+              if (owner.packageName === STRUCTURAL_PACKAGE && !classes.has(name)) {
                 classes.set(name, owner.component);
               }
               const existing = owners.get(name) ?? [];
-              if (
-                !existing.some((item) => item.component === owner.component && item.exportName === owner.exportName)
-              ) {
+              if (!existing.some((item) => isSameOwner(item, owner))) {
                 existing.push(owner);
                 owners.set(name, existing);
               }
@@ -597,14 +623,16 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
               ? tag.expression
               : undefined;
           const symbol = identifier ? checker.getSymbolAtLocation(identifier) : undefined;
-          const exportName = symbol
+          const namespace = symbol ? namespaces.get(symbol) : undefined;
+          const imported = symbol
             ? ts.isIdentifier(tag)
               ? named.get(symbol)
-              : ts.isPropertyAccessExpression(tag) && namespaces.has(symbol)
-                ? tag.name.text
+              : ts.isPropertyAccessExpression(tag) && namespace
+                ? { exportName: tag.name.text, packageName: namespace }
                 : undefined
             : undefined;
-          const owner = exportName ? { component, exportName } : undefined;
+          /** @type {ClassOwner | undefined} */
+          const owner = imported ? { component, ...imported } : undefined;
           for (const attribute of node.attributes.properties) {
             if (!ts.isJsxAttribute(attribute) || attribute.name.getText(source) !== 'className') {
               continue;
@@ -644,7 +672,7 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
         const compound = lastCompound(selector);
         for (const name of compound.classes) {
           for (const owner of owners.get(name) ?? []) {
-            if (!matches.some((item) => item.component === owner.component && item.exportName === owner.exportName)) {
+            if (!matches.some((item) => isSameOwner(item, owner))) {
               matches.push(owner);
               if (firstOnly) {
                 return matches;
@@ -712,8 +740,8 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
     /** @type {AppearanceViolation[]} */
     const found = [];
     postcss.parse(content, { from: file }).walkRules((rule) => {
-      for (const { component, exportName } of matchedOwners(rule, owners, classNameAllows.size === 0)) {
-        const properties = offendingProperties(rule, classNameAllows.get(exportName));
+      for (const { component, exportName, packageName } of matchedOwners(rule, owners, classNameAllows.size === 0)) {
+        const properties = offendingProperties(rule, classNameAllows.get(allowanceKey(packageName, exportName)));
         if (properties.length) {
           const offset = rule.source?.start?.offset ?? 0;
           const violation = {

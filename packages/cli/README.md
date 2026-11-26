@@ -379,7 +379,7 @@ Codes are stable: a code is never reused for another check.
 | DS043 | warning (error with `--fail-on-pending`) | Guard: `<localRepo>#TBD-*` placeholders pending. |
 | DS044 | error | `typescript` or `postcss` is not resolvable from the project; the guard needs both. |
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
-| DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` component to set properties outside the base placement list and that component's `classNameAllows` contract. |
+| DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` or `@egdev/effects` component to set properties outside the base placement list and that component's `classNameAllows` contract. |
 | DS047 | error | Guard: an app CSS selector reaches into an `@egdev/ui` component's internal structure. |
 | DS048 | error | Guard: app code queries DS markup by its `.eg-*` class markers. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
@@ -410,8 +410,8 @@ with Node's built-in type stripping, so the file may hold only `import type` lin
 file is an empty allowlist. The guard resolves `typescript` and `postcss` from the project; doctor runs the project's
 own copies.
 
-DS046 checks static classes on JSX components imported from `@egdev/ui` in non-test `.tsx` files under
-`sourceDirectory`, including aliased and namespace imports. It collects string literals and static template parts
+DS046 checks static classes on JSX components imported from `@egdev/ui` or `@egdev/effects` in non-test `.tsx` files
+under `sourceDirectory`, including aliased and namespace imports. It collects string literals and static template parts
 anywhere in the `className` expression, including conditional branches, logical operands, array elements and values,
 and non-computed string or identifier object keys. It never evaluates variables and ignores computed object keys
 (verification amendment, `odd/tasks/app-side-consumer-flow.md` T1). It checks CSS rules under `sourceDirectory` outside
@@ -436,6 +436,15 @@ export name. For example, a SelectTile contract can allow `width` and `grid-temp
 requires the component API or an issue-backed exception. If the artifact is missing, unreadable or invalid, or has no
 entry for the component, DS046 silently uses the base list. DS047 and DS048 do not use these allowances. An allowlist
 entry for a now-permitted rule becomes stale unless the rule still has another offending declaration.
+
+An allowance applies only to imports from its own package: an `@egdev/effects` entry never extends an `@egdev/ui`
+component of the same name, and the reverse. `HomeTemplateAnchor` publishes its box geometry (`width`, `height`, their
+minimum and maximum constraints, the logical sizes and `aspect-ratio`), so a class on it may set those while `color`
+still requires an issue-backed exception. The other `@egdev/effects` components (`HomeTemplate`, `AmbientBackground`,
+`Isotipo3D` and `ScrollReveal`) publish none and use the base list alone. Since `@egdev/cli` 0.5.0 an app that updates
+the CLI can therefore see new DS046 errors on CSS-file rules for classes passed to `@egdev/effects` components;
+Tailwind utilities and inline `style` stay outside DS046. DS040, DS041, DS047 and DS048 ignore `@egdev/effects`
+imports as before.
 
 Everything else requires the component API or an issue-backed exception. DS046 does not inspect Tailwind utilities,
 inline `style` or structural selectors whose DS class occurs only in an earlier compound.

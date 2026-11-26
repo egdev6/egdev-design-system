@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0
+
+- `doctor` DS046 also checks static classes on components imported from `@egdev/effects` and reads their
+  `classNameAllows` from the project's vendored `@egdev/system` artifact. An allowance applies only to imports from
+  its own package, so a class on `HomeTemplateAnchor` may set its published geometry (`width`, `height`, their
+  constraints and `aspect-ratio`), while any other non-placement property on a class passed to an `@egdev/effects`
+  component is reported as it already is for `@egdev/ui`. Apps that upgrade the CLI may therefore see new DS046
+  errors on CSS-file rules for classes passed to effects components: resolve them through the component API, the
+  published geometry or an issue-backed allowlist entry. Tailwind utilities and inline styles stay outside DS046;
+  DS047, DS048 and the checks for `@egdev/ui` are unchanged. (#566)
+
 ## 0.4.0
 
 - `doctor` DS046 accepts each component's additional `classNameAllows` properties from the project's vendored
