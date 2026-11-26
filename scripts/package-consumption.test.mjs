@@ -94,6 +94,8 @@ import { AppIcon } from '@egdev/ui';
 import type { AppIconProps, AppIconSize } from '@egdev/ui';
 import { Pixel } from '@egdev/ui';
 import type { PixelProps, PixelState } from '@egdev/ui';
+import { StepMeter } from '@egdev/ui';
+import type { StepMeterProps } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -564,6 +566,57 @@ const pixelInvalid: PixelProps = { state: 'unknown' };
 type PixelPrivate = (typeof import('@egdev/ui'))['pixelVariants'];
 export type PixelNegatives = [typeof pixelRole, typeof pixelHidden, typeof pixelData, typeof pixelChildren, typeof pixelHtml, typeof pixelLabel, typeof pixelLabelledBy, typeof pixelTab, typeof pixelEditable, typeof pixelClick, typeof pixelInvalid, PixelPrivate];
 
+export const stepMeterProps: StepMeterProps = { label: 'High progress', value: 3, id: 'packed-step-meter', 'aria-describedby': 'packed-hint', className: 'ms-auto' };
+export function StepMeterSamples() {
+  return createElement(Fragment, null,
+    createElement(StepMeter, stepMeterProps),
+    createElement(StepMeter, { label: 'Full progress', value: 6, steps: 6 }),
+    createElement(StepMeter, { label: 'Fractional progress', value: 2.9, steps: 10 }));
+}
+// @ts-expect-error The accessible name is required.
+const stepMeterMissingLabel: StepMeterProps = { value: 1 };
+// @ts-expect-error The level is required.
+const stepMeterMissingValue: StepMeterProps = { label: 'x' };
+// @ts-expect-error The level is a number, never a string.
+const stepMeterStringValue: StepMeterProps = { ...stepMeterProps, value: '3' };
+// @ts-expect-error The total is a number, never a string.
+const stepMeterStringSteps: StepMeterProps = { ...stepMeterProps, steps: '4' };
+// @ts-expect-error The image role is protected.
+const stepMeterRole: StepMeterProps = { ...stepMeterProps, role: 'button' };
+// @ts-expect-error The label is the only source of the accessible name.
+const stepMeterAriaLabel: StepMeterProps = { ...stepMeterProps, 'aria-label': 'x' };
+// @ts-expect-error The label is the only source of the accessible name.
+const stepMeterAriaLabelledBy: StepMeterProps = { ...stepMeterProps, 'aria-labelledby': 'x' };
+// @ts-expect-error The image is never hidden by the host.
+const stepMeterHidden: StepMeterProps = { ...stepMeterProps, 'aria-hidden': true };
+// @ts-expect-error No numeric meter semantics are exposed.
+const stepMeterValueNow: StepMeterProps = { ...stepMeterProps, 'aria-valuenow': 3 };
+// @ts-expect-error The step states are derived.
+const stepMeterData: StepMeterProps = { ...stepMeterProps, 'data-state': 'filled' };
+// @ts-expect-error The steps are the only content.
+const stepMeterChildren: StepMeterProps = { ...stepMeterProps, children: 'x' };
+// @ts-expect-error Raw HTML is protected.
+const stepMeterHtml: StepMeterProps = { ...stepMeterProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A second hover-only text source is not supported.
+const stepMeterTitle: StepMeterProps = { ...stepMeterProps, title: 'x' };
+// @ts-expect-error No tab stop.
+const stepMeterTab: StepMeterProps = { ...stepMeterProps, tabIndex: 0 };
+// @ts-expect-error No editable content.
+const stepMeterEditable: StepMeterProps = { ...stepMeterProps, contentEditable: true };
+// @ts-expect-error No interaction handlers.
+const stepMeterClick: StepMeterProps = { ...stepMeterProps, onClick: () => {} };
+// @ts-expect-error A root ref is not part of this API.
+const stepMeterRef: StepMeterProps = { ...stepMeterProps, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const stepMeterSlot: StepMeterProps = { ...stepMeterProps, asChild: true };
+// @ts-expect-error The recipes are private.
+type StepMeterPrivateRoot = (typeof import('@egdev/ui'))['stepMeterVariants'];
+// @ts-expect-error The recipes are private.
+type StepMeterPrivateStep = (typeof import('@egdev/ui'))['stepMeterStepVariants'];
+// @ts-expect-error The internal hook is not public.
+type StepMeterPrivateHook = (typeof import('@egdev/ui'))['useStepMeter'];
+export type StepMeterNegatives = [typeof stepMeterMissingLabel, typeof stepMeterMissingValue, typeof stepMeterStringValue, typeof stepMeterStringSteps, typeof stepMeterRole, typeof stepMeterAriaLabel, typeof stepMeterAriaLabelledBy, typeof stepMeterHidden, typeof stepMeterValueNow, typeof stepMeterData, typeof stepMeterChildren, typeof stepMeterHtml, typeof stepMeterTitle, typeof stepMeterTab, typeof stepMeterEditable, typeof stepMeterClick, typeof stepMeterRef, typeof stepMeterSlot, StepMeterPrivateRoot, StepMeterPrivateStep, StepMeterPrivateHook];
+
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
 export const notesProps: NotesBoardProps = { sticky: true, children: [createElement(NotesBoardSide, { key: 'side', ...notesSide }), createElement(NotesBoardList, { key: 'list', ...notesList })] };
@@ -744,10 +797,11 @@ const nowStripAria: NowStripProps = { ...nowStripProps, 'aria-label': 'Other' };
 type NowStripPrivate = (typeof import('@egdev/ui'))['nowStripVariants'];
 export type NowStripNegatives = [typeof nowStripMissing, typeof nowStripRole, typeof nowStripStyle, typeof nowStripAria, NowStripPrivate];
 const footerItem: FooterNavigationItem = { href: '#one', label: 'One' };
+const footerCurrent: FooterNavigationItem = { href: '#two', label: 'Two', 'aria-current': 'page' };
 const footerLevel: FooterNavigationLevel = 2;
 const footerMotto: FooterMottoProps = { children: createElement('p', null, 'Motto') };
 const footerBrand: FooterBrandProps = { children: createElement(Logo, { href: '/', label: 'Home' }) };
-const footerNav: FooterNavigationProps = { label: 'Explore', level: footerLevel, items: [footerItem] };
+const footerNav: FooterNavigationProps = { label: 'Explore', level: footerLevel, items: [footerItem, footerCurrent] };
 const footerSocial: FooterSocialProps = { children: createElement(SocialLinks, { label: 'Profiles', caption: null, items: [{ id: 'github', href: 'https://github.com/example', label: 'GitHub', icon: createElement(Icon, { name: 'github' }) }] }) };
 const footerLegal: FooterLegalProps = { children: createElement('a', { href: '#legal' }, 'Legal') };
 export const footerProps: FooterProps = { children: [createElement(FooterMotto, { key: 'motto', ...footerMotto }), createElement(FooterBrand, { key: 'brand', ...footerBrand }), createElement(FooterNavigation, { key: 'nav', ...footerNav }), createElement(FooterSocial, { key: 'social', ...footerSocial }), createElement(FooterLegal, { key: 'legal', ...footerLegal })] };
@@ -762,9 +816,11 @@ const footerStyle: FooterProps = { children: null, style: {} };
 const footerRank: FooterNavigationProps = { label: 'Explore', items: [], level: 1 };
 // @ts-expect-error Navigation items need destinations.
 const footerDestination: FooterNavigationItem = { label: 'Missing' };
+// @ts-expect-error The current-page token is restricted to page.
+const footerCurrentStep: FooterNavigationItem = { href: '#one', label: 'One', 'aria-current': 'step' };
 // @ts-expect-error Internal recipes are not exported.
 type FooterPrivate = (typeof import('@egdev/ui'))['footerVariants'];
-export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, FooterPrivate];
+export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, typeof footerCurrentStep, FooterPrivate];
 const topBarItem: TopBarItem = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' };
 const topBarPart: TopBarPartProps = { children: createElement('a', { href: '/' }, 'Brand') };
 export const topBarProps: TopBarProps = { label: 'Main', items: [topBarItem], initialBackground: 'solid', contentWidth: 'full', 'data-state': 'glass', style: { zIndex: 10 }, children: [
@@ -1488,12 +1544,16 @@ const carouselMessages: Partial<CarouselMessages> = { nextSlide: 'Next card' };
 const carouselProps: CarouselProps = { label: 'Highlights', items: carouselItems, messages: carouselMessages };
 export const carouselDefaultLayout: CarouselProps = { ...carouselProps, trackLayout: 'default' };
 export const carouselFullWidthLayout: CarouselProps = { ...carouselProps, trackLayout: 'full-width' };
-export function CarouselSamples({ value, empty = false, trackLayout }: { value?: string; empty?: boolean; trackLayout?: CarouselProps['trackLayout'] }) {
-  return createElement(Carousel, { ...carouselProps, value, trackLayout, items: empty ? [] : carouselItems,
+export const carouselDefaultVariant: CarouselProps = { ...carouselProps, variant: 'default' };
+export const carouselCurrentEmphasis: CarouselProps = { ...carouselProps, variant: 'current-emphasis' };
+export function CarouselSamples({ value, empty = false, trackLayout, variant }: { value?: string; empty?: boolean; trackLayout?: CarouselProps['trackLayout']; variant?: CarouselProps['variant'] }) {
+  return createElement(Carousel, { ...carouselProps, value, trackLayout, variant, items: empty ? [] : carouselItems,
     onValueChange: (next: string) => carouselChanges.push(next) });
 }
 // @ts-expect-error Track layout is the approved two-value union.
 const invalidCarouselTrackLayout: CarouselProps = { ...carouselProps, trackLayout: 'edge' };
+// @ts-expect-error Variant is the approved two-value union.
+const invalidCarouselVariant: CarouselProps = { ...carouselProps, variant: 'spotlight' };
 // @ts-expect-error Carousel requires a visible collection label.
 const unlabelledCarousel: CarouselProps = { items: carouselItems };
 // @ts-expect-error Carousel accepts stable string identities, not indexes.
@@ -1697,6 +1757,18 @@ export function ProjectCardSamples({
 }) {
   return createElement(ProjectCard, { ...projectCardBase, variant, size });
 }
+// The status is a consumer-composed Badge: the card owns no status word, tone or icon.
+const projectCardStatus: ProjectCardProps = {
+  ...projectCardBase,
+  statusBadge: createElement(Badge, {
+    tone: 'warning',
+    icon: createElement(Icon, { name: 'alert' }),
+    children: 'testing'
+  })
+};
+export function ProjectCardStatusSample() {
+  return createElement(ProjectCard, projectCardStatus);
+}
 // @ts-expect-error The generated heading owns the article name.
 const relabelledProjectCard: ProjectCardProps = { ...projectCardBase, 'aria-label': 'Other' };
 // @ts-expect-error Passive articles have no root tab stop API.
@@ -1709,6 +1781,8 @@ const referencedProjectCard: ProjectCardProps = { ...projectCardBase, ref: creat
 const slottedProjectCard: ProjectCardProps = { ...projectCardBase, asChild: true };
 // @ts-expect-error A visible heading is required.
 const unnamedProjectCard: ProjectCardProps = { children: 'Body' };
+// @ts-expect-error The status wrapper is card-owned, so it has no class surface.
+const styledStatusProjectCard: ProjectCardProps = { ...projectCardBase, statusClassName: 'ml-2' };
 // @ts-expect-error Internal hook is not public.
 type ProjectCardPrivateHook = (typeof import('@egdev/ui'))['useProjectCard'];
 // @ts-expect-error Internal root recipe is not public.
@@ -4712,6 +4786,13 @@ function assertProjectCardCSS(css) {
     assert.ok(css.includes(selector), 'Missing ProjectCard utility ' + selector);
   }
   assert.match(css, /background-color:\s*var\(--color-surface-0[,)]/);
+  // The header row and status wrapper use only utilities that the shipped stylesheet already emits.
+  assert.match(css, /\.ms-auto\s*\{[^}]*margin-inline-start:\s*auto/);
+  assert.match(css, /\.max-w-full\s*\{[^}]*max-width:\s*100%/);
+  assert.match(css, /\.self-stretch\s*\{[^}]*align-self:\s*stretch/);
+  assert.match(css, /\.flex-wrap\s*\{[^}]*flex-wrap:\s*wrap/);
+  assert.match(css, /\.gap-3\s*\{[^}]*gap:\s*var\(--space-3\)/);
+  assert.match(css, /\.gap-4\s*\{[^}]*gap:\s*var\(--space-4\)/);
 }
 
 function assertMeterRowCSS(css) {
@@ -5219,6 +5300,61 @@ function assertPixelConsumerCSS(css) {
   assert.doesNotMatch(utilities, /\.eg-pixel\s*\{/);
 }
 
+function assertStepMeterConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  for (const name of [
+    'inline-flex',
+    'inline-block',
+    'flex-none',
+    'items-center',
+    'gap-1',
+    'w-3.5',
+    'h-3.75',
+    '[clip-path:polygon(0_0,100%_47.6%,100%_100%,0_52.4%)]',
+    'bg-alpha-red-22',
+    'data-[state=filled]:bg-fg-brand-default',
+    'transition-none',
+    'forced-colors:forced-color-adjust-none',
+    'forced-colors:data-[state=filled]:bg-[color:CanvasText]',
+    'forced-colors:data-[state=empty]:bg-transparent'
+  ]) {
+    assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), 'Missing StepMeter utility ' + name);
+  }
+  assert.match(utilities, /\.w-3\\\.5\s*\{[^}]*width:\s*calc\(var\(--space-1\)\s*\*\s*3\.5\)/);
+  assert.match(utilities, /\.h-3\\\.75\s*\{[^}]*height:\s*calc\(var\(--space-1\)\s*\*\s*3\.75\)/);
+  assert.match(utilities, /clip-path:\s*polygon\(0\s+0,\s*100%\s+47\.6%,\s*100%\s+100%,\s*0\s+52\.4%\)/);
+  assert.match(utilities, /\.bg-alpha-red-22\s*\{[^}]*background-color:\s*var\(--color-alpha-red-22\b/);
+  assert.match(
+    utilities,
+    /\.data-\\\[state\\=filled\\\]\\:bg-fg-brand-default\[data-state="?filled"?\]\s*\{[^}]*background-color:\s*var\(--color-fg-brand-default\b/
+  );
+  const forced = [...utilities.matchAll(/@media\s*\(forced-colors:\s*active\)\s*\{/g)]
+    .map((match) => {
+      let depth = 1;
+      for (let index = match.index + match[0].length; index < utilities.length; index++) {
+        if (utilities[index] === '{') {
+          depth++;
+        } else if (utilities[index] === '}' && --depth === 0) {
+          return utilities.slice(match.index, index + 1);
+        }
+      }
+      return '';
+    })
+    .join('\n');
+  assert.match(forced, /\.forced-colors\\:forced-color-adjust-none\s*\{[^}]*forced-color-adjust:\s*none/);
+  assert.match(
+    forced,
+    /\.forced-colors\\:data-\\\[state\\=filled\\\]\\:bg-\\\[color\\:CanvasText\\\]\[data-state="?filled"?\]\s*\{[^}]*background-color:\s*CanvasText/
+  );
+  assert.match(
+    forced,
+    /\.forced-colors\\:data-\\\[state\\=empty\\\]\\:bg-transparent\[data-state="?empty"?\]\s*\{[^}]*background-color:\s*transparent/
+  );
+  assert.doesNotMatch(css, /eg-step-meter/);
+}
+
 function assertNotesBoardConsumerCSS(css) {
   function block(text, opening) {
     const match = opening.exec(text);
@@ -5677,6 +5813,8 @@ ${assertNotesBoardConsumerCSS.toString()}
 assertNotesBoardConsumerCSS(shippedStyles);
 ${assertPixelConsumerCSS.toString()}
 assertPixelConsumerCSS(shippedStyles);
+${assertStepMeterConsumerCSS.toString()}
+assertStepMeterConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -5883,6 +6021,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Stack',
   'Stat',
   'StatusDot',
+  'StepMeter',
   'Surface',
   'Switch',
   'TabBar',
@@ -6102,7 +6241,23 @@ function assertCarouselCSS(css) {
     String.raw`.focus-visible\:-outline-offset-\(--focus-width\)`,
     String.raw`.group-data-\[state\=dragging\]\:snap-none`,
     String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
-    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    // v0.4 current-slide emphasis (#557): padding, reserved frame, attribute-gated paint, motion and forced colours.
+    '.px-6',
+    '.pt-5',
+    '.pb-7',
+    '.rounded-xl',
+    '.border-solid',
+    '.border-transparent',
+    String.raw`.aria-\[current\=true\]\:border-border-brand[aria-current="true"]`,
+    String.raw`.aria-\[current\=true\]\:shadow-\[var\(--shadow-glow-base\)\][aria-current="true"]`,
+    String.raw`.aria-\[current\=true\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\,var\(--shadow-glow-base\)\][aria-current="true"]:focus-visible`,
+    String.raw`.transition-\[border-color\,box-shadow\]`,
+    String.raw`.focus-visible\:transition-none:focus-visible`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.forced-colors\:aria-\[current\=true\]\:outline-solid[aria-current="true"]`,
+    String.raw`.forced-colors\:aria-\[current\=true\]\:outline-\(length\:--focus-width\)[aria-current="true"]`,
+    String.raw`.forced-colors\:aria-\[current\=true\]\:outline-\[color\:Highlight\][aria-current="true"]`
   ]) {
     assert.ok(css.includes(selector), 'Missing Carousel utility ' + selector);
   }
@@ -6110,6 +6265,15 @@ function assertCarouselCSS(css) {
   assert.match(css, /scrollbar-width:\s*none/);
   assert.match(css, /::-webkit-scrollbar[^{}]*\{[^{}]*display:\s*none/);
   assert.match(css, /outline-offset:\s*calc\(var\(--focus-width\)\s*\*\s*-1\)/);
+  assert.match(css, /padding-top:\s*var\(--space-5[,)]/);
+  assert.match(css, /padding-bottom:\s*var\(--space-7[,)]/);
+  assert.match(css, /border-radius:\s*var\(--radius-xl[,)]/);
+  assert.match(css, /--tw-shadow:\s*var\(--shadow-focus\),\s*var\(--shadow-glow-base\)/);
+  assert.match(
+    css,
+    /\.aria-\\\[current\\=true\\\]\\:border-border-brand\[aria-current="true"\]\s*\{[^}]*border-color:\s*var\(--color-border-brand[,)]/
+  );
+  assert.match(css, /outline-color:\s*highlight/i);
 }
 
 function assertLinkCSS(css) {
@@ -6234,6 +6398,27 @@ for (const pixel of pixels) {
   assert.equal(pixel.hasAttribute('role'), false);
 }
 pixelDocument.window.close();
+const { StepMeterSamples } = await import('./consumer.ts');
+const stepMeterDocument = new JSDOM(renderToString(createElement(StepMeterSamples)));
+const stepMeters = [...stepMeterDocument.window.document.querySelectorAll('span.eg-step-meter')];
+assert.deepEqual(stepMeters.map((meter) => meter.getAttribute('aria-label')), ['High progress', 'Full progress', 'Fractional progress']);
+assert.deepEqual(stepMeters.map((meter) => meter.children.length), [4, 6, 10]);
+assert.deepEqual(stepMeters.map((meter) => [...meter.children].filter((step) => step.getAttribute('data-state') === 'filled').length), [3, 6, 2]);
+assert.equal(stepMeters[0].getAttribute('id'), 'packed-step-meter');
+assert.equal(stepMeters[0].getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(stepMeters[0].classList.contains('ms-auto'));
+for (const meter of stepMeters) {
+  assert.equal(meter.getAttribute('role'), 'img');
+  assert.equal(meter.hasAttribute('data-state'), false);
+  assert.equal(meter.hasAttribute('tabindex'), false);
+  for (const step of meter.children) {
+    assert.equal(step.tagName, 'SPAN');
+    assert.ok(step.classList.contains('eg-step-meter__step'));
+    assert.equal(step.childNodes.length, 0);
+    assert.equal(step.hasAttribute('role'), false);
+  }
+}
+stepMeterDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');
@@ -6399,6 +6584,10 @@ assert.equal(footerNav.querySelector('a').getAttribute('href'), '#one');
 assert.equal(footer.querySelector('ul[aria-label="Profiles"] a')?.getAttribute('href'), 'https://github.com/example');
 assert.equal(footer.querySelectorAll('nav').length, 1);
 assert.equal(footer.querySelector('a a'), null);
+const footerCurrentLinks = [...footerNav.querySelectorAll('[aria-current]')];
+assert.equal(footerCurrentLinks.length, 1);
+assert.equal(footerCurrentLinks[0].getAttribute('href'), '#two');
+assert.equal(footerCurrentLinks[0].getAttribute('aria-current'), 'page');
 footerDocument.window.close();
 const { NowStripSamples } = await import('./consumer.ts');
 const nowStripDocument = new JSDOM(renderToString(createElement(NowStripSamples)));
@@ -6752,7 +6941,7 @@ import { App, AttachmentFieldSamples, ButtonGroupSamples, ButtonWrapSamples, Car
     terminalDocument.window.close();
   }
 }
-import { ProjectCardSamples } from './consumer.ts';
+import { ProjectCardSamples, ProjectCardStatusSample } from './consumer.ts';
 for (const [projectVariant, projectSize] of [
   ['default', 'md'],
   ['featured', 'sm']
@@ -6778,10 +6967,39 @@ for (const [projectVariant, projectSize] of [
     assert.equal(pre.getAttribute('aria-label'), 'Install commands');
     assert.equal(pre.querySelectorAll('span[aria-hidden="true"]').length, 1, 'One decorative prompt glyph');
     assert.ok(card.querySelector('.eg-project-card__foot a[href="#packed-project"]'), 'One supplied footer action');
+    assert.equal(card.querySelector('.eg-project-card__badge'), null, 'Without a status there is no wrapper');
     assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is the only tab stop');
   } finally {
     projectDocument.window.close();
   }
+}
+const statusDocument = new JSDOM(renderToString(createElement(ProjectCardStatusSample)));
+try {
+  const document = statusDocument.window.document;
+  const card = document.getElementById('packed-project');
+  const wrapper = card.querySelector('.eg-project-card__badge');
+  assert.ok(wrapper, 'A supplied status renders in one wrapper');
+  assert.equal(card.querySelectorAll('.eg-project-card__badge').length, 1);
+  const row = wrapper.parentElement;
+  assert.equal(row.parentElement, card, 'The row is a direct child of the card');
+  const heading = document.getElementById(card.getAttribute('aria-labelledby'));
+  assert.equal(heading.textContent, 'Packed project', 'The heading alone names the card');
+  const following = statusDocument.window.Node.DOCUMENT_POSITION_FOLLOWING;
+  assert.ok(row.compareDocumentPosition(heading) & following, 'The row precedes the heading');
+  assert.equal(row.lastElementChild, wrapper, 'The status is the last element of the row');
+  assert.equal(row.firstElementChild.querySelector('span[aria-hidden="true"]').textContent, '01', 'The lead keeps the index');
+  assert.ok(row.classList.contains('self-stretch'));
+  assert.ok(wrapper.classList.contains('ms-auto'));
+  const badge = wrapper.querySelector('.eg-badge');
+  assert.equal(badge.getAttribute('data-tone'), 'warning');
+  assert.equal(badge.textContent, 'testing');
+  assert.ok(badge.querySelector('span[aria-hidden="true"] > svg'), 'The Badge icon stays decorative');
+  assert.equal(card.hasAttribute('role'), false);
+  assert.equal(card.hasAttribute('tabindex'), false);
+  assert.equal(card.hasAttribute('statusbadge'), false);
+  assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is still the only tab stop');
+} finally {
+  statusDocument.window.close();
 }
 import { TipCardSamples } from './consumer.ts';
 for (const [tipBadge, tipLevel, tipTitle] of [
@@ -6929,6 +7147,33 @@ try {
   }
   assert.equal(slide.classList.contains('focus-visible:shadow-[var(--shadow-focus)]'), false);
 } finally { fullWidthCarousel.window.close(); }
+// v0.4 current-slide emphasis (#557): consumed by the hook, never forwarded, classes only.
+const emphasisCarousel = new JSDOM(renderToString(createElement(CarouselSamples, { variant: 'current-emphasis' })));
+const emphasisFullWidth = new JSDOM(renderToString(createElement(CarouselSamples, { variant: 'current-emphasis', trackLayout: 'full-width' })));
+try {
+  const root = emphasisCarousel.window.document.querySelector('.eg-carousel');
+  const track = root.querySelector('[aria-roledescription="slide"]').parentElement;
+  assert.equal(root.hasAttribute('variant'), false);
+  assert.equal(root.querySelectorAll('[aria-current="true"]').length, 1);
+  assert.equal(root.querySelector('[aria-current="true"]').getAttribute('aria-label'), '1 of 3: Alpha');
+  for (const name of ['px-6', 'pt-5', 'pb-7']) {
+    assert.ok(track.classList.contains(name), name);
+  }
+  assert.equal(track.classList.contains('p-2'), false);
+  for (const slide of root.querySelectorAll('[aria-roledescription="slide"]')) {
+    for (const name of ['rounded-xl', 'border-transparent', 'aria-[current=true]:border-border-brand', 'aria-[current=true]:shadow-[var(--shadow-glow-base)]', 'forced-colors:aria-[current=true]:outline-[color:Highlight]']) {
+      assert.ok(slide.classList.contains(name), name);
+    }
+    assert.equal(slide.classList.contains('rounded-lg'), false);
+  }
+  const wide = emphasisFullWidth.window.document.querySelector('.eg-carousel');
+  assert.equal(wide.hasAttribute('variant'), false);
+  assert.ok(wide.querySelector('[aria-roledescription="slide"]').parentElement.classList.contains('p-0'));
+  for (const slide of wide.querySelectorAll('[aria-roledescription="slide"]')) {
+    assert.equal(slide.classList.contains('border-transparent'), false);
+    assert.equal(slide.classList.contains('rounded-lg'), true);
+  }
+} finally { emphasisCarousel.window.close(); emphasisFullWidth.window.close(); }
 // MeterRow SSR has one semantic owner, coherent text and generated description references.
 for (const value of [42.5, Number.NaN]) {
   const dom = new JSDOM(renderToString(createElement(MeterRowSamples, { value })));

@@ -6,6 +6,7 @@ import { build } from 'vite';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buttonVariants } from '../atoms/button/types';
 import { gaugeCircleVariants } from '../atoms/gauge/types';
+import { carouselSlideVariants, carouselTrackVariants } from '../molecules/carousel/types';
 import {
   dialogCloseVariants,
   dialogHeaderActionsVariants,
@@ -152,12 +153,44 @@ describe('font import preamble validation', () => {
 });
 
 // Match emitted static selectors, not class strings in source files or a full CSS snapshot.
-function rule(selector: string) {
+function rule(selector: string, source: string = css) {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // The installed optimizer may emit both a fallback and an @supports rule for one selector.
-  const matches = [...css.matchAll(new RegExp(`(?:^|[{}])\\s*${escaped}\\s*\\{([^}]+)\\}`, 'g'))];
+  const matches = [...source.matchAll(new RegExp(`(?:^|[{}])\\s*${escaped}\\s*\\{([^}]+)\\}`, 'g'))];
   expect(matches.length, `Missing compiled preview rule ${selector}`).toBeGreaterThan(0);
   return matches.map((match) => match[1]).join('\n');
+}
+
+// Inner text of every `@media <query> {…}` block, by brace matching; the rules inside stay flat.
+function mediaBlocks(query: string): string[] {
+  const opening = `@media ${query} {`;
+  const blocks: string[] = [];
+  for (let start = css.indexOf(opening); start >= 0; start = css.indexOf(opening, start + opening.length)) {
+    let depth = 1;
+    let end = start + opening.length;
+    while (depth > 0 && end < css.length) {
+      const char = css[end];
+      if (char === '{') {
+        depth += 1;
+      } else if (char === '}') {
+        depth -= 1;
+      }
+      end += 1;
+    }
+    blocks.push(css.slice(start + opening.length, end - 1));
+  }
+  expect(blocks.length, `Missing @media ${query} block`).toBeGreaterThan(0);
+  return blocks;
+}
+
+// Specificity (classes, attributes and pseudo-classes) of one compound selector as the optimizer emits it.
+function specificity(selector: string): number {
+  const bare = selector.replace(/\\./g, '_');
+  const attributes = bare.match(/\[[^\]]*\]/g)?.length ?? 0;
+  const withoutAttributes = bare.replace(/\[[^\]]*\]/g, '');
+  const pseudoClasses = withoutAttributes.match(/(?<!:):[a-z-]+/g)?.length ?? 0;
+  const classes = withoutAttributes.match(/\.[A-Za-z_][\w-]*/g)?.length ?? 0;
+  return attributes + pseudoClasses + classes;
 }
 
 describe('Storybook preview CSS', () => {
@@ -737,6 +770,95 @@ describe('Storybook preview CSS', () => {
     ]) {
       expect(css).toContain(selector);
     }
+  });
+
+  it('compiles the Carousel current-slide emphasis from existing tokens, painted only under aria-current', () => {
+    // Reserved frame and glow room: geometry from the spacing and radius tokens.
+    expect(rule('.px-6')).toMatch(/padding-inline:\s*var\(--space-6[,)]/);
+    expect(rule('.pt-5')).toMatch(/padding-top:\s*var\(--space-5[,)]/);
+    expect(rule('.pb-7')).toMatch(/padding-bottom:\s*var\(--space-7[,)]/);
+    expect(rule('.p-2')).toMatch(/padding:\s*var\(--space-2[,)]/);
+    expect(rule('.rounded-xl')).toMatch(/border-radius:\s*var\(--radius-xl[,)]/);
+    expect(rule('.border')).toMatch(/border-width:\s*1px/);
+    expect(rule('.border-solid')).toMatch(/border-style:\s*solid/);
+    expect(rule('.border-transparent')).toMatch(/border-color:\s*(?:transparent|#0000(?:0000)?)/);
+    // Brand border and glow exist only behind [aria-current="true"]; no unscoped rule is ever emitted.
+    const border = String.raw`.aria-\[current\=true\]\:border-border-brand`;
+    const glow = String.raw`.aria-\[current\=true\]\:shadow-\[var\(--shadow-glow-base\)\]`;
+    expect(rule(`${border}[aria-current="true"]`)).toMatch(/border-color:\s*var\(--color-border-brand[,)]/);
+    const glowRule = rule(`${glow}[aria-current="true"]`);
+    expect(glowRule).toMatch(/--tw-shadow:\s*var\(--shadow-glow-base\)/);
+    expect(glowRule).toMatch(/box-shadow:/);
+    for (const selector of [border, glow]) {
+      expect(css, selector).not.toMatch(new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*[,{]`));
+    }
+    // The token transition: instant on focus and removed under reduced motion.
+    expect(rule('.transition-\\[border-color\\,box-shadow\\]')).toMatch(
+      /transition-property:\s*border-color,\s*box-shadow/
+    );
+    expect(rule(String.raw`.duration-\[var\(--duration-base\)\]`)).toMatch(
+      /transition-duration:\s*var\(--duration-base\)/
+    );
+    // The optimizer merges this utility with its `ease-(--ease-out)` twin into one grouped selector.
+    const ease = css.indexOf(String.raw`.ease-\[var\(--ease-out\)\]`);
+    expect(ease).toBeGreaterThanOrEqual(0);
+    expect(css.slice(ease, ease + 200)).toMatch(/\{[^}]*transition-timing-function:\s*var\(--ease-out\)/);
+    expect(rule(String.raw`.focus-visible\:transition-none:focus-visible`)).toMatch(/transition-property:\s*none/);
+    expect(
+      rule(String.raw`.motion-reduce\:transition-none`, mediaBlocks('(prefers-reduced-motion: reduce)').join('\n'))
+    ).toMatch(/transition-property:\s*none/);
+    // Forced colours: a system-colour outline on the current slide only, inside the forced-colors media block.
+    const forced = mediaBlocks('(forced-colors: active)').join('\n');
+    for (const [utility, declaration] of [
+      ['outline-solid', /outline-style:\s*solid/],
+      [String.raw`outline-\(length\:--focus-width\)`, /outline-width:\s*var\(--focus-width\)/],
+      [String.raw`outline-\[color\:Highlight\]`, /outline-color:\s*highlight/i]
+    ] as const) {
+      const selector = String.raw`.forced-colors\:aria-\[current\=true\]\:${utility}[aria-current="true"]`;
+      expect(rule(selector, forced), selector).toMatch(declaration);
+    }
+    // The story host that the stories use for the poster-wide scenario.
+    expect(rule(String.raw`.max-w-\[calc\(var\(--space-24\)\*4\)\]`)).toMatch(
+      /max-width:\s*calc\(var\(--space-24\)\s*\*\s*4\)/
+    );
+    expect(rule('.w-full')).toMatch(/width:\s*100%/);
+  });
+
+  it('keeps the Carousel focus ring above the glow by specificity, not by source order', () => {
+    const plain = String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]:focus-visible`;
+    const glowOnly = String.raw`.aria-\[current\=true\]\:shadow-\[var\(--shadow-glow-base\)\][aria-current="true"]`;
+    const compound = String.raw`.aria-\[current\=true\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\,var\(--shadow-glow-base\)\][aria-current="true"]:focus-visible`;
+    // A plain aria utility ties with the focus rule, so only the compound rule is a guarantee.
+    expect(specificity(glowOnly)).toBe(specificity(plain));
+    expect(specificity(compound)).toBeGreaterThan(specificity(plain));
+    expect(specificity(compound)).toBeGreaterThan(specificity(glowOnly));
+    const layers = rule(compound);
+    expect(layers).toMatch(/--tw-shadow:\s*var\(--shadow-focus\),\s*var\(--shadow-glow-base\)/);
+    expect(layers).toMatch(/box-shadow:/);
+    // The slide recipe pairs the compound with the plain ring, so both utilities are always emitted together.
+    const slide = carouselSlideVariants({ trackLayout: 'default', variant: 'current-emphasis' }).split(/\s+/);
+    expect(slide).toContain('focus-visible:shadow-[var(--shadow-focus)]');
+    expect(slide).toContain('aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)]');
+  });
+
+  it('keeps the Carousel emphasis track padding below the slide gap by more than the alignment tolerance (C1)', () => {
+    const theme = readFileSync(fileURLToPath(new URL('../../../tokens/src/theme.css', import.meta.url)), 'utf8');
+    const space = (step: string) => {
+      const value = Number(new RegExp(`--space-${step}:\\s*([\\d.]+)px`).exec(theme)?.[1]);
+      expect(Number.isFinite(value), `--space-${step} must be a pixel token`).toBe(true);
+      return value;
+    };
+    const names = carouselTrackVariants({ trackLayout: 'default', variant: 'current-emphasis' }).split(/\s+/);
+    const padding = names.find((name) => /^px-\d+$/.test(name));
+    const gap = names.find((name) => /^gap-\d+$/.test(name));
+    expect(padding, 'the variant must add a horizontal padding utility on the track').toBeDefined();
+    expect(gap, 'the default track keeps its token gap').toBeDefined();
+    const paddingStep = (padding ?? '').slice('px-'.length);
+    const gapStep = (gap ?? '').slice('gap-'.length);
+    // ALIGN_TOLERANCE in useCarousel.ts: alignment drift below 0.5px is ignored.
+    expect(space(paddingStep) + 0.5).toBeLessThan(space(gapStep));
+    expect(rule(`.${padding}`)).toMatch(new RegExp(`padding-inline:\\s*var\\(--space-${paddingStep}[,)]`));
+    expect(rule(`.${gap}`)).toMatch(new RegExp(`gap:\\s*var\\(--space-${gapStep}[,)]`));
   });
 
   it('preserves the external font import in a valid position and the existing body token bindings', () => {

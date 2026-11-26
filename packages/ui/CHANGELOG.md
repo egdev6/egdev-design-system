@@ -4,6 +4,31 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## Unreleased
+
+### Added
+
+- `FooterNavigationItem` accepts the optional `'aria-current': 'page'`, rendered on that entry's link so the footer
+  exposes the current page like TopBar and NavList. The host marks at most one link across the Footer; Footer does
+  not infer the current page and adds no visual cue, so sighted users get no indication from the Footer itself. (#559)
+- ProjectCard accepts an optional `statusBadge` node, typically a Badge, rendered in a header row at the inline end,
+  after the index and eyebrow and before the heading, for a short non-interactive status such as a warning
+  "testing" Badge with an alert icon. Without it the card renders as before. Consumers provide short localized
+  status text, keep the node non-interactive and own any announcement of status changes. A label wider than the
+  card's content box overflows its row, and the card's legacy `overflow: hidden` clips whatever passes the card's
+  padding edge, so keep the label short. (#558)
+- Carousel supports opt-in `variant='current-emphasis'`: on the default track the current slide gets a brand border
+  and glow while its neighbours keep their paint. Every slide then reserves a transparent border and the track gains
+  padding for the glow, so slide geometry changes only when opted in; with `trackLayout='full-width'` it resolves to
+  `default`. The default appearance is unchanged. (#557)
+- `StepMeter` shows a coarse stepped level: a named image (`role="img"`, required `label`) that fills `value` of
+  `steps` (default 4, from 1 to 10) steps from the inline start in token-backed brand paint, with a forced-colors
+  fallback that keeps filled and empty steps distinct. It is not a measurement, input or live region: the consumer
+  owns the level, the wording of `label` and any announcement when the level changes. (#556)
+- A NowCard footer may hold one `StepMeter` beside its supporting detail or action; with a meter, keep at most one
+  other footer child. NowCard renders no meter itself and gains no prop, and cards without a meter render as before.
+  (#556)
+
 ## 0.10.0
 
 ### Added

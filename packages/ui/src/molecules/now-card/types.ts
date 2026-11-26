@@ -85,15 +85,17 @@ export type NowCardBodyProps = {
 };
 
 /**
- * Lower band for one supporting detail and/or one action (a Link or a labelled IconButton);
- * never two competing actions.
+ * Lower band for one supporting detail and/or one action (a Link or a labelled IconButton), never two competing
+ * actions, and optionally one StepMeter. With a StepMeter the footer holds it plus at most one other child; that
+ * rule is the consumer's, as the card never inspects, reorders or limits its children.
  * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type NowCardFooterProps = {
   /**
-   * One NowCardDetail and/or one Link/IconButton. Omit the part entirely when the card has no footer.
+   * One NowCardDetail and/or one Link/IconButton, and optionally one StepMeter (an informative named image with its
+   * own label); with a StepMeter, at most one other child. Omit the part entirely when the card has no footer.
    * @control false
-   * @controlReason ReactNode is not serializable; see WithLink, WithNextDate and WithSingleChild.
+   * @controlReason ReactNode is not serializable; see WithLink, WithNextDate, WithStepMeter and WithSingleChild.
    */
   children: ReactNode;
   /**

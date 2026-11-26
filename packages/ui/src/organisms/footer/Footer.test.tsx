@@ -1,12 +1,28 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Icon } from '../../atoms/icon';
 import { Logo } from '../../atoms/logo';
 import * as publicUi from '../../index';
 import { SocialLinks } from '../../molecules/social-links';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './Footer';
-import { Default, Social } from './Footer.stories';
+import { CurrentPage, Default, Social } from './Footer.stories';
+import type { FooterNavigationItem } from './types';
+
+type Assert<T extends true> = T;
+// @ts-expect-error The current-page token is restricted to 'page'; 'step' is outside the contract (FT-16).
+type InvalidCurrent = Assert<'step' extends FooterNavigationItem['aria-current'] ? true : false>;
+export type TypeNegatives = [InvalidCurrent];
+
+// Typed fixtures double as the FT-16 positive assertions: an entry may carry the mark and a plain
+// { href, label } entry still compiles. `pnpm typecheck` checks them; vitest does not.
+const plain: FooterNavigationItem = { href: '#one', label: 'One' };
+const current: FooterNavigationItem = { href: '#two', label: 'Two', 'aria-current': 'page' };
+const withItems = (items: FooterNavigationItem[]) => (
+  <Footer>
+    <FooterNavigation label='Explore' items={items} />
+  </Footer>
+);
 
 describe('Footer contract', () => {
   it('exports the heading recipe and applies it to the story group headings and tagline (A6-AC2)', () => {
@@ -266,5 +282,144 @@ describe('Footer contract', () => {
       </Footer>
     );
     expect(screen.queryByRole('navigation')).toBeNull();
+  });
+});
+
+describe('Footer current page', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    window.location.hash = '';
+  });
+
+  it('marks exactly the supplied entry anchor and no other element (FT-11)', () => {
+    render(withItems([plain, current]));
+    const nav = screen.getByRole('navigation', { name: 'Explore' });
+    const marked = within(nav).getByRole('link', { name: 'Two' });
+    expect(marked).toHaveAttribute('aria-current', 'page');
+    expect(within(nav).getByRole('link', { name: 'One' })).not.toHaveAttribute('aria-current');
+    expect(nav.querySelectorAll('[aria-current]')).toHaveLength(1);
+    expect(nav.querySelector('[aria-current]')).toBe(marked);
+    for (const element of [
+      nav,
+      within(nav).getByRole('heading'),
+      within(nav).getByRole('list'),
+      ...within(nav).getAllByRole('listitem')
+    ]) {
+      expect(element).not.toHaveAttribute('aria-current');
+    }
+  });
+  it('renders the CurrentPage story args with exactly one marked anchor (FT-11)', () => {
+    render(<Footer>{CurrentPage.args?.children}</Footer>);
+    const nav = screen.getByRole('navigation', { name: 'Explore' });
+    const links = within(nav).getAllByRole('link');
+    expect(links.map((link) => link.getAttribute('aria-current'))).toEqual([null, 'page']);
+    expect(nav.querySelectorAll('[aria-current]')).toHaveLength(1);
+  });
+
+  it('renders no mark when none is supplied, whatever the location or order (FT-12)', () => {
+    window.location.hash = '#two';
+    render(withItems([plain, { href: '#two', label: 'Two' }]));
+    expect(screen.getAllByRole('link')).toHaveLength(2);
+    expect(document.querySelector('[aria-current]')).toBeNull();
+  });
+  it('forwards one or two marks exactly as supplied without picking a winner (FT-12)', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const third: FooterNavigationItem = { href: '#three', label: 'Three' };
+    const { rerender } = render(withItems([plain, current, third]));
+    expect(screen.getAllByRole('link').map((link) => link.getAttribute('aria-current'))).toEqual([null, 'page', null]);
+    // Two marks are outside the contract: both render, and neither is dropped or preferred.
+    expect(() => rerender(withItems([{ ...plain, 'aria-current': 'page' }, current, third]))).not.toThrow();
+    expect(screen.getAllByRole('link').map((link) => link.getAttribute('aria-current'))).toEqual([
+      'page',
+      'page',
+      null
+    ]);
+    expect(warn).not.toHaveBeenCalled();
+  });
+  it('forwards a value outside the type unchanged (FT-12, OQ-2)', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    // Out-of-contract runtime value (plain JS or a cast): Footer forwards it as TopBar and NavList do (OQ-2).
+    const stray = { href: '#one', label: 'One', 'aria-current': 'step' } as unknown as FooterNavigationItem;
+    expect(() => render(withItems([stray, { href: '#two', label: 'Two' }]))).not.toThrow();
+    expect(screen.getByRole('link', { name: 'One' })).toHaveAttribute('aria-current', 'step');
+    expect(screen.getByRole('link', { name: 'Two' })).not.toHaveAttribute('aria-current');
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('omits an invalid marked entry together with its mark (FT-13)', () => {
+    // A non-string href cannot be written in the type, so it is cast as a plain JS caller would supply it.
+    const numeric = { href: 42, label: 'Numeric', 'aria-current': 'page' } as unknown as FooterNavigationItem;
+    const { rerender } = render(
+      withItems([
+        { href: '', label: 'Empty', 'aria-current': 'page' },
+        numeric,
+        { href: '#blank', label: ' ', 'aria-current': 'page' },
+        { href: '#one', label: 'One', 'aria-current': 'page' }
+      ])
+    );
+    const nav = screen.getByRole('navigation', { name: 'Explore' });
+    expect(
+      within(nav)
+        .getAllByRole('link')
+        .map((link) => link.textContent)
+    ).toEqual(['One']);
+    expect(nav.querySelectorAll('[aria-current]')).toHaveLength(1);
+    expect(within(nav).getByRole('link', { name: 'One' })).toHaveAttribute('aria-current', 'page');
+    // With the only valid entry unmarked, no remaining entry becomes current.
+    rerender(withItems([{ href: '', label: 'Empty', 'aria-current': 'page' }, plain]));
+    expect(screen.getAllByRole('link').map((link) => link.textContent)).toEqual(['One']);
+    expect(document.querySelector('[aria-current]')).toBeNull();
+    // With no valid entry left, no navigation, heading or attribute is rendered.
+    rerender(
+      withItems([
+        { href: '', label: 'Empty', 'aria-current': 'page' },
+        { href: '#blank', label: ' ', 'aria-current': 'page' }
+      ])
+    );
+    expect(screen.queryByRole('navigation')).toBeNull();
+    expect(screen.queryByRole('heading')).toBeNull();
+    expect(document.querySelector('[aria-current]')).toBeNull();
+  });
+
+  it('moves the attribute with the mark and keeps focus on the same element (FT-14)', async () => {
+    const user = userEvent.setup();
+    const second: FooterNavigationItem = { href: '#two', label: 'Two' };
+    const { rerender } = render(withItems([{ ...plain, 'aria-current': 'page' }, second]));
+    const one = screen.getByRole('link', { name: 'One' });
+    const two = screen.getByRole('link', { name: 'Two' });
+    await user.tab();
+    expect(one).toHaveFocus();
+    expect(one).toHaveAttribute('aria-current', 'page');
+    expect(two).not.toHaveAttribute('aria-current');
+    rerender(withItems([plain, { ...second, 'aria-current': 'page' }]));
+    expect(screen.getByRole('link', { name: 'One' })).toBe(one);
+    expect(screen.getByRole('link', { name: 'Two' })).toBe(two);
+    expect(one).not.toHaveAttribute('aria-current');
+    expect(two).toHaveAttribute('aria-current', 'page');
+    expect(one).toHaveFocus();
+  });
+
+  it('keeps a marked anchor a normal native link with an unchanged recipe (FT-15)', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(withItems([plain, current]));
+    const links = screen.getAllByRole('link');
+    const marked = screen.getByRole('link', { name: 'Two' });
+    expect(marked).toHaveAttribute('aria-current', 'page');
+    expect(marked).toHaveAttribute('href', '#two');
+    for (const name of ['tabindex', 'aria-disabled', 'target', 'role']) {
+      expect(marked, name).not.toHaveAttribute(name);
+    }
+    expect(marked.querySelector('svg')).toBeNull();
+    expect(marked).toHaveClass('min-h-14', 'min-w-14', 'inline-flex', 'items-center', 'justify-start');
+    expect(screen.getByRole('contentinfo').querySelector('.eg-footer__link')).toBeNull();
+    for (const link of links) {
+      await user.tab();
+      expect(link).toHaveFocus();
+    }
+    const markedClassName = marked.className;
+    rerender(withItems([plain, { href: current.href, label: current.label }]));
+    const unmarked = screen.getByRole('link', { name: 'Two' });
+    expect(unmarked).not.toHaveAttribute('aria-current');
+    expect(unmarked.className).toBe(markedClassName);
   });
 });

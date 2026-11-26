@@ -1,10 +1,11 @@
 import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { ComponentPropsWithoutRef } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Badge } from '../../atoms/badge';
 import { IconButton } from '../../atoms/icon-button';
 import { Link } from '../../atoms/link';
+import { StepMeter } from '../../atoms/step-meter';
 import { NowCard, NowCardBody, NowCardDetail, NowCardFooter } from './NowCard';
 import type { NowCardProps } from './types';
 import { useNowCard } from './useNowCard';
@@ -399,4 +400,117 @@ describe('NowCard public contract', () => {
     );
     expect(document.querySelector('.eg-now-card__body')).toHaveClass('p-6', 'eg-now-card__body');
   });
+});
+
+describe('NowCard footer with one StepMeter', () => {
+  const companions = {
+    link: (
+      <Link href='#live' variant='underlined'>
+        Watch live
+      </Link>
+    ),
+    iconButton: <IconButton label='Open stream' icon={<span data-icon={true} />} />,
+    detail: (
+      <NowCardDetail>
+        Next stream <b>Thursday</b>
+      </NowCardDetail>
+    )
+  };
+  const focusable = { link: 'link', iconButton: 'button', detail: null } as const;
+  const footWith = (...children: ReactNode[]) => (
+    <NowCard title='Currently building' size='md'>
+      <NowCardBody>
+        <p>Shipping the web catalog layer for the design system.</p>
+      </NowCardBody>
+      <NowCardFooter>{children}</NowCardFooter>
+    </NowCard>
+  );
+  const warningFor = 'StepMeter requires a non-empty label. Nothing was rendered.';
+
+  it.each(
+    (['link', 'iconButton', 'detail'] as const).flatMap((kind) =>
+      (['md', 'sm'] as const).map((size) => [kind, size] as const)
+    )
+  )(
+    'keeps a %s companion first and the named meter last, with one tab stop at most, at %s density (NC3-01, NC3-02)',
+    async (kind, size) => {
+      const user = userEvent.setup();
+      const { container } = render(
+        <NowCard title='Currently building' size={size}>
+          <NowCardBody>
+            <p>Shipping the web catalog layer for the design system.</p>
+          </NowCardBody>
+          <NowCardFooter>
+            {companions[kind]}
+            <StepMeter label='High progress' value={3} />
+          </NowCardFooter>
+        </NowCard>
+      );
+      const foot = container.querySelector('.eg-now-card__foot');
+      expect(foot).not.toBeNull();
+      const meter = screen.getByRole('img', { name: 'High progress' });
+      expect(foot?.childElementCount).toBe(2);
+      expect(foot?.children[1]).toBe(meter);
+      expect(meter).toHaveClass('eg-step-meter');
+      expect(foot?.children[0]).not.toBe(meter);
+      expect(foot?.contains(meter)).toBe(true);
+      // The article is still named only by its generated heading; the meter does not rename or describe it.
+      const article = screen.getByRole('article', { name: 'Currently building' });
+      expect(article).toHaveAttribute('data-size', size);
+      expect(article.getAttribute('aria-labelledby')).toBe(screen.getByRole('heading', { level: 3 }).id);
+      expect(article).not.toHaveAttribute('aria-describedby');
+      expect(foot).toHaveClass('flex-wrap', 'justify-between');
+      // At most one tab stop, owned by the companion; the meter and the detail never take focus.
+      const role = focusable[kind];
+      await user.tab();
+      if (role === null) {
+        expect(document.body).toHaveFocus();
+      } else {
+        expect(foot?.children[0]).toHaveFocus();
+        expect(screen.getByRole(role)).toBe(foot?.children[0]);
+        await user.tab();
+        expect(document.body).toHaveFocus();
+      }
+      expect(meter).not.toHaveFocus();
+      expect(consoleWarn).not.toHaveBeenCalled();
+    }
+  );
+
+  it('renders detail, action and meter in DOM order without inspecting, limiting or warning (NC3-06)', () => {
+    const { container } = render(
+      footWith(companions.detail, companions.link, <StepMeter label='High progress' value={3} />)
+    );
+    const foot = container.querySelector('.eg-now-card__foot');
+    expect([...(foot?.children ?? [])].map((child) => child.className.split(' ')[0])).toEqual([
+      'eg-now-card__detail',
+      'eg-link',
+      'eg-step-meter'
+    ]);
+    expect(screen.getByRole('link', { name: 'Watch live' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'High progress' })).toBeInTheDocument();
+    expect(foot).toHaveClass('flex-wrap', 'justify-between');
+    expect(consoleWarn).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['a blank label', { label: '   ', value: 3 }, warningFor],
+    [
+      'a non-finite value',
+      { label: 'High progress', value: Number.NaN },
+      'StepMeter requires a finite numeric value. Nothing was rendered.'
+    ]
+  ])(
+    'leaves the other footer child unchanged and adds no warning or placeholder for %s (NC3-07)',
+    (_name, meter, warning) => {
+      const { container } = render(footWith(companions.link, <StepMeter {...meter} />));
+      const foot = container.querySelector('.eg-now-card__foot');
+      expect(foot?.childElementCount).toBe(1);
+      expect(foot?.firstElementChild).toBe(screen.getByRole('link', { name: 'Watch live' }));
+      expect(screen.queryByRole('img')).not.toBeInTheDocument();
+      expect(foot?.textContent).toBe('Watch live');
+      // The only message is the atom's own: NowCard neither duplicates it nor adds a warning of its own.
+      expect(consoleWarn.mock.calls).toEqual([[warning]]);
+      expect(screen.getByRole('article', { name: 'Currently building' })).toBeInTheDocument();
+    }
+  );
 });

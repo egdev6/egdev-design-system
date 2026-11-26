@@ -33,6 +33,7 @@
 @source "../atoms/spinner/types.ts";
 @source "../atoms/stat/types.ts";
 @source "../atoms/status-dot/types.ts";
+@source "../atoms/step-meter/types.ts";
 @source "../atoms/switch/types.ts";
 @source "../atoms/textarea/types.ts";
 @source "../atoms/toggle/types.ts";

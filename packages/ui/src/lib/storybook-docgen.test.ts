@@ -692,6 +692,82 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(publicAPI.Pixel).toBeDefined();
     expect('pixelVariants' in publicAPI).toBe(false);
   });
+  it('extracts StepMeter label, value and steps with passive native boundaries', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(source('atoms/step-meter/StepMeter.tsx'))
+      .find(({ displayName }) => displayName === 'StepMeter');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    expect(props.label).toMatchObject({
+      required: true,
+      type: { name: 'string' },
+      defaultValue: null,
+      tags: { control: 'text' }
+    });
+    expect(props.value).toMatchObject({
+      required: true,
+      type: { name: 'number' },
+      defaultValue: null,
+      tags: { control: 'number' }
+    });
+    expect(props.steps).toMatchObject({ required: false, type: { name: 'number' }, tags: { control: 'number' } });
+    expect(normalize(props.steps?.defaultValue?.value)).toBe('4');
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'aria-live',
+      'aria-valuemin',
+      'aria-valuemax',
+      'aria-valuenow',
+      'aria-valuetext',
+      'title',
+      'tabIndex',
+      'contentEditable',
+      'onClick',
+      'ref',
+      'asChild'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    const file = ast(source('atoms/step-meter/types.ts'));
+    const own = ownProps(file, ['StepMeterProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(['label', 'value', 'steps']);
+    const controls: Record<string, string> = { label: 'text', value: 'number', steps: 'number' };
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(name === 'steps');
+    }
+    expect(publicAPI.StepMeter).toBeDefined();
+    for (const name of ['stepMeterVariants', 'stepMeterStepVariants', 'useStepMeter']) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('atoms/step-meter/index.ts'), 'utf8')).not.toMatch(/Variants|useStepMeter/);
+    expect(exportedStoryNames(ast(source('atoms/step-meter/StepMeter.stories.tsx')))).toEqual([
+      'Default',
+      'Levels',
+      'CustomSteps',
+      'OnSurfaces'
+    ]);
+    expect(readFileSync(source('atoms/step-meter/StepMeter.stories.tsx'), 'utf8')).not.toMatch(
+      /\b(?:argTypes|play)\s*:/
+    );
+  });
   it('extracts NotesBoard parts and sticky metadata', () => {
     const extracted = parser.parse(source('organisms/notes-board/NotesBoard.tsx'));
     const root = extracted.find(({ displayName }) => displayName === 'NotesBoard');
@@ -928,6 +1004,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(properties.map((property) => property.name.getText(file))).toEqual([
       'href',
       'label',
+      "'aria-current'",
       'children',
       'children',
       'children',
@@ -1344,6 +1421,25 @@ describe('Storybook TypeScript docgen contract', () => {
         expect(partDoc?.props[name], `${part}.${name}`).toBeUndefined();
       }
     }
+    // NowCard v0.3 (#556): the footer documents one optional StepMeter without any type, part or prop change.
+    const footer = parser
+      .parse(source('molecules/now-card/NowCard.tsx'))
+      .find(({ displayName }) => displayName === 'NowCardFooter');
+    expect(footer?.props.children).toMatchObject({
+      required: true,
+      type: { name: 'ReactNode' },
+      defaultValue: null,
+      tags: { control: 'false' }
+    });
+    expect(footer?.props.children?.description).toMatch(/optionally one StepMeter/);
+    expect(footer?.props.children?.description).toMatch(/at most one other child/);
+    expect(footer?.props.children?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/ReactNode.*WithLink.*WithNextDate.*WithStepMeter/)
+    });
+    expect(Object.keys(footer?.props ?? {}).filter((name) => ['children', 'className'].includes(name))).toEqual([
+      'children',
+      'className'
+    ]);
     expect(publicAPI.NowCard).toBeDefined();
     for (const name of [
       'useNowCard',
@@ -1365,6 +1461,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'WithBadge',
       'WithLink',
       'WithNextDate',
+      'WithStepMeter',
       'WithSingleChild',
       'Sizes',
       'HeadingRanks',
@@ -1386,13 +1483,14 @@ describe('Storybook TypeScript docgen contract', () => {
       level: 'select',
       eyebrow: 'text',
       index: 'text',
+      statusBadge: 'false',
       variant: 'select',
       size: 'select',
       children: 'false',
       className: 'text'
     };
     const own = ownProps(ast(source('molecules/project-card/types.ts')), ['ProjectCardProps']);
-    expect(own).toHaveLength(8);
+    expect(own).toHaveLength(9);
     for (const declaration of own) {
       const name = declaration.name.getText();
       const tags = ts.getJSDocTags(declaration);
@@ -1414,6 +1512,10 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     expect(props.title?.required).toBe(true);
     expect(props.children?.required).toBe(false);
+    expect(props.statusBadge).toMatchObject({ required: false, defaultValue: null, tags: { control: 'false' } });
+    expect(props.statusBadge?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/ReactNode.*WithStatus/)
+    });
     for (const [name, value] of Object.entries({ level: '3', variant: 'default', size: 'md' })) {
       expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
     }
@@ -1485,7 +1587,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tags',
       'Code',
       'WithLink',
-      'LongContent'
+      'LongContent',
+      'WithStatus',
+      'StatusPlacements',
+      'StatusOverBackdrop',
+      'StatusInNarrowCard'
     ]);
     expect(stories.getText()).toMatch(/title: 'Molecules\/ProjectCard'/);
     expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
@@ -2001,6 +2107,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/spinner',
       './atoms/stat',
       './atoms/status-dot',
+      './atoms/step-meter',
       './atoms/switch',
       './atoms/textarea',
       './atoms/toggle',
@@ -2205,6 +2312,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Stack',
       'Stat',
       'StatusDot',
+      'StepMeter',
       'Surface',
       'Switch',
       'TabBar',

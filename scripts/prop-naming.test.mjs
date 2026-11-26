@@ -463,7 +463,8 @@ const postReceiptUsages = [
     'initial-uncontrolled-value',
     'interactive-value-change',
     'collection-items',
-    'localized-messages'
+    'localized-messages',
+    'visual-treatment'
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/carousel/types.ts#CarouselProps'
@@ -743,7 +744,8 @@ const postReceiptUsages = [
     'heading-eyebrow',
     'visual-treatment',
     'preset-dimensions',
-    'decorative-index'
+    'decorative-index',
+    'leading-status-badge'
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/project-card/types.ts#ProjectCardProps'
@@ -842,6 +844,11 @@ const postReceiptUsages = [
   ].map(([conventionId, prop]) => ({
     conventionId,
     source: `packages/ui/src/templates/web-template/types.ts#WebTemplateProps.${prop}`
+  })),
+  // StepMeter #556 reuses two approved conventions as usages only: no new meaning, exception or receipt for them.
+  ...['accessible-name', 'primary-value'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/step-meter/types.ts#StepMeterProps'
   }))
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
@@ -887,7 +894,9 @@ const postReceiptProposals = [
   'modal-action-pending',
   // Dialog v0.4 proposes two component-scoped concepts without global naming approval.
   'dialog-title-overflow',
-  'dialog-action-placement'
+  'dialog-action-placement',
+  // StepMeter v0.1 proposes the step total; it stays proposed until a receipt binds its exact content.
+  'step-count'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1326,7 +1335,8 @@ test('Carousel track layout binds the owner choices, scoped receipt and every re
   ]);
   assert.deepEqual(historicalRegistry([entry]), []);
   const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
-  assert.equal(own.length, 9);
+  // Nine reviewed usages plus the v0.4 `visual-treatment` usage for `variant` (#557).
+  assert.equal(own.length, 10);
   for (const usage of own) {
     assert.equal(usage.source.revision, revision);
     assert.ok(['CarouselProps', 'CarouselItem'].includes(usage.source.symbol));
@@ -1701,6 +1711,54 @@ test('Dialog sheet concepts remain proposed and bind every reviewed source revis
   }
   const size = registry.find(({ id }) => id === 'preset-dimensions');
   assert.match(size.usages.find(({ component }) => component === 'DialogContent').type, /sheet.*full/i);
+  validate(registry);
+});
+
+test('StepMeter step count stays proposed, reuses two approved conventions and binds every reviewed source revision', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/atoms/step-meter/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const source = { path, symbol: 'StepMeterProps', revision };
+  const entry = registry.find(({ id }) => id === 'step-count');
+  assert.ok(entry);
+  assert.equal(entry.name, 'steps');
+  assert.equal(entry.meaning, 'Total number of discrete steps of a stepped scale.');
+  assert.equal(
+    entry.whenToUse,
+    'A passive stepped indicator lets the consumer choose how many steps its scale has, within a bounded range, while the filled count is supplied separately as the primary value.'
+  );
+  assert.equal(
+    entry.avoid,
+    'Item or entry counts, display overflow thresholds, step increments of a continuous control, and wizard or navigation step lists.'
+  );
+  // Convention approval is separate from the spec approval: no receipt exists, so the entry is only proposed.
+  assert.equal(entry.status, 'proposed');
+  assert.equal(entry.approval, null);
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  assert.deepEqual(entry.usages, [
+    { component: 'StepMeter', type: 'number (optional; integer 1-10, default 4)', status: 'existing', source }
+  ]);
+  assert.deepEqual(historicalRegistry([entry]), []);
+  // The two reused entries keep their approved status and gain exactly one StepMeter usage each.
+  for (const [id, type] of [
+    ['accessible-name', 'string (required)'],
+    ['primary-value', 'number (required; floored and clamped to 0 to steps)']
+  ]) {
+    const reused = registry.find((item) => item.id === id);
+    assert.equal(reused.status, 'approved', id);
+    const usages = reused.usages.filter(({ component }) => component === 'StepMeter');
+    assert.deepEqual(usages, [{ component: 'StepMeter', type, status: 'existing', source }], id);
+  }
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 3);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  const marked = structuredClone(registry);
+  marked.find(({ id }) => id === 'step-count').status = 'approved';
+  assert.throws(() => validate(marked), /approval/i);
   validate(registry);
 });
 
@@ -2247,8 +2305,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // PhotoFrame fit adds one approved convention (image-fit).
   // AttachmentField v0.2 adds the approved reset token; Text v0.3 adds truncation.
   // AlertDialog v0.2 adds its independently approved pending convention; Dialog v0.4 proposes two more.
-  assert.equal(actual.length, 184);
-  assert.equal(beforeIndicatorConventions(actual).length, 181);
+  // StepMeter v0.1 proposes the step total.
+  assert.equal(actual.length, 185);
+  assert.equal(beforeIndicatorConventions(actual).length, 182);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -3430,12 +3489,18 @@ test('NowCard leading-status-badge receipt binds the owner decision without rewr
   assert.deepEqual(entry.exceptions, []);
   assert.deepEqual(
     entry.usages.map(({ component }) => component),
-    ['NowCard']
+    ['NowCard', 'ProjectCard']
   );
   // The usage revision is read from the reviewed working-tree file, never pinned to an older receipt byte.
   assert.equal(entry.usages[0].source.path, 'packages/ui/src/molecules/now-card/types.ts');
   assert.equal(entry.usages[0].source.symbol, 'NowCardProps');
   assert.equal(entry.usages[0].source.revision, digest(fs.readFileSync(resolve(root, entry.usages[0].source.path))));
+  // ProjectCard #558 reuses the approved convention as a usage only: no new concept, exception or receipt.
+  assert.equal(entry.usages[1].type, 'ReactNode');
+  assert.equal(entry.usages[1].status, 'existing');
+  assert.equal(entry.usages[1].source.path, 'packages/ui/src/molecules/project-card/types.ts');
+  assert.equal(entry.usages[1].source.symbol, 'ProjectCardProps');
+  assert.equal(entry.usages[1].source.revision, digest(fs.readFileSync(resolve(root, entry.usages[1].source.path))));
   assert.deepEqual(historicalRegistry([entry])[0].usages, []);
   const changed = structuredClone(registry);
   changed.find(({ id }) => id === 'leading-status-badge').meaning += ' Changed.';

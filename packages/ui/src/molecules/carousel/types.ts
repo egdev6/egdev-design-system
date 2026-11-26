@@ -118,6 +118,14 @@ export type CarouselProps = Omit<
    * @default default
    */
   trackLayout?: 'default' | 'full-width';
+  /**
+   * Visual treatment of the slides. `current-emphasis` frames only the current slide with a brand border and glow and
+   * leaves its neighbours unchanged; it reserves a transparent border on every slide and adds token padding around
+   * the track for the glow. It applies to the default track layout; with `full-width` it resolves to `default`.
+   * @control select
+   * @default default
+   */
+  variant?: 'default' | 'current-emphasis';
 };
 
 export const defaultCarouselMessages: CarouselMessages = {
@@ -141,11 +149,19 @@ export const carouselTrackVariants = cva(
   {
     variants: {
       trackLayout: {
-        default: 'gap-7 p-2',
+        default: 'gap-7',
         'full-width': 'gap-0 p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
-      }
+      },
+      variant: { default: '', 'current-emphasis': '' }
     },
-    defaultVariants: { trackLayout: 'default' }
+    // Padding is a compound: tailwind-merge lets a later `p-*` replace earlier side paddings but not the reverse,
+    // so the default `p-2` must leave the class list whenever the emphasis padding applies. The emphasis padding
+    // stays below the `gap-7` gap, so no neighbour is exposed at rest, and leaves room for the glow.
+    compoundVariants: [
+      { trackLayout: 'default', variant: 'default', class: 'p-2' },
+      { trackLayout: 'default', variant: 'current-emphasis', class: 'px-6 pt-5 pb-7' }
+    ],
+    defaultVariants: { trackLayout: 'default', variant: 'default' }
   }
 );
 export const carouselSlideVariants = cva('box-border min-w-0 basis-full shrink-0 snap-center rounded-lg outline-none', {
@@ -154,9 +170,22 @@ export const carouselSlideVariants = cva('box-border min-w-0 basis-full shrink-0
       default: 'focus-visible:shadow-[var(--shadow-focus)]',
       'full-width':
         'focus-visible:outline-solid focus-visible:outline-(length:--focus-width) focus-visible:outline-focus-ring focus-visible:-outline-offset-(--focus-width)'
-    }
+    },
+    variant: { default: '', 'current-emphasis': '' }
   },
-  defaultVariants: { trackLayout: 'default' }
+  // Recipe R1 (spec v0.4): a transparent frame on every slide, painted only while the slide is `aria-current`.
+  // `rounded-xl` replaces the base `rounded-lg`; the compound focus shadow lists the ring first so it paints above
+  // the glow and, with one more selector than the plain focus rule, cannot lose to it. Forced colours drop shadows,
+  // so the current slide gets a system-colour outline instead. Each utility is a static token-backed literal.
+  compoundVariants: [
+    {
+      trackLayout: 'default',
+      variant: 'current-emphasis',
+      class:
+        'rounded-xl border border-solid border-transparent transition-[border-color,box-shadow] duration-[var(--duration-base)] ease-[var(--ease-out)] focus-visible:transition-none motion-reduce:transition-none aria-[current=true]:border-border-brand aria-[current=true]:shadow-[var(--shadow-glow-base)] aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)] forced-colors:aria-[current=true]:outline-solid forced-colors:aria-[current=true]:outline-(length:--focus-width) forced-colors:aria-[current=true]:outline-[color:Highlight]'
+    }
+  ],
+  defaultVariants: { trackLayout: 'default', variant: 'default' }
 });
 export const carouselProgressVariants = cva('self-center w-full max-w-[calc(var(--space-20)*4)]');
 export const carouselArrowVariants = cva('', {

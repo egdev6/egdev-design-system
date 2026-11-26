@@ -454,7 +454,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -464,7 +464,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselItem",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -505,6 +505,16 @@
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
           "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
+        }
+      },
+      {
+        "component": "StepMeter",
+        "type": "number (required; floored and clamped to 0 to steps)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/step-meter/types.ts",
+          "symbol": "StepMeterProps",
+          "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
         }
       }
     ]
@@ -581,7 +591,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -698,7 +708,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -995,7 +1005,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       },
       {
@@ -1005,7 +1015,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
+          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
         }
       }
     ]
@@ -1312,7 +1322,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       },
       {
@@ -1333,6 +1343,16 @@
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
           "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "'default' | 'current-emphasis' (default 'default'); trackLayout 'full-width' accepts 'default' only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       }
     ]
@@ -2025,7 +2045,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -2035,7 +2055,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselItem",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -2105,7 +2125,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardCodeProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       },
       {
@@ -2125,7 +2145,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
+          "revision": "sha256:627ebf23897ae0f7f6b267d6cf1cc9cdef0d4053d6036bbfaf18c1e15edff36f"
         }
       },
       {
@@ -2135,7 +2155,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationItem",
-          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
+          "revision": "sha256:627ebf23897ae0f7f6b267d6cf1cc9cdef0d4053d6036bbfaf18c1e15edff36f"
         }
       },
       {
@@ -2156,6 +2176,16 @@
           "path": "packages/ui/src/molecules/attachment-field/types.ts",
           "symbol": "AttachmentFieldProps",
           "revision": "sha256:8eec15ec1b4e1c079e35cf988d49a494fb6d52818bad5ea94a03970f1ed4bcf9"
+        }
+      },
+      {
+        "component": "StepMeter",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/step-meter/types.ts",
+          "symbol": "StepMeterProps",
+          "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
         }
       }
     ]
@@ -4001,7 +4031,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -4071,7 +4101,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardTagsProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       },
       {
@@ -4081,7 +4111,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardCodeProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       },
       {
@@ -4101,7 +4131,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
+          "revision": "sha256:627ebf23897ae0f7f6b267d6cf1cc9cdef0d4053d6036bbfaf18c1e15edff36f"
         }
       },
       {
@@ -4188,7 +4218,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -5306,7 +5336,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       },
       {
@@ -5326,7 +5356,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
+          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
         }
       },
       {
@@ -5473,7 +5503,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       },
       {
@@ -5493,7 +5523,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
+          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
         }
       },
       {
@@ -5523,7 +5553,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
+          "revision": "sha256:627ebf23897ae0f7f6b267d6cf1cc9cdef0d4053d6036bbfaf18c1e15edff36f"
         }
       },
       {
@@ -5822,7 +5852,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       },
       {
@@ -8089,7 +8119,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:cb2a69d2c7975fa744140c563e26d8bced5540a3b50acf0c4ec484256252222c"
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       }
     ]
@@ -8116,7 +8146,17 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:d768d4f65946cd57aa2c526df0c7efde91952eb62dc9ee010b5c858078e4b5c3"
+          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
+        }
+      },
+      {
+        "component": "ProjectCard",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardProps",
+          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
         }
       }
     ]
@@ -8562,7 +8602,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       }
     ]
@@ -8858,6 +8898,29 @@
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
           "revision": "sha256:99b735d897a1aff3462b4e89c5ab67da1df7cd17441b5d817bcac3f5aaea7f7f"
+        }
+      }
+    ]
+  },
+  {
+    "id": "step-count",
+    "name": "steps",
+    "meaning": "Total number of discrete steps of a stepped scale.",
+    "whenToUse": "A passive stepped indicator lets the consumer choose how many steps its scale has, within a bounded range, while the filled count is supplied separately as the primary value.",
+    "avoid": "Item or entry counts, display overflow thresholds, step increments of a continuous control, and wizard or navigation step lists.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "StepMeter",
+        "type": "number (optional; integer 1-10, default 4)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/step-meter/types.ts",
+          "symbol": "StepMeterProps",
+          "revision": "sha256:7e52350f5ff3c7e1585a1600b600eb3a74143c0b7de17089827ecd6b92e2e037"
         }
       }
     ]

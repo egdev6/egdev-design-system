@@ -108,6 +108,64 @@ test('IconButton hit-area facts and composition spacing are source-derived witho
   assert.match(gap.description, /gap-5 \(16px\).*gap-3 \(9\.6px\)/s);
 });
 
+test('Carousel publishes the opt-in current-slide emphasis variant and its recipes without changing the defaults (#557)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const carousel = artifact.components.find(({ name }) => name === 'Carousel');
+  assert.ok(carousel);
+  const variant = carousel.props.find(({ name }) => name === 'variant');
+  assert.ok(variant, 'Carousel must publish its variant prop');
+  assert.equal(variant.type, 'enum');
+  assert.equal(variant.required, false);
+  assert.equal(variant.default, 'default');
+  assert.match(variant.description, /current-emphasis/);
+  assert.match(variant.description, /full-width/);
+  // The existing prop and every other Carousel prop stay published.
+  assert.deepEqual(carousel.props.map(({ name }) => name).sort(), [
+    'defaultValue',
+    'items',
+    'label',
+    'messages',
+    'onValueChange',
+    'trackLayout',
+    'value',
+    'variant'
+  ]);
+  const classes = (recipeName) => {
+    const recipe = carousel.variants.find(({ name }) => name === recipeName);
+    assert.ok(recipe, recipeName);
+    return recipe.classes.join(' ').split(/\s+/).filter(Boolean);
+  };
+  const slide = classes('carouselSlideVariants');
+  for (const utility of [
+    'rounded-xl',
+    'border',
+    'border-solid',
+    'border-transparent',
+    'transition-[border-color,box-shadow]',
+    'duration-[var(--duration-base)]',
+    'ease-[var(--ease-out)]',
+    'focus-visible:transition-none',
+    'motion-reduce:transition-none',
+    'aria-[current=true]:border-border-brand',
+    'aria-[current=true]:shadow-[var(--shadow-glow-base)]',
+    'aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)]',
+    'forced-colors:aria-[current=true]:outline-solid',
+    'forced-colors:aria-[current=true]:outline-(length:--focus-width)',
+    'forced-colors:aria-[current=true]:outline-[color:Highlight]'
+  ]) {
+    assert.ok(slide.includes(utility), `carouselSlideVariants must list ${utility}`);
+  }
+  // The default recipes are still published next to the emphasis padding.
+  const track = classes('carouselTrackVariants');
+  for (const utility of ['gap-7', 'p-2', 'gap-0', 'p-0', 'px-6', 'pt-5', 'pb-7']) {
+    assert.ok(track.includes(utility), `carouselTrackVariants must list ${utility}`);
+  }
+  assert.ok(slide.includes('rounded-lg') && slide.includes('focus-visible:shadow-[var(--shadow-focus)]'));
+  const convention = artifact.propNaming.find(({ id }) => id === 'visual-treatment');
+  assert.ok(convention, 'the visual-treatment convention is published');
+  assert.ok(convention.components.includes('Carousel'), 'the visual-treatment convention lists Carousel');
+});
+
 test('classNameAllows publishes sorted unique CSS properties on roots and their own or shared parts', () => {
   const result = artifactWithTags([
     {
@@ -453,6 +511,147 @@ test('Text truncation is optional, defaults false and does not widen Heading or 
   assert.equal(naming.name, 'truncate');
   assert.equal(naming.status, 'approved');
   assert.ok(naming.components.includes('Text'));
+});
+
+test('ProjectCard statusBadge is an optional source-derived slot with three private layout recipes', () => {
+  const artifact = read('packages/system/design-system.json');
+  const card = artifact.components.find(({ name }) => name === 'ProjectCard');
+  assert.ok(card);
+  const prop = card.props.find(({ name }) => name === 'statusBadge');
+  assert.ok(prop);
+  assert.equal(prop.type, 'ReactNode');
+  assert.equal(prop.required, false);
+  assert.equal(prop.default, null);
+  assert.match(prop.description, /non-interactive status node/);
+  assert.match(prop.description, /header row at the inline end/);
+  assert.ok(!card.props.some(({ name }) => name === 'statusClassName'));
+  for (const field of ['variants', 'anatomy']) {
+    const names = card[field].map(({ name }) => name);
+    for (const recipe of ['projectCardHeaderVariants', 'projectCardLeadVariants', 'projectCardBadgeVariants']) {
+      assert.ok(names.includes(recipe), `${field} lists ${recipe}`);
+    }
+  }
+  assert.deepEqual(
+    card.parts.map(({ name }) => name),
+    ['ProjectCardBackdrop', 'ProjectCardCode', 'ProjectCardFooter', 'ProjectCardMark', 'ProjectCardTags']
+  );
+  // The card never imports Badge: the consumer composes it, so no composition edge appears.
+  assert.deepEqual(
+    card.composedOf.map(({ name }) => name),
+    ['Chip']
+  );
+  assert.deepEqual(card.classNameAllows, [
+    'inline-size',
+    'max-inline-size',
+    'max-width',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
+  const naming = artifact.propNaming.find(({ id }) => id === 'leading-status-badge');
+  assert.ok(naming);
+  assert.deepEqual(naming.components, ['NowCard', 'ProjectCard']);
+});
+
+test('StepMeter publishes three source-derived props, two private recipes and the proposed step-count convention', () => {
+  const artifact = read('packages/system/design-system.json');
+  const meter = artifact.components.find(({ name }) => name === 'StepMeter');
+  assert.ok(meter);
+  assert.equal(meter.package, '@egdev/ui');
+  assert.equal(meter.source, 'packages/ui/src/atoms/step-meter/types.ts');
+  assert.deepEqual(
+    meter.props.map(({ name }) => name),
+    ['label', 'steps', 'value']
+  );
+  const label = meter.props.find(({ name }) => name === 'label');
+  const steps = meter.props.find(({ name }) => name === 'steps');
+  const value = meter.props.find(({ name }) => name === 'value');
+  assert.deepEqual([label.type, label.required, label.default], ['string', true, null]);
+  assert.deepEqual([value.type, value.required, value.default], ['number', true, null]);
+  assert.deepEqual([steps.type, steps.required, steps.default], ['number', false, '4']);
+  assert.match(label.description, /Accessible name of the image, never rendered visibly/);
+  assert.match(value.description, /floored to an integer and clamped/);
+  assert.match(steps.description, /integer from 1 to 10/);
+  for (const name of [
+    'children',
+    'role',
+    'aria-label',
+    'aria-labelledby',
+    'aria-hidden',
+    'aria-live',
+    'title',
+    'tabIndex'
+  ]) {
+    assert.ok(!meter.props.some((prop) => prop.name === name), `StepMeter must not publish ${name}`);
+  }
+  assert.deepEqual(
+    meter.variants.map(({ name }) => name),
+    ['stepMeterStepVariants', 'stepMeterVariants']
+  );
+  const step = new Set(
+    meter.variants
+      .find(({ name }) => name === 'stepMeterStepVariants')
+      .classes.join(' ')
+      .split(/\s+/)
+  );
+  for (const utility of [
+    'eg-step-meter__step',
+    'w-3.5',
+    'h-3.75',
+    '[clip-path:polygon(0_0,100%_47.6%,100%_100%,0_52.4%)]',
+    'bg-alpha-red-22',
+    'data-[state=filled]:bg-fg-brand-default',
+    'transition-none',
+    'forced-colors:forced-color-adjust-none',
+    'forced-colors:data-[state=filled]:bg-[color:CanvasText]',
+    'forced-colors:data-[state=empty]:bg-transparent'
+  ]) {
+    assert.ok(step.has(utility), `The step recipe lists ${utility}`);
+  }
+  // The atom imports neither Surface nor Pixel and has no parts, no stylesheet role and no className allowance.
+  assert.deepEqual(meter.parts, []);
+  assert.deepEqual(meter.composedOf, []);
+  assert.deepEqual(meter.surfaceUsage, []);
+  assert.equal(Object.hasOwn(meter, 'classNameAllows'), false);
+  const naming = artifact.propNaming.find(({ id }) => id === 'step-count');
+  assert.ok(naming);
+  assert.equal(naming.name, 'steps');
+  assert.equal(naming.status, 'proposed');
+  assert.deepEqual(naming.components, ['StepMeter']);
+  for (const id of ['accessible-name', 'primary-value']) {
+    const reused = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(reused.status, 'approved', id);
+    assert.ok(reused.components.includes('StepMeter'), id);
+  }
+});
+
+test('NowCard footer documents one optional StepMeter without a prop, part or composition change', () => {
+  const artifact = read('packages/system/design-system.json');
+  const card = artifact.components.find(({ name }) => name === 'NowCard');
+  assert.ok(card);
+  // v0.3 is documentation only: the card gains no prop, no part and no composition edge.
+  assert.deepEqual(
+    card.props.map(({ name }) => name),
+    ['children', 'level', 'size', 'statusBadge', 'title']
+  );
+  assert.deepEqual(
+    card.parts.map(({ name }) => name),
+    ['NowCardBody', 'NowCardDetail', 'NowCardFooter']
+  );
+  assert.deepEqual(card.composedOf, []);
+  assert.deepEqual(card.classNameAllows, [
+    'inline-size',
+    'max-inline-size',
+    'max-width',
+    'min-inline-size',
+    'min-width',
+    'width'
+  ]);
+  const footer = card.parts.find(({ name }) => name === 'NowCardFooter');
+  assert.match(footer.children, /optionally one StepMeter/);
+  assert.match(footer.children, /at most one other child/);
+  assert.match(footer.children, /never inspects, reorders or limits its children/);
+  assert.ok(!artifact.components.some(({ name }) => name === 'NowCardMeter'));
 });
 
 test('Heading and Text expose only their own and shared recipes', () => {

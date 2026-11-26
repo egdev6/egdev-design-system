@@ -1,10 +1,13 @@
+/// <reference types="vite/client" />
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { action } from 'storybook/actions';
+import cover from '../../../../../docs/components/photo-frame/v0.3/fixtures/diagnostic.svg?url';
 import { Button } from '../../atoms/button';
 import { Stack } from '../../primitives/stack';
 import { Surface } from '../../primitives/surface';
 import { Text } from '../../primitives/text';
+import { TipCard } from '../tip-card';
 import { Carousel } from './Carousel';
 import type { CarouselItem, CarouselProps } from './types';
 
@@ -38,6 +41,35 @@ const items: [CarouselItem, CarouselItem, CarouselItem] = [
   }
 ];
 
+const tips: [CarouselItem, CarouselItem, CarouselItem] = [
+  {
+    value: 'context',
+    label: 'Share the context first',
+    children: (
+      <TipCard title='Share the context first' badge='Tip' src={cover} alt='Diagnostic grid cover of the context tip' />
+    )
+  },
+  {
+    value: 'test',
+    label: 'Describe the behavior with a test',
+    children: (
+      <TipCard
+        title='Describe the behavior with a test'
+        badge='Tip'
+        src={cover}
+        alt='Diagnostic grid cover of the testing tip'
+      />
+    )
+  },
+  {
+    value: 'review',
+    label: 'Review before you ship',
+    children: (
+      <TipCard title='Review before you ship' badge='Tip' src={cover} alt='Diagnostic grid cover of the review tip' />
+    )
+  }
+];
+
 /**
  * ## Description
  * A manually navigated read-only slide collection with bounded controls, native scrolling and roving focus.
@@ -45,7 +77,8 @@ const items: [CarouselItem, CarouselItem, CarouselItem] = [
  * ## Dependencies
  * IconButton and Icon provide navigation controls with 38.4px visible boxes and extended targets under default tokens;
  * ProgressBar shows decorative position.
- * VisuallyHidden supplies instructions and status. Surface is consumer content, not Carousel paint.
+ * VisuallyHidden supplies instructions and status. Slide content, such as Surface or TipCard, is consumer content:
+ * Carousel paints nothing by default.
  *
  * ## Usage guidelines
  * Slides must not contain links, controls, tab stops or autoplay. Arrow keys work on the slide group itself;
@@ -54,6 +87,16 @@ const items: [CarouselItem, CarouselItem, CarouselItem] = [
  * Full-width tracks hide the scrollbar visually while retaining native scrolling; fit content inside each slide.
  * The control row uses 9.6px default-token spacing to separate the expanded navigation targets.
  * Root className supports only width, margins and layout placement. No stylesheet or part override API.
+ *
+ * ## Current-slide emphasis
+ * `variant='current-emphasis'` is an opt-in. Carousel then paints only the current slide's transparent frame: a brand
+ * border and glow keyed off `aria-current`, while neighbours keep their own paint. The frame reserves a transparent
+ * border on every slide and adds token padding around the track for the glow, so slide geometry changes only when
+ * opted in. It applies to the default track; with `trackLayout='full-width'` it resolves to `default`. The frame
+ * follows the slide box, not its content: slide content should fill the slide with corners at or below `--radius-xl`.
+ * The emphasis is decorative redundancy, because the current slide is also stated in its accessible name,
+ * `aria-current`, the visible counter and the progress bar. It moves with the accepted slide, not frame by frame while
+ * scrolling, and shows against neighbours while the track moves.
  */
 const meta: Meta<typeof Carousel> = {
   title: 'Molecules/Carousel',
@@ -78,6 +121,24 @@ export const FullWidthNarrow: Story = {
       <Carousel {...args} />
     </div>
   )
+};
+
+/** The current slide shows a brand border and glow; its neighbours keep their default paint. */
+export const CurrentEmphasis: Story = { args: { variant: 'current-emphasis', defaultValue: 'test' } };
+
+/** TipCard slides in a poster-wide host: the frame hugs the card, with the second slide current. */
+export const CurrentEmphasisTipCards: Story = {
+  args: { variant: 'current-emphasis', items: tips, defaultValue: 'test' },
+  render: (args) => (
+    <div className='w-full max-w-[calc(var(--space-24)*4)]'>
+      <Carousel {...args} />
+    </div>
+  )
+};
+
+/** With the full-width track the variant resolves to default, so this renders exactly as FullWidth. */
+export const CurrentEmphasisFullWidth: Story = {
+  args: { variant: 'current-emphasis', trackLayout: 'full-width' }
 };
 
 /** A one-item collection retains its readable slide while both controls are disabled. */

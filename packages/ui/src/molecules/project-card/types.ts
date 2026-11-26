@@ -69,6 +69,15 @@ export type ProjectCardProps = ProjectCardNativeProps & {
    */
   index?: string;
   /**
+   * Optional consumer-supplied non-interactive status node, typically a Badge composition, rendered
+   * in the card's header row at the inline end, after the index and eyebrow and before the heading.
+   * Absent, null or boolean renders nothing and creates no row. No interactive descendants, no
+   * baked-in status word, no tone ownership.
+   * @control false
+   * @controlReason ReactNode is not serializable; see the WithStatus story for the supplied Badge composition.
+   */
+  statusBadge?: ReactNode;
+  /**
    * Visual treatment: the raised default frame or the featured signature (brand edge, halo and index ink).
    * @default default
    * @control select
@@ -203,6 +212,26 @@ export const projectCardIndexVariants = cva(
 
 /** Internal uppercase context line above the heading. */
 export const projectCardEyebrowVariants = cva('text-label-eyebrow text-fg-secondary uppercase');
+
+/**
+ * Header row, rendered only with a status: lays the lead group and the status on one wrapping row. It paints
+ * nothing; self-stretch lets the row span the card even where the legacy frame aligns its items to the start.
+ */
+export const projectCardHeaderVariants = cva('flex min-w-0 flex-wrap items-center gap-3 self-stretch');
+
+/** Lead group inside the header row: the index over the eyebrow, spaced like the surrounding flow. */
+export const projectCardLeadVariants = cva('flex min-w-0 flex-col', {
+  variants: {
+    density: {
+      md: 'gap-4',
+      sm: 'gap-3'
+    }
+  },
+  defaultVariants: { density: 'md' }
+});
+
+/** Status wrapper holding the supplied node verbatim; the logical end margin pins it to the inline end. */
+export const projectCardBadgeVariants = cva('eg-project-card__badge flex min-w-0 max-w-full ms-auto');
 
 /** Card title step, independent of the heading rank; sm uses the smaller density step. */
 export const projectCardHeadingVariants = cva('m-0 wrap-anywhere text-fg-default', {

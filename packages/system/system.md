@@ -962,10 +962,16 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native scroll an
     - carouselLabelVariants base: text-label-eyebrow → --text-label-eyebrow
     - carouselSlideVariants base: rounded-lg → --radius-lg
     - carouselSlideVariants trackLayout=default: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
+    - carouselSlideVariants {"trackLayout":"default","variant":"current-emphasis"}: rounded-xl → --radius-xl
+    - carouselSlideVariants {"trackLayout":"default","variant":"current-emphasis"}: aria-[current=true]:shadow-[var(--shadow-glow-base)] → --shadow-glow-base
+    - carouselSlideVariants {"trackLayout":"default","variant":"current-emphasis"}: aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)] → --shadow-focus, --shadow-glow-base
     - carouselTrackVariants trackLayout=default: gap-7 → --spacing-7
-    - carouselTrackVariants trackLayout=default: p-2 → --spacing-2
     - carouselTrackVariants trackLayout=full-width: gap-0 → --spacing-0
     - carouselTrackVariants trackLayout=full-width: p-0 → --spacing-0
+    - carouselTrackVariants {"trackLayout":"default","variant":"default"}: p-2 → --spacing-2
+    - carouselTrackVariants {"trackLayout":"default","variant":"current-emphasis"}: px-6 → --spacing-6
+    - carouselTrackVariants {"trackLayout":"default","variant":"current-emphasis"}: pt-5 → --spacing-5
+    - carouselTrackVariants {"trackLayout":"default","variant":"current-emphasis"}: pb-7 → --spacing-7
     - carouselVariants base: gap-4 → --spacing-4
     - carouselVariants base: font-sans → --font-sans
   - defaultValue: string; Initial uncontrolled identity; absence or an unknown identity resolves to the first item. Later changes do not reset the current item. (components[] · packages/ui/src/molecules/carousel/types.ts)
@@ -975,6 +981,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native scroll an
   - onValueChange: ((value: string) => void); One request for a changed identity per user navigation or settled scroll; never for prop updates. (components[] · packages/ui/src/molecules/carousel/types.ts)
   - trackLayout: enum; Track spacing and scrollbar presentation. Full-width keeps native scrolling and inset focus. (components[] · packages/ui/src/molecules/carousel/types.ts)
   - value: string; Controlled accepted identity. Missing or unknown identities resolve to the first available item. (components[] · packages/ui/src/molecules/carousel/types.ts)
+  - variant: enum; Visual treatment of the slides. `current-emphasis` frames only the current slide with a brand border and glow and leaves its neighbours unchanged; it reserves a transparent border on every slide and adds token padding around the track for the glow. It applies to the default track layout; with `full-width` it resolves to `default`. (components[] · packages/ui/src/molecules/carousel/types.ts)
 ### ChipGroup
 catalog[] · docs/catalog.json · @egdev/ui · molecule · ToggleGroup
 - ChipGroup (components[] · packages/ui/src/molecules/chip-group/types.ts)
@@ -1358,7 +1365,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - NowCard (components[] · packages/ui/src/molecules/now-card/types.ts)
   - NowCardBody: Padded growing zone for the consumer-supplied copy. Children: Padded growing zone for the consumer-supplied copy; no interactive content, no badge slot. One or two short paragraphs. No controls, no links, no status badge: the card renders the consumer's statusBadge slot itself, before the heading. (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
   - NowCardDetail: Supporting date or context line with the consumer-marked emphasized value. Children: Supporting date or context line with an emphasized value; no controls. One short visible sentence; mark the value with <b> (for example a real <time dateTime> inside it). (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
-  - NowCardFooter: Lower band for one supporting detail and/or one action. Children: Lower band for one supporting detail and/or one action (a Link or a labelled IconButton); never two competing actions. One NowCardDetail and/or one Link/IconButton. Omit the part entirely when the card has no footer. (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
+  - NowCardFooter: Lower band for one supporting detail and/or one action. Children: Lower band for one supporting detail and/or one action (a Link or a labelled IconButton), never two competing actions, and optionally one StepMeter. With a StepMeter the footer holds it plus at most one other child; that rule is the consumer's, as the card never inspects, reorders or limits its children. One NowCardDetail and/or one Link/IconButton, and optionally one StepMeter (an informative named image with its own label); with a StepMeter, at most one other child. Omit the part entirely when the card has no footer. (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - nowCardBadgeVariants base: px-6 → --spacing-6
     - nowCardBadgeVariants base: pt-6 → --spacing-6
@@ -1442,11 +1449,14 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - projectCardBodyVariants base: text-body-large → --text-body-large
     - projectCardEyebrowVariants base: text-label-eyebrow → --text-label-eyebrow
+    - projectCardHeaderVariants base: gap-3 → --spacing-3
     - projectCardHeadingVariants size=md: text-heading-small → --text-heading-small
     - projectCardHeadingVariants size=sm: text-body-large → --text-body-large
     - projectCardIndexVariants base: text-transparent → unresolved
     - projectCardIndexVariants size=md: text-title-display → --text-title-display
     - projectCardIndexVariants size=sm: text-title-section → --text-title-section
+    - projectCardLeadVariants density=md: gap-4 → --spacing-4
+    - projectCardLeadVariants density=sm: gap-3 → --spacing-3
     - projectCardUpperContentVariants base: gap-4 → --spacing-4
     - projectCardUpperVariants base: rounded-xl → --radius-xl
     - projectCardUpperVariants base: gap-4 → --spacing-4
@@ -1463,6 +1473,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - index: string; Optional decorative outline number such as 01; aria-hidden and never part of the accessible name. Whitespace-only renders nothing. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - level: enum; Native heading rank only; the visual step follows the size, never the rank. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - size: enum; Density preset; every supplied part still renders, including the code block. (components[] · packages/ui/src/molecules/project-card/types.ts)
+  - statusBadge: ReactNode; Optional consumer-supplied non-interactive status node, typically a Badge composition, rendered in the card's header row at the inline end, after the index and eyebrow and before the heading. Absent, null or boolean renders nothing and creates no row. No interactive descendants, no baked-in status word, no tone ownership. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - title: string; Visible heading text and the complete article name. Blank titles warn in development and render nothing. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - variant: enum; Visual treatment: the raised default frame or the featured signature (brand edge, halo and index ink). (components[] · packages/ui/src/molecules/project-card/types.ts)
 ### SectionHeader
@@ -2295,6 +2306,14 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · —
     - statusDotVariants state=standby: shadow-glow-hot → --shadow-glow-hot
   - pulse: boolean; Animates the live/standby pulse. It has no effect on status states, and reduced-motion preferences always render the dot static. (components[] · packages/ui/src/atoms/status-dot/types.ts)
   - state: enum; Condition the dot represents, selected by the consumer. Status states (running, idle, warning, error, stopped) are 8px ringed dots; signal states (live, standby) are 10px glowing dots. (components[] · packages/ui/src/atoms/status-dot/types.ts)
+### StepMeter
+catalog[] · docs/catalog.json · @egdev/ui · atom · —
+- StepMeter (components[] · packages/ui/src/atoms/step-meter/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - stepMeterVariants base: gap-1 → --spacing-1
+  - label: string; Accessible name of the image, never rendered visibly. State the level in words (for example "High progress") so it stands alone when a screen reader reaches it. The wording and language are the consumer's: there is no built-in text and no default. A blank or non-string label warns in development and renders nothing. (components[] · packages/ui/src/atoms/step-meter/types.ts)
+  - steps: number; Total number of steps, an integer from 1 to 10. Anything else (non-integer, below 1, above 10, non-finite or non-numeric) falls back to 4 without a warning. (components[] · packages/ui/src/atoms/step-meter/types.ts)
+  - value: number; Number of filled steps, counted from the inline start. A finite number is floored to an integer and clamped to 0 through steps, so the level is never overstated. NaN, an infinite or a non-numeric value warns in development and renders nothing. (components[] · packages/ui/src/atoms/step-meter/types.ts)
 ### Switch
 catalog[] · docs/catalog.json · @egdev/ui · atom · Switch
 - Switch (components[] · packages/ui/src/atoms/switch/types.ts)
@@ -3462,7 +3481,7 @@ Not exported:
 - absolute-deadline-text: deadlineText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - accent-line-break: accentBreak; approved; Heading, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
 - accepted-file-types: acceptedTypes; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
-- accessible-name: label; approved; AppIcon, AttachmentField, Avatar, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- accessible-name: label; approved; AppIcon, AttachmentField, Avatar, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, StepMeter, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - action-alternative-text: actionAltText; approved; Toast (propNaming[] · skills/_shared/prop-naming.json)
 - active-row: activeRowId; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - active-section-id: activeId; approved; SectionNav (propNaming[] · skills/_shared/prop-naming.json)
@@ -3563,7 +3582,7 @@ Not exported:
 - layout-gap: gap; approved; Cluster, SocialLinks, Stack (propNaming[] · skills/_shared/prop-naming.json)
 - layout-orientation: orientation; approved; Divider, RadioGroup (propNaming[] · skills/_shared/prop-naming.json)
 - leading-icon: icon; approved; Badge, Button, Chip, ChipGroupOption, CommandPaletteItem, FieldMessage, IconButton, Input, MenuEntry, ModuleCard, ModuleRail, NavList, Notice, SocialLinkItem, TabBarItem, Timeline, Toast, Toggle (propNaming[] · skills/_shared/prop-naming.json)
-- leading-status-badge: statusBadge; approved; NowCard (propNaming[] · skills/_shared/prop-naming.json)
+- leading-status-badge: statusBadge; approved; NowCard, ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - line-particle-direction: lineDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - live-presentation: live; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
 - localized-messages: messages; approved; AppShell, AttachmentField, CalendarGrid, Carousel, CommandPalette, MeterRow, ModuleCard, ModuleRail, TabBar, Table, Timeline, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
@@ -3594,7 +3613,7 @@ Not exported:
 - pressed-change: onPressedChange; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-state: pressed; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - preview-thumbnail: thumb; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
-- primary-value: value; approved; AttachmentField, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, Gauge, GaugeGroupRing, MeterRow, ProgressBar, RadioGroup, SectionNav, Select, SelectTile, SelectTileOption, Slider, Stat, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
+- primary-value: value; approved; AttachmentField, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, Gauge, GaugeGroupRing, MeterRow, ProgressBar, RadioGroup, SectionNav, Select, SelectTile, SelectTileOption, Slider, Stat, StepMeter, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - product-identity: product; approved; ModuleRail, Sidebar (propNaming[] · skills/_shared/prop-naming.json)
 - quotation-source: source; approved; PullQuote (propNaming[] · skills/_shared/prop-naming.json)
 - quotation-text: text; approved; PullQuote (propNaming[] · skills/_shared/prop-naming.json)
@@ -3618,6 +3637,7 @@ Not exported:
 - slot-composition: asChild; approved; AlertDialogAction, AlertDialogCancel, AlertDialogTrigger, ArticleFeature, Button, Cluster, DialogClose, DialogTrigger, IconButton, Link, ListItem, PopoverClose, PopoverTrigger, ScrollReveal, Stack, Surface, Text, VisuallyHidden (propNaming[] · skills/_shared/prop-naming.json)
 - sort-change: onSortChange; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - square-particle-direction: squareDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
+- step-count: steps; proposed; StepMeter (propNaming[] · skills/_shared/prop-naming.json)
 - surface-elevation: elevation; approved; Surface (propNaming[] · skills/_shared/prop-naming.json)
 - surface-material-tone: tone; approved; AlertDialogContent, Badge, Countdown, FieldMessage, Heading, Indicator, MenuEntry, ModuleCard, NavList, Notice, Panel, PreviewFrame, PullQuote, SectionHeader, Surface, Tabs, TerminalCardRow, Text, Timeline, Toast (propNaming[] · skills/_shared/prop-naming.json)
 - tab-list-full-width: fullWidth; approved; Tabs (propNaming[] · skills/_shared/prop-naming.json)
@@ -3639,7 +3659,7 @@ Not exported:
 - value-context: delta; approved; Stat (propNaming[] · skills/_shared/prop-naming.json)
 - value-readout: readout; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
 - viewport-max-height: maxHeight; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
-- visual-treatment: variant; approved; Badge, Button, ButtonGroup, DialogContent, Dropzone, Heading, IconButton, Indicator, Input, Label, Link, ListItem, Logo, MeterRow, ModuleCard, Panel, PhotoFrame, PreviewFrame, ProgressBar, ProjectCard, PullQuote, ScrollReveal, SectionHeader, SelectTile, Skeleton, SocialLinks, Table, Tabs, Text, Textarea, Timeline (propNaming[] · skills/_shared/prop-naming.json)
+- visual-treatment: variant; approved; Badge, Button, ButtonGroup, Carousel, DialogContent, Dropzone, Heading, IconButton, Indicator, Input, Label, Link, ListItem, Logo, MeterRow, ModuleCard, Panel, PhotoFrame, PreviewFrame, ProgressBar, ProjectCard, PullQuote, ScrollReveal, SectionHeader, SelectTile, Skeleton, SocialLinks, Table, Tabs, Text, Textarea, Timeline (propNaming[] · skills/_shared/prop-naming.json)
 - visually-hidden-label: hideLabel; approved; Field, Table (propNaming[] · skills/_shared/prop-naming.json)
 - web-section-body-slot: body; approved; WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - zone-change: onZoneChange; approved; HomeTemplate (propNaming[] · skills/_shared/prop-naming.json)

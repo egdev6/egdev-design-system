@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- The source-derived artifact and reference include ProjectCard's `statusBadge` slot and its
+  `leading-status-badge` usage. (#558)
+- The artifact and design reference include Carousel's `variant` prop and its current-slide emphasis recipes;
+  existing props and recipes are unchanged. (#557)
+- The source-derived artifact and reference include `StepMeter` (its props and static recipes), the `step-count`
+  naming concept (proposed, with no approval receipt) and the refreshed NowCard footer description. (#556)
+
 ## 0.12.0
 
 ### Added

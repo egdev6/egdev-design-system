@@ -2,7 +2,8 @@ import { act, fireEvent, render, renderHook, screen, within } from '@testing-lib
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Carousel, type CarouselItem } from './index';
+import { TipCard } from '../tip-card';
+import { Carousel, type CarouselItem, type CarouselProps } from './index';
 import { useCarousel } from './useCarousel.js';
 
 const items: [CarouselItem, CarouselItem, CarouselItem] = [
@@ -59,6 +60,16 @@ function geometry(rtl = false) {
 
 const mouseDown = { pointerType: 'mouse', button: 0, isPrimary: true, pointerId: 1, clientX: 100, clientY: 0 };
 const mouseMove = { pointerType: 'mouse', pointerId: 1, clientX: 0, clientY: 0 };
+
+/**
+ * One stable wrapper per call, so a block can run once per variant without edits to its bodies and a
+ * `rerender` never sees a new component type (which would remount the Carousel).
+ */
+function withVariant(variant: CarouselProps['variant']) {
+  return function CarouselWithVariant(props: CarouselProps) {
+    return <Carousel variant={variant} {...props} />;
+  };
+}
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -718,7 +729,14 @@ describe('Carousel v0.2 track layout', () => {
     expect(onValueChange).not.toHaveBeenCalled();
   });
 
-  describe.each(['default', 'full-width'] as const)('%s interaction preservation', (layout) => {
+  describe.each(
+    (['default', 'full-width'] as const).flatMap((layout) => [
+      { layout, name: 'omitted', variant: undefined },
+      { layout, name: 'current-emphasis', variant: 'current-emphasis' as const }
+    ])
+  )('$layout interaction preservation with variant $name', ({ layout, variant }) => {
+    // Shadows the import so every render below goes through the wrapper; the bodies stay as they were.
+    const Carousel = withVariant(variant);
     it.each(['ltr', 'rtl'] as const)('keeps bounded directional keys, focus and Tab order in %s', async (dir) => {
       const user = userEvent.setup();
       const onValueChange = vi.fn();
@@ -953,5 +971,370 @@ describe('Carousel v0.2 track layout', () => {
     expect(scrollTo).not.toHaveBeenCalled();
     expect(current()).toHaveAccessibleName('1 of 3: Alpha');
     expect(onValueChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('Carousel v0.4 current-slide emphasis', () => {
+  // The approved recipe R1 (spec §6). Every entry is a static, token-backed utility.
+  const slideUtilities = [
+    'rounded-xl',
+    'border',
+    'border-solid',
+    'border-transparent',
+    'transition-[border-color,box-shadow]',
+    'duration-[var(--duration-base)]',
+    'ease-[var(--ease-out)]',
+    'focus-visible:transition-none',
+    'motion-reduce:transition-none',
+    'aria-[current=true]:border-border-brand',
+    'aria-[current=true]:shadow-[var(--shadow-glow-base)]',
+    'aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)]',
+    'forced-colors:aria-[current=true]:outline-solid',
+    'forced-colors:aria-[current=true]:outline-(length:--focus-width)',
+    'forced-colors:aria-[current=true]:outline-[color:Highlight]'
+  ];
+  const trackUtilities = ['px-6', 'pt-5', 'pb-7'];
+  const classes = (node: Element) => node.className.split(/\s+/).filter(Boolean);
+  const attributes = (node: Element) =>
+    Object.fromEntries([...node.attributes].map(({ name, value }) => [name, value]));
+  // Class lists of one render, captured so two renders can be compared after the first unmounts.
+  function capture(props: Partial<CarouselProps>) {
+    const view = render(<Carousel label='Highlights' items={items} {...props} />);
+    const result = {
+      root: classes(screen.getByRole('group', { name: 'Highlights' })),
+      track: classes(track()),
+      slides: slides().map(classes)
+    };
+    view.unmount();
+    return result;
+  }
+
+  it.each(['default', 'current-emphasis'] as const)(
+    'consumes variant=%s and never forwards it to the DOM',
+    (variant) => {
+      const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      render(<Carousel label='Highlights' items={items} variant={variant} data-example='retained' />);
+      const root = screen.getByRole('group', { name: 'Highlights' });
+      expect(root).not.toHaveAttribute('variant');
+      expect(root.querySelector('[variant]')).toBeNull();
+      expect(root).toHaveAttribute('data-example', 'retained');
+      expect(errors).not.toHaveBeenCalled();
+    }
+  );
+
+  it('puts one identical static class list on every slide and moves only aria-current and tabindex', async () => {
+    const user = userEvent.setup();
+    render(<Carousel label='Highlights' items={items} variant='current-emphasis' />);
+    const [first, ...others] = slides();
+    for (const slide of slides()) {
+      expect(slide).toHaveClass(
+        'border-transparent',
+        'aria-[current=true]:border-border-brand',
+        'aria-[current=true]:shadow-[var(--shadow-glow-base)]'
+      );
+      expect(slide).not.toHaveAttribute('style');
+      expect([...slide.attributes].filter(({ name }) => name.startsWith('data-'))).toEqual([]);
+    }
+    for (const slide of others) {
+      expect(slide.className).toBe(first?.className);
+    }
+    const snapshot = () => slides().map(attributes);
+    const changed = (before: Record<string, string>[], after: Record<string, string>[]) =>
+      new Set(
+        before.flatMap((attrs, index) =>
+          [...new Set([...Object.keys(attrs), ...Object.keys(after[index] ?? {})])].filter(
+            (name) => attrs[name] !== after[index]?.[name]
+          )
+        )
+      );
+    const initial = snapshot();
+    await user.click(screen.getByRole('button', { name: 'Next slide' }));
+    const afterNext = snapshot();
+    expect(current()).toHaveAccessibleName('2 of 3: Beta');
+    expect(changed(initial, afterNext)).toEqual(new Set(['aria-current', 'tabindex']));
+    (current() as HTMLElement).focus();
+    await user.keyboard('{ArrowRight}');
+    const afterKey = snapshot();
+    expect(current()).toHaveAccessibleName('3 of 3: Gamma');
+    expect(changed(afterNext, afterKey)).toEqual(new Set(['aria-current', 'tabindex']));
+    expect(slides().filter((slide) => slide.getAttribute('aria-current') === 'true')).toHaveLength(1);
+  });
+
+  it('keeps exactly one current slide equal to the accepted identity across the identity scenarios', async () => {
+    const user = userEvent.setup();
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const emphasised = () =>
+      slides().every((slide) => slide.classList.contains('aria-[current=true]:border-border-brand'));
+    const currents = () => slides().filter((slide) => slide.getAttribute('aria-current') === 'true');
+    const onValueChange = vi.fn();
+    const props = { label: 'Highlights', variant: 'current-emphasis' } as const;
+
+    // Initial fallback and uncontrolled defaults.
+    const first = render(<Carousel {...props} items={items} />);
+    expect(currents()).toHaveLength(1);
+    expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+    expect(emphasised()).toBe(true);
+    first.rerender(<Carousel {...props} items={items} defaultValue='c' />);
+    expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+    first.unmount();
+    const defaulted = render(<Carousel {...props} items={items} defaultValue='b' />);
+    expect(currents()).toHaveLength(1);
+    expect(current()).toHaveAccessibleName('2 of 3: Beta');
+    expect(emphasised()).toBe(true);
+
+    // Reorder keeps the identity; removal falls back; reintroduction keeps the fallback.
+    defaulted.rerender(<Carousel {...props} items={[items[1], items[0], items[2]]} />);
+    expect(currents()).toHaveLength(1);
+    expect(current()).toHaveAccessibleName('1 of 3: Beta');
+    defaulted.rerender(<Carousel {...props} items={[items[0], items[2]]} />);
+    expect(currents()).toHaveLength(1);
+    expect(current()).toHaveAccessibleName('1 of 2: Alpha');
+    defaulted.unmount();
+
+    // Controlled: unknown identity falls back, a request is accepted only through the owner.
+    const controlled = render(<Carousel {...props} items={items} value='missing' onValueChange={onValueChange} />);
+    expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+    controlled.rerender(<Carousel {...props} items={items} value='a' onValueChange={onValueChange} />);
+    await user.click(screen.getByRole('button', { name: 'Next slide' }));
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('b');
+    expect(currents()).toHaveLength(1);
+    expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+    controlled.rerender(<Carousel {...props} items={items} value='b' onValueChange={onValueChange} />);
+    expect(currents()).toHaveLength(1);
+    expect(current()).toHaveAccessibleName('2 of 3: Beta');
+    expect(emphasised()).toBe(true);
+    controlled.unmount();
+
+    // A single item is current and therefore emphasised; empty and invalid collections have none.
+    const single = render(<Carousel {...props} items={[items[0]]} />);
+    expect(currents()).toHaveLength(1);
+    expect(current()).toHaveAccessibleName('1 of 1: Alpha');
+    expect(emphasised()).toBe(true);
+    single.rerender(<Carousel {...props} items={[]} />);
+    expect(slides()).toHaveLength(0);
+    single.rerender(<Carousel {...props} items={[items[0], items[0]]} />);
+    expect(slides()).toHaveLength(0);
+    expect(warning).toHaveBeenCalledOnce();
+  });
+
+  it('adds exactly the approved token utilities and nothing superseded or forbidden', () => {
+    const base = capture({});
+    const emphasised = capture({ variant: 'current-emphasis' });
+    const sorted = (names: string[]) => [...names].sort();
+    const missing = (from: string[], within: string[]) => from.filter((name) => !within.includes(name));
+    expect(sorted(missing(emphasised.slides[0] ?? [], base.slides[0] ?? []))).toEqual(sorted(slideUtilities));
+    expect(missing(base.slides[0] ?? [], emphasised.slides[0] ?? [])).toEqual(['rounded-lg']);
+    expect(sorted(missing(emphasised.track, base.track))).toEqual(sorted(trackUtilities));
+    expect(missing(base.track, emphasised.track)).toEqual(['p-2']);
+    expect(missing(base.root, emphasised.root)).toEqual([]);
+    expect(missing(emphasised.root, base.root)).toEqual([]);
+    for (const name of [...emphasised.track, ...(emphasised.slides[0] ?? [])]) {
+      expect(name).not.toMatch(/(^|:)(opacity|blur|brightness|contrast|scale|translate|rotate|skew|animate)-/);
+      expect(name).not.toMatch(/^(transform|filter)$/);
+      expect(name).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(|oklch\(|lab\(|shadow-hot|--ad|--d\b/i);
+    }
+    render(<Carousel label='Highlights' items={items} variant='current-emphasis' />);
+    expect(track()).not.toHaveAttribute('style');
+    for (const slide of slides()) {
+      expect(slide).not.toHaveAttribute('style');
+    }
+  });
+
+  it('keeps the focus ring above the glow and instant on the current slide, and leaves it alone when off', () => {
+    const { rerender } = render(<Carousel label='Highlights' items={items} variant='current-emphasis' />);
+    for (const slide of slides()) {
+      expect(slide).toHaveClass(
+        'aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)]',
+        'focus-visible:transition-none',
+        'focus-visible:shadow-[var(--shadow-focus)]'
+      );
+    }
+    rerender(<Carousel label='Highlights' items={items} variant='default' />);
+    for (const slide of slides()) {
+      expect(slide).toHaveClass('focus-visible:shadow-[var(--shadow-focus)]');
+      expect(slide).not.toHaveClass(
+        'aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)]',
+        'focus-visible:transition-none'
+      );
+    }
+  });
+
+  it('limits motion to a tokenised border and shadow transition that reduced motion removes', () => {
+    render(<Carousel label='Highlights' items={items} variant='current-emphasis' />);
+    for (const slide of slides()) {
+      expect(slide).toHaveClass(
+        'transition-[border-color,box-shadow]',
+        'duration-[var(--duration-base)]',
+        'ease-[var(--ease-out)]',
+        'motion-reduce:transition-none'
+      );
+      for (const name of classes(slide)) {
+        expect(name).not.toMatch(/(^|:)(animate|translate|scale|rotate|skew)-/);
+        expect(name).not.toBe('transform');
+      }
+    }
+  });
+
+  it('shows a system-colour outline on the current slide in forced colours without disabling adjustment', () => {
+    render(<Carousel label='Highlights' items={items} variant='current-emphasis' />);
+    for (const slide of slides()) {
+      expect(slide).toHaveClass(
+        'forced-colors:aria-[current=true]:outline-solid',
+        'forced-colors:aria-[current=true]:outline-(length:--focus-width)',
+        'forced-colors:aria-[current=true]:outline-[color:Highlight]',
+        'border',
+        'border-transparent'
+      );
+      expect(classes(slide).some((name) => name.includes('forced-color-adjust'))).toBe(false);
+    }
+  });
+
+  it.each([
+    [undefined, 'default'],
+    ['default', 'default'],
+    [undefined, 'full-width'],
+    ['default', 'full-width']
+  ] as const)('keeps the v0.3 class contract with variant=%s on the %s track', (variant, layout) => {
+    render(<Carousel label='Highlights' items={items} variant={variant} trackLayout={layout} />);
+    if (layout === 'default') {
+      expect(track()).toHaveClass('gap-7', 'p-2');
+      for (const slide of slides()) {
+        expect(slide).toHaveClass('rounded-lg', 'focus-visible:shadow-[var(--shadow-focus)]');
+      }
+    } else {
+      expect(track()).toHaveClass('gap-0', 'p-0');
+      expect(track()).not.toHaveClass('gap-7', 'p-2');
+      for (const slide of slides()) {
+        expect(slide).toHaveClass('rounded-lg', 'focus-visible:-outline-offset-(--focus-width)');
+      }
+    }
+    for (const name of [...slideUtilities, ...trackUtilities]) {
+      expect(track(), name).not.toHaveClass(name);
+      for (const slide of slides()) {
+        expect(slide, name).not.toHaveClass(name);
+      }
+    }
+  });
+
+  it('renders full-width with the variant as plain full-width, and an unknown runtime value as default', () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(capture({ trackLayout: 'full-width', variant: 'current-emphasis' })).toEqual(
+      capture({ trackLayout: 'full-width' })
+    );
+    expect(capture({ variant: 'bogus' as never })).toEqual(capture({}));
+    expect(warning).not.toHaveBeenCalled();
+    expect(errors).not.toHaveBeenCalled();
+  });
+
+  it('toggles the recipe at runtime without changing identity, focus or requests, and realigns', () => {
+    const onValueChange = vi.fn();
+    const props = { label: 'Highlights', items, value: 'b', onValueChange } as const;
+    const { rerender } = render(<Carousel {...props} />);
+    const { scrollTo, setOffset } = geometry();
+    (current() as HTMLElement).focus();
+    const expectEmphasis = (on: boolean) => {
+      for (const name of trackUtilities) {
+        expect(classes(track()).includes(name)).toBe(on);
+      }
+      expect(classes(track()).includes('p-2')).toBe(!on);
+      for (const slide of slides()) {
+        expect(slide.classList.contains('aria-[current=true]:border-border-brand')).toBe(on);
+        expect(slide.classList.contains('rounded-xl')).toBe(on);
+        expect(slide.classList.contains('rounded-lg')).toBe(!on);
+      }
+      expect(current()).toHaveAccessibleName('2 of 3: Beta');
+      expect(current()).toHaveFocus();
+    };
+    for (const [variant, layout, on] of [
+      ['current-emphasis', 'default', true],
+      ['current-emphasis', 'full-width', false],
+      ['current-emphasis', 'default', true],
+      ['default', 'default', false]
+    ] as const) {
+      setOffset(0);
+      scrollTo.mockClear();
+      rerender(<Carousel {...props} variant={variant} trackLayout={layout} />);
+      if (layout === 'default') {
+        expectEmphasis(on);
+      } else {
+        expect(track()).toHaveClass('gap-0', 'p-0');
+        expect(slides().every((slide) => !slide.classList.contains('aria-[current=true]:border-border-brand'))).toBe(
+          true
+        );
+      }
+      expect(scrollTo).toHaveBeenCalledWith({ left: 100, behavior: 'instant' });
+    }
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it('adds no attribute, role or id: only classes differ between the variants, and the tab order is the same', async () => {
+    const serialize = (container: Element) => {
+      const ids = new Map<string, string>();
+      const alias = (value: string) =>
+        value
+          .split(/\s+/)
+          .map((id) => ids.get(id) ?? ids.set(id, `id-${ids.size}`).get(id))
+          .join(' ');
+      return [...container.querySelectorAll('*')].map((element) => ({
+        tag: element.tagName,
+        attributes: [...element.attributes]
+          .filter(({ name }) => name !== 'class')
+          .map(({ name, value }): [string, string] => [
+            name,
+            ['id', 'aria-labelledby', 'aria-describedby', 'aria-controls'].includes(name) ? alias(value) : value
+          ])
+          .sort(([left], [right]) => left.localeCompare(right))
+      }));
+    };
+    const tabOrder = async (variant: CarouselProps['variant']) => {
+      const user = userEvent.setup();
+      const view = render(
+        <>
+          <Carousel label='Highlights' items={items} defaultValue='b' variant={variant} />
+          <button type='button'>After</button>
+        </>
+      );
+      const markup = serialize(view.container);
+      const order: string[] = [];
+      for (let step = 0; step < 4; step += 1) {
+        await user.tab();
+        order.push(document.activeElement?.getAttribute('aria-label') ?? document.activeElement?.textContent ?? '');
+      }
+      view.unmount();
+      return { markup, order };
+    };
+    const plain = await tabOrder(undefined);
+    const emphasised = await tabOrder('current-emphasis');
+    expect(emphasised.markup).toEqual(plain.markup);
+    expect(emphasised.order).toEqual(plain.order);
+    expect(plain.order).toEqual(['Previous slide', 'Next slide', '2 of 3: Beta', 'After']);
+  });
+
+  it('leaves a TipCard inside a slide unchanged and adds no tab stop', async () => {
+    const user = userEvent.setup();
+    const tip = <TipCard title='Ship faster' badge='Tip' src='data:,' alt='Cover' />;
+    const standalone = render(tip);
+    const tipClasses = (standalone.container.querySelector('.eg-tip-card') as Element).className;
+    standalone.unmount();
+    render(
+      <>
+        <Carousel
+          label='Highlights'
+          items={items.map((item) => ({ ...item, children: tip }))}
+          variant='current-emphasis'
+        />
+        <button type='button'>After</button>
+      </>
+    );
+    for (const card of document.querySelectorAll('.eg-tip-card')) {
+      expect(card.className).toBe(tipClasses);
+    }
+    const order: string[] = [];
+    for (let step = 0; step < 3; step += 1) {
+      await user.tab();
+      order.push(document.activeElement?.getAttribute('aria-label') ?? document.activeElement?.textContent ?? '');
+    }
+    expect(order).toEqual(['Next slide', '1 of 3: Alpha', 'After']);
   });
 });

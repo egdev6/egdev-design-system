@@ -167,6 +167,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   meterRow: ['id', 'title', 'dir', 'lang', 'className', 'style'],
   pixel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
+  stepMeter: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
   photoFrame: [
     'srcSet',
     'sizes',

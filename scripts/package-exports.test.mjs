@@ -745,7 +745,14 @@ test('Footer package SSR keeps navigation and social list separately named', asy
       children: [
         h(uiExports.FooterMotto, { key: 'motto', children: h('p', null, 'Motto') }),
         h(uiExports.FooterBrand, { key: 'brand', children: h(uiExports.Logo, { href: '/', label: 'Home' }) }),
-        h(uiExports.FooterNavigation, { key: 'nav', label: 'Explore', items: [{ href: '#one', label: 'One' }] }),
+        h(uiExports.FooterNavigation, {
+          key: 'nav',
+          label: 'Explore',
+          items: [
+            { href: '#one', label: 'One' },
+            { href: '#two', label: 'Two', 'aria-current': 'page' }
+          ]
+        }),
         h(uiExports.FooterSocial, {
           key: 'social',
           children: h(uiExports.SocialLinks, {
@@ -772,6 +779,10 @@ test('Footer package SSR keeps navigation and social list separately named', asy
     const nav = footer.querySelector('nav');
     assert.equal(doc.getElementById(nav.getAttribute('aria-labelledby')).textContent, 'Explore');
     assert.equal(nav.querySelector('a').getAttribute('href'), '#one');
+    const current = [...nav.querySelectorAll('[aria-current]')];
+    assert.equal(current.length, 1);
+    assert.equal(current[0].getAttribute('href'), '#two');
+    assert.equal(current[0].getAttribute('aria-current'), 'page');
     assert.equal(
       footer.querySelector('ul[aria-label="Profiles"] a')?.getAttribute('href'),
       'https://github.com/example'
@@ -844,6 +855,124 @@ test('Pixel package SSR renders empty hidden spans in each state', async () => {
     } finally {
       dom.window.close();
     }
+  }
+});
+
+test('StepMeter ships all scanned utilities, the clip-path literal and both forced-colors rules without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/step-meter/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size >= 15, 'The two StepMeter recipes must expose their static utilities');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing StepMeter utility ${name}`);
+    }
+  }
+  // Geometry: 11.2 x 12 px from the token spacing unit (3.5 and 3.75 steps of --space-1) and the approved slant.
+  assert.match(utilities, /\.w-3\\\.5\s*\{[^}]*width:\s*calc\(var\(--space-1\)\s*\*\s*3\.5\)/);
+  assert.match(utilities, /\.h-3\\\.75\s*\{[^}]*height:\s*calc\(var\(--space-1\)\s*\*\s*3\.75\)/);
+  assert.match(utilities, /clip-path:\s*polygon\(0\s+0,\s*100%\s+47\.6%,\s*100%\s+100%,\s*0\s+52\.4%\)/);
+  // Paint: the two token fills, with the filled state read from data-state.
+  assert.match(utilities, /\.bg-alpha-red-22\s*\{[^}]*background-color:\s*var\(--color-alpha-red-22\b/);
+  assert.match(
+    utilities,
+    /\.data-\\\[state\\=filled\\\]\\:bg-fg-brand-default\[data-state="?filled"?\]\s*\{[^}]*background-color:\s*var\(--color-fg-brand-default\b/
+  );
+  // Forced colors: filled steps paint CanvasText, empty steps are not painted, author colors are honoured.
+  const forced = [...utilities.matchAll(/@media\s*\(forced-colors:\s*active\)\s*\{/g)]
+    .map(({ index }) => cssBlock(utilities.slice(index), /@media\s*\(forced-colors:\s*active\)\s*\{/))
+    .join('\n');
+  assert.match(forced, /\.forced-colors\\:forced-color-adjust-none\s*\{[^}]*forced-color-adjust:\s*none/);
+  assert.match(
+    forced,
+    /\.forced-colors\\:data-\\\[state\\=filled\\\]\\:bg-\\\[color\\:CanvasText\\\]\[data-state="?filled"?\]\s*\{[^}]*background-color:\s*CanvasText/
+  );
+  assert.match(
+    forced,
+    /\.forced-colors\\:data-\\\[state\\=empty\\\]\\:bg-transparent\[data-state="?empty"?\]\s*\{[^}]*background-color:\s*transparent/
+  );
+  assert.match(utilities, /\.transition-none\s*\{[^}]*transition-property:\s*none/);
+  // No stylesheet: nothing in the shipped CSS selects the StepMeter markers, and the legacy meter rules stay apart.
+  assert.doesNotMatch(css, /eg-step-meter/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-now-card__meter/);
+  assert.doesNotMatch(css, /\.eg-now-card__meter[^{]*(?:\.eg-step-meter|\[data-state)/);
+});
+
+test('StepMeter package SSR renders a named image of presentational steps and nothing for invalid input', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.StepMeter, 'function');
+  for (const name of ['stepMeterVariants', 'stepMeterStepVariants', 'useStepMeter']) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to StepMeter`);
+  }
+  for (const [value, steps, filled, total] of [
+    [0, undefined, 0, 4],
+    [3, undefined, 3, 4],
+    [9, undefined, 4, 4],
+    [2.9, 6, 2, 6],
+    [4, 11, 4, 4],
+    [1, 1, 1, 1],
+    [10, 10, 10, 10]
+  ]) {
+    const dom = new JSDOM(renderToString(createElement(exported.StepMeter, { label: 'High progress', value, steps })));
+    try {
+      const image = dom.window.document.querySelector('span.eg-step-meter');
+      assert.ok(image);
+      assert.equal(image.getAttribute('role'), 'img');
+      assert.equal(image.getAttribute('aria-label'), 'High progress');
+      assert.equal(image.hasAttribute('data-state'), false);
+      assert.equal(image.hasAttribute('tabindex'), false);
+      const parts = [...image.children];
+      assert.equal(parts.length, total);
+      assert.deepEqual(
+        parts.map((part) => part.getAttribute('data-state')),
+        Array.from({ length: total }, (_, position) => (position < filled ? 'filled' : 'empty'))
+      );
+      for (const part of parts) {
+        assert.equal(part.tagName, 'SPAN');
+        assert.ok(part.classList.contains('eg-step-meter__step'));
+        assert.equal(part.childNodes.length, 0);
+        assert.equal(part.hasAttribute('role'), false);
+        assert.equal(part.hasAttribute('style'), false);
+      }
+    } finally {
+      dom.window.close();
+    }
+  }
+  // An invalid label or value renders nothing; the development warning is silenced here, not asserted.
+  const warn = console.warn;
+  console.warn = () => undefined;
+  try {
+    assert.equal(renderToString(createElement(exported.StepMeter, { label: '  ', value: 1 })), '');
+    assert.equal(renderToString(createElement(exported.StepMeter, { label: 'High progress', value: Number.NaN })), '');
+  } finally {
+    console.warn = warn;
   }
 });
 
@@ -5286,6 +5415,36 @@ test('ProjectCard ships named passive article SSR and keeps its composition reci
   assert.ok(compact.includes('eg-project-card__code'), 'sm density never hides the code well');
   assert.match(compact, /class="[^\"]*\bp-3\b/);
   assert.doesNotMatch(compact, /\bp-0\b/);
+  // Without a status the card renders no row, wrapper or marker, and none of the row utilities.
+  for (const absent of ['eg-project-card__badge', 'ms-auto', 'self-stretch']) {
+    assert.ok(!html.includes(absent), `${absent} must not appear without a status`);
+  }
+  // A consumer-supplied Badge renders in one wrapper in the header row: lead, status, then the heading.
+  const status = renderToStaticMarkup(
+    createElement(exported.ProjectCard, {
+      title: 'OpenDesign \u00d7 Gentle AI',
+      index: '014',
+      eyebrow: 'Experiment',
+      statusBadge: createElement(exported.Badge, {
+        tone: 'warning',
+        icon: createElement(exported.Icon, { name: 'alert' }),
+        children: 'testing'
+      }),
+      children: createElement('p', null, 'Designing interfaces directly from agents.')
+    })
+  );
+  assert.equal(status.split('eg-project-card__badge').length - 1, 1, 'One wrapper holds the supplied status');
+  assert.match(status, /class="[^"]*\beg-project-card__badge\b[^"]*\bms-auto\b/);
+  assert.match(status, /class="[^"]*\bself-stretch\b/);
+  assert.match(status, /data-tone="warning"/);
+  assert.match(status, /aria-hidden="true"[^>]*><svg/);
+  assert.ok(status.includes('>testing<'));
+  const position = (needle) => status.indexOf(needle);
+  assert.ok(position('>014<') < position('>Experiment<'), 'The index stays above the eyebrow');
+  assert.ok(position('>Experiment<') < position('eg-project-card__badge'), 'The status follows the lead');
+  assert.ok(position('eg-project-card__badge') < position('<h3'), 'The status precedes the heading');
+  assert.doesNotMatch(status, /tabindex=|role="(?:button|region)"|aria-live=|statusbadge=/i);
+  assert.doesNotMatch(status, /\sstyle=/, 'The status row adds no inline style');
   for (const name of [
     'useProjectCard',
     'useProjectCardTags',
@@ -5293,6 +5452,9 @@ test('ProjectCard ships named passive article SSR and keeps its composition reci
     'useProjectCardFooter',
     'projectCardVariants',
     'projectCardIndexVariants',
+    'projectCardHeaderVariants',
+    'projectCardLeadVariants',
+    'projectCardBadgeVariants',
     'ProjectCardNativeProps'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, name);
@@ -5316,7 +5478,13 @@ test('ProjectCard ships scanned stroke, signature and density utilities without 
     '.text-fg-muted',
     '.text-fg-brand-raised',
     '.p-3',
-    '.p-6'
+    '.p-6',
+    '.ms-auto',
+    '.max-w-full',
+    '.self-stretch',
+    '.flex-wrap',
+    '.gap-3',
+    '.gap-4'
   ]) {
     assert.ok(utilities.includes(selector), `Missing ProjectCard utility ${selector}`);
   }
@@ -5326,6 +5494,13 @@ test('ProjectCard ships scanned stroke, signature and density utilities without 
   };
   assert.match(rule('.p-3'), /padding:[^;]*var\(--space/);
   assert.match(rule('.p-6'), /padding:[^;]*var\(--space/);
+  // The header row and status wrapper use only utilities that the shipped stylesheet already emits.
+  assert.match(rule('.ms-auto'), /margin-inline-start:\s*auto\s*;/);
+  assert.match(rule('.max-w-full'), /max-width:\s*100%\s*;/);
+  assert.match(rule('.self-stretch'), /align-self:\s*stretch\s*;/);
+  assert.match(rule('.flex-wrap'), /flex-wrap:\s*wrap\s*;/);
+  assert.match(rule('.gap-3'), /gap:\s*var\(--space-3\)\s*;/);
+  assert.match(rule('.gap-4'), /gap:\s*var\(--space-4\)\s*;/);
   assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
   assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
   assert.doesNotMatch(utilities, /\.eg-project-card[^{}]*\{/);
@@ -5918,6 +6093,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Stack',
       'Stat',
       'StatusDot',
+      'StepMeter',
       'Surface',
       'Switch',
       'TabBar',
@@ -6471,6 +6647,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'StatusDot',
     'StatusDotProps',
     'StatusDotState',
+    'StepMeter',
+    'StepMeterProps',
     'Surface',
     'SurfaceElevation',
     'SurfacePadding',
@@ -6607,6 +6785,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'projectCardCodeLineVariants',
     'projectCardCodeGlyphVariants',
     'projectCardFootVariants',
+    'projectCardHeaderVariants',
+    'projectCardLeadVariants',
+    'projectCardBadgeVariants',
     'ProjectCardNativeProps'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
@@ -6839,6 +7020,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'StatusDotProps',
     'StatusDotState',
     'statusDotVariants',
+    'StepMeter',
+    'StepMeterProps',
     'Stat',
     'StatProps',
     'statVariants',
@@ -7831,6 +8014,63 @@ test('Carousel ships static layout, snap, drag, focus and token geometry without
   assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/carousel/carousel.css')), false);
 });
 
+test('Carousel ships the current-slide emphasis utilities, painted only under aria-current (#557)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const block = (selector) => cssBlock(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  assert.match(block('.pt-5'), /padding-top:\s*var\(--space-5[,)]/);
+  assert.match(block('.pb-7'), /padding-bottom:\s*var\(--space-7[,)]/);
+  assert.match(block('.px-6'), /padding-inline:\s*var\(--space-6[,)]/);
+  assert.match(block('.p-2'), /padding:\s*var\(--space-2[,)]/);
+  assert.match(block('.rounded-xl'), /border-radius:\s*var\(--radius-xl[,)]/);
+  assert.match(block('.border-solid'), /border-style:\s*solid/);
+  assert.match(block('.border-transparent'), /border-color:\s*(?:transparent|#0000(?:0000)?)/);
+  const border = String.raw`.aria-\[current\=true\]\:border-border-brand`;
+  const glow = String.raw`.aria-\[current\=true\]\:shadow-\[var\(--shadow-glow-base\)\]`;
+  assert.match(block(`${border}[aria-current="true"]`), /border-color:\s*var\(--color-border-brand[,)]/);
+  assert.match(block(`${glow}[aria-current="true"]`), /--tw-shadow:\s*var\(--shadow-glow-base\)/);
+  // The paint is never emitted without the attribute, so non-current slides keep their transparent frame.
+  for (const selector of [border, glow]) {
+    assert.doesNotMatch(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*[,{]`), selector);
+  }
+  // The compound rule is strictly more specific than the plain focus rule and lists the ring layers first.
+  const compound = String.raw`.aria-\[current\=true\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\,var\(--shadow-glow-base\)\][aria-current="true"]:focus-visible`;
+  assert.match(block(compound), /--tw-shadow:\s*var\(--shadow-focus\),\s*var\(--shadow-glow-base\)/);
+  assert.match(block(String.raw`.focus-visible\:transition-none:focus-visible`), /transition-property:\s*none/);
+  // Every block of one media query, each read to its own closing brace.
+  const mediaBlocks = (query) =>
+    [...css.matchAll(new RegExp(`@media ${query}\\s*\\{`, 'g'))].map(({ index }) =>
+      cssBlock(css.slice(index), new RegExp(`^@media ${query}\\s*\\{`))
+    );
+  assert.ok(
+    mediaBlocks(String.raw`\(prefers-reduced-motion: reduce\)`).some((text) =>
+      /\.motion-reduce\\:transition-none\s*\{[^}]*transition-property:\s*none/.test(text)
+    ),
+    'reduced motion removes the emphasis transition'
+  );
+  assert.match(
+    block(String.raw`.transition-\[border-color\,box-shadow\]`),
+    /transition-property:\s*border-color,\s*box-shadow/
+  );
+  assert.match(
+    block(String.raw`.duration-\[var\(--duration-base\)\]`),
+    /transition-duration:\s*var\(--duration-base\)/
+  );
+  assert.match(block(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)/);
+  const forced = mediaBlocks(String.raw`\(forced-colors: active\)`).join('\n');
+  for (const [utility, declaration] of [
+    ['outline-solid', /outline-style:\s*solid/],
+    [String.raw`outline-\(length\:--focus-width\)`, /outline-width:\s*var\(--focus-width\)/],
+    [String.raw`outline-\[color\:Highlight\]`, /outline-color:\s*highlight/i]
+  ]) {
+    const selector = String.raw`.forced-colors\:aria-\[current\=true\]\:${utility}[aria-current="true"]`;
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const match = new RegExp(`${escaped}\\s*\\{([^}]*)\\}`).exec(forced);
+    assert.ok(match, `Missing forced-colors rule ${selector}`);
+    assert.match(match[1], declaration, selector);
+  }
+  assert.doesNotMatch(css, /\.eg-carousel[^{]*\{/);
+});
+
 test('Carousel public exports preserve deterministic named groups and composed atoms in SSR', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -7865,6 +8105,75 @@ test('Carousel public exports preserve deterministic named groups and composed a
   assert.doesNotMatch(fullWidth, /tracklayout=/i);
   for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
+  }
+  // v0.4 (#557): `variant` is consumed by the hook, never forwarded, and only adds classes.
+  const { JSDOM } = await import('jsdom');
+  const slides = [
+    { value: 'alpha', label: 'Alpha', children: 'First information' },
+    { value: 'beta', label: 'Beta', children: 'Second information' },
+    { value: 'gamma', label: 'Gamma', children: 'Third information' }
+  ];
+  const render = (props) =>
+    new JSDOM(renderToString(createElement(exported.Carousel, { label: 'Highlights', items: slides, ...props })));
+  const plain = render({});
+  const emphasised = render({ variant: 'current-emphasis', 'data-example': 'retained', defaultValue: 'beta' });
+  const fullWidthEmphasis = render({ variant: 'current-emphasis', trackLayout: 'full-width' });
+  const fullWidthPlain = render({ trackLayout: 'full-width' });
+  try {
+    const parts = (dom) => {
+      const document = dom.window.document;
+      const group = document.querySelector('.eg-carousel');
+      const slideNodes = [...group.querySelectorAll('[aria-roledescription="slide"]')];
+      return { document, group, slides: slideNodes, track: slideNodes[0].parentElement };
+    };
+    const on = parts(emphasised);
+    assert.equal(on.group.hasAttribute('variant'), false);
+    assert.equal(on.group.getAttribute('data-example'), 'retained');
+    assert.equal(on.group.querySelectorAll('[variant]').length, 0);
+    assert.equal(on.group.querySelectorAll('[aria-current="true"]').length, 1);
+    assert.equal(on.group.querySelector('[aria-current="true"]').getAttribute('aria-label'), '2 of 3: Beta');
+    assert.equal(on.slides.length, 3);
+    for (const slide of on.slides) {
+      for (const name of [
+        'rounded-xl',
+        'border',
+        'border-solid',
+        'border-transparent',
+        'aria-[current=true]:border-border-brand',
+        'aria-[current=true]:shadow-[var(--shadow-glow-base)]',
+        'aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)]',
+        'forced-colors:aria-[current=true]:outline-[color:Highlight]'
+      ]) {
+        assert.ok(slide.classList.contains(name), name);
+      }
+      assert.equal(slide.classList.contains('rounded-lg'), false);
+      assert.equal(slide.hasAttribute('style'), false);
+    }
+    for (const name of ['px-6', 'pt-5', 'pb-7']) {
+      assert.ok(on.track.classList.contains(name), name);
+    }
+    assert.equal(on.track.classList.contains('p-2'), false);
+    // Without the variant (or with it on the full-width track) nothing of the recipe is present.
+    for (const dom of [plain, fullWidthEmphasis, fullWidthPlain]) {
+      const off = parts(dom);
+      assert.equal(off.group.hasAttribute('variant'), false);
+      for (const slide of off.slides) {
+        assert.equal(slide.classList.contains('border-transparent'), false);
+        assert.equal(slide.classList.contains('aria-[current=true]:border-border-brand'), false);
+        assert.equal(slide.classList.contains('rounded-lg'), true);
+      }
+      assert.equal(off.track.classList.contains('pb-7'), false);
+    }
+    assert.ok(parts(plain).track.classList.contains('p-2'));
+    assert.equal(parts(fullWidthEmphasis).track.className, parts(fullWidthPlain).track.className);
+    assert.deepEqual(
+      parts(fullWidthEmphasis).slides.map((slide) => slide.className),
+      parts(fullWidthPlain).slides.map((slide) => slide.className)
+    );
+  } finally {
+    for (const dom of [plain, emphasised, fullWidthEmphasis, fullWidthPlain]) {
+      dom.window.close();
+    }
   }
 });
 
