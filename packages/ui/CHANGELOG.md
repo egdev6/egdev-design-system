@@ -8,6 +8,14 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `DetailHeader` opens a detail page with its title block and metadata. It composes SectionHeader (optional eyebrow, a
+  heading at `level`, default 1, and an optional lede) with an optional label/value facts list (`metadata`, where an
+  entry may carry a `dateTime` for a native `time`), a named list of static tag pills (`tags`) and a named list of
+  external links (`links`: absolute `https:` URLs that open in a new tab with a hidden notice, localizable through
+  `newTabText`). The list names are English by default (`Tags`, `Links`) and localizable through `messages`. Blank or
+  invalid entries are skipped with a development warning and an unreadable title renders nothing. It paints no
+  surface: the host formats dates and text, places it inside `main` or `article` and supplies one page-level heading.
+  (#572)
 - `Breadcrumb` shows where the reader is on a detail page: a named navigation landmark (required `label`) holding an
   ordered trail of `items`, where every ancestor is a link (`href`, optional `onNavigate`) and the last entry is the
   current page, plain text marked `aria-current="page"`, with decorative chevrons between steps. The consumer supplies

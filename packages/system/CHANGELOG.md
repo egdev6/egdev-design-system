@@ -4,6 +4,9 @@
 
 ### Added
 
+- The source-derived artifact and reference include `DetailHeader` (its props, static recipes and `classNameAllows`
+  width set), the `content-metadata`, `content-tags` and `external-links` naming concepts (approved, with their
+  receipt) and DetailHeader among the users of six reused conventions. (#572)
 - The source-derived artifact and reference include `Breadcrumb` (its `items`, `label` and `onNavigate` props, the
   `BreadcrumbItem` entry type and its static recipes) and its usages of the approved `accessible-name`,
   `collection-items` and `navigation-intent` conventions. (#570)
