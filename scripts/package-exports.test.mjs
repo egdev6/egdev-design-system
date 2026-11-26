@@ -7891,6 +7891,63 @@ test('Carousel ships static layout, snap, drag, focus and token geometry without
   assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/carousel/carousel.css')), false);
 });
 
+test('Carousel ships the current-slide emphasis utilities, painted only under aria-current (#557)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const block = (selector) => cssBlock(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  assert.match(block('.pt-5'), /padding-top:\s*var\(--space-5[,)]/);
+  assert.match(block('.pb-7'), /padding-bottom:\s*var\(--space-7[,)]/);
+  assert.match(block('.px-6'), /padding-inline:\s*var\(--space-6[,)]/);
+  assert.match(block('.p-2'), /padding:\s*var\(--space-2[,)]/);
+  assert.match(block('.rounded-xl'), /border-radius:\s*var\(--radius-xl[,)]/);
+  assert.match(block('.border-solid'), /border-style:\s*solid/);
+  assert.match(block('.border-transparent'), /border-color:\s*(?:transparent|#0000(?:0000)?)/);
+  const border = String.raw`.aria-\[current\=true\]\:border-border-brand`;
+  const glow = String.raw`.aria-\[current\=true\]\:shadow-\[var\(--shadow-glow-base\)\]`;
+  assert.match(block(`${border}[aria-current="true"]`), /border-color:\s*var\(--color-border-brand[,)]/);
+  assert.match(block(`${glow}[aria-current="true"]`), /--tw-shadow:\s*var\(--shadow-glow-base\)/);
+  // The paint is never emitted without the attribute, so non-current slides keep their transparent frame.
+  for (const selector of [border, glow]) {
+    assert.doesNotMatch(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*[,{]`), selector);
+  }
+  // The compound rule is strictly more specific than the plain focus rule and lists the ring layers first.
+  const compound = String.raw`.aria-\[current\=true\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\,var\(--shadow-glow-base\)\][aria-current="true"]:focus-visible`;
+  assert.match(block(compound), /--tw-shadow:\s*var\(--shadow-focus\),\s*var\(--shadow-glow-base\)/);
+  assert.match(block(String.raw`.focus-visible\:transition-none:focus-visible`), /transition-property:\s*none/);
+  // Every block of one media query, each read to its own closing brace.
+  const mediaBlocks = (query) =>
+    [...css.matchAll(new RegExp(`@media ${query}\\s*\\{`, 'g'))].map(({ index }) =>
+      cssBlock(css.slice(index), new RegExp(`^@media ${query}\\s*\\{`))
+    );
+  assert.ok(
+    mediaBlocks(String.raw`\(prefers-reduced-motion: reduce\)`).some((text) =>
+      /\.motion-reduce\\:transition-none\s*\{[^}]*transition-property:\s*none/.test(text)
+    ),
+    'reduced motion removes the emphasis transition'
+  );
+  assert.match(
+    block(String.raw`.transition-\[border-color\,box-shadow\]`),
+    /transition-property:\s*border-color,\s*box-shadow/
+  );
+  assert.match(
+    block(String.raw`.duration-\[var\(--duration-base\)\]`),
+    /transition-duration:\s*var\(--duration-base\)/
+  );
+  assert.match(block(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)/);
+  const forced = mediaBlocks(String.raw`\(forced-colors: active\)`).join('\n');
+  for (const [utility, declaration] of [
+    ['outline-solid', /outline-style:\s*solid/],
+    [String.raw`outline-\(length\:--focus-width\)`, /outline-width:\s*var\(--focus-width\)/],
+    [String.raw`outline-\[color\:Highlight\]`, /outline-color:\s*highlight/i]
+  ]) {
+    const selector = String.raw`.forced-colors\:aria-\[current\=true\]\:${utility}[aria-current="true"]`;
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const match = new RegExp(`${escaped}\\s*\\{([^}]*)\\}`).exec(forced);
+    assert.ok(match, `Missing forced-colors rule ${selector}`);
+    assert.match(match[1], declaration, selector);
+  }
+  assert.doesNotMatch(css, /\.eg-carousel[^{]*\{/);
+});
+
 test('Carousel public exports preserve deterministic named groups and composed atoms in SSR', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -7925,6 +7982,75 @@ test('Carousel public exports preserve deterministic named groups and composed a
   assert.doesNotMatch(fullWidth, /tracklayout=/i);
   for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
+  }
+  // v0.4 (#557): `variant` is consumed by the hook, never forwarded, and only adds classes.
+  const { JSDOM } = await import('jsdom');
+  const slides = [
+    { value: 'alpha', label: 'Alpha', children: 'First information' },
+    { value: 'beta', label: 'Beta', children: 'Second information' },
+    { value: 'gamma', label: 'Gamma', children: 'Third information' }
+  ];
+  const render = (props) =>
+    new JSDOM(renderToString(createElement(exported.Carousel, { label: 'Highlights', items: slides, ...props })));
+  const plain = render({});
+  const emphasised = render({ variant: 'current-emphasis', 'data-example': 'retained', defaultValue: 'beta' });
+  const fullWidthEmphasis = render({ variant: 'current-emphasis', trackLayout: 'full-width' });
+  const fullWidthPlain = render({ trackLayout: 'full-width' });
+  try {
+    const parts = (dom) => {
+      const document = dom.window.document;
+      const group = document.querySelector('.eg-carousel');
+      const slideNodes = [...group.querySelectorAll('[aria-roledescription="slide"]')];
+      return { document, group, slides: slideNodes, track: slideNodes[0].parentElement };
+    };
+    const on = parts(emphasised);
+    assert.equal(on.group.hasAttribute('variant'), false);
+    assert.equal(on.group.getAttribute('data-example'), 'retained');
+    assert.equal(on.group.querySelectorAll('[variant]').length, 0);
+    assert.equal(on.group.querySelectorAll('[aria-current="true"]').length, 1);
+    assert.equal(on.group.querySelector('[aria-current="true"]').getAttribute('aria-label'), '2 of 3: Beta');
+    assert.equal(on.slides.length, 3);
+    for (const slide of on.slides) {
+      for (const name of [
+        'rounded-xl',
+        'border',
+        'border-solid',
+        'border-transparent',
+        'aria-[current=true]:border-border-brand',
+        'aria-[current=true]:shadow-[var(--shadow-glow-base)]',
+        'aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)]',
+        'forced-colors:aria-[current=true]:outline-[color:Highlight]'
+      ]) {
+        assert.ok(slide.classList.contains(name), name);
+      }
+      assert.equal(slide.classList.contains('rounded-lg'), false);
+      assert.equal(slide.hasAttribute('style'), false);
+    }
+    for (const name of ['px-6', 'pt-5', 'pb-7']) {
+      assert.ok(on.track.classList.contains(name), name);
+    }
+    assert.equal(on.track.classList.contains('p-2'), false);
+    // Without the variant (or with it on the full-width track) nothing of the recipe is present.
+    for (const dom of [plain, fullWidthEmphasis, fullWidthPlain]) {
+      const off = parts(dom);
+      assert.equal(off.group.hasAttribute('variant'), false);
+      for (const slide of off.slides) {
+        assert.equal(slide.classList.contains('border-transparent'), false);
+        assert.equal(slide.classList.contains('aria-[current=true]:border-border-brand'), false);
+        assert.equal(slide.classList.contains('rounded-lg'), true);
+      }
+      assert.equal(off.track.classList.contains('pb-7'), false);
+    }
+    assert.ok(parts(plain).track.classList.contains('p-2'));
+    assert.equal(parts(fullWidthEmphasis).track.className, parts(fullWidthPlain).track.className);
+    assert.deepEqual(
+      parts(fullWidthEmphasis).slides.map((slide) => slide.className),
+      parts(fullWidthPlain).slides.map((slide) => slide.className)
+    );
+  } finally {
+    for (const dom of [plain, emphasised, fullWidthEmphasis, fullWidthPlain]) {
+      dom.window.close();
+    }
   }
 });
 

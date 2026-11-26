@@ -1491,12 +1491,16 @@ const carouselMessages: Partial<CarouselMessages> = { nextSlide: 'Next card' };
 const carouselProps: CarouselProps = { label: 'Highlights', items: carouselItems, messages: carouselMessages };
 export const carouselDefaultLayout: CarouselProps = { ...carouselProps, trackLayout: 'default' };
 export const carouselFullWidthLayout: CarouselProps = { ...carouselProps, trackLayout: 'full-width' };
-export function CarouselSamples({ value, empty = false, trackLayout }: { value?: string; empty?: boolean; trackLayout?: CarouselProps['trackLayout'] }) {
-  return createElement(Carousel, { ...carouselProps, value, trackLayout, items: empty ? [] : carouselItems,
+export const carouselDefaultVariant: CarouselProps = { ...carouselProps, variant: 'default' };
+export const carouselCurrentEmphasis: CarouselProps = { ...carouselProps, variant: 'current-emphasis' };
+export function CarouselSamples({ value, empty = false, trackLayout, variant }: { value?: string; empty?: boolean; trackLayout?: CarouselProps['trackLayout']; variant?: CarouselProps['variant'] }) {
+  return createElement(Carousel, { ...carouselProps, value, trackLayout, variant, items: empty ? [] : carouselItems,
     onValueChange: (next: string) => carouselChanges.push(next) });
 }
 // @ts-expect-error Track layout is the approved two-value union.
 const invalidCarouselTrackLayout: CarouselProps = { ...carouselProps, trackLayout: 'edge' };
+// @ts-expect-error Variant is the approved two-value union.
+const invalidCarouselVariant: CarouselProps = { ...carouselProps, variant: 'spotlight' };
 // @ts-expect-error Carousel requires a visible collection label.
 const unlabelledCarousel: CarouselProps = { items: carouselItems };
 // @ts-expect-error Carousel accepts stable string identities, not indexes.
@@ -6126,7 +6130,23 @@ function assertCarouselCSS(css) {
     String.raw`.focus-visible\:-outline-offset-\(--focus-width\)`,
     String.raw`.group-data-\[state\=dragging\]\:snap-none`,
     String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
-    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    // v0.4 current-slide emphasis (#557): padding, reserved frame, attribute-gated paint, motion and forced colours.
+    '.px-6',
+    '.pt-5',
+    '.pb-7',
+    '.rounded-xl',
+    '.border-solid',
+    '.border-transparent',
+    String.raw`.aria-\[current\=true\]\:border-border-brand[aria-current="true"]`,
+    String.raw`.aria-\[current\=true\]\:shadow-\[var\(--shadow-glow-base\)\][aria-current="true"]`,
+    String.raw`.aria-\[current\=true\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\,var\(--shadow-glow-base\)\][aria-current="true"]:focus-visible`,
+    String.raw`.transition-\[border-color\,box-shadow\]`,
+    String.raw`.focus-visible\:transition-none:focus-visible`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.forced-colors\:aria-\[current\=true\]\:outline-solid[aria-current="true"]`,
+    String.raw`.forced-colors\:aria-\[current\=true\]\:outline-\(length\:--focus-width\)[aria-current="true"]`,
+    String.raw`.forced-colors\:aria-\[current\=true\]\:outline-\[color\:Highlight\][aria-current="true"]`
   ]) {
     assert.ok(css.includes(selector), 'Missing Carousel utility ' + selector);
   }
@@ -6134,6 +6154,15 @@ function assertCarouselCSS(css) {
   assert.match(css, /scrollbar-width:\s*none/);
   assert.match(css, /::-webkit-scrollbar[^{}]*\{[^{}]*display:\s*none/);
   assert.match(css, /outline-offset:\s*calc\(var\(--focus-width\)\s*\*\s*-1\)/);
+  assert.match(css, /padding-top:\s*var\(--space-5[,)]/);
+  assert.match(css, /padding-bottom:\s*var\(--space-7[,)]/);
+  assert.match(css, /border-radius:\s*var\(--radius-xl[,)]/);
+  assert.match(css, /--tw-shadow:\s*var\(--shadow-focus\),\s*var\(--shadow-glow-base\)/);
+  assert.match(
+    css,
+    /\.aria-\\\[current\\=true\\\]\\:border-border-brand\[aria-current="true"\]\s*\{[^}]*border-color:\s*var\(--color-border-brand[,)]/
+  );
+  assert.match(css, /outline-color:\s*highlight/i);
 }
 
 function assertLinkCSS(css) {
@@ -6986,6 +7015,33 @@ try {
   }
   assert.equal(slide.classList.contains('focus-visible:shadow-[var(--shadow-focus)]'), false);
 } finally { fullWidthCarousel.window.close(); }
+// v0.4 current-slide emphasis (#557): consumed by the hook, never forwarded, classes only.
+const emphasisCarousel = new JSDOM(renderToString(createElement(CarouselSamples, { variant: 'current-emphasis' })));
+const emphasisFullWidth = new JSDOM(renderToString(createElement(CarouselSamples, { variant: 'current-emphasis', trackLayout: 'full-width' })));
+try {
+  const root = emphasisCarousel.window.document.querySelector('.eg-carousel');
+  const track = root.querySelector('[aria-roledescription="slide"]').parentElement;
+  assert.equal(root.hasAttribute('variant'), false);
+  assert.equal(root.querySelectorAll('[aria-current="true"]').length, 1);
+  assert.equal(root.querySelector('[aria-current="true"]').getAttribute('aria-label'), '1 of 3: Alpha');
+  for (const name of ['px-6', 'pt-5', 'pb-7']) {
+    assert.ok(track.classList.contains(name), name);
+  }
+  assert.equal(track.classList.contains('p-2'), false);
+  for (const slide of root.querySelectorAll('[aria-roledescription="slide"]')) {
+    for (const name of ['rounded-xl', 'border-transparent', 'aria-[current=true]:border-border-brand', 'aria-[current=true]:shadow-[var(--shadow-glow-base)]', 'forced-colors:aria-[current=true]:outline-[color:Highlight]']) {
+      assert.ok(slide.classList.contains(name), name);
+    }
+    assert.equal(slide.classList.contains('rounded-lg'), false);
+  }
+  const wide = emphasisFullWidth.window.document.querySelector('.eg-carousel');
+  assert.equal(wide.hasAttribute('variant'), false);
+  assert.ok(wide.querySelector('[aria-roledescription="slide"]').parentElement.classList.contains('p-0'));
+  for (const slide of wide.querySelectorAll('[aria-roledescription="slide"]')) {
+    assert.equal(slide.classList.contains('border-transparent'), false);
+    assert.equal(slide.classList.contains('rounded-lg'), true);
+  }
+} finally { emphasisCarousel.window.close(); emphasisFullWidth.window.close(); }
 // MeterRow SSR has one semantic owner, coherent text and generated description references.
 for (const value of [42.5, Number.NaN]) {
   const dom = new JSDOM(renderToString(createElement(MeterRowSamples, { value })));

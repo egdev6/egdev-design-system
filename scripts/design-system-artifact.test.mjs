@@ -108,6 +108,64 @@ test('IconButton hit-area facts and composition spacing are source-derived witho
   assert.match(gap.description, /gap-5 \(16px\).*gap-3 \(9\.6px\)/s);
 });
 
+test('Carousel publishes the opt-in current-slide emphasis variant and its recipes without changing the defaults (#557)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const carousel = artifact.components.find(({ name }) => name === 'Carousel');
+  assert.ok(carousel);
+  const variant = carousel.props.find(({ name }) => name === 'variant');
+  assert.ok(variant, 'Carousel must publish its variant prop');
+  assert.equal(variant.type, 'enum');
+  assert.equal(variant.required, false);
+  assert.equal(variant.default, 'default');
+  assert.match(variant.description, /current-emphasis/);
+  assert.match(variant.description, /full-width/);
+  // The existing prop and every other Carousel prop stay published.
+  assert.deepEqual(carousel.props.map(({ name }) => name).sort(), [
+    'defaultValue',
+    'items',
+    'label',
+    'messages',
+    'onValueChange',
+    'trackLayout',
+    'value',
+    'variant'
+  ]);
+  const classes = (recipeName) => {
+    const recipe = carousel.variants.find(({ name }) => name === recipeName);
+    assert.ok(recipe, recipeName);
+    return recipe.classes.join(' ').split(/\s+/).filter(Boolean);
+  };
+  const slide = classes('carouselSlideVariants');
+  for (const utility of [
+    'rounded-xl',
+    'border',
+    'border-solid',
+    'border-transparent',
+    'transition-[border-color,box-shadow]',
+    'duration-[var(--duration-base)]',
+    'ease-[var(--ease-out)]',
+    'focus-visible:transition-none',
+    'motion-reduce:transition-none',
+    'aria-[current=true]:border-border-brand',
+    'aria-[current=true]:shadow-[var(--shadow-glow-base)]',
+    'aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)]',
+    'forced-colors:aria-[current=true]:outline-solid',
+    'forced-colors:aria-[current=true]:outline-(length:--focus-width)',
+    'forced-colors:aria-[current=true]:outline-[color:Highlight]'
+  ]) {
+    assert.ok(slide.includes(utility), `carouselSlideVariants must list ${utility}`);
+  }
+  // The default recipes are still published next to the emphasis padding.
+  const track = classes('carouselTrackVariants');
+  for (const utility of ['gap-7', 'p-2', 'gap-0', 'p-0', 'px-6', 'pt-5', 'pb-7']) {
+    assert.ok(track.includes(utility), `carouselTrackVariants must list ${utility}`);
+  }
+  assert.ok(slide.includes('rounded-lg') && slide.includes('focus-visible:shadow-[var(--shadow-focus)]'));
+  const convention = artifact.propNaming.find(({ id }) => id === 'visual-treatment');
+  assert.ok(convention, 'the visual-treatment convention is published');
+  assert.ok(convention.components.includes('Carousel'), 'the visual-treatment convention lists Carousel');
+});
+
 test('classNameAllows publishes sorted unique CSS properties on roots and their own or shared parts', () => {
   const result = artifactWithTags([
     {
