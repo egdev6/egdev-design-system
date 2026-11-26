@@ -1727,6 +1727,25 @@ test('SectionNav ships every recipe utility in the bounded compact block', () =>
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-section-nav/);
 });
 
+test('SectionNav ships the declarations of its number and label utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    ['.font-display', /font-family:\s*var\(--font-display[,)]/],
+    [
+      '.text-meta',
+      /font-size:\s*var\(--text-meta[,)][\s\S]*line-height:[^;]*--text-meta--line-height[\s\S]*letter-spacing:[^;]*--text-meta--letter-spacing[\s\S]*font-weight:[^;]*--text-meta--font-weight/
+    ],
+    ['.tabular-nums', /font-variant-numeric:[^;]*--tw-numeric-spacing/],
+    ['.text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    ['.uppercase', /text-transform:\s*uppercase\s*;/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+});
+
 test('SectionNav package SSR keeps one named landmark and compact classes on its own elements', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement: h } = await import('react');
@@ -1770,6 +1789,18 @@ test('SectionNav package SSR keeps one named landmark and compact classes on its
     for (const name of ['[@media(width<=520px)]:h-14', '[@media(width<=520px)]:px-3']) {
       assert.ok(trigger.parentElement.classList.contains(name));
     }
+    // v0.3 (#563): the padded number and the uppercase label are two parts joined by a real text node.
+    const [number, label] = [...trigger.children].filter((node) => node.tagName === 'SPAN');
+    assert.equal(number?.textContent, '01');
+    assert.equal(label?.textContent, 'One');
+    for (const name of ['font-display', 'text-meta', 'tabular-nums', 'text-fg-brand-raised']) {
+      assert.ok(number.classList.contains(name), `SectionNav number must carry ${name}`);
+    }
+    for (const name of ['font-display', 'text-meta', 'uppercase']) {
+      assert.ok(label.classList.contains(name), `SectionNav label must carry ${name}`);
+    }
+    assert.equal(number.nextSibling?.nodeType, 3, 'a text node separates the number from the label');
+    assert.equal(trigger.textContent, '01 One');
     assert.equal(doc.querySelector('[role="dialog"]'), null);
   } finally {
     dom.window.close();

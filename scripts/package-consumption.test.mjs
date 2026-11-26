@@ -5575,6 +5575,19 @@ function assertSectionNavConsumerCSS(css) {
   }
   assert.match(utilities, /safe-area-inset-right/);
   assert.match(utilities, /safe-area-inset-bottom/);
+  for (const [selector, declaration] of [
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['text-meta', /font-size:\s*var\(--text-meta[,)]/],
+    ['tabular-nums', /font-variant-numeric:/],
+    ['text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    ['uppercase', /text-transform:\s*uppercase/]
+  ]) {
+    assert.match(
+      block(utilities, new RegExp('\\.' + selector + '\\s*\\{')),
+      declaration,
+      'Missing SectionNav utility .' + selector
+    );
+  }
   assert.doesNotMatch(utilities, /\.eg-section-nav\s*\{/);
   assert.match(block(css, /@layer components\s*\{/), /\.eg-section-nav/);
 }
@@ -6572,6 +6585,13 @@ const { SectionNavSamples } = await import('./consumer.ts');
       for (const name of ['[@media(width<=520px)]:min-w-14', '[@media(width<=520px)]:min-h-14']) assert.ok(node.classList.contains(name));
     }
     for (const name of ['[@media(width<=520px)]:h-14', '[@media(width<=520px)]:px-3']) assert.ok(trigger.parentElement.classList.contains(name));
+    const [number, label] = [...trigger.children].filter((node) => node.tagName === 'SPAN');
+    assert.equal(number?.textContent, '01');
+    assert.equal(label?.textContent, 'One');
+    for (const name of ['font-display', 'text-meta', 'tabular-nums', 'text-fg-brand-raised']) assert.ok(number.classList.contains(name), 'SectionNav number must carry ' + name);
+    for (const name of ['font-display', 'text-meta', 'uppercase']) assert.ok(label.classList.contains(name), 'SectionNav label must carry ' + name);
+    assert.equal(number.nextSibling?.nodeType, 3);
+    assert.equal(trigger.textContent, '01 One');
     assert.equal(doc.querySelector('[role="dialog"]'), null);
   } finally { dom.window.close(); }
 }
