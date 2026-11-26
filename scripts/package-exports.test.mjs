@@ -1592,6 +1592,257 @@ test('Breadcrumb package SSR renders one named landmark, a marked current page a
   assert.deepEqual(warnings, ['Breadcrumb requires a non-empty label. Nothing was rendered.']);
 });
 
+test('DetailHeader ships every static recipe utility with its token declaration and no rule of its own (#572)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/detail-header/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 8, 'DetailHeader declares exactly eight static recipes');
+  assert.equal(classes.size, 26, 'The approved inventory is four stable markers plus 22 utilities');
+  assert.deepEqual([...classes].filter((name) => name.startsWith('eg-')).sort(), [
+    'eg-detail-header',
+    'eg-detail-header__links',
+    'eg-detail-header__meta',
+    'eg-detail-header__tags'
+  ]);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes(escapeClass(name)), `Missing DetailHeader utility ${name}`);
+    }
+  }
+  // Every utility reads the property and the token the approved recipe names; a row per utility keeps this complete.
+  const rows = [
+    ['flex', /display:\s*flex/],
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['flex-col', /flex-direction:\s*column/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['gap-6', /gap:\s*var\(--space-6\)/],
+    ['gap-1', /gap:\s*var\(--space-1\)/],
+    // The 1.5 step is derived from the --space-1 token, not a token of its own: Chip and the ProjectCard tag list ship it.
+    ['gap-1.5', /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/],
+    ['gap-x-8', /column-gap:\s*var\(--space-8\)/],
+    ['gap-x-6', /column-gap:\s*var\(--space-6\)/],
+    ['gap-y-4', /row-gap:\s*var\(--space-4\)/],
+    ['gap-y-3', /row-gap:\s*var\(--space-3\)/],
+    ['m-0', /margin:\s*var\(--space-0\)/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['list-none', /list-style-type:\s*none/],
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-label-eyebrow', /font-size:\s*var\(--text-label-eyebrow[,)]/],
+    ['text-label-eyebrow', /font-weight:[^;}]*--text-label-eyebrow--font-weight/],
+    ['text-label-eyebrow', /line-height:[^;}]*--text-label-eyebrow--line-height/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/],
+    ['text-body-default', /font-weight:[^;}]*--text-body-default--font-weight/],
+    ['text-body-default', /line-height:[^;}]*--text-body-default--line-height/],
+    ['uppercase', /text-transform:\s*uppercase/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/]
+  ];
+  assert.deepEqual(
+    [...new Set(rows.map(([token]) => token))].sort(),
+    [...classes].filter((name) => !name.startsWith('eg-')).sort(),
+    'Every recipe utility has a declaration row'
+  );
+  for (const [token, declaration] of rows) {
+    assert.match(
+      utilities,
+      new RegExp(`${escapeRegExp(escapeClass(token))}\\s*\\{[^}]*${declaration.source}`),
+      `Missing DetailHeader rule ${token}`
+    );
+  }
+  // The header paints nothing and has no stylesheet: no paint or motion utility in the recipes, no rule for a marker.
+  for (const name of classes) {
+    assert.doesNotMatch(
+      name,
+      /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|duration|ease|transform|rounded)\b/
+    );
+  }
+  assert.doesNotMatch(css, /\.eg-detail-header\b/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/detail-header/detail-header.css')), false);
+});
+
+test('DetailHeader package SSR renders one header, a description list, two named lists and safe external links, and keeps its recipes internal (#572)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.DetailHeader, 'function');
+  for (const name of [
+    'useDetailHeader',
+    'detailHeaderVariants',
+    'detailHeaderMetaVariants',
+    'detailHeaderMetaEntryVariants',
+    'detailHeaderTermVariants',
+    'detailHeaderValueVariants',
+    'detailHeaderTagsVariants',
+    'detailHeaderLinksVariants',
+    'detailHeaderLinkItemVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to DetailHeader`);
+  }
+  const props = {
+    eyebrow: 'Event',
+    title: 'Conference',
+    lede: 'Two days of talks.',
+    metadata: [
+      { label: 'Date', value: 'December 12, 2026', dateTime: '2026-12-12' },
+      { label: 'Place', value: 'Example Hall' },
+      { label: '', value: 'dropped' }
+    ],
+    tags: ['Design', ' ', 'Systems'],
+    links: [
+      { label: 'Event page', href: '  https://example.com/events/conference  ' },
+      { label: 'Plain', href: 'http://example.com/insecure' },
+      { label: 'Script', href: 'javascript:alert(1)' }
+    ],
+    id: 'packed-header',
+    lang: 'en',
+    className: 'mt-6',
+    role: 'region',
+    style: { color: 'red' }
+  };
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (message) => warnings.push(message);
+  let markup;
+  try {
+    markup = renderToString(createElement(exported.DetailHeader, props));
+    // Deterministic markup: a second render of the same props is byte-identical.
+    assert.equal(renderToString(createElement(exported.DetailHeader, props)), markup);
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual([...new Set(warnings)].sort(), [
+    'DetailHeader: skipping a blank tag.',
+    'DetailHeader: skipping an invalid link entry.',
+    'DetailHeader: skipping an invalid metadata entry.'
+  ]);
+  assert.equal(markup.includes('javascript'), false);
+  assert.equal(markup.includes('http://'), false);
+  const dom = new JSDOM(markup);
+  try {
+    const body = dom.window.document.body;
+    assert.equal(body.children.length, 1);
+    const rootElement = body.firstElementChild;
+    assert.equal(rootElement.tagName, 'DIV');
+    for (const name of ['eg-detail-header', 'mt-6']) {
+      assert.ok(rootElement.classList.contains(name), name);
+    }
+    assert.equal(rootElement.getAttribute('id'), 'packed-header');
+    assert.equal(rootElement.getAttribute('lang'), 'en');
+    for (const attribute of ['role', 'aria-label', 'aria-labelledby', 'title', 'tabindex', 'data-state', 'style']) {
+      assert.equal(rootElement.hasAttribute(attribute), false, attribute);
+    }
+    assert.deepEqual(
+      [...rootElement.children].map((node) => node.tagName),
+      ['HEADER', 'DL', 'UL', 'UL']
+    );
+    // Exactly one header (SectionHeader's), never nested, holding the eyebrow, the page heading and the lede.
+    assert.equal(body.querySelectorAll('header').length, 1);
+    const header = rootElement.firstElementChild;
+    assert.deepEqual(
+      [...header.children].map((node) => node.tagName),
+      ['P', 'H1', 'P']
+    );
+    assert.equal(header.querySelector('h1').textContent, 'Conference');
+    // The facts: one wrapper div per entry with its term and definition; a date gets a native time element.
+    const list = rootElement.querySelector('dl');
+    assert.equal(list.classList.contains('eg-detail-header__meta'), true);
+    assert.deepEqual(
+      [...list.children].map((node) => [...node.children].map((child) => child.tagName)),
+      [
+        ['DT', 'DD'],
+        ['DT', 'DD']
+      ]
+    );
+    assert.deepEqual(
+      [...list.querySelectorAll('dt')].map((node) => node.textContent),
+      ['Date', 'Place']
+    );
+    const time = list.querySelector('time');
+    assert.equal(time.getAttribute('datetime'), '2026-12-12');
+    assert.equal(time.textContent, 'December 12, 2026');
+    // The two unordered lists carry the explicit list role and their default English names.
+    const [tags, links] = rootElement.querySelectorAll('ul');
+    assert.equal(tags.getAttribute('role'), 'list');
+    assert.equal(tags.getAttribute('aria-label'), 'Tags');
+    assert.equal(tags.classList.contains('eg-detail-header__tags'), true);
+    assert.deepEqual(
+      [...tags.querySelectorAll('li')].map((node) => [
+        node.textContent,
+        node.firstElementChild.className.includes('eg-chip')
+      ]),
+      [
+        ['Design', true],
+        ['Systems', true]
+      ]
+    );
+    assert.equal(tags.querySelector('a, button, [role], [tabindex]'), null);
+    assert.equal(links.getAttribute('role'), 'list');
+    assert.equal(links.getAttribute('aria-label'), 'Links');
+    assert.equal(links.classList.contains('eg-detail-header__links'), true);
+    const anchors = [...links.querySelectorAll('a')];
+    assert.equal(anchors.length, 1);
+    assert.equal(anchors[0].getAttribute('href'), 'https://example.com/events/conference');
+    assert.equal(anchors[0].getAttribute('target'), '_blank');
+    const rel = anchors[0].getAttribute('rel').split(/\s+/);
+    assert.ok(rel.includes('noopener') && rel.includes('noreferrer'));
+    assert.equal(anchors[0].classList.contains('eg-link'), true);
+    // The accessible name is the label, one space and the hidden notice; the arrow is decorative.
+    assert.equal(anchors[0].textContent, 'Event page (opens in a new tab)');
+    assert.equal(anchors[0].querySelector('svg').getAttribute('aria-hidden'), 'true');
+    // No inline style on any element DetailHeader owns: the root, the lists, their entries, terms and values.
+    for (const element of rootElement.querySelectorAll('dl, dl > div, dt, dd, time, ul, li')) {
+      assert.equal(element.hasAttribute('style'), false, element.tagName);
+    }
+  } finally {
+    dom.window.close();
+  }
+  // An unreadable title renders nothing, however valid the rest is, and warns once in development.
+  const unreadable = [];
+  console.warn = (message) => unreadable.push(message);
+  try {
+    assert.equal(
+      renderToStaticMarkup(
+        createElement(exported.DetailHeader, { ...props, title: '   ', role: undefined, style: undefined })
+      ),
+      ''
+    );
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(unreadable, ['DetailHeader requires a non-blank title; nothing was rendered.']);
+});
+
 test('StepMeter package SSR renders a named image of presentational steps and nothing for invalid input', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -6708,6 +6959,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'CommunityCardAction',
       'CommunityCardMark',
       'Countdown',
+      'DetailHeader',
       'Dialog',
       'DialogClose',
       'DialogContent',
@@ -7074,6 +7326,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CountdownSize',
     'CountdownTone',
     'CountdownUnits',
+    'DetailHeader',
+    'DetailHeaderLink',
+    'DetailHeaderMessages',
+    'DetailHeaderMetadataItem',
+    'DetailHeaderProps',
     'Dialog',
     'DialogClose',
     'DialogCloseProps',
@@ -7533,6 +7790,21 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useDetailHeader',
+    'detailHeaderVariants',
+    'detailHeaderMetaVariants',
+    'detailHeaderMetaEntryVariants',
+    'detailHeaderTermVariants',
+    'detailHeaderValueVariants',
+    'detailHeaderTagsVariants',
+    'detailHeaderLinksVariants',
+    'detailHeaderLinkItemVariants',
+    'DetailHeaderNativeProps'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
     'useToastProvider',
     'toastVariants',
     'toastViewportVariants',
@@ -7634,6 +7906,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Breadcrumb',
     'BreadcrumbItem',
     'BreadcrumbProps',
+    'DetailHeader',
+    'DetailHeaderLink',
+    'DetailHeaderMessages',
+    'DetailHeaderMetadataItem',
+    'DetailHeaderProps',
     'AttachmentField',
     'AttachmentFieldMessages',
     'AttachmentFieldProps',

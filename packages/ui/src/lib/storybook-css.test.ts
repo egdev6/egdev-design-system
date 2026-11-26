@@ -16,6 +16,16 @@ import {
 } from '../molecules/breadcrumb/types';
 import { carouselSlideVariants, carouselTrackVariants } from '../molecules/carousel/types';
 import {
+  detailHeaderLinkItemVariants,
+  detailHeaderLinksVariants,
+  detailHeaderMetaEntryVariants,
+  detailHeaderMetaVariants,
+  detailHeaderTagsVariants,
+  detailHeaderTermVariants,
+  detailHeaderValueVariants,
+  detailHeaderVariants
+} from '../molecules/detail-header/types';
+import {
   dialogCloseVariants,
   dialogHeaderActionsVariants,
   dialogOverlayVariants,
@@ -992,6 +1002,113 @@ describe('Storybook preview CSS', () => {
     expect(rule('.text-label-default')).toMatch(/font-weight:[^;}]*--text-label-default--font-weight/);
     // The trail paints nothing and ships no stylesheet: its public marker carries no rule of its own.
     expect(css).not.toMatch(/\.eg-breadcrumb\b/);
+  });
+
+  it('emits every DetailHeader recipe utility from the production recipes and no rule for its markers (#572)', () => {
+    // Every utility of the eight recipes is emitted with the property and token the approved recipe names; the
+    // completeness check below fails if a recipe utility has no row.
+    const escapeClass = (token: string) => `.${token.replace(/[^\w-]/g, (character) => `\\${character}`)}`;
+    const space = (step: string) => `var\\(--space-${step}[,)]`;
+    const rows: readonly (readonly [token: string, declaration: string])[] = [
+      ['flex', 'display:\\s*flex'],
+      ['min-w-0', `min-width:\\s*${space('0')}`],
+      ['flex-col', 'flex-direction:\\s*column'],
+      ['flex-wrap', 'flex-wrap:\\s*wrap'],
+      ['gap-6', `gap:\\s*${space('6')}`],
+      ['gap-1', `gap:\\s*${space('1')}`],
+      // The 1.5 step is derived from the --space-1 token, not a token of its own: the utility Chip and the ProjectCard
+      // tag list already ship.
+      ['gap-1.5', 'gap:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*1\\.5\\)'],
+      ['gap-x-8', `column-gap:\\s*${space('8')}`],
+      ['gap-x-6', `column-gap:\\s*${space('6')}`],
+      ['gap-y-4', `row-gap:\\s*${space('4')}`],
+      ['gap-y-3', `row-gap:\\s*${space('3')}`],
+      ['m-0', `margin:\\s*${space('0')}`],
+      ['p-0', `padding:\\s*${space('0')}`],
+      ['list-none', 'list-style-type:\\s*none'],
+      ['font-display', 'font-family:\\s*var\\(--font-display[,)]'],
+      ['font-sans', 'font-family:\\s*var\\(--font-sans[,)]'],
+      ['text-label-eyebrow', 'font-size:\\s*var\\(--text-label-eyebrow[,)]'],
+      ['text-body-default', 'font-size:\\s*var\\(--text-body-default[,)]'],
+      ['uppercase', 'text-transform:\\s*uppercase'],
+      ['text-fg-muted', 'color:\\s*var\\(--color-fg-muted[,)]'],
+      ['text-fg-default', 'color:\\s*var\\(--color-fg-default[,)]'],
+      ['wrap-anywhere', 'overflow-wrap:\\s*anywhere']
+    ];
+    const recipe = new Set(
+      [
+        detailHeaderVariants(),
+        detailHeaderMetaVariants(),
+        detailHeaderMetaEntryVariants(),
+        detailHeaderTermVariants(),
+        detailHeaderValueVariants(),
+        detailHeaderTagsVariants(),
+        detailHeaderLinksVariants(),
+        detailHeaderLinkItemVariants()
+      ]
+        .flatMap((classes) => classes.split(' '))
+        .filter((token) => !token.startsWith('eg-detail-header'))
+    );
+    expect([...recipe].sort()).toEqual(rows.map(([token]) => token).sort());
+    for (const [token, declaration] of rows) {
+      expect(rule(escapeClass(token)), token).toMatch(new RegExp(declaration));
+    }
+    // The two type steps carry the line height and weight of their token too, not only the size.
+    for (const step of ['label-eyebrow', 'body-default']) {
+      expect(rule(`.text-${step}`)).toMatch(new RegExp(`line-height:[^;}]*--text-${step}--line-height`));
+      expect(rule(`.text-${step}`)).toMatch(new RegExp(`font-weight:[^;}]*--text-${step}--font-weight`));
+    }
+    // The header paints nothing and ships no stylesheet: none of its four markers carries a rule of its own.
+    expect(css).not.toMatch(/\.eg-detail-header\b/);
+  });
+
+  it('keeps the colours DetailHeader owns at 4.5:1 or better on solid surface-0 to surface-3 (DH-12)', () => {
+    const theme = readFileSync(fileURLToPath(new URL('../../../tokens/src/theme.css', import.meta.url)), 'utf8');
+    const declared = (name: string) => new RegExp(`${name}:\\s*([^;]+);`).exec(theme)?.[1]?.trim();
+    // Resolve a token through its var() aliases down to a plain hex value; anything else cannot be measured here.
+    const hex = (name: string): string => {
+      let value = declared(name);
+      for (let hops = 0; hops < 6 && value?.startsWith('var(') === true; hops += 1) {
+        value = declared(/^var\((--[\w-]+)\)$/.exec(value)?.[1] ?? '');
+      }
+      expect(value, `${name} must resolve to a plain hex colour`).toMatch(/^#[0-9A-Fa-f]{6}$/);
+      return value ?? '';
+    };
+    const luminance = (colour: string) => {
+      const [red = 0, green = 0, blue = 0] = [1, 3, 5].map((start) => {
+        const channel = Number.parseInt(colour.slice(start, start + 2), 16) / 255;
+        return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+    };
+    const contrast = (foreground: string, background: string) => {
+      const [light = 0, dark = 0] = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+      return (light + 0.05) / (dark + 0.05);
+    };
+    // The colour utilities of the term and the value recipes: a text-* utility whose token is a colour, not a size.
+    const owned = [
+      ...new Set(
+        [detailHeaderTermVariants(), detailHeaderValueVariants()]
+          .flatMap((classes) => classes.split(' '))
+          .filter((token) => token.startsWith('text-'))
+          .map((token) => token.slice('text-'.length))
+          .filter((name) => declared(`--color-${name}`) !== undefined && declared(`--text-${name}`) === undefined)
+      )
+    ].sort();
+    expect(owned).toEqual(['fg-default', 'fg-muted']);
+    const expected: Record<string, number[]> = {
+      'fg-default': [18.26, 17.02, 15.5, 13.55],
+      'fg-muted': [7.17, 6.69, 6.09, 5.32]
+    };
+    for (const name of owned) {
+      const foreground = hex(`--color-${name}`);
+      for (const [tone, surface] of ['surface-0', 'surface-1', 'surface-2', 'surface-3'].entries()) {
+        const ratio = contrast(foreground, hex(`--color-${surface}`));
+        expect(ratio, `${name} on ${surface}`).toBeGreaterThanOrEqual(4.5);
+        // The figures of the approved spec, computed here from the resolved tokens, to two decimals.
+        expect(ratio, `${name} on ${surface}`).toBeCloseTo(expected[name]?.[tone] ?? 0, 2);
+      }
+    }
   });
 
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {

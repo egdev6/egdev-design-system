@@ -102,6 +102,8 @@ import { EmptyState } from '@egdev/ui';
 import type { EmptyStateLevel, EmptyStateProps } from '@egdev/ui';
 import { Breadcrumb } from '@egdev/ui';
 import type { BreadcrumbItem, BreadcrumbProps } from '@egdev/ui';
+import { DetailHeader } from '@egdev/ui';
+import type { DetailHeaderLink, DetailHeaderMessages, DetailHeaderMetadataItem, DetailHeaderProps } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -754,6 +756,49 @@ type BreadcrumbPrivateRecipe = (typeof import('@egdev/ui'))['breadcrumbVariants'
 // @ts-expect-error The internal hook is not public.
 type BreadcrumbPrivateHook = (typeof import('@egdev/ui'))['useBreadcrumb'];
 export type BreadcrumbNegatives = [typeof breadcrumbMissingLabel, typeof breadcrumbMissingItems, typeof breadcrumbRole, typeof breadcrumbAriaLabel, typeof breadcrumbAriaLabelledBy, typeof breadcrumbChildren, typeof breadcrumbHtml, typeof breadcrumbRef, typeof breadcrumbSlot, typeof breadcrumbNumericLabel, BreadcrumbPrivateRecipe, BreadcrumbPrivateHook];
+
+// Keep DetailHeader samples outside App so the existing link-count/focus harness stays unchanged.
+export const detailHeaderMetadata: DetailHeaderMetadataItem[] = [{ label: 'Date', value: 'December 12, 2026', dateTime: '2026-12-12' }, { label: 'Place', value: 'Example Hall' }];
+export const detailHeaderLinks: DetailHeaderLink[] = [{ label: 'Event page', href: 'https://example.com/events/conference' }, { label: 'Recording', href: 'https://example.org/recordings/conference' }];
+export const detailHeaderMessages: Partial<DetailHeaderMessages> = { tags: 'Topics', links: 'Related pages' };
+export const detailHeaderProps: DetailHeaderProps = { eyebrow: 'Event', title: 'Conference', lede: 'Two days of talks.', level: 1, metadata: detailHeaderMetadata, tags: ['Design', 'Systems'], links: detailHeaderLinks, id: 'packed-header', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6', onClick: () => undefined };
+export function DetailHeaderSamples() {
+  return createElement(Fragment, null,
+    createElement(DetailHeader, detailHeaderProps),
+    createElement(DetailHeader, { title: 'Title only' }),
+    createElement(DetailHeader, { title: [['Release notes ', 'en'], ['/ ', undefined, true], ['changelog', 'en']], eyebrow: [['Localized page', 'en']], lede: [['Language-tagged runs.', 'en']], level: 3, metadata: [{ label: 'Published', value: 'November 26, 2026', dateTime: '2026-11-26' }], tags: ['Release'], links: [{ label: 'Download', href: 'https://example.org/download' }], messages: detailHeaderMessages, newTabText: '(opens in a new window)' }),
+    createElement(DetailHeader, { title: 'Facts only', metadata: [{ label: 'Status', value: 'Active' }] }),
+    createElement(DetailHeader, { title: 'Invalid entries', metadata: [{ label: '', value: 'dropped' }], tags: [' '], links: [{ label: 'Plain', href: 'http://example.com' }] }));
+}
+// @ts-expect-error The title is required.
+const detailHeaderMissingTitle: DetailHeaderProps = {};
+// @ts-expect-error The root has no children: the content comes from props.
+const detailHeaderChildren: DetailHeaderProps = { title: 'x', children: 'x' };
+// @ts-expect-error The root has no role.
+const detailHeaderRole: DetailHeaderProps = { title: 'x', role: 'region' };
+// @ts-expect-error The heading names the content, never aria-label.
+const detailHeaderAriaLabel: DetailHeaderProps = { title: 'x', 'aria-label': 'x' };
+// @ts-expect-error The heading names the content, never aria-labelledby.
+const detailHeaderAriaLabelledBy: DetailHeaderProps = { title: 'x', 'aria-labelledby': 'x' };
+// @ts-expect-error The component paints no inline appearance.
+const detailHeaderStyle: DetailHeaderProps = { title: 'x', style: { color: 'red' } };
+// @ts-expect-error Raw HTML is protected.
+const detailHeaderHtml: DetailHeaderProps = { title: 'x', dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A root ref is not part of this API.
+const detailHeaderRef: DetailHeaderProps = { title: 'x', ref: null };
+// @ts-expect-error Slot composition is not supported.
+const detailHeaderSlot: DetailHeaderProps = { title: 'x', asChild: true };
+// @ts-expect-error A heading rank is 1 to 6.
+const detailHeaderLevel: DetailHeaderProps = { title: 'x', level: 7 };
+// @ts-expect-error A fact needs a value.
+const detailHeaderNoValue: DetailHeaderProps = { title: 'x', metadata: [{ label: 'x' }] };
+// @ts-expect-error A link needs a destination.
+const detailHeaderNoHref: DetailHeaderProps = { title: 'x', links: [{ label: 'x' }] };
+// @ts-expect-error The recipes are private.
+type DetailHeaderPrivateRecipe = (typeof import('@egdev/ui'))['detailHeaderVariants'];
+// @ts-expect-error The internal hook is not public.
+type DetailHeaderPrivateHook = (typeof import('@egdev/ui'))['useDetailHeader'];
+export type DetailHeaderNegatives = [typeof detailHeaderMissingTitle, typeof detailHeaderChildren, typeof detailHeaderRole, typeof detailHeaderAriaLabel, typeof detailHeaderAriaLabelledBy, typeof detailHeaderStyle, typeof detailHeaderHtml, typeof detailHeaderRef, typeof detailHeaderSlot, typeof detailHeaderLevel, typeof detailHeaderNoValue, typeof detailHeaderNoHref, DetailHeaderPrivateRecipe, DetailHeaderPrivateHook];
 
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
@@ -5541,6 +5586,44 @@ function assertBreadcrumbConsumerCSS(css) {
   assert.doesNotMatch(css, /\.eg-breadcrumb\b/);
 }
 
+// DetailHeader ships no stylesheet: every utility of its eight recipes is emitted for native and Tailwind consumers.
+function assertDetailHeaderCSS(css) {
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, declaration] of [
+    ['flex', /display:\s*flex/],
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['flex-col', /flex-direction:\s*column/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['gap-6', /gap:\s*var\(--space-6\)/],
+    ['gap-1', /gap:\s*var\(--space-1\)/],
+    ['gap-1.5', /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/],
+    ['gap-x-8', /column-gap:\s*var\(--space-8\)/],
+    ['gap-x-6', /column-gap:\s*var\(--space-6\)/],
+    ['gap-y-4', /row-gap:\s*var\(--space-4\)/],
+    ['gap-y-3', /row-gap:\s*var\(--space-3\)/],
+    ['m-0', /margin:\s*var\(--space-0\)/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['list-none', /list-style-type:\s*none/],
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-label-eyebrow', /font-size:\s*var\(--text-label-eyebrow[,)]/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/],
+    ['uppercase', /text-transform:\s*uppercase/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/]
+  ]) {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + '[^{}]*\\{[^}]*' + declaration.source),
+      'Missing DetailHeader rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects a DetailHeader marker.
+  assert.doesNotMatch(css, /\.eg-detail-header\b/);
+}
+
 function assertStepMeterConsumerCSS(css) {
   const utilitiesStart = css.search(/@layer utilities\s*\{/);
   assert.ok(utilitiesStart >= 0);
@@ -6091,6 +6174,8 @@ ${assertEmptyStateConsumerCSS.toString()}
 assertEmptyStateConsumerCSS(shippedStyles);
 ${assertBreadcrumbConsumerCSS.toString()}
 assertBreadcrumbConsumerCSS(shippedStyles);
+${assertDetailHeaderCSS.toString()}
+assertDetailHeaderCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -6203,6 +6288,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'CommunityCardAction',
   'CommunityCardMark',
   'Countdown',
+  'DetailHeader',
   'Dialog',
   'DialogClose',
   'DialogContent',
@@ -6778,6 +6864,54 @@ for (const root of breadcrumbRoots) {
   }
 }
 breadcrumbDocument.window.close();
+const { DetailHeaderSamples } = await import('./consumer.ts');
+const detailHeaderDocument = new JSDOM(renderToString(createElement(DetailHeaderSamples)));
+const detailHeaderRoots = [...detailHeaderDocument.window.document.querySelectorAll('.eg-detail-header')];
+assert.equal(detailHeaderRoots.length, 5);
+const [headerFull, headerTitleOnly, headerLocalized, headerFacts, headerInvalid] = detailHeaderRoots;
+for (const root of detailHeaderRoots) {
+  assert.equal(root.tagName, 'DIV');
+  assert.equal(root.querySelectorAll('header').length, 1);
+  for (const attribute of ['role', 'aria-label', 'aria-labelledby', 'tabindex', 'data-state', 'style', 'title']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+  for (const element of root.querySelectorAll('dl, dl > div, dt, dd, time, ul, li')) {
+    assert.equal(element.hasAttribute('style'), false, element.tagName);
+  }
+}
+assert.equal(headerFull.getAttribute('id'), 'packed-header');
+assert.equal(headerFull.getAttribute('lang'), 'en');
+assert.equal(headerFull.getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(headerFull.classList.contains('mt-6'));
+assert.deepEqual([...headerFull.children].map((node) => node.tagName), ['HEADER', 'DL', 'UL', 'UL']);
+assert.equal(headerFull.querySelector('h1').textContent, 'Conference');
+assert.deepEqual([...headerFull.querySelectorAll('dt')].map((node) => node.textContent), ['Date', 'Place']);
+assert.equal(headerFull.querySelector('time').getAttribute('datetime'), '2026-12-12');
+const [fullTags, fullLinks] = headerFull.querySelectorAll('ul');
+assert.equal(fullTags.getAttribute('role'), 'list');
+assert.equal(fullTags.getAttribute('aria-label'), 'Tags');
+assert.deepEqual([...fullTags.querySelectorAll('li')].map((node) => node.textContent), ['Design', 'Systems']);
+assert.equal(fullLinks.getAttribute('role'), 'list');
+assert.equal(fullLinks.getAttribute('aria-label'), 'Links');
+assert.deepEqual([...fullLinks.querySelectorAll('a')].map((link) => link.getAttribute('href')), ['https://example.com/events/conference', 'https://example.org/recordings/conference']);
+for (const link of fullLinks.querySelectorAll('a')) {
+  assert.equal(link.getAttribute('target'), '_blank');
+  const rel = link.getAttribute('rel').split(/\\s+/);
+  assert.ok(rel.includes('noopener') && rel.includes('noreferrer'));
+}
+assert.deepEqual([...fullLinks.querySelectorAll('a')].map((link) => link.textContent), ['Event page (opens in a new tab)', 'Recording (opens in a new tab)']);
+assert.deepEqual([...headerTitleOnly.children].map((node) => node.tagName), ['HEADER']);
+assert.equal(headerTitleOnly.querySelectorAll('dl, ul, li, a, time').length, 0);
+assert.equal(headerLocalized.querySelector('h3').textContent, 'Release notes / changelog');
+assert.equal(headerLocalized.querySelector('h3 span[aria-hidden="true"]').textContent, '/ ');
+assert.equal(headerLocalized.querySelector('h3 span[lang="en"]').textContent, 'Release notes ');
+assert.deepEqual([...headerLocalized.querySelectorAll('ul')].map((list) => list.getAttribute('aria-label')), ['Topics', 'Related pages']);
+assert.equal(headerLocalized.querySelector('a').textContent, 'Download (opens in a new window)');
+assert.deepEqual([...headerFacts.children].map((node) => node.tagName), ['HEADER', 'DL']);
+assert.equal(headerFacts.querySelector('time'), null);
+assert.deepEqual([...headerInvalid.children].map((node) => node.tagName), ['HEADER']);
+assert.equal(headerInvalid.querySelectorAll('a, dl, ul').length, 0);
+detailHeaderDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');
@@ -10797,6 +10931,7 @@ ${assertAttachmentFieldCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertTimelineCSS.toString()}
 ${assertSectionHeaderCSS.toString()}
+${assertDetailHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertSocialLinksCSS.toString()}
 ${assertMenuCSS.toString()}
@@ -10854,6 +10989,7 @@ ${assertMeterRowCSS.toString()}
 assertMeterRowCSS(emitted);
 assertStatCSS(emitted);
 assertSectionHeaderCSS(emitted);
+assertDetailHeaderCSS(emitted);
 ${assertListItemCSS.toString()}
 assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
@@ -10985,6 +11121,7 @@ assertMeterRowCSS(twCss);
 assertStatCSS(twCss);
 assertModuleCardCSS(twCss);
 assertSectionHeaderCSS(twCss);
+assertDetailHeaderCSS(twCss);
 assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertToastCSS(twCss);
