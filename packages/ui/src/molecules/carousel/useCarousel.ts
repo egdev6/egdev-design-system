@@ -99,6 +99,7 @@ export function useCarousel({
   onValueChange,
   messages: overrides,
   trackLayout = 'default',
+  variant = 'default',
   className,
   onKeyDown,
   onFocusCapture,
@@ -124,6 +125,8 @@ export function useCarousel({
   const labelId = useId();
   const trackId = useId();
   const instructionId = useId();
+  // Emphasis exists only on the default track; every other runtime value resolves to the default recipe.
+  const emphasis = trackLayout === 'default' && variant === 'current-emphasis' ? 'current-emphasis' : 'default';
   const unique = new Set(items.map((item) => item.value));
   const valid = unique.size === items.length && items.every((item) => item.value.trim() && item.label.trim());
   const collection = valid ? items : [];
@@ -421,7 +424,7 @@ export function useCarousel({
     trackProps: {
       id: trackId,
       ref: track,
-      className: cn(carouselTrackVariants({ trackLayout })),
+      className: cn(carouselTrackVariants({ trackLayout, variant: emphasis })),
       onScroll: scheduleSettlement,
       onPointerDown: (event) => {
         if (
@@ -528,7 +531,7 @@ export function useCarousel({
         'aria-describedby': instructionId,
         'aria-current': itemIndex === index ? 'true' : undefined,
         tabIndex: itemIndex === index ? 0 : -1,
-        className: cn(carouselSlideVariants({ trackLayout }))
+        className: cn(carouselSlideVariants({ trackLayout, variant: emphasis }))
       }
     }))
   };

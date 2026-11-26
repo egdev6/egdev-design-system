@@ -17,6 +17,10 @@ a local tarball from `pnpm release:pack`.
   status text, keep the node non-interactive and own any announcement of status changes. A label wider than the
   card's content box overflows its row, and the card's legacy `overflow: hidden` clips whatever passes the card's
   padding edge, so keep the label short. (#558)
+- Carousel supports opt-in `variant='current-emphasis'`: on the default track the current slide gets a brand border
+  and glow while its neighbours keep their paint. Every slide then reserves a transparent border and the track gains
+  padding for the glow, so slide geometry changes only when opted in; with `trackLayout='full-width'` it resolves to
+  `default`. The default appearance is unchanged. (#557)
 
 ## 0.10.0
 

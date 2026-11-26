@@ -463,7 +463,8 @@ const postReceiptUsages = [
     'initial-uncontrolled-value',
     'interactive-value-change',
     'collection-items',
-    'localized-messages'
+    'localized-messages',
+    'visual-treatment'
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/carousel/types.ts#CarouselProps'
@@ -1327,7 +1328,8 @@ test('Carousel track layout binds the owner choices, scoped receipt and every re
   ]);
   assert.deepEqual(historicalRegistry([entry]), []);
   const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
-  assert.equal(own.length, 9);
+  // Nine reviewed usages plus the v0.4 `visual-treatment` usage for `variant` (#557).
+  assert.equal(own.length, 10);
   for (const usage of own) {
     assert.equal(usage.source.revision, revision);
     assert.ok(['CarouselProps', 'CarouselItem'].includes(usage.source.symbol));

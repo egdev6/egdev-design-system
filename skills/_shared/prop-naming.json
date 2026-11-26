@@ -454,7 +454,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -464,7 +464,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselItem",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -581,7 +581,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -698,7 +698,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -1333,6 +1333,16 @@
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
           "revision": "sha256:09b965558a8a8bc2e8cb2373ed9bbb9980d2494f1234731b48737b6cd1dac9c8"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "'default' | 'current-emphasis' (default 'default'); trackLayout 'full-width' accepts 'default' only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       }
     ]
@@ -2025,7 +2035,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -2035,7 +2045,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselItem",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -4001,7 +4011,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -4188,7 +4198,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       },
       {
@@ -8572,7 +8582,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:05df71030c077463046e0e67467867cb6d3046289070810937697229d5e2cf9f"
+          "revision": "sha256:b5d8a17ca366b1f34f28e8f92f21277728ee123bbda84af6d8314857863a1a9e"
         }
       }
     ]

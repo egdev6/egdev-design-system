@@ -12,7 +12,7 @@ import preview from '../../../../.storybook/preview';
 const path = (name: string) => fileURLToPath(new URL(`../molecules/carousel/${name}`, import.meta.url));
 
 describe('Carousel Storybook contract', () => {
-  it('documents every own item, dictionary and root property with explicit controls and only the track layout default', () => {
+  it('documents every own item, dictionary and root property with explicit controls and only the track layout and variant defaults', () => {
     const file = ts.createSourceFile('types.ts', readFileSync(path('types.ts'), 'utf8'), ts.ScriptTarget.Latest, true);
     const declarations: ts.PropertySignature[] = [];
     const visit = (node: ts.Node) => {
@@ -29,14 +29,14 @@ describe('Carousel Storybook contract', () => {
         visit(node);
       }
     });
-    expect(declarations).toHaveLength(17);
+    expect(declarations).toHaveLength(18);
     for (const property of declarations) {
       const tags = ts.getJSDocTags(property);
       const controls = tags.filter((tag) => tag.tagName.text === 'control');
       expect(controls, property.name.getText(file)).toHaveLength(1);
       const defaults = tags.filter((tag) => tag.tagName.text === 'default');
       expect(defaults.map((tag) => ts.getTextOfJSDocComment(tag.comment))).toEqual(
-        property.name.getText(file) === 'trackLayout' ? ['default'] : []
+        ['trackLayout', 'variant'].includes(property.name.getText(file)) ? ['default'] : []
       );
       if (ts.getTextOfJSDocComment(controls[0]?.comment) === 'false') {
         expect(tags.some((tag) => tag.tagName.text === 'controlReason' && tag.comment)).toBe(true);
@@ -47,6 +47,9 @@ describe('Carousel Storybook contract', () => {
     expect(stories).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
     expect(stories).toMatch(/export const FullWidth: Story/);
     expect(stories).toMatch(/export const FullWidthNarrow: Story/);
+    expect(stories).toMatch(/export const CurrentEmphasis: Story/);
+    expect(stories).toMatch(/export const CurrentEmphasisTipCards: Story/);
+    expect(stories).toMatch(/export const CurrentEmphasisFullWidth: Story/);
     expect(config.stories).toContain('../packages/*/src/**/*.stories.@(ts|tsx)');
   });
 
@@ -81,6 +84,15 @@ describe('Carousel Storybook contract', () => {
     expect(installed.argTypes.trackLayout?.control).toEqual({ type: 'select' });
     expect(installed.argTypes.trackLayout?.options).toEqual(['default', 'full-width']);
     expect(installed.argTypes.trackLayout?.table?.defaultValue?.summary).toBe('"default"');
+    expect(doc?.props.variant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'default' },
+      tags: { control: 'select' }
+    });
+    expect(installed.argTypes.variant?.control).toEqual({ type: 'select' });
+    expect(installed.argTypes.variant?.options).toEqual(['default', 'current-emphasis']);
+    expect(installed.argTypes.variant?.type?.required).not.toBe(true);
+    expect(installed.argTypes.variant?.table?.defaultValue?.summary).toBe('"default"');
     expect(doc?.props.items?.required).toBe(true);
     expect(doc?.props.label?.required).toBe(true);
     for (const name of ['id', 'dir', 'className', 'onKeyDown', 'aria-describedby']) {

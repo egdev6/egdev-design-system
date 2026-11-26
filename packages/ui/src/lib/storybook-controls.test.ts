@@ -456,7 +456,8 @@ const expected: Record<string, Record<string, string | false>> = {
     defaultValue: 'text',
     onValueChange: false,
     messages: false,
-    trackLayout: 'select'
+    trackLayout: 'select',
+    variant: 'select'
   },
   sectionheader: {
     title: false,
@@ -813,7 +814,7 @@ const ownPropCounts: Record<string, number> = {
   tipcard: 7,
   timeline: 7,
   selecttile: 12,
-  carousel: 7,
+  carousel: 8,
   appicon: 4,
   avatar: 4,
   button: 8,
@@ -1288,6 +1289,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.trackLayout?.options).toEqual(['default', 'full-width']);
     expect(argTypes.trackLayout?.type?.required).not.toBe(true);
     expect(argTypes.trackLayout?.table?.defaultValue?.summary).toBe('"default"');
+    expect(args).toEqual({});
+  });
+  it('maps Carousel variant as an optional select without injecting an argument', () => {
+    const metadata = component('Carousel');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const { argTypes, args } = story('Carousel');
+    expect(argTypes.variant?.control).toEqual({ type: 'select' });
+    expect(argTypes.variant?.options).toEqual(['default', 'current-emphasis']);
+    expect(argTypes.variant?.type?.required).not.toBe(true);
+    expect(argTypes.variant?.table?.defaultValue?.summary).toBe('"default"');
     expect(args).toEqual({});
   });
   it('maps Collapsible part controls and defaults through the registered pipeline', () => {

@@ -962,10 +962,16 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native scroll an
     - carouselLabelVariants base: text-label-eyebrow → --text-label-eyebrow
     - carouselSlideVariants base: rounded-lg → --radius-lg
     - carouselSlideVariants trackLayout=default: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
+    - carouselSlideVariants {"trackLayout":"default","variant":"current-emphasis"}: rounded-xl → --radius-xl
+    - carouselSlideVariants {"trackLayout":"default","variant":"current-emphasis"}: aria-[current=true]:shadow-[var(--shadow-glow-base)] → --shadow-glow-base
+    - carouselSlideVariants {"trackLayout":"default","variant":"current-emphasis"}: aria-[current=true]:focus-visible:shadow-[var(--shadow-focus),var(--shadow-glow-base)] → --shadow-focus, --shadow-glow-base
     - carouselTrackVariants trackLayout=default: gap-7 → --spacing-7
-    - carouselTrackVariants trackLayout=default: p-2 → --spacing-2
     - carouselTrackVariants trackLayout=full-width: gap-0 → --spacing-0
     - carouselTrackVariants trackLayout=full-width: p-0 → --spacing-0
+    - carouselTrackVariants {"trackLayout":"default","variant":"default"}: p-2 → --spacing-2
+    - carouselTrackVariants {"trackLayout":"default","variant":"current-emphasis"}: px-6 → --spacing-6
+    - carouselTrackVariants {"trackLayout":"default","variant":"current-emphasis"}: pt-5 → --spacing-5
+    - carouselTrackVariants {"trackLayout":"default","variant":"current-emphasis"}: pb-7 → --spacing-7
     - carouselVariants base: gap-4 → --spacing-4
     - carouselVariants base: font-sans → --font-sans
   - defaultValue: string; Initial uncontrolled identity; absence or an unknown identity resolves to the first item. Later changes do not reset the current item. (components[] · packages/ui/src/molecules/carousel/types.ts)
@@ -975,6 +981,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native scroll an
   - onValueChange: ((value: string) => void); One request for a changed identity per user navigation or settled scroll; never for prop updates. (components[] · packages/ui/src/molecules/carousel/types.ts)
   - trackLayout: enum; Track spacing and scrollbar presentation. Full-width keeps native scrolling and inset focus. (components[] · packages/ui/src/molecules/carousel/types.ts)
   - value: string; Controlled accepted identity. Missing or unknown identities resolve to the first available item. (components[] · packages/ui/src/molecules/carousel/types.ts)
+  - variant: enum; Visual treatment of the slides. `current-emphasis` frames only the current slide with a brand border and glow and leaves its neighbours unchanged; it reserves a transparent border on every slide and adds token padding around the track for the glow. It applies to the default track layout; with `full-width` it resolves to `default`. (components[] · packages/ui/src/molecules/carousel/types.ts)
 ### ChipGroup
 catalog[] · docs/catalog.json · @egdev/ui · molecule · ToggleGroup
 - ChipGroup (components[] · packages/ui/src/molecules/chip-group/types.ts)
@@ -3643,7 +3650,7 @@ Not exported:
 - value-context: delta; approved; Stat (propNaming[] · skills/_shared/prop-naming.json)
 - value-readout: readout; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
 - viewport-max-height: maxHeight; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
-- visual-treatment: variant; approved; Badge, Button, ButtonGroup, DialogContent, Dropzone, Heading, IconButton, Indicator, Input, Label, Link, ListItem, Logo, MeterRow, ModuleCard, Panel, PhotoFrame, PreviewFrame, ProgressBar, ProjectCard, PullQuote, ScrollReveal, SectionHeader, SelectTile, Skeleton, SocialLinks, Table, Tabs, Text, Textarea, Timeline (propNaming[] · skills/_shared/prop-naming.json)
+- visual-treatment: variant; approved; Badge, Button, ButtonGroup, Carousel, DialogContent, Dropzone, Heading, IconButton, Indicator, Input, Label, Link, ListItem, Logo, MeterRow, ModuleCard, Panel, PhotoFrame, PreviewFrame, ProgressBar, ProjectCard, PullQuote, ScrollReveal, SectionHeader, SelectTile, Skeleton, SocialLinks, Table, Tabs, Text, Textarea, Timeline (propNaming[] · skills/_shared/prop-naming.json)
 - visually-hidden-label: hideLabel; approved; Field, Table (propNaming[] · skills/_shared/prop-naming.json)
 - web-section-body-slot: body; approved; WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - zone-change: onZoneChange; approved; HomeTemplate (propNaming[] · skills/_shared/prop-naming.json)
