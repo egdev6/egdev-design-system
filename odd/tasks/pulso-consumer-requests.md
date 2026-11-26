@@ -20,7 +20,7 @@ egdev-website's Pulso parity gaps (consumer issue egdev6/egdev-website#45), file
 | T4 | S2 | #557 spec draft `docs/components/carousel/v0.4/spec.md`; owner approval pending | parallel writer | see git log |
 | T5 | S1 | #556 spec drafts `docs/components/step-meter/v0.1/spec.md` + `docs/components/now-card/v0.3/spec.md`; owner approval pending | parallel writer | see git log |
 | T6 | S4 | #559 implementation per footer/v0.3/implementation-plan.md | sequential worker | 325a2af, 625bed5, 9ccdb9f |
-| T7 | S3 | #558 implementation per project-card/v0.3/implementation-plan.md | sequential worker | pending |
+| T7 | S3 | #558 implementation per project-card/v0.3/implementation-plan.md | sequential worker | 510903d, a082dd3, f25c5a9, fc16b8d |
 | T8 | S2 | #557 implementation per carousel/v0.4/implementation-plan.md | sequential worker | pending |
 | T9 | S1 | #556 implementation per step-meter/v0.1/implementation-plan.md | sequential worker | pending |
 | T10 | S1–S4 | One integration PR from this branch; owner Storybook review | inline | pending |
@@ -61,6 +61,21 @@ egdev-website's Pulso parity gaps (consumer issue egdev6/egdev-website#45), file
   - StepMeter v0.1: `1da0f307`.
   - NowCard v0.3: `2ed402f0`.
 
+- L10 — Two more website requests filed with owner approval, verbatim: "Footer en grafito (Recomendado), HomeTemplateAnchor fill". They are #565 (footer on the grafito register) and #566 (isotipo anchor that fills its media slot).
+
+  #557 browser finding: with `--shadow-glow-active` the side glow tails are clipped at the track edges by ΔE00 3.6–5.5. AC-05c says "not visibly hard-clipped", and C1 forbids more side padding. Vertical edges were settled at `pt-7 pb-12` (ΔE00 0.68).
+
+  Owner choice, verbatim: "B: pasar a --shadow-glow-base (Recomendado)". This amends OQ-2 to option B. The owner's answer is recorded as approval of the amended spec, and the padding is re-settled by measurement.
+- L9 — Pulso visual triage, requested by the website session. The owner's answers, verbatim: "Sí, mandala (Recomendado)", and for bucket 2 all four options: "titleVariant en escenas (Recomendado), Footer wrap (Recomendado), Link tono neutro + SectionNav, Banda de estado en NowCard".
+
+  New consumer requests filed, outside this document's T6–T9 scope and not yet cataloged:
+  - #560 scene titleVariant.
+  - #561 Footer wrap.
+  - #562 neutral Link tone.
+  - #563 SectionNav number and label.
+  - #564 NowCard status band.
+
+  Bucket 3 keeps the ×0.8 scale (#218) and Material principle 7.
 - L8 — #558 browser finding F1: the legacy `.eg-project-card{overflow:hidden}` clips an over-wide status at the card's padding edge. This contradicts spec §4, "overflows rather than being clipped". The realistic "testing" label is not affected.
 
   Owner choice, verbatim: "A: corregir la frase de la ficha (Recomendado)". The fix amends only the §4 sentence and keeps the implementation. The owner's answer is recorded as the new approval of the amended spec and of the plan's pinned hash.
