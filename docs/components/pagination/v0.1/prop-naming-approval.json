@@ -1,0 +1,69 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the page-count and page-href conventions for the Pagination pageCount and getHref props, and record their registry receipt.",
+  "evidence": {
+    "channel": "Owner answers forwarded in odd/tasks/round-5-consumer-requests.md (L5 and L6), 2026-11-26",
+    "userStatements": [
+      {
+        "quote": "Aprobar todas (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L5 (specs, Pagination v0.1 OQ-5 naming conventions)",
+        "date": "2026-11-26"
+      },
+      {
+        "quote": "Aprobar los 10 (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L6 (plans, Pagination v0.1 D2 registry receipt for the newly named conventions)",
+        "date": "2026-11-26"
+      }
+    ],
+    "specPath": "docs/components/pagination/v0.1/spec.md",
+    "specPayloadSHA256": "sha256:cb81738188ea161a6819027bec4bfe13703bf30c127966cf67d2c17489cd9a2f",
+    "planPath": "docs/components/pagination/v0.1/implementation-plan.md",
+    "planPayloadSHA256": "sha256:d4a494eb48896e4dbca5080ff34b77cdf1bd7e9a46a0637f8bd0362c04ddd0ff",
+    "interpretation": "Scoped convention approval only: it binds the exact payloads below, which the approved Pagination v0.1 spec quotes in its block 3 table of new proposals (OQ-5, approved by L5 with the recommended answer) and whose receipt the approved plan (L6, decision D2) authorized, including the plan's sentence-case normalization of the spec wording. It is not native review authority. The one bound field the owner's answers did not show is status: the spec table lists id, name, meaning, use and avoid, with no alias and no exception, and the plan (section 5.1, D2) states that hashing the approved form is the step D2 adds. The same OQ-5 answer approved the page-number payload of the existing navigation-intent convention; it is recorded as a usage only, because that entry's text, hash and status do not change. The receipt does not approve the Pagination implementation, a visual capture, an alias, an exception or any other convention, and the two entries carry no exception."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": ["page-count", "page-href"],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:page-count",
+      "contentHash": "sha256:d88b7d23a8045ee7d48691070aacb5f9f45776f24a40628eb851280eb05d816d",
+      "convention": {
+        "id": "page-count",
+        "name": "pageCount",
+        "meaning": "Total number of pages of a paginated collection, supplied by the consumer.",
+        "whenToUse": "A component navigates between the pages of a collection that the consumer splits and counts, and renders a bounded window of page controls from the current page and this total.",
+        "avoid": "Item or entry totals, supplementary item counts (use `count`), step counts of a stepped scale (use `steps`), display overflow thresholds and limits on how many page controls render.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/pagination/types.ts",
+        "symbol": "PaginationProps",
+        "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
+      }
+    },
+    {
+      "scope": "convention:page-href",
+      "contentHash": "sha256:fc03c450c7e3c24b5f0182e49dd3135a23a2bccc1dc475c157fe2cff35a2d5fd",
+      "convention": {
+        "id": "page-href",
+        "name": "getHref",
+        "meaning": "Function that returns the native destination URL of one page of a paginated collection; called during render with an integer page and expected to be pure.",
+        "whenToUse": "A component renders crawlable anchors from a derived sequence of pages, so the consumer encodes route and filter state into each URL.",
+        "avoid": "Click interception or routing (use `onNavigate`), destinations supplied as entry data (use an entry's `href` inside `items`), parsing the current location, and side effects.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/pagination/types.ts",
+        "symbol": "PaginationProps",
+        "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
+      }
+    }
+  ]
+}
