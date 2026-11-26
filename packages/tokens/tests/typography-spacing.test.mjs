@@ -252,6 +252,20 @@ test('static theme publishes the two fluid quote recipes and the pull measure (#
   assert.equal(toDeclarationMap(staticBlock).get('--container-quote-pull'), '40ch', 'pull quote measure');
 });
 
+test('static theme publishes the 65ch prose reading measure once, in the static block (#569)', () => {
+  assert.equal(toDeclarationMap(staticBlock).get('--container-prose'), '65ch', 'prose reading measure');
+  assert.equal(
+    [...themeSource.matchAll(/--container-prose\s*:/g)].length,
+    1,
+    '--container-prose is declared exactly once in theme.css'
+  );
+  assert.equal(
+    [...staticBlock.matchAll(/--container-prose\s*:/g)].length,
+    1,
+    'the declaration sits in the @theme static block, beside the pull-quote measure'
+  );
+});
+
 test('typography recipes keep the approved tracking strings', () => {
   const declarations = toDeclarationMap(staticBlock);
   assert.equal(declarations.get('--text-label-eyebrow--letter-spacing'), '0.12em', 'label-eyebrow tracking');

@@ -51,11 +51,12 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
 // #425 adds 11 utility color aliases and 3 root paint aliases: 230 utility, 65 root, 311 total.
 // #465 adds the owner-approved --gradient-spectrum root token: 65 + 1 = 66 root, 311 + 1 = 312 total.
 // Tabs v0.4 adds the owner-approved --mask-scroll-fade-inline root token: 66 + 1 = 67 root, 312 + 1 = 313 total.
-test('theme.css declares exactly 230 utility variables, 16 inline aliases, and 67 root variables', () => {
-  assert.equal(extractDeclarations(themeBlock).length, 230, 'utility namespace declaration count');
+// Prose v0.1 adds the owner-confirmed --container-prose reading measure (#569): 230 + 1 = 231 utility, 313 + 1 = 314 total.
+test('theme.css declares exactly 231 utility variables, 16 inline aliases, and 67 root variables', () => {
+  assert.equal(extractDeclarations(themeBlock).length, 231, 'utility namespace declaration count');
   assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
   assert.equal(extractDeclarations(rootBlock).length, 67, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 313, 'total declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 314, 'total declaration count');
 });
 
 test('theme.css declares the owner-approved spectrum gradient for the custom color control (#465)', () => {
@@ -148,13 +149,13 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css exposes the 313 manual variables and preserves the original 168 values', () => {
+test('compiled dist/tokens.css exposes the 314 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
   const compiled = toDeclarationMap(artifact);
-  assert.equal(compiled.size, 313, 'compiled artifact must expose 313 variables');
+  assert.equal(compiled.size, 314, 'compiled artifact must expose 314 variables');
   assert.match(artifact, /@keyframes\s+pulse\s*\{/, 'compiled artifact must ship the pulse keyframes');
   assert.match(artifact, /@keyframes\s+spin\s*\{/, 'compiled artifact must ship the spin keyframes');
   const parity = compareParity(artifact, themeSource);
