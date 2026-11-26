@@ -1,13 +1,14 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createElement, Fragment } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Icon } from '../../atoms/icon';
 import { Logo } from '../../atoms/logo';
 import * as publicUi from '../../index';
 import { SocialLinks } from '../../molecules/social-links';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './Footer';
-import { CurrentPage, Default, Social } from './Footer.stories';
-import type { FooterNavigationItem } from './types';
+import { CurrentPage, Default, Invalid, Minimal, Social } from './Footer.stories';
+import type { FooterNavigationItem, FooterProps } from './types';
 
 type Assert<T extends true> = T;
 // @ts-expect-error The current-page token is restricted to 'page'; 'step' is outside the contract (FT-16).
@@ -23,6 +24,64 @@ const withItems = (items: FooterNavigationItem[]) => (
     <FooterNavigation label='Explore' items={items} />
   </Footer>
 );
+
+// React logs a missing-key warning once per owner, so these cases keep this block ahead of every other render of a
+// child that was not passed as a JSX child.
+describe('Footer child keys (S5a)', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  // createElement(Footer, args) is what Storybook's default render does: the child travels through props, so React has
+  // not validated it as a statically positioned JSX child and expects a key once the Footer lists it in a partition.
+  // A story's args always carry its children, which the cast reflects.
+  const fromArgs = (args: Partial<FooterProps> | undefined) => createElement(Footer, args as FooterProps);
+  const fragmentArgs = { children: <FooterLegal>Legal</FooterLegal> };
+  const keyWarnings = (error: { mock: { calls: unknown[][] } }) =>
+    error.mock.calls.filter(([message]) => String(message).includes('unique "key" prop'));
+
+  it.each([
+    ['the Minimal story (legal)', () => fromArgs(Minimal.args)],
+    ['the Invalid story (navigation)', () => fromArgs(Invalid.args)],
+    ['the CurrentPage story (navigation)', () => fromArgs(CurrentPage.args)],
+    [
+      'a single motto (stage)',
+      () =>
+        fromArgs({
+          children: (
+            <FooterMotto>
+              <p>Motto</p>
+            </FooterMotto>
+          )
+        })
+    ],
+    ['a single brand (grid)', () => fromArgs({ children: <FooterBrand>Brand</FooterBrand> })],
+    ['a single child inside a Fragment', () => fromArgs({ children: createElement(Fragment, fragmentArgs) })]
+  ])('renders %s without a missing-key warning', (_name, build) => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    render(build());
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    expect(keyWarnings(error)).toEqual([]);
+  });
+
+  it('keeps entries of nested Fragments unique when they share a partition', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    render(
+      <Footer>
+        <>
+          <FooterBrand>Brand</FooterBrand>
+          <>
+            <FooterNavigation label='Nested' items={[{ href: '#one', label: 'One' }]} />
+          </>
+        </>
+        <FooterNavigation label='Top' items={[{ href: '#two', label: 'Two' }]} />
+        <div>Extra</div>
+      </Footer>
+    );
+    expect(screen.getByRole('contentinfo')).toHaveTextContent('BrandNestedOneTopTwoExtra');
+    expect(error).not.toHaveBeenCalled();
+  });
+});
 
 describe('Footer contract', () => {
   it('exports the heading recipe and applies it to the story group headings and tagline (A6-AC2)', () => {

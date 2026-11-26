@@ -1,6 +1,7 @@
 import {
   Children,
   type ComponentPropsWithoutRef,
+  cloneElement,
   type FC,
   Fragment,
   isValidElement,
@@ -45,14 +46,27 @@ function validItems(items: FooterNavigationProps['items']): FooterNavigationProp
   );
 }
 
-function collect(node: ReactNode, parts: Parts, stage: ReactNode[], grid: ReactNode[], legal: ReactNode[]): void {
-  Children.forEach(node, (child) => {
-    if (!isValidElement(child)) {
+function collect(
+  node: ReactNode,
+  parts: Parts,
+  stage: ReactNode[],
+  grid: ReactNode[],
+  legal: ReactNode[],
+  path = ''
+): void {
+  // Each partition is rendered as a list, so its entries need keys. toArray keys every entry by its position
+  // ('.0', '.$id'); the path keeps those keys unique when entries of nested Fragments share one partition.
+  Children.toArray(node).forEach((entry) => {
+    if (!isValidElement(entry)) {
       return;
     }
-    if (child.type === Fragment) {
-      collect((child.props as { children?: ReactNode }).children, parts, stage, grid, legal);
-    } else if (child.type === parts.motto) {
+    const key = `${path}${entry.key}`;
+    if (entry.type === Fragment) {
+      collect((entry.props as { children?: ReactNode }).children, parts, stage, grid, legal, `${key}/`);
+      return;
+    }
+    const child = path ? cloneElement(entry, { key }) : entry;
+    if (child.type === parts.motto) {
       stage.push(child);
     } else if (child.type === parts.legal) {
       legal.push(child);
