@@ -18,7 +18,7 @@
       }
     ],
     "specPath": "docs/components/detail-header/v0.1/spec.md",
-    "specPayloadSHA256": "sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8",
+    "specPayloadSHA256": "sha256:0dff7daeb46ccf733680ab1b1e5c3b196bd73eb651967240ee31a024a659c39f",
     "specAmendments": [
       {
         "name": "Amendment 1",
@@ -29,11 +29,21 @@
         "provenance": "odd/tasks/round-5-consumer-requests.md L8",
         "specPayloadSHA256Before": "sha256:df34b603ee5474f6019997d8f367117d2790e212511b538a6c6b289a10988ece",
         "specPayloadSHA256After": "sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8"
+      },
+      {
+        "name": "Amendment 2",
+        "date": "2026-11-27",
+        "record": "docs/components/detail-header/v0.1/approval.md",
+        "change": "Adds a label span with the static utilities whitespace-normal and wrap-anywhere inside the static Chip of every tag, with its recipe row and the matching anatomy and DH-11 wording; the three convention texts are byte-identical in all three payloads.",
+        "ownerChoice": "B: arreglar los tags dentro de DetailHeader (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L9",
+        "specPayloadSHA256Before": "sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8",
+        "specPayloadSHA256After": "sha256:0dff7daeb46ccf733680ab1b1e5c3b196bd73eb651967240ee31a024a659c39f"
       }
     ],
     "planPath": "docs/components/detail-header/v0.1/implementation-plan.md",
     "planPayloadSHA256": "sha256:f5cf17969cd2c77f7ef324e07410f2545d46218543f33ae9c2bccf96950a419b",
-    "interpretation": "Scoped convention approval only: it binds the exact payloads below, which the approved DetailHeader v0.1 spec quotes in its block 3 table of new proposals (OQ-5, approved by L5 with the recommended answer) and whose receipt the approved plan (L6, decision D2) authorized. It is not native review authority. specPayloadSHA256 is the payload of the spec as amended by Amendment 1 (the owner's L8 answer, which only added wrap-anywhere to the link item recipe); the payload the owner approved at L5 is the digest recorded in specAmendments, and the convention texts are byte-identical in both. The one bound field the owner's answers did not show is status: the spec table lists id, name, meaning, use and avoid, with no alias and no exception, and the plan (section 5.1, D2) states that hashing the approved form is the step D2 adds. The receipt does not approve the DetailHeader implementation, a visual capture, an alias, an exception or any other convention, and the three entries carry no exception."
+    "interpretation": "Scoped convention approval only: it binds the exact payloads below, which the approved DetailHeader v0.1 spec quotes in its block 3 table of new proposals (OQ-5, approved by L5 with the recommended answer) and whose receipt the approved plan (L6, decision D2) authorized. It is not native review authority. specPayloadSHA256 is the payload of the spec as amended by Amendment 1 (the owner's L8 answer, which only added wrap-anywhere to the link item recipe) and Amendment 2 (the owner's L9 answer, which only added the wrapping label span of the tag); the payload the owner approved at L5 is the first Before digest recorded in specAmendments, and the convention texts are byte-identical in all three payloads. The one bound field the owner's answers did not show is status: the spec table lists id, name, meaning, use and avoid, with no alias and no exception, and the plan (section 5.1, D2) states that hashing the approved form is the step D2 adds. The receipt does not approve the DetailHeader implementation, a visual capture, an alias, an exception or any other convention, and the three entries carry no exception."
   },
   "priorReceipts": [],
   "previouslyProposedNowApproved": ["content-metadata", "content-tags", "external-links"],
@@ -55,7 +65,7 @@
       "source": {
         "path": "packages/ui/src/molecules/detail-header/types.ts",
         "symbol": "DetailHeaderProps",
-        "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+        "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
       }
     },
     {
@@ -74,7 +84,7 @@
       "source": {
         "path": "packages/ui/src/molecules/detail-header/types.ts",
         "symbol": "DetailHeaderProps",
-        "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+        "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
       }
     },
     {
@@ -93,7 +103,7 @@
       "source": {
         "path": "packages/ui/src/molecules/detail-header/types.ts",
         "symbol": "DetailHeaderProps",
-        "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+        "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
       }
     }
   ]

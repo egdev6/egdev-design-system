@@ -3510,7 +3510,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       }
     ]
@@ -4398,7 +4398,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       },
       {
@@ -5576,7 +5576,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       }
     ]
@@ -5773,7 +5773,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       }
     ]
@@ -6112,7 +6112,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       }
     ]
@@ -6720,7 +6720,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       }
     ]
@@ -9201,7 +9201,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       }
     ]
@@ -9228,7 +9228,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       }
     ]
@@ -9255,7 +9255,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
+          "revision": "sha256:cd14ba16c3a5a11235a9435192f9e48a7b8417d5a6e670a3840ff32e8c9ab85f"
         }
       }
     ]

@@ -31,7 +31,9 @@ export const DetailHeader: FC<DetailHeaderProps> = (props) => {
         <ul {...tags.listProps}>
           {tags.entries.map((entry) => (
             <li key={entry.key}>
-              <Chip mode='static'>{entry.label}</Chip>
+              <Chip mode='static'>
+                <span className={tags.labelClassName}>{entry.label}</span>
+              </Chip>
             </li>
           ))}
         </ul>

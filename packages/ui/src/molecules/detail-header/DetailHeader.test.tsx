@@ -16,6 +16,7 @@ import {
   detailHeaderLinksVariants,
   detailHeaderMetaEntryVariants,
   detailHeaderMetaVariants,
+  detailHeaderTagLabelVariants,
   detailHeaderTagsVariants,
   detailHeaderTermVariants,
   detailHeaderValueVariants,
@@ -331,6 +332,29 @@ describe('DetailHeader tags', () => {
     expect(within(list).queryAllByRole('button')).toHaveLength(0);
     expect(within(list).queryAllByRole('link')).toHaveLength(0);
     expect(list.querySelector('a, button, [tabindex]')).toBeNull();
+  });
+
+  it('holds each tag label in a span inside the static Chip that restores wrapping (DH-04, DH-11, Amendment 2)', () => {
+    const labels = ['Design', 'ReleaseBundleIdentifier0123456789abcdef0123456789abcdef0123456789abcdef'];
+    render(<DetailHeader title='Release notes' tags={labels} />);
+    const items = within(screen.getByRole('list', { name: 'Tags' })).getAllByRole('listitem');
+    expect(items).toHaveLength(labels.length);
+    items.forEach((item, index) => {
+      const chip = item.firstElementChild as HTMLElement;
+      expect(chip).toHaveClass('eg-chip');
+      // The Chip holds exactly one child, the label span, and the text is the supplied label, unchanged.
+      expect(chip.children).toHaveLength(1);
+      const label = chip.firstElementChild as HTMLElement;
+      expect(label.tagName).toBe('SPAN');
+      expect(label.textContent).toBe(labels[index]);
+      expect(chip.textContent).toBe(labels[index]);
+      expect(label).toHaveClass('whitespace-normal', 'wrap-anywhere');
+      // A private part: no marker, role, tab stop, inline style or state.
+      expect(label.className.split(' ').filter((token) => token.startsWith('eg-'))).toEqual([]);
+      for (const attribute of ['role', 'tabindex', 'style', 'data-state', 'aria-hidden']) {
+        expect(label, attribute).not.toHaveAttribute(attribute);
+      }
+    });
   });
 
   it('renders duplicate tags twice with no duplicate-key error (DH-04)', () => {
@@ -880,7 +904,7 @@ describe('DetailHeader recipes', () => {
 
   it('sets no inline style and mirrors no state on any element DetailHeader owns (DH-09)', () => {
     const { container } = render(full);
-    const owned = container.querySelectorAll('.eg-detail-header, dl, dl > div, dt, dd, time, ul, li');
+    const owned = container.querySelectorAll('.eg-detail-header, dl, dl > div, dt, dd, time, ul, li, .eg-chip > span');
     expect(owned.length).toBeGreaterThan(0);
     for (const element of owned) {
       expect(element, element.tagName).not.toHaveAttribute('style');
@@ -909,7 +933,7 @@ describe('DetailHeader recipes', () => {
       ts.forEachChild(node, visit);
     };
     visit(file);
-    expect(recipes).toHaveLength(8);
+    expect(recipes).toHaveLength(9);
     expect(templates).toHaveLength(0);
     for (const recipe of recipes) {
       expect(recipe).not.toContain('[');
@@ -919,7 +943,7 @@ describe('DetailHeader recipes', () => {
     expect(recipes.filter((recipe) => recipe.startsWith('eg-detail-header'))).toHaveLength(4);
   });
 
-  it('is exactly the eight recipes of the approved spec and nothing else (DH-09)', () => {
+  it('is exactly the nine recipes of the approved spec and nothing else (DH-09)', () => {
     expect(detailHeaderVariants()).toContain('eg-detail-header');
     expect(detailHeaderMetaVariants()).toContain('eg-detail-header__meta');
     expect(detailHeaderTagsVariants()).toContain('eg-detail-header__tags');
@@ -928,10 +952,13 @@ describe('DetailHeader recipes', () => {
       detailHeaderMetaEntryVariants,
       detailHeaderTermVariants,
       detailHeaderValueVariants,
+      detailHeaderTagLabelVariants,
       detailHeaderLinkItemVariants
     ]) {
       expect(recipe()).not.toContain('eg-');
     }
+    // The tag label restores wrapping that Chip turns off on itself; no min-w-0 is needed (Amendment 2).
+    expect(detailHeaderTagLabelVariants().split(' ')).toEqual(['whitespace-normal', 'wrap-anywhere']);
   });
 
   it('adds no paint, border, shadow, transition or animation utility to anything it owns (DH-09)', () => {
@@ -942,6 +969,7 @@ describe('DetailHeader recipes', () => {
       detailHeaderTermVariants(),
       detailHeaderValueVariants(),
       detailHeaderTagsVariants(),
+      detailHeaderTagLabelVariants(),
       detailHeaderLinksVariants(),
       detailHeaderLinkItemVariants()
     ].flatMap((classes) => classes.split(' '));
@@ -1057,6 +1085,7 @@ describe('DetailHeader hook lists', () => {
     expect(metadata?.listProps.role).toBeUndefined();
     expect(tags?.listProps).toMatchObject({ role: 'list', 'aria-label': 'Topics' });
     expect(tags?.entries).toEqual([{ key: '0:Design', label: 'Design' }]);
+    expect(tags?.labelClassName.split(' ')).toEqual(['whitespace-normal', 'wrap-anywhere']);
     expect(links?.listProps).toMatchObject({ role: 'list', 'aria-label': 'Links' });
     expect(links?.newTabText).toBe('(opens in a new window)');
     expect(links?.entries).toEqual([

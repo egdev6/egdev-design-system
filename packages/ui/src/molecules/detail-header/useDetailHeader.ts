@@ -12,6 +12,7 @@ import {
   detailHeaderLinksVariants,
   detailHeaderMetaEntryVariants,
   detailHeaderMetaVariants,
+  detailHeaderTagLabelVariants,
   detailHeaderTagsVariants,
   detailHeaderTermVariants,
   detailHeaderValueVariants,
@@ -46,6 +47,7 @@ export type DetailHeaderTagEntry = { key: string; label: string };
 
 export type DetailHeaderTagsPart = {
   listProps: ComponentPropsWithoutRef<'ul'>;
+  labelClassName: string;
   entries: DetailHeaderTagEntry[];
 };
 
@@ -227,6 +229,7 @@ export function useDetailHeader(props: DetailHeaderProps): UseDetailHeaderResult
       labels.length > 0
         ? {
             listProps: { role: 'list', 'aria-label': tagsName, className: cn(detailHeaderTagsVariants()) },
+            labelClassName: cn(detailHeaderTagLabelVariants()),
             entries: labels
           }
         : undefined,

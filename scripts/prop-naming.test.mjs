@@ -2023,14 +2023,19 @@ test('DetailHeader binds its scoped owner approval for three new conventions, re
   const specPayload = payload(specPath, /^## 1\. Purpose and scope$/m);
   assert.equal(receipt.evidence.specPath, specPath);
   assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(specPayload)));
-  // The receipt sits under the spec as amended by Amendment 1 (the owner's L8 answer): the live payload is the amended one.
+  // The receipt sits under the spec as amended by Amendments 1 and 2 (the owner's L8 and L9 answers): the live payload
+  // is the twice-amended one.
   assert.equal(
     receipt.evidence.specPayloadSHA256,
-    'sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8'
+    'sha256:0dff7daeb46ccf733680ab1b1e5c3b196bd73eb651967240ee31a024a659c39f'
   );
-  // The amendment changed the link item recipe only. It records the digest the owner approved at L5, the amended one,
-  // and the owner's verbatim answer, which the approval record and the task log both hold.
-  const amendmentQuote = 'Agregar `wrap-anywhere` (Recomendado)';
+  // Amendment 1 changed the link item recipe only and Amendment 2 the tag label only. The chain starts at the digest the
+  // owner approved at L5, each link ends at the next one's start, and each carries the owner's verbatim answer, which
+  // the approval record and the task log both hold.
+  const amendmentQuotes = [
+    'Agregar `wrap-anywhere` (Recomendado)',
+    'B: arreglar los tags dentro de DetailHeader (Recomendado)'
+  ];
   assert.deepEqual(receipt.evidence.specAmendments, [
     {
       name: 'Amendment 1',
@@ -2038,21 +2043,35 @@ test('DetailHeader binds its scoped owner approval for three new conventions, re
       record: 'docs/components/detail-header/v0.1/approval.md',
       change:
         'Adds the static utility wrap-anywhere to the link item recipe and the matching DH-11 wording; the three convention texts are byte-identical in both payloads.',
-      ownerChoice: amendmentQuote,
+      ownerChoice: amendmentQuotes[0],
       provenance: 'odd/tasks/round-5-consumer-requests.md L8',
       specPayloadSHA256Before: 'sha256:df34b603ee5474f6019997d8f367117d2790e212511b538a6c6b289a10988ece',
+      specPayloadSHA256After: 'sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8'
+    },
+    {
+      name: 'Amendment 2',
+      date: '2026-11-27',
+      record: 'docs/components/detail-header/v0.1/approval.md',
+      change:
+        'Adds a label span with the static utilities whitespace-normal and wrap-anywhere inside the static Chip of every tag, with its recipe row and the matching anatomy and DH-11 wording; the three convention texts are byte-identical in all three payloads.',
+      ownerChoice: amendmentQuotes[1],
+      provenance: 'odd/tasks/round-5-consumer-requests.md L9',
+      specPayloadSHA256Before: 'sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8',
       specPayloadSHA256After: receipt.evidence.specPayloadSHA256
     }
   ]);
   const approvalRecord = fs.readFileSync(resolve(root, receipt.evidence.specAmendments[0].record), 'utf8');
-  for (const hash of [
-    receipt.evidence.specAmendments[0].specPayloadSHA256Before,
-    receipt.evidence.specAmendments[0].specPayloadSHA256After
-  ]) {
-    assert.ok(approvalRecord.includes(hash.replace('sha256:', '')), `approval.md must record ${hash}`);
+  for (const [index, amendment] of receipt.evidence.specAmendments.entries()) {
+    for (const hash of [amendment.specPayloadSHA256Before, amendment.specPayloadSHA256After]) {
+      assert.ok(approvalRecord.includes(hash.replace('sha256:', '')), `approval.md must record ${hash}`);
+    }
+    assert.ok(approvalRecord.includes(`## ${amendment.name} —`), `approval.md must hold the ${amendment.name} section`);
+    assert.ok(
+      approvalRecord.includes(`"${amendmentQuotes[index]}"`),
+      `approval.md must hold the ${amendment.name} answer`
+    );
+    assert.ok(log.includes(`"${amendmentQuotes[index]}"`), `The task log must hold the ${amendment.name} answer`);
   }
-  assert.ok(approvalRecord.includes(`"${amendmentQuote}"`), 'approval.md must hold the amendment answer');
-  assert.ok(log.includes(`"${amendmentQuote}"`), 'The task log must hold the amendment answer (L8)');
   assert.equal(receipt.evidence.planPath, planPath);
   assert.equal(
     receipt.evidence.planPayloadSHA256,

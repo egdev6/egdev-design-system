@@ -148,8 +148,9 @@ export const Localized: Story = {
 };
 
 /**
- * A long multi-word title, an unbroken checksum value, a long link label, an unbroken link label and many tags: every
- * part wraps and nothing is truncated or clipped. Narrow the viewport to see the facts, the tags and the links reflow.
+ * A long multi-word title, an unbroken checksum value, a long link label, an unbroken link label, an unbroken tag and
+ * many tags: every part wraps and nothing is truncated or clipped. Narrow the viewport to see the facts, the tags and
+ * the links reflow; the unbroken tag wraps inside its pill.
  */
 export const LongContent: Story = {
   args: {
@@ -175,7 +176,8 @@ export const LongContent: Story = {
       'Typography',
       'Layout',
       'Spacing',
-      'Color'
+      'Color',
+      'ReleaseBundleIdentifier0123456789abcdef0123456789abcdef0123456789abcdef'
     ],
     links: [
       {

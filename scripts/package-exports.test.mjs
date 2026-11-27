@@ -1626,8 +1626,8 @@ test('DetailHeader ships every static recipe utility with its token declaration 
     }
   }
   visit(source);
-  assert.equal(recipes, 8, 'DetailHeader declares exactly eight static recipes');
-  assert.equal(classes.size, 26, 'The approved inventory is four stable markers plus 22 utilities');
+  assert.equal(recipes, 9, 'DetailHeader declares exactly nine static recipes');
+  assert.equal(classes.size, 27, 'The approved inventory is four stable markers plus 23 utilities');
   assert.deepEqual([...classes].filter((name) => name.startsWith('eg-')).sort(), [
     'eg-detail-header',
     'eg-detail-header__links',
@@ -1669,6 +1669,7 @@ test('DetailHeader ships every static recipe utility with its token declaration 
     ['uppercase', /text-transform:\s*uppercase/],
     ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
     ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['whitespace-normal', /white-space:\s*normal/],
     ['wrap-anywhere', /overflow-wrap:\s*anywhere/]
   ];
   assert.deepEqual(
@@ -1708,6 +1709,7 @@ test('DetailHeader package SSR renders one header, a description list, two named
     'detailHeaderTermVariants',
     'detailHeaderValueVariants',
     'detailHeaderTagsVariants',
+    'detailHeaderTagLabelVariants',
     'detailHeaderLinksVariants',
     'detailHeaderLinkItemVariants'
   ]) {
@@ -1811,6 +1813,14 @@ test('DetailHeader package SSR renders one header, a description list, two named
       ]
     );
     assert.equal(tags.querySelector('a, button, [role], [tabindex]'), null);
+    // Each tag label sits in a span inside the Chip that restores wrapping, so an unbroken tag cannot overflow.
+    assert.deepEqual(
+      [...tags.querySelectorAll('li > .eg-chip > span')].map((node) => [node.textContent, node.className]),
+      [
+        ['Design', 'whitespace-normal wrap-anywhere'],
+        ['Systems', 'whitespace-normal wrap-anywhere']
+      ]
+    );
     assert.equal(links.getAttribute('role'), 'list');
     assert.equal(links.getAttribute('aria-label'), 'Links');
     assert.equal(links.classList.contains('eg-detail-header__links'), true);

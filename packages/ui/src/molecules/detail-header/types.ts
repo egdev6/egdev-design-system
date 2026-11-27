@@ -149,6 +149,11 @@ export const detailHeaderTermVariants = cva('m-0 font-display text-label-eyebrow
 export const detailHeaderValueVariants = cva('m-0 min-w-0 font-sans text-body-default text-fg-default wrap-anywhere');
 /** Tags list: a retained internal marker, the list reset and a wrapping row of pills. */
 export const detailHeaderTagsVariants = cva('eg-detail-header__tags m-0 flex min-w-0 list-none flex-wrap gap-1.5 p-0');
+/**
+ * Tag label: Chip turns wrapping off on itself, so this private part restores it and lets a long or unbroken label wrap
+ * inside its pill instead of overflowing the row. A label that fits keeps its one line and its width.
+ */
+export const detailHeaderTagLabelVariants = cva('whitespace-normal wrap-anywhere');
 /** Links list: a retained internal marker, the list reset and a wrapping row of links. */
 export const detailHeaderLinksVariants = cva(
   'eg-detail-header__links m-0 flex min-w-0 list-none flex-wrap gap-x-6 gap-y-3 p-0'

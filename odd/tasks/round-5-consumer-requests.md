@@ -98,4 +98,7 @@ Integration branch `integration/round-5`. egdev-website's Pulso parity requests 
   - #569: "Dejar 65ch y corregir el selector de code (Recomendado)". Keep the token, and fix the inline-code selector so it also matches `code` directly under the root.
 
   Each amendment records the owner's answer in approval.md with the old and new SHA256.
+- L9 — Owner answers, verbatim:
+  - #572: "B: arreglar los tags dentro de DetailHeader (Recomendado)". Chip sets `white-space: nowrap` and Heading sets its own `overflow-wrap`, so `wrap-anywhere` cannot reach unbroken tags or titles. Tags get an inner span with `whitespace-normal wrap-anywhere`, done inside DetailHeader only. The title stays a documented limit.
+  - #560 plan: "Aprobar (Recomendado)". This includes the `heading-title-variant` receipt, browser runs, packed consumers and the `(#560)` citation.
 - L2 — Size note: 14 consumer requests, each with three owner gates. This spans several sessions; resume from this document.

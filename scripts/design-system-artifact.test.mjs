@@ -1146,7 +1146,7 @@ test('Breadcrumb publishes its three own props, the six static part recipes, the
   );
 });
 
-test('DetailHeader publishes its nine own props, the eight static part recipes, the width allowance and its conventions (#572)', () => {
+test('DetailHeader publishes its nine own props, the nine static part recipes, the width allowance and its conventions (#572)', () => {
   const artifact = read('packages/system/design-system.json');
   const header = artifact.components.find(({ name }) => name === 'DetailHeader');
   assert.ok(header, 'the artifact lists DetailHeader');
@@ -1197,7 +1197,7 @@ test('DetailHeader publishes its nine own props, the eight static part recipes, 
     'min-width',
     'width'
   ]);
-  // Eight private part recipes, built from static string literals: the approved inventory and nothing else.
+  // Nine private part recipes, built from static string literals: the approved inventory and nothing else.
   assert.deepEqual(
     header.variants.map(({ name }) => name),
     [
@@ -1205,6 +1205,7 @@ test('DetailHeader publishes its nine own props, the eight static part recipes, 
       'detailHeaderLinksVariants',
       'detailHeaderMetaEntryVariants',
       'detailHeaderMetaVariants',
+      'detailHeaderTagLabelVariants',
       'detailHeaderTagsVariants',
       'detailHeaderTermVariants',
       'detailHeaderValueVariants',
@@ -1262,6 +1263,7 @@ test('DetailHeader publishes its nine own props, the eight static part recipes, 
     'p-0'
   ]);
   assert.deepEqual(recipes.detailHeaderLinkItemVariants, ['min-w-0', 'wrap-anywhere']);
+  assert.deepEqual(recipes.detailHeaderTagLabelVariants, ['whitespace-normal', 'wrap-anywhere']);
   // The header paints nothing: no background, border, shadow, ring, outline, backdrop, filter or motion utility.
   for (const [name, classes] of Object.entries(recipes)) {
     for (const utility of classes) {

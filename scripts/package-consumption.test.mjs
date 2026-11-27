@@ -5693,7 +5693,7 @@ function assertBreadcrumbConsumerCSS(css) {
   assert.doesNotMatch(css, /\.eg-breadcrumb\b/);
 }
 
-// DetailHeader ships no stylesheet: every utility of its eight recipes is emitted for native and Tailwind consumers.
+// DetailHeader ships no stylesheet: every utility of its nine recipes is emitted for native and Tailwind consumers.
 function assertDetailHeaderCSS(css) {
   const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
   const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -5719,6 +5719,7 @@ function assertDetailHeaderCSS(css) {
     ['uppercase', /text-transform:\s*uppercase/],
     ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
     ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['whitespace-normal', /white-space:\s*normal/],
     ['wrap-anywhere', /overflow-wrap:\s*anywhere/]
   ]) {
     assert.match(
@@ -7135,6 +7136,7 @@ const [fullTags, fullLinks] = headerFull.querySelectorAll('ul');
 assert.equal(fullTags.getAttribute('role'), 'list');
 assert.equal(fullTags.getAttribute('aria-label'), 'Tags');
 assert.deepEqual([...fullTags.querySelectorAll('li')].map((node) => node.textContent), ['Design', 'Systems']);
+assert.deepEqual([...fullTags.querySelectorAll('li > .eg-chip > span')].map((node) => node.className), ['whitespace-normal wrap-anywhere', 'whitespace-normal wrap-anywhere']);
 assert.equal(fullLinks.getAttribute('role'), 'list');
 assert.equal(fullLinks.getAttribute('aria-label'), 'Links');
 assert.deepEqual([...fullLinks.querySelectorAll('a')].map((link) => link.getAttribute('href')), ['https://example.com/events/conference', 'https://example.org/recordings/conference']);

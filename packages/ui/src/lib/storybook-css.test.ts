@@ -20,6 +20,7 @@ import {
   detailHeaderLinksVariants,
   detailHeaderMetaEntryVariants,
   detailHeaderMetaVariants,
+  detailHeaderTagLabelVariants,
   detailHeaderTagsVariants,
   detailHeaderTermVariants,
   detailHeaderValueVariants,
@@ -1042,7 +1043,7 @@ describe('Storybook preview CSS', () => {
   });
 
   it('emits every DetailHeader recipe utility from the production recipes and no rule for its markers (#572)', () => {
-    // Every utility of the eight recipes is emitted with the property and token the approved recipe names; the
+    // Every utility of the nine recipes is emitted with the property and token the approved recipe names; the
     // completeness check below fails if a recipe utility has no row.
     const escapeClass = (token: string) => `.${token.replace(/[^\w-]/g, (character) => `\\${character}`)}`;
     const space = (step: string) => `var\\(--space-${step}[,)]`;
@@ -1070,6 +1071,7 @@ describe('Storybook preview CSS', () => {
       ['uppercase', 'text-transform:\\s*uppercase'],
       ['text-fg-muted', 'color:\\s*var\\(--color-fg-muted[,)]'],
       ['text-fg-default', 'color:\\s*var\\(--color-fg-default[,)]'],
+      ['whitespace-normal', 'white-space:\\s*normal'],
       ['wrap-anywhere', 'overflow-wrap:\\s*anywhere']
     ];
     const recipe = new Set(
@@ -1080,6 +1082,7 @@ describe('Storybook preview CSS', () => {
         detailHeaderTermVariants(),
         detailHeaderValueVariants(),
         detailHeaderTagsVariants(),
+        detailHeaderTagLabelVariants(),
         detailHeaderLinksVariants(),
         detailHeaderLinkItemVariants()
       ]
