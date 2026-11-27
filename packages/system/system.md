@@ -548,6 +548,7 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · —
   - level: enum; Host-selected heading rank. (components[] · packages/ui/src/organisms/chapter-break/types.ts)
   - media: ReactNode; Decorative, non-focusable media, never the sole source of meaning. (components[] · packages/ui/src/organisms/chapter-break/types.ts)
   - title: string; Main heading text; include trailing whitespace when the accent needs a separator. (components[] · packages/ui/src/organisms/chapter-break/types.ts)
+  - titleVariant: enum; Display recipe of the scene's own heading: `hero` (default) or the smaller `show` step, so a long title can fit its column. Independent of `level`; the accent glows only with `hero`. (components[] · packages/ui/src/organisms/chapter-break/types.ts)
 ### Closing
 catalog[] · docs/catalog.json · @egdev/ui · organism · —
 - Closing (components[] · packages/ui/src/organisms/closing/types.ts)
@@ -568,6 +569,7 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · —
   - level: enum; Heading rank chosen by the host. (components[] · packages/ui/src/organisms/closing/types.ts)
   - media: ReactNode; Optional decorative, non-focusable media; never interactive or the sole source of meaning. (components[] · packages/ui/src/organisms/closing/types.ts)
   - title: string; Main heading text. Supply trailing whitespace when the accent needs a separator. (components[] · packages/ui/src/organisms/closing/types.ts)
+  - titleVariant: enum; Display recipe of the scene's own heading: `hero` (default) or the smaller `show` step, so a long title can fit its column. Independent of `level`; the accent glows only with `hero`. (components[] · packages/ui/src/organisms/closing/types.ts)
 ### Footer
 catalog[] · docs/catalog.json · @egdev/ui · organism · — (native footer and navigation)
 - Footer (components[] · packages/ui/src/organisms/footer/types.ts)
@@ -611,6 +613,7 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · —
   - media: ReactNode; Decorative nonfocusable media, never the sole source of meaning. (components[] · packages/ui/src/organisms/hero/types.ts)
   - social: ReactNode; Consumer-named social profile links. (components[] · packages/ui/src/organisms/hero/types.ts)
   - title: string; Main heading text. Supply trailing whitespace before an accent when needed. (components[] · packages/ui/src/organisms/hero/types.ts)
+  - titleVariant: enum; Display recipe of the scene's own heading: `hero` (default) or the smaller `show` step, so a long title can fit its column. Independent of `level`; the accent glows only with `hero`. (components[] · packages/ui/src/organisms/hero/types.ts)
 ### LabStage
 catalog[] · docs/catalog.json · @egdev/ui · organism · —
 - LabStage (components[] · packages/ui/src/organisms/lab-stage/types.ts)
@@ -630,6 +633,7 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · —
   - level: enum; Heading rank selected by the host. (components[] · packages/ui/src/organisms/lab-stage/types.ts)
   - media: ReactNode; Decorative, non-focusable media, never interactive or the sole source of meaning. (components[] · packages/ui/src/organisms/lab-stage/types.ts)
   - title: string; Main heading text; supply trailing whitespace before an accent when needed. (components[] · packages/ui/src/organisms/lab-stage/types.ts)
+  - titleVariant: enum; Display recipe of the scene's own heading: `hero` (default) or the smaller `show` step, so a long title can fit its column. Independent of `level`; the accent glows only with `hero`. (components[] · packages/ui/src/organisms/lab-stage/types.ts)
 ### ModuleRail
 catalog[] · docs/catalog.json · @egdev/ui · organism · Tooltip + VisuallyHidden
 - ModuleRail (components[] · packages/ui/src/organisms/module-rail/types.ts)
@@ -3721,6 +3725,7 @@ Not exported:
 - heading-id: titleId; approved; SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
 - heading-level: level; approved; ArticleFeature, CalendarGrid, ChapterBreak, Closing, CommunityCard, DetailHeader, EmptyState, FooterNavigation, Heading, Hero, LabStage, ListItemTitle, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
 - heading-title: title; approved; AlertDialogContent, ArticleFeature, ChapterBreak, Closing, CommunityCard, DetailHeader, DialogContent, EmptyState, Hero, LabStage, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
+- heading-title-variant: titleVariant; approved; ChapterBreak, Closing, Hero, LabStage (propNaming[] · skills/_shared/prop-naming.json)
 - host-fill: fill; approved; Panel, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - icon-glyph-name: name; approved; Icon (propNaming[] · skills/_shared/prop-naming.json)
 - icon-placement: iconPosition; approved; Button (propNaming[] · skills/_shared/prop-naming.json)

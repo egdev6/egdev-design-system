@@ -1649,6 +1649,45 @@ test('Embed publishes its six own props, the four static recipes, the Surface we
   );
 });
 
+test('The four scenes publish titleVariant with its default and gain no recipe axis, and its convention lists them (#560)', () => {
+  const artifact = read('packages/system/design-system.json');
+  // The own props of each scene before #560, plus the one new prop, in the artifact's alphabetical order.
+  const scenes = [
+    ['Hero', ['accent', 'children', 'eyebrow', 'id', 'lede', 'level', 'media', 'social', 'title']],
+    ['Closing', ['accent', 'children', 'eyebrow', 'id', 'lede', 'level', 'media', 'title']],
+    ['ChapterBreak', ['accent', 'eyebrow', 'id', 'lede', 'level', 'media', 'title']],
+    ['LabStage', ['accent', 'children', 'eyebrow', 'id', 'lede', 'level', 'media', 'title']]
+  ];
+  for (const [name, previous] of scenes) {
+    const scene = artifact.components.find((item) => item.name === name);
+    assert.ok(scene, `the artifact lists ${name}`);
+    assert.deepEqual(
+      scene.props.map((item) => item.name),
+      [...previous, 'titleVariant'],
+      name
+    );
+    const prop = scene.props.find((item) => item.name === 'titleVariant');
+    assert.equal(prop.type, 'enum', name);
+    assert.equal(prop.required, false, name);
+    assert.equal(prop.default, 'hero', name);
+    assert.equal(prop.deprecated, false, name);
+    assert.match(prop.description, /hero/, name);
+    assert.match(prop.description, /show/, name);
+    // The choice is Heading's static recipe map: no scene recipe gains an axis or a title class string.
+    for (const recipe of scene.variants) {
+      for (const classes of recipe.classes) {
+        assert.doesNotMatch(classes, /text-title-/, `${name} ${recipe.name}`);
+      }
+      assert.doesNotMatch(recipe.name, /title/i, `${name} ${recipe.name}`);
+    }
+  }
+  const convention = artifact.propNaming.find((item) => item.id === 'heading-title-variant');
+  assert.ok(convention, 'the artifact lists the heading-title-variant convention');
+  assert.equal(convention.name, 'titleVariant');
+  assert.equal(convention.status, 'approved');
+  assert.deepEqual(convention.components, ['ChapterBreak', 'Closing', 'Hero', 'LabStage']);
+});
+
 test('NowCard footer documents one optional StepMeter without a prop, part or composition change', () => {
   const artifact = read('packages/system/design-system.json');
   const card = artifact.components.find(({ name }) => name === 'NowCard');

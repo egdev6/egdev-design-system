@@ -8,6 +8,12 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `Hero`, `Closing`, `ChapterBreak` and `LabStage` accept `titleVariant` (`'hero'` by default, or `'show'`) to choose the
+  recipe of the scene's own heading. `show` is the smaller Show-register step, about 9% below `hero` between roughly
+  680px and 1,560px of viewport and capped at 105.6px instead of 112px, so a long title can fit a narrow copy column;
+  its accent does not glow, because the glow belongs to the `hero` recipe. The prop never changes the heading rank
+  (`level`), and omitting it renders exactly as before. It narrows the risk of a title breaking inside a word and does
+  not remove it, so shorten the copy for wider viewports. (#560)
 - Documented the gallery lightbox composition pattern (#575): the `Recipes/Gallery lightbox` story composes a list of
   `PhotoFrame` thumbnails, each with a `Button` beside it (never wrapping it, so the markup stays valid) that opens a
   full-size `Dialog` holding a `Carousel` of `PhotoFrame` `fit='contain'` images, starting at the clicked photo, with

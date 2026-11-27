@@ -4,6 +4,9 @@
 
 ### Added
 
+- The source-derived artifact and reference include the `titleVariant` prop of `Hero`, `Closing`, `ChapterBreak` and
+  `LabStage` (default `hero`) and the `heading-title-variant` naming concept (approved, with its receipt); existing
+  props and recipes are unchanged. (#560)
 - The source-derived artifact and reference list the `GalleryLightbox` composition recipe in the catalog, composed from
   Dialog, Carousel and PhotoFrame and not exported; no prop, recipe or other entry changes. (#575)
 - The source-derived artifact and reference include `Embed` (its six props and static recipes), the

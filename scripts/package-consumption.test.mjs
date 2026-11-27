@@ -941,6 +941,11 @@ type BlogGridPrivate = (typeof import('@egdev/ui'))['blogGridVariants'];
 export type BlogGridNegatives = [typeof blogMissing, typeof blogHtml, typeof blogSlot, typeof blogRef, typeof blogPartClass, BlogGridPrivate];
 export const chapterBreakProps: ChapterBreakProps = { title: 'Build ', level: 2, id: 'chapter-title', accent: 'together', media: createElement('span', null, 'Decorative') };
 export function ChapterBreakSamples({ empty = false }: { empty?: boolean } = {}) { return createElement(ChapterBreak, empty ? { title: 'Plain', level: 3 } : chapterBreakProps); }
+export const chapterBreakShow: ChapterBreakProps = { ...chapterBreakProps, titleVariant: 'show' };
+export const chapterBreakHero: ChapterBreakProps = { ...chapterBreakProps, titleVariant: 'hero' };
+export function ChapterBreakTitleSamples({ titleVariant }: { titleVariant: 'show' | 'hero' }) { return createElement(ChapterBreak, titleVariant === 'show' ? chapterBreakShow : chapterBreakHero); }
+// @ts-expect-error Only the hero and show title recipes are supported.
+const chapterTitleVariant: ChapterBreakProps = { ...chapterBreakProps, titleVariant: 'display' };
 // @ts-expect-error Title is required.
 const chapterMissingTitle: ChapterBreakProps = { level: 2 };
 // @ts-expect-error Heading rank is required.
@@ -963,9 +968,14 @@ const chapterRef: ChapterBreakProps = { ...chapterBreakProps, ref: createRef<HTM
 type ChapterPrivate = (typeof import('@egdev/ui'))['chapterBreakVariants'];
 // @ts-expect-error Media recipe is private.
 type ChapterMediaPrivate = (typeof import('@egdev/ui'))['chapterBreakMediaVariants'];
-export type ChapterNegatives = [typeof chapterMissingTitle, typeof chapterMissingLevel, typeof chapterChildren, typeof chapterLevel, typeof chapterRole, typeof chapterStyle, typeof chapterHtml, typeof chapterSlot, typeof chapterRef, ChapterPrivate, ChapterMediaPrivate];
+export type ChapterNegatives = [typeof chapterMissingTitle, typeof chapterMissingLevel, typeof chapterChildren, typeof chapterLevel, typeof chapterRole, typeof chapterStyle, typeof chapterHtml, typeof chapterSlot, typeof chapterRef, typeof chapterTitleVariant, ChapterPrivate, ChapterMediaPrivate];
 export const labStageProps: LabStageProps = { title: 'Build ', level: 2, id: 'lab-title', accent: 'together', media: createElement('span', null, 'Decorative'), lede: 'Try ideas.', children: createElement('article', null, createElement('a', { href: '#experiment' }, 'Experiment')) };
 export function LabStageSamples({ empty = false }: { empty?: boolean } = {}) { return createElement(LabStage, empty ? { title: 'Plain', level: 3 } : labStageProps); }
+export const labStageShow: LabStageProps = { ...labStageProps, titleVariant: 'show' };
+export const labStageHero: LabStageProps = { ...labStageProps, titleVariant: 'hero' };
+export function LabStageTitleSamples({ titleVariant }: { titleVariant: 'show' | 'hero' }) { return createElement(LabStage, titleVariant === 'show' ? labStageShow : labStageHero); }
+// @ts-expect-error Only the hero and show title recipes are supported.
+const labTitleVariant: LabStageProps = { ...labStageProps, titleVariant: 'display' };
 // @ts-expect-error Title is required.
 const labMissingTitle: LabStageProps = { level: 2 };
 // @ts-expect-error Heading rank is required.
@@ -986,9 +996,14 @@ const labRef: LabStageProps = { ...labStageProps, ref: createRef<HTMLDivElement>
 type LabPrivate = (typeof import('@egdev/ui'))['labStageVariants'];
 // @ts-expect-error Media recipe is private.
 type LabMediaPrivate = (typeof import('@egdev/ui'))['labStageMediaVariants'];
-export type LabStageNegatives = [typeof labMissingTitle, typeof labMissingLevel, typeof labLevel, typeof labRole, typeof labStyle, typeof labHtml, typeof labSlot, typeof labRef, LabPrivate, LabMediaPrivate];
+export type LabStageNegatives = [typeof labMissingTitle, typeof labMissingLevel, typeof labLevel, typeof labRole, typeof labStyle, typeof labHtml, typeof labSlot, typeof labRef, typeof labTitleVariant, LabPrivate, LabMediaPrivate];
 export const closingProps: ClosingProps = { title: 'Build ', level: 2, id: 'closing-title', accent: 'together', media: createElement('span', null, 'Decorative'), children: [createElement('a', { key: 'one', href: '#one' }, 'One'), createElement('a', { key: 'two', href: '#two' }, 'Two')] };
 export function ClosingSamples() { return createElement(Closing, closingProps); }
+export const closingShow: ClosingProps = { ...closingProps, titleVariant: 'show' };
+export const closingHero: ClosingProps = { ...closingProps, titleVariant: 'hero' };
+export function ClosingTitleSamples({ titleVariant }: { titleVariant: 'show' | 'hero' }) { return createElement(Closing, titleVariant === 'show' ? closingShow : closingHero); }
+// @ts-expect-error Only the hero and show title recipes are supported.
+const closingTitleVariant: ClosingProps = { ...closingProps, titleVariant: 'display' };
 // @ts-expect-error Title is required.
 const closingMissingTitle: ClosingProps = { level: 2, children: null };
 // @ts-expect-error Heading rank is required.
@@ -1011,9 +1026,14 @@ const closingRef: ClosingProps = { ...closingProps, ref: createRef<HTMLDivElemen
 type ClosingPrivate = (typeof import('@egdev/ui'))['closingVariants'];
 // @ts-expect-error Media recipe is private.
 type ClosingMediaPrivate = (typeof import('@egdev/ui'))['closingMediaVariants'];
-export type ClosingNegatives = [typeof closingMissingTitle, typeof closingMissingLevel, typeof closingMissingChildren, typeof closingLevel, typeof closingRole, typeof closingStyle, typeof closingHtml, typeof closingSlot, typeof closingRef, ClosingPrivate, ClosingMediaPrivate];
+export type ClosingNegatives = [typeof closingMissingTitle, typeof closingMissingLevel, typeof closingMissingChildren, typeof closingLevel, typeof closingRole, typeof closingStyle, typeof closingHtml, typeof closingSlot, typeof closingRef, typeof closingTitleVariant, ClosingPrivate, ClosingMediaPrivate];
 export const heroProps: HeroProps = { title: 'Build ', accent: 'together', level: 2, id: 'intro', eyebrow: 'Hello', lede: 'Intro', media: createElement('span', null, 'Artwork'), social: createElement('span', null, 'Profiles'), children: createElement('button', null, 'Go') };
 export function HeroSamples({ empty = false }: { empty?: boolean }) { return createElement(Hero, empty ? { title: 'Plain', level: 3 } : heroProps); }
+export const heroShow: HeroProps = { ...heroProps, titleVariant: 'show' };
+export const heroHero: HeroProps = { ...heroProps, titleVariant: 'hero' };
+export function HeroTitleSamples({ titleVariant }: { titleVariant: 'show' | 'hero' }) { return createElement(Hero, titleVariant === 'show' ? heroShow : heroHero); }
+// @ts-expect-error Only the hero and show title recipes are supported.
+const heroTitleVariant: HeroProps = { ...heroProps, titleVariant: 'display' };
 // @ts-expect-error Role is protected.
 const heroRole: HeroProps = { ...heroProps, role: 'region' };
 // @ts-expect-error Inline style is protected.
@@ -1028,7 +1048,7 @@ const heroAsChild: HeroProps = { ...heroProps, asChild: true };
 const heroMissing: HeroProps = { title: 'Missing level' };
 // @ts-expect-error Recipe is private.
 type HeroPrivate = (typeof import('@egdev/ui'))['heroVariants'];
-export type HeroNegatives = [typeof heroRole, typeof heroStyle, typeof heroHtml, typeof heroRef, typeof heroAsChild, typeof heroMissing, HeroPrivate];
+export type HeroNegatives = [typeof heroRole, typeof heroStyle, typeof heroHtml, typeof heroRef, typeof heroAsChild, typeof heroMissing, typeof heroTitleVariant, HeroPrivate];
 const sectionNavItems: SectionNavItem[] = [{ id: 'one', label: 'One', href: '#one' }, { id: 'two', label: 'Two', href: '#two' }];
 export const sectionNavProps: SectionNavProps = { label: 'Sections', disclosureLabel: 'Open index', nextLabel: 'Next section', items: sectionNavItems, activeId: 'one', value: 50 };
 export function SectionNavSamples() { return createElement(SectionNav, sectionNavProps); }
@@ -7242,6 +7262,24 @@ for (const empty of [false, true]) {
     }
   } finally { dom.window.close(); }
 }
+const { ChapterBreakTitleSamples } = await import('./consumer.ts');
+for (const titleVariant of ['show', 'hero']) {
+  const dom = new JSDOM(renderToString(createElement(ChapterBreakTitleSamples, { titleVariant })));
+  try {
+    const root = dom.window.document.querySelector('.eg-chapter-break');
+    assert.ok(root);
+    const heading = root.querySelector('h2#chapter-title');
+    assert.ok(heading);
+    const accent = heading.querySelector('.eg-heading__accent');
+    assert.ok(accent);
+    assert.equal(heading.textContent, 'Build together');
+    assert.equal(heading.classList.contains('text-title-show'), titleVariant === 'show');
+    assert.equal(heading.classList.contains('text-title-hero'), titleVariant === 'hero');
+    assert.equal(accent.classList.contains('[text-shadow:none]'), titleVariant === 'show');
+    assert.equal(accent.classList.contains('[text-shadow:var(--text-shadow-title-hero)]'), titleVariant === 'hero');
+    assert.deepEqual(root.getAttributeNames(), ['class']);
+  } finally { dom.window.close(); }
+}
 const { LabStageSamples } = await import('./consumer.ts');
 for (const empty of [false, true]) {
   const dom = new JSDOM(renderToString(createElement(LabStageSamples, { empty })));
@@ -7271,6 +7309,24 @@ for (const empty of [false, true]) {
     }
   } finally { dom.window.close(); }
 }
+const { LabStageTitleSamples } = await import('./consumer.ts');
+for (const titleVariant of ['show', 'hero']) {
+  const dom = new JSDOM(renderToString(createElement(LabStageTitleSamples, { titleVariant })));
+  try {
+    const root = dom.window.document.querySelector('.eg-lab');
+    assert.ok(root);
+    const heading = root.querySelector('h2#lab-title');
+    assert.ok(heading);
+    const accent = heading.querySelector('.eg-heading__accent');
+    assert.ok(accent);
+    assert.equal(heading.textContent, 'Build together');
+    assert.equal(heading.classList.contains('text-title-show'), titleVariant === 'show');
+    assert.equal(heading.classList.contains('text-title-hero'), titleVariant === 'hero');
+    assert.equal(accent.classList.contains('[text-shadow:none]'), titleVariant === 'show');
+    assert.equal(accent.classList.contains('[text-shadow:var(--text-shadow-title-hero)]'), titleVariant === 'hero');
+    assert.deepEqual(root.getAttributeNames(), ['class']);
+  } finally { dom.window.close(); }
+}
 const { ClosingSamples } = await import('./consumer.ts');
 {
   const dom = new JSDOM(renderToString(createElement(ClosingSamples)));
@@ -7287,6 +7343,24 @@ const { ClosingSamples } = await import('./consumer.ts');
     for (const name of ['[@media(width<=860px)]:order-first', '[@media(width<=860px)]:w-[min(100%,34svh,calc(var(--space-24)*4))]']) assert.ok(media.classList.contains(name));
     assert.deepEqual([...root.querySelectorAll('a')].map((a) => a.getAttribute('href')), ['#one', '#two']);
     assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
+  } finally { dom.window.close(); }
+}
+const { ClosingTitleSamples } = await import('./consumer.ts');
+for (const titleVariant of ['show', 'hero']) {
+  const dom = new JSDOM(renderToString(createElement(ClosingTitleSamples, { titleVariant })));
+  try {
+    const root = dom.window.document.querySelector('.eg-closing');
+    assert.ok(root);
+    const heading = root.querySelector('h2#closing-title');
+    assert.ok(heading);
+    const accent = heading.querySelector('.eg-heading__accent');
+    assert.ok(accent);
+    assert.equal(heading.textContent, 'Build together');
+    assert.equal(heading.classList.contains('text-title-show'), titleVariant === 'show');
+    assert.equal(heading.classList.contains('text-title-hero'), titleVariant === 'hero');
+    assert.equal(accent.classList.contains('[text-shadow:none]'), titleVariant === 'show');
+    assert.equal(accent.classList.contains('[text-shadow:var(--text-shadow-title-hero)]'), titleVariant === 'hero');
+    assert.deepEqual(root.getAttributeNames(), ['class']);
   } finally { dom.window.close(); }
 }
 const { HeroSamples } = await import('./consumer.ts');
@@ -7311,6 +7385,24 @@ for (const empty of [false, true]) {
       assert.ok(media.classList.contains('[@media(width<=860px)]:order-first'));
       for (const name of ['[@media(width<=860px)]:max-w-[min(34svh,calc(var(--space-24)*4))]', '[@media(width>=961px)]:max-w-[min(56svh,calc(var(--space-24)*7))]']) assert.ok(slot.classList.contains(name));
     }
+  } finally { dom.window.close(); }
+}
+const { HeroTitleSamples } = await import('./consumer.ts');
+for (const titleVariant of ['show', 'hero']) {
+  const dom = new JSDOM(renderToString(createElement(HeroTitleSamples, { titleVariant })));
+  try {
+    const root = dom.window.document.querySelector('.eg-hero');
+    assert.ok(root);
+    const heading = root.querySelector('h2#intro');
+    assert.ok(heading);
+    const accent = heading.querySelector('.eg-heading__accent');
+    assert.ok(accent);
+    assert.equal(heading.textContent, 'Build together');
+    assert.equal(heading.classList.contains('text-title-show'), titleVariant === 'show');
+    assert.equal(heading.classList.contains('text-title-hero'), titleVariant === 'hero');
+    assert.equal(accent.classList.contains('[text-shadow:none]'), titleVariant === 'show');
+    assert.equal(accent.classList.contains('[text-shadow:var(--text-shadow-title-hero)]'), titleVariant === 'hero');
+    assert.deepEqual(root.getAttributeNames(), ['class']);
   } finally { dom.window.close(); }
 }
 const { SectionNavSamples } = await import('./consumer.ts');

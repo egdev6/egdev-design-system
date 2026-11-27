@@ -3066,6 +3066,81 @@ test('Hero package SSR keeps responsive classes on its own elements and omits em
   }
 });
 
+test('Scene titleVariant renders in the package SSR of all four scenes (#560)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const glow = '[text-shadow:var(--text-shadow-title-hero)]';
+  const scenes = [
+    ['Closing', 'eg-closing', { children: h('a', { href: '#one' }, 'One') }],
+    ['Hero', 'eg-hero', {}],
+    ['ChapterBreak', 'eg-chapter-break', {}],
+    ['LabStage', 'eg-lab', { children: h('article', null, 'Experiment') }]
+  ];
+  for (const [name, marker, extra] of scenes) {
+    const html = (props) =>
+      renderToString(
+        h(exported[name], {
+          title: 'Build ',
+          accent: 'together',
+          level: 2,
+          id: 'scene-title',
+          media: h('span', null, 'Decorative'),
+          ...extra,
+          ...props
+        })
+      );
+    const parse = (markup) => {
+      const dom = new JSDOM(markup);
+      const doc = dom.window.document;
+      const root = doc.querySelector(`.${marker}`);
+      assert.ok(root, `${name} root`);
+      const heading = root.querySelector('h2#scene-title');
+      assert.ok(heading, `${name} heading`);
+      const accent = heading.querySelector('.eg-heading__accent');
+      assert.ok(accent, `${name} accent`);
+      const result = {
+        rootAttributes: root.getAttributeNames(),
+        headingClasses: [...heading.classList],
+        accentClasses: [...accent.classList],
+        text: heading.textContent
+      };
+      dom.window.close();
+      return result;
+    };
+    const base = html({});
+    // The default is the hero recipe with its glow, byte for byte with and without the explicit value.
+    assert.equal(html({ titleVariant: 'hero' }), base, `${name} explicit hero`);
+    const hero = parse(base);
+    assert.equal(hero.text, 'Build together');
+    assert.ok(hero.headingClasses.includes('text-title-hero'), `${name} hero recipe`);
+    assert.ok(!hero.headingClasses.includes('text-title-show'), `${name} hero is not show`);
+    assert.ok(hero.accentClasses.includes(glow), `${name} hero glow`);
+    // show swaps the heading recipe and drops the glow, and nothing else in the markup moves.
+    const showHtml = html({ titleVariant: 'show' });
+    const show = parse(showHtml);
+    assert.equal(show.text, 'Build together');
+    assert.ok(show.headingClasses.includes('text-title-show'), `${name} show recipe`);
+    assert.ok(!show.headingClasses.includes('text-title-hero'), `${name} show is not hero`);
+    for (const required of ['block', 'text-fg-brand-default', '[text-shadow:none]']) {
+      assert.ok(show.accentClasses.includes(required), `${name} show accent ${required}`);
+    }
+    assert.ok(!show.accentClasses.includes(glow), `${name} show has no glow`);
+    assert.deepEqual(show.rootAttributes, ['class'], `${name} show root attributes`);
+    assert.doesNotMatch(showHtml, /title-?variant/i, `${name} the prop never reaches the markup`);
+    assert.equal(
+      showHtml,
+      base.replace('text-title-hero', 'text-title-show').replace(glow, '[text-shadow:none]'),
+      `${name} only the recipe and the glow change`
+    );
+    // Any other runtime value resolves to hero and never reaches the DOM.
+    for (const value of ['display', 'section', 'inverse', 'compact', 'SHOW', '', null, 42]) {
+      assert.equal(html({ titleVariant: value }), base, `${name} ${JSON.stringify(value)}`);
+    }
+  }
+});
+
 test('SectionNav ships every recipe utility in the bounded compact block', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
