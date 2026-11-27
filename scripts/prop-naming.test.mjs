@@ -896,7 +896,9 @@ const postReceiptUsages = [
     'packages/ui/src/organisms/hero/types.ts#HeroProps',
     'packages/ui/src/organisms/chapter-break/types.ts#ChapterBreakProps',
     'packages/ui/src/organisms/lab-stage/types.ts#LabStageProps'
-  ].map((source) => ({ conventionId: 'heading-title-variant', source }))
+  ].map((source) => ({ conventionId: 'heading-title-variant', source })),
+  // NowCard #564 records one usage of the newly approved statusPresentation convention.
+  { conventionId: 'leading-status-presentation', source: 'packages/ui/src/molecules/now-card/types.ts#NowCardProps' }
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
 const postReceiptProposals = [
@@ -954,7 +956,9 @@ const postReceiptProposals = [
   // Embed v0.1 fallback convention: approved by its own receipt (docs/components/embed/v0.1/prop-naming-approval.json).
   'unavailable-content-fallback',
   // Scene titleVariant v0.2 convention: approved by its own receipt (docs/components/hero/v0.2/prop-naming-approval.json).
-  'heading-title-variant'
+  'heading-title-variant',
+  // NowCard v0.4 statusPresentation convention: approved by its own receipt (docs/components/now-card/v0.4/prop-naming-approval.json).
+  'leading-status-presentation'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -2718,6 +2722,140 @@ test('The four scenes bind the scoped owner approval of the heading-title-varian
   validate(registry);
 });
 
+test('NowCard binds the scoped owner approval of the leading-status-presentation convention and its reviewed source revision (#564)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/now-card/v0.4/prop-naming-approval.json';
+  assert.ok(fs.existsSync(resolve(root, reference)), 'The NowCard statusPresentation naming receipt must be recorded');
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const path = 'packages/ui/src/molecules/now-card/types.ts';
+  const source = { path, symbol: 'NowCardProps', revision: digest(fs.readFileSync(resolve(root, path))) };
+  // The receipt carries the owner's verbatim answer and binds the approved form of the exact convention payload.
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.deepEqual(receipt.evidence.userStatements, [
+    {
+      quote: 'Aprobar todo (Recomendado)',
+      provenance:
+        'odd/tasks/round-5-consumer-requests.md L13 (cataloging, spec and plan, NowCard v0.4 OQ-4 naming convention and D5 registry receipt for the newly named convention)',
+      date: '2026-11-27'
+    }
+  ]);
+  const log = fs.readFileSync(resolve(root, 'odd/tasks/round-5-consumer-requests.md'), 'utf8');
+  for (const { quote } of receipt.evidence.userStatements) {
+    assert.ok(log.includes(`"${quote}"`), `The task log must hold the owner's answer: ${quote}`);
+    assert.ok(
+      fs.readFileSync(resolve(root, 'docs/components/now-card/v0.4/approval.md'), 'utf8').includes(`"${quote}"`),
+      `The approval record must hold the owner's answer: ${quote}`
+    );
+  }
+  // The approved spec and plan payloads (their line-start first heading through EOF) are the recorded digests, and
+  // the spec quotes the convention's three texts in its table of the new convention.
+  const payload = (file, heading) => {
+    const text = fs.readFileSync(resolve(root, file), 'utf8');
+    return text.slice(text.search(heading));
+  };
+  const specPath = 'docs/components/now-card/v0.4/spec.md';
+  const planPath = 'docs/components/now-card/v0.4/implementation-plan.md';
+  const specPayload = payload(specPath, /^## 1\. Purpose and scope$/m);
+  assert.equal(receipt.evidence.specPath, specPath);
+  assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(specPayload)));
+  assert.equal(
+    receipt.evidence.specPayloadSHA256,
+    'sha256:50b9141f4c26fd01aa5016af57c1ebd3221cdc44b839c94b9a17a882cb456b39'
+  );
+  assert.equal(receipt.evidence.planPath, planPath);
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    digest(Buffer.from(payload(planPath, /^## 1\. Authority and gates$/m)))
+  );
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    'sha256:5a50e7a2c3a3cb95f715040ae87c9e16e4be98914d4cebc1c126698466ca1551'
+  );
+  assert.match(receipt.evidence.interpretation, /not native review authority/i);
+  assert.deepEqual(receipt.priorReceipts, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, ['leading-status-presentation']);
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    ['convention:leading-status-presentation']
+  );
+  const id = 'leading-status-presentation';
+  const meaning =
+    'How a heading-owning card presents its leading status slot: the supplied node at its content width, or a full-width status band that the card paints around it.';
+  const whenToUse =
+    'A card that renders a consumer-supplied status node before its heading offers a small finite choice of how that slot is presented, with the default leaving the node as supplied.';
+  const avoid =
+    "The component's own visual treatment (use `variant`), the status node's tone or treatment, lifecycle presentation (use `status`), dimension presets (use `size`), arbitrary widths or CSS values.";
+  const entry = registry.find((item) => item.id === id);
+  assert.ok(entry);
+  assert.equal(entry.name, 'statusPresentation');
+  assert.equal(entry.meaning, meaning);
+  assert.equal(entry.whenToUse, whenToUse);
+  assert.equal(entry.avoid, avoid);
+  // The spec quotes the three texts as the registry holds them, and nothing else differs.
+  for (const field of [meaning, whenToUse, avoid]) {
+    assert.ok(specPayload.includes(`"${field}"`), field);
+  }
+  assert.ok(specPayload.includes(`semantic ID \`${id}\`, name \`statusPresentation\``));
+  // Convention approval stays separate from the spec approval: only this scoped receipt promotes the entry.
+  assert.equal(entry.status, 'approved');
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(approval, {
+    reference,
+    scope: `convention:${id}`,
+    contentHash: props.conventionHash(entry)
+  });
+  assert.deepEqual(
+    receipt.entries.find(({ scope }) => scope === approval.scope),
+    { scope: approval.scope, contentHash: approval.contentHash, convention, source }
+  );
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  const type = "'badge' | 'band' (optional; default 'badge'; any other runtime value resolves to 'badge')";
+  assert.deepEqual(usages, [{ component: 'NowCard', type, status: 'existing', source }]);
+  assert.deepEqual(historicalRegistry([entry]), []);
+  // The name is free: no other canonical name or alias is statusPresentation, so the validator accepts the concept.
+  assert.deepEqual(
+    registry
+      .filter((item) => item.name === 'statusPresentation' || item.aliases.includes('statusPresentation'))
+      .map((item) => item.id),
+    [id]
+  );
+  // Changed semantic content or a dropped approval invalidates the entry; a recomputed digest is not consent.
+  const changed = structuredClone(registry);
+  changed.find((item) => item.id === id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+  const unapproved = structuredClone(registry);
+  unapproved.find((item) => item.id === id).approval = null;
+  assert.throws(() => validate(unapproved), /approval/i);
+  // The four reused conventions keep their approved status, gain no exception and carry the live revision of the
+  // file; no other entry lists it.
+  const own = registry.flatMap((item) =>
+    item.usages.filter((usage) => usage.source.path === path).map((usage) => ({ id: item.id, usage }))
+  );
+  assert.deepEqual(
+    own.map(({ id: entryId }) => entryId).sort(),
+    [id, 'heading-level', 'heading-title', 'leading-status-badge', 'preset-dimensions'].sort()
+  );
+  for (const { id: entryId, usage } of own) {
+    assert.equal(usage.component, 'NowCard', entryId);
+    assert.equal(usage.source.revision, source.revision, entryId);
+    if (entryId !== id) {
+      const existing = registry.find((item) => item.id === entryId);
+      assert.equal(existing.status, 'approved', entryId);
+      assert.deepEqual(
+        existing.exceptions.filter(({ scope }) => scope === 'NowCard'),
+        [],
+        entryId
+      );
+      assert.equal(usage.status, 'existing', entryId);
+    }
+  }
+  validate(registry);
+});
+
 test('Text truncation binds its scoped owner approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
@@ -3271,8 +3409,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // Pagination v0.1 adds two approved page conventions (page count, page href).
   // Embed v0.1 adds one approved fallback convention.
   // Scene titleVariant v0.2 adds one approved display-title recipe convention.
-  assert.equal(actual.length, 192);
-  assert.equal(beforeIndicatorConventions(actual).length, 189);
+  // NowCard v0.4 adds one approved status-presentation convention.
+  assert.equal(actual.length, 193);
+  assert.equal(beforeIndicatorConventions(actual).length, 190);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

@@ -1,12 +1,15 @@
+import { composeStory } from '@storybook/react-vite';
 import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { Badge } from '../../atoms/badge';
+import { Icon } from '../../atoms/icon';
 import { IconButton } from '../../atoms/icon-button';
 import { Link } from '../../atoms/link';
 import { StepMeter } from '../../atoms/step-meter';
 import { NowCard, NowCardBody, NowCardDetail, NowCardFooter } from './NowCard';
+import meta, { WithStatusBand } from './NowCard.stories';
 import type { NowCardProps } from './types';
 import { useNowCard } from './useNowCard';
 
@@ -513,4 +516,269 @@ describe('NowCard footer with one StepMeter', () => {
       expect(screen.getByRole('article', { name: 'Currently building' })).toBeInTheDocument();
     }
   );
+});
+
+describe('NowCard status presentation (#564)', () => {
+  const densities = ['md', 'sm'] as const;
+  // Recipe R1 of the band without its density-dependent inset (`mx-6` at md, `mx-4` at sm).
+  const bandUtilities = [
+    'mt-6',
+    'mb-3',
+    'items-center',
+    'gap-2',
+    'rounded-sm',
+    'border',
+    'border-alpha-red-22',
+    'bg-alpha-red-12',
+    'px-2.5',
+    'py-1.5',
+    'font-display',
+    'text-label-eyebrow',
+    'text-primitive-red-200',
+    'uppercase',
+    'shadow-edge',
+    'wrap-anywhere'
+  ];
+  const pillSlot = ['px-6', 'pt-6', 'pb-3'];
+  const label = <span>Building</span>;
+  let consoleError: MockInstance<typeof console.error>;
+
+  beforeEach(() => {
+    consoleError = vi.spyOn(console, 'error').mockImplementation(() => {
+      // Intentionally silent: unexpected React diagnostics are asserted, not printed.
+    });
+  });
+  afterEach(() => {
+    consoleError.mockRestore();
+  });
+
+  const wrapperOf = (article: HTMLElement) => {
+    const wrapper = article.querySelector<HTMLElement>('.eg-now-card__badge');
+    if (wrapper === null) {
+      throw new Error('The status wrapper is missing.');
+    }
+    return wrapper;
+  };
+  const silent = () => {
+    expect(consoleWarn).not.toHaveBeenCalled();
+    expect(consoleError).not.toHaveBeenCalled();
+  };
+
+  it.each(['band', 'badge'] as const)(
+    'consumes statusPresentation %s instead of forwarding it to the article (NC4-02)',
+    (statusPresentation) => {
+      render(
+        <NowCard title='Activity' statusBadge={label} statusPresentation={statusPresentation} data-example='kept' />
+      );
+      const article = screen.getByRole('article', { name: 'Activity' });
+      expect(article).not.toHaveAttribute('statuspresentation');
+      expect(article).toHaveAttribute('data-example', 'kept');
+      const { result } = renderHook(() => useNowCard({ title: 'Activity', statusBadge: label, statusPresentation }));
+      expect(Object.keys(result.current.rootProps)).not.toContain('statusPresentation');
+      silent();
+    }
+  );
+
+  it.each(densities.flatMap((size) => [undefined, 'badge' as const].map((value) => [size, value] as const)))(
+    'keeps the pill slot untouched at %s density when statusPresentation is %s (NC4-01)',
+    (size, statusPresentation) => {
+      render(
+        <NowCard
+          title='Activity'
+          size={size}
+          statusBadge={label}
+          {...(statusPresentation === undefined ? {} : { statusPresentation })}
+        />
+      );
+      const wrapper = wrapperOf(screen.getByRole('article', { name: 'Activity' }));
+      expect(wrapper).toHaveClass('eg-now-card__badge', 'flex', ...pillSlot);
+      for (const utility of bandUtilities) {
+        expect(wrapper, utility).not.toHaveClass(utility);
+      }
+      expect([...wrapper.classList].filter((name) => name.startsWith('mx-'))).toEqual([]);
+      silent();
+    }
+  );
+
+  it.each([
+    ['md', 'mx-6', 'px-6'],
+    ['sm', 'mx-4', 'px-4']
+  ] as const)('paints the band with recipe R1 at %s density (NC4-03)', (size, inset, headingInset) => {
+    render(<NowCard title='Activity' size={size} statusBadge={label} statusPresentation='band' />);
+    const wrapper = wrapperOf(screen.getByRole('article', { name: 'Activity' }));
+    expect([...wrapper.classList].sort()).toEqual(['eg-now-card__badge', 'flex', inset, ...bandUtilities].sort());
+    expect([...wrapper.classList].filter((name) => name.startsWith('mx-'))).toEqual([inset]);
+    for (const utility of pillSlot) {
+      expect(wrapper, utility).not.toHaveClass(utility);
+    }
+    // The heading keeps its inset and no top padding: the band owns the vertical slot.
+    expect(screen.getByRole('heading', { level: 3, name: 'Activity' })).toHaveClass('pt-0', headingInset);
+    silent();
+  });
+
+  it('keeps the band readable, first in reading order and out of the tab sequence (NC4-04)', async () => {
+    const user = userEvent.setup();
+    render(
+      <NowCard
+        title='Activity'
+        statusPresentation='band'
+        statusBadge={
+          <>
+            <Icon name='hammer' size='sm' />
+            Building
+          </>
+        }
+      >
+        <NowCardBody>
+          <p>Shipping the catalog.</p>
+        </NowCardBody>
+        <NowCardFooter>
+          <NowCardDetail>
+            Layer <b>in review</b>
+          </NowCardDetail>
+        </NowCardFooter>
+      </NowCard>
+    );
+    const article = screen.getByRole('article', { name: 'Activity' });
+    const heading = screen.getByRole('heading', { level: 3, name: 'Activity' });
+    const wrapper = wrapperOf(article);
+    expect(Array.from(article.children)).toEqual([
+      wrapper,
+      heading,
+      article.querySelector('.eg-now-card__body'),
+      article.querySelector('.eg-now-card__foot')
+    ]);
+    expect(wrapper).not.toHaveAttribute('aria-hidden');
+    expect(wrapper.closest('[aria-hidden="true"]')).toBeNull();
+    expect(screen.getByText('Building')).toBeInTheDocument();
+    expect(article.getAttribute('aria-labelledby')).toBe(heading.id);
+    await user.tab();
+    expect(document.body).toHaveFocus();
+    silent();
+  });
+
+  it.each([undefined, null, false, true])(
+    'renders no wrapper for a band without a status node (%s) (NC4-05)',
+    (statusBadge) => {
+      render(<NowCard title='Activity' statusPresentation='band' statusBadge={statusBadge} />);
+      const article = screen.getByRole('article', { name: 'Activity' });
+      const heading = screen.getByRole('heading', { level: 3, name: 'Activity' });
+      expect(article.querySelector('.eg-now-card__badge')).toBeNull();
+      expect(article).toHaveAttribute('data-badge', 'false');
+      expect(heading).toHaveClass('pt-6');
+      expect(heading).not.toHaveClass('pt-0');
+      silent();
+    }
+  );
+
+  it.each(['ribbon', '', null, 0])(
+    'resolves the untyped value %j to the pill presentation without leaking it (NC4-06)',
+    (value) => {
+      // One documented cast: a JavaScript consumer can pass any value at an untyped boundary, and the hook must still
+      // fall back to the default presentation, as an invalid level falls back to 3.
+      const untyped = { title: 'Activity', statusBadge: label, statusPresentation: value } as unknown as NowCardProps;
+      render(<NowCard {...untyped} />);
+      const article = screen.getByRole('article', { name: 'Activity' });
+      const wrapper = wrapperOf(article);
+      expect(article).not.toHaveAttribute('statuspresentation');
+      expect(wrapper).toHaveClass('eg-now-card__badge', 'flex', ...pillSlot);
+      for (const utility of bandUtilities) {
+        expect(wrapper, utility).not.toHaveClass(utility);
+      }
+      silent();
+    }
+  );
+
+  it('swaps only the wrapper classes when the presentation changes, with no event (NC4-07)', async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    const card = (statusPresentation: 'badge' | 'band') => (
+      <NowCard title='Activity' statusBadge={label} statusPresentation={statusPresentation}>
+        <NowCardFooter>
+          <Link href='#live' onClick={onClick}>
+            Watch live
+          </Link>
+        </NowCardFooter>
+      </NowCard>
+    );
+    const { rerender } = render(card('badge'));
+    const article = screen.getByRole('article', { name: 'Activity' });
+    const heading = screen.getByRole('heading', { level: 3, name: 'Activity' });
+    const wrapper = wrapperOf(article);
+    const link = screen.getByRole('link', { name: 'Watch live' });
+    const pill = wrapper.className;
+    const headingId = heading.id;
+    await user.tab();
+    expect(link).toHaveFocus();
+
+    rerender(card('band'));
+    expect(screen.getByRole('article', { name: 'Activity' })).toBe(article);
+    expect(wrapperOf(article)).toBe(wrapper);
+    expect(wrapper).toHaveClass('uppercase', 'mx-6');
+    expect(wrapper).not.toHaveClass('px-6');
+    expect(heading.id).toBe(headingId);
+    expect(article.getAttribute('aria-labelledby')).toBe(headingId);
+    expect(link).toHaveFocus();
+    await user.tab();
+    expect(document.body).toHaveFocus();
+    await user.tab();
+    expect(link).toHaveFocus();
+
+    rerender(card('badge'));
+    expect(wrapper.className).toBe(pill);
+    expect(heading.id).toBe(headingId);
+    expect(link).toHaveFocus();
+    expect(onClick).not.toHaveBeenCalled();
+    silent();
+  });
+
+  it.each(densities)(
+    'gives the band wrapper no motion, transform, hover or pointer-cursor utility at %s density (NC4-08)',
+    (size) => {
+      render(<NowCard title='Activity' size={size} statusBadge={label} statusPresentation='band' />);
+      const wrapper = wrapperOf(screen.getByRole('article', { name: 'Activity' }));
+      expect(wrapper.className).not.toMatch(
+        /(^|\s)(transition|animate|transform|translate|scale|rotate|hover:|focus|active:|cursor-)/
+      );
+    }
+  );
+
+  it('renders a Badge supplied in the band verbatim, without inspecting or warning about it (NC4-15)', () => {
+    const plain = render(<NowCard title='Activity' statusBadge={label} statusPresentation='band' />);
+    const plainClass = wrapperOf(plain.container).className;
+    plain.unmount();
+    const { container } = render(
+      <NowCard
+        title='Activity'
+        statusPresentation='band'
+        statusBadge={
+          <Badge tone='brand' variant='soft'>
+            Building
+          </Badge>
+        }
+      />
+    );
+    const wrapper = wrapperOf(container);
+    const badge = wrapper.querySelector('.eg-badge');
+    expect(badge).not.toBeNull();
+    expect(wrapper.firstElementChild).toBe(badge);
+    expect(wrapper.className).toBe(plainClass);
+    silent();
+  });
+
+  it('composes WithStatusBand as an md and an sm band, each with a decorative icon and a one-line label (NC4-12)', () => {
+    const Story = composeStory(WithStatusBand, meta);
+    render(<Story />);
+    const articles = screen.getAllByRole('article');
+    expect(articles.map((article) => article.getAttribute('data-size'))).toEqual(['md', 'sm']);
+    for (const [index, article] of articles.entries()) {
+      const wrapper = wrapperOf(article);
+      expect(article.firstElementChild).toBe(wrapper);
+      expect(wrapper).toHaveClass('uppercase', index === 0 ? 'mx-6' : 'mx-4');
+      expect(wrapper.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    }
+    expect(screen.getByText('Building')).toBeInTheDocument();
+    expect(screen.getByText('Exploring')).toBeInTheDocument();
+    silent();
+  });
 });

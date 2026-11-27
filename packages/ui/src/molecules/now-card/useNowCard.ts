@@ -51,6 +51,7 @@ export function useNowCard({
   level = 3,
   size = 'md',
   statusBadge,
+  statusPresentation = 'badge',
   children,
   className,
   ...native
@@ -62,6 +63,8 @@ export function useNowCard({
   }
   const rank: NowCardLevel = [2, 3, 4, 5, 6].includes(level) ? level : 3;
   const showBadge = present(statusBadge);
+  // Only the exact value opts in; every other runtime value resolves to the default presentation.
+  const presentation = statusPresentation === 'band' ? 'band' : 'badge';
   // Remove protected native semantics even at untyped/JavaScript boundaries: the heading owns the name.
   const {
     role: _role,
@@ -83,7 +86,7 @@ export function useNowCard({
     size,
     showBadge,
     badge: statusBadge,
-    badgeProps: { className: cn(nowCardBadgeVariants()) },
+    badgeProps: { className: cn(nowCardBadgeVariants({ presentation, size })) },
     rootProps: {
       ...rest,
       'aria-labelledby': headingId,

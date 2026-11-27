@@ -32,13 +32,23 @@ type NowCardNativeProps = Omit<
  */
 export type NowCardProps = NowCardNativeProps & {
   /**
-   * Optional consumer-supplied non-interactive status node, typically a Badge composition,
-   * rendered before the heading as the card's first content. Absent/null/boolean renders
-   * nothing. No interactive descendants, no baked-in status word, no tone ownership.
+   * Optional consumer-supplied non-interactive status node rendered before the heading as the card's first
+   * content. With the default `badge` presentation it is typically a Badge composition and keeps its own paint.
+   * With `statusPresentation='band'` the card paints the band, so supply the label words and, optionally, a
+   * decorative Icon instead of a Badge, which would paint a second pill inside the band. Absent/null/boolean
+   * renders nothing. No interactive descendants, no baked-in status word.
    * @control false
-   * @controlReason ReactNode is not serializable; see Default and WithBadge for status compositions.
+   * @controlReason ReactNode is not serializable; see Default, WithBadge and WithStatusBand for status compositions.
    */
   statusBadge?: ReactNode;
+  /**
+   * Presentation of the leading status slot. `badge` renders the supplied node at its content width. `band` paints a
+   * full-width, uppercase, brand-tinted band across the top of the card and frames the supplied label in it. It has
+   * no effect without `statusBadge`.
+   * @default badge
+   * @control select
+   */
+  statusPresentation?: 'badge' | 'band';
   /**
    * Visible non-empty heading and complete article name. Blank titles warn in development and render nothing.
    * @control text
@@ -156,9 +166,25 @@ export const nowCardBodyVariants = cva(
 
 /**
  * Leading status wrapper: the card renders the consumer's statusBadge node verbatim inside this
- * marked span, before the heading. The node stays readable; no aria-hidden and no tone ownership.
+ * marked span, before the heading. The node stays readable; no aria-hidden. In the default `badge`
+ * presentation the card owns no tone and the node keeps its own paint. In `band` the wrapper is the band
+ * itself (recipe R1): the card owns the brand tint, margins keep the pill's slot and the heading's inset,
+ * and the label wraps.
  */
-export const nowCardBadgeVariants = cva('eg-now-card__badge flex px-6 pt-6 pb-3');
+export const nowCardBadgeVariants = cva('eg-now-card__badge flex', {
+  variants: {
+    presentation: {
+      badge: 'px-6 pt-6 pb-3',
+      band: 'mt-6 mb-3 items-center gap-2 rounded-sm border border-alpha-red-22 bg-alpha-red-12 px-2.5 py-1.5 font-display text-label-eyebrow text-primitive-red-200 uppercase shadow-edge wrap-anywhere'
+    },
+    size: { md: '', sm: '' }
+  },
+  compoundVariants: [
+    { presentation: 'band', size: 'md', class: 'mx-6' },
+    { presentation: 'band', size: 'sm', class: 'mx-4' }
+  ],
+  defaultVariants: { presentation: 'badge', size: 'md' }
+});
 
 /**
  * Documented ModuleCard banded-footer geometry over the surface-0 band: only the top hairline is

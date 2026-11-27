@@ -392,7 +392,14 @@ const expected: Record<string, Record<string, string | false>> = {
     tone: 'select',
     actions: false
   },
-  nowcard: { statusBadge: false, title: 'text', level: 'select', size: 'select', children: false },
+  nowcard: {
+    statusBadge: false,
+    statusPresentation: 'select',
+    title: 'text',
+    level: 'select',
+    size: 'select',
+    children: false
+  },
   nowcardbody: { children: false, className: 'text' },
   nowcardfooter: { children: false, className: 'text' },
   nowcarddetail: { children: false, className: 'text' },
@@ -838,7 +845,7 @@ const ownPropCounts: Record<string, number> = {
   collapsibletrigger: 2,
   collapsiblecontent: 3,
   modulecard: 10,
-  nowcard: 5,
+  nowcard: 6,
   nowcardbody: 2,
   nowcardfooter: 2,
   nowcarddetail: 2,
@@ -1694,7 +1701,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
-    ['NowCard', { level: '3', size: '"md"' }],
+    ['NowCard', { level: '3', size: '"md"', statusPresentation: '"badge"' }],
     ['NowCardBody', {}],
     ['NowCardFooter', {}],
     ['NowCardDetail', {}],

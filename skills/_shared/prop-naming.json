@@ -1025,7 +1025,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
+          "revision": "sha256:cb4f5e4ccf91666842b318fea264723dd64753a5e0bbef392c4f21c4ca49873a"
         }
       },
       {
@@ -5506,7 +5506,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
+          "revision": "sha256:cb4f5e4ccf91666842b318fea264723dd64753a5e0bbef392c4f21c4ca49873a"
         }
       },
       {
@@ -5693,7 +5693,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
+          "revision": "sha256:cb4f5e4ccf91666842b318fea264723dd64753a5e0bbef392c4f21c4ca49873a"
         }
       },
       {
@@ -8376,7 +8376,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:dce9fa50d7dafcde73ff3793077a056b8a2777a40f95fd434589ae3c633bfb94"
+          "revision": "sha256:cb4f5e4ccf91666842b318fea264723dd64753a5e0bbef392c4f21c4ca49873a"
         }
       },
       {
@@ -9394,6 +9394,33 @@
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
           "revision": "sha256:4313dc9abfdfbb9376c909a4a4513c748ad07334475d313aecbee73267ca1506"
+        }
+      }
+    ]
+  },
+  {
+    "id": "leading-status-presentation",
+    "name": "statusPresentation",
+    "meaning": "How a heading-owning card presents its leading status slot: the supplied node at its content width, or a full-width status band that the card paints around it.",
+    "whenToUse": "A card that renders a consumer-supplied status node before its heading offers a small finite choice of how that slot is presented, with the default leaving the node as supplied.",
+    "avoid": "The component's own visual treatment (use `variant`), the status node's tone or treatment, lifecycle presentation (use `status`), dimension presets (use `size`), arbitrary widths or CSS values.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/now-card/v0.4/prop-naming-approval.json",
+      "scope": "convention:leading-status-presentation",
+      "contentHash": "sha256:7a3ba2560fd852782f2a66c582bbc03bbd9efaf9d6bce286927d5cbfd2045c8d"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "NowCard",
+        "type": "'badge' | 'band' (optional; default 'badge'; any other runtime value resolves to 'badge')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:cb4f5e4ccf91666842b318fea264723dd64753a5e0bbef392c4f21c4ca49873a"
         }
       }
     ]

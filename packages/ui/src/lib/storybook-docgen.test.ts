@@ -1733,6 +1733,7 @@ describe('Storybook TypeScript docgen contract', () => {
     const props = doc?.props ?? {};
     const controls: Record<string, string> = {
       statusBadge: 'false',
+      statusPresentation: 'select',
       title: 'text',
       level: 'select',
       size: 'select',
@@ -1740,7 +1741,7 @@ describe('Storybook TypeScript docgen contract', () => {
     };
     const file = ast(source('molecules/now-card/types.ts'));
     const own = ownProps(file, ['NowCardProps', 'NowCardBodyProps', 'NowCardFooterProps', 'NowCardDetailProps']);
-    expect(own).toHaveLength(11);
+    expect(own).toHaveLength(12);
     for (const declaration of own) {
       const name = declaration.name.getText(file);
       const tags = ts.getJSDocTags(declaration);
@@ -1763,7 +1764,7 @@ describe('Storybook TypeScript docgen contract', () => {
       controlReason: expect.stringMatching(/ReactNode.*Default.*WithBadge/)
     });
     expect(props.title).toMatchObject({ required: true, type: { name: 'string' }, defaultValue: null });
-    for (const [name, value] of Object.entries({ level: '3', size: 'md' })) {
+    for (const [name, value] of Object.entries({ level: '3', size: 'md', statusPresentation: 'badge' })) {
       expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
     }
     expect(props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
@@ -1774,6 +1775,13 @@ describe('Storybook TypeScript docgen contract', () => {
       '6'
     ]);
     expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
+    // NowCard v0.4 (#564): the presentation is an optional select in union order; the slot keeps its ReactNode row.
+    expect(props.statusPresentation).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(props.statusPresentation?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'badge',
+      'band'
+    ]);
+    expect(props.statusPresentation?.description).toMatch(/full-width,\s+uppercase,\s+brand-tinted\s+band/);
     expect(props.children).toMatchObject({ required: false, tags: { control: 'false' } });
     for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
       expect(props[name], name).toBeDefined();
@@ -1847,6 +1855,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(exportedStoryNames(stories)).toEqual([
       'Default',
       'WithBadge',
+      'WithStatusBand',
       'WithLink',
       'WithNextDate',
       'WithStepMeter',
