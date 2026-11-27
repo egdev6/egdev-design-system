@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- `doctor` DS040 no longer reports a raw `<a>` in a file that renders `Prose`: Prose styles the bare anchors of long-form
+  content at the reading size, so DS `Link`, with its smaller label step, is the wrong element there. A file counts when
+  one of its JSX elements is an import of the export `Prose`, named, aliased or as a namespace member, from any module,
+  so an app's own barrel works; an anchor anywhere in that file is accepted. `button`, `input` and `label` are still
+  reported there, files that do not render `Prose` are unchanged, and no other check, flag or exit code changes. An
+  allowlist entry that covered such an anchor becomes stale (DS042): remove it. (#580)
+
 ## 0.5.0
 
 - `doctor` DS046 also checks static classes on components imported from `@egdev/effects` and reads their

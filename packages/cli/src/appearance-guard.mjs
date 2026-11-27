@@ -1,5 +1,6 @@
 // DS046/DS047: relate static JSX classes to app CSS rules. This module uses the guard's injected
-// parsers and source-path patterns; it never resolves packages or walks the disk.
+// parsers and source-path patterns; it never resolves packages or walks the disk. The same symbol
+// resolution also records which files render `Prose` (S1, #580), for the DS040 anchor exemption.
 
 /** @typedef {import('./guard.mjs').GuardEngine} GuardEngine */
 /** @typedef {import('./guard.mjs').GuardSource} GuardSource */
@@ -497,7 +498,7 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
    * @param {readonly GuardSource[]} files
    * @param {string} sourceDirectory
    * @param {Map<GuardSource, import('typescript').SourceFile>} sourceFiles
-   * @returns {{ classes: Map<string, string>, owners: Map<string, ClassOwner[]>, appClasses: Set<string> }}
+   * @returns {{ classes: Map<string, string>, owners: Map<string, ClassOwner[]>, appClasses: Set<string>, proseSources: Set<import('typescript').SourceFile> }}
    */
   function collectClasses(files, sourceDirectory, sourceFiles) {
     /** @type {Map<string, string>} */
@@ -506,6 +507,8 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
     const owners = new Map();
     /** @type {Set<string>} */
     const appClasses = new Set();
+    /** @type {Set<import('typescript').SourceFile>} */
+    const proseSources = new Set();
     const pattern = patterns(sourceDirectory);
     /** @type {Map<string, import('typescript').SourceFile>} */
     const sources = new Map();
@@ -516,7 +519,7 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       }
     }
     if (sources.size === 0) {
-      return { classes, owners, appClasses };
+      return { classes, owners, appClasses, proseSources };
     }
     // An in-memory, no-resolution program distinguishes imports from local shadowing. It cannot
     // read the consumer's filesystem or load its types, and uses the source files already parsed.
@@ -565,6 +568,31 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
             const symbol = checker.getSymbolAtLocation(binding.name);
             if (!binding.isTypeOnly && symbol) {
               named.set(symbol, { exportName: (binding.propertyName ?? binding.name).text, packageName });
+            }
+          }
+        }
+      }
+      // `Prose` bindings from any module, so an app barrel qualifies: the guard resolves no modules. A type-only
+      // import, a default import and a re-export bind nothing, and a shadowing name is another symbol, as above.
+      /** @type {Set<import('typescript').Symbol>} */
+      const proseBindings = new Set();
+      /** @type {Set<import('typescript').Symbol>} */
+      const proseNamespaces = new Set();
+      for (const statement of source.statements) {
+        const bindings =
+          ts.isImportDeclaration(statement) && !statement.importClause?.isTypeOnly
+            ? statement.importClause?.namedBindings
+            : undefined;
+        if (bindings && ts.isNamespaceImport(bindings)) {
+          const symbol = checker.getSymbolAtLocation(bindings.name);
+          if (symbol) {
+            proseNamespaces.add(symbol);
+          }
+        } else if (bindings && ts.isNamedImports(bindings)) {
+          for (const binding of bindings.elements) {
+            const symbol = checker.getSymbolAtLocation(binding.name);
+            if (!binding.isTypeOnly && symbol && (binding.propertyName ?? binding.name).text === 'Prose') {
+              proseBindings.add(symbol);
             }
           }
         }
@@ -633,6 +661,14 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
             : undefined;
           /** @type {ClassOwner | undefined} */
           const owner = imported ? { component, ...imported } : undefined;
+          if (
+            symbol &&
+            (ts.isIdentifier(tag)
+              ? proseBindings.has(symbol)
+              : ts.isPropertyAccessExpression(tag) && tag.name.text === 'Prose' && proseNamespaces.has(symbol))
+          ) {
+            proseSources.add(source);
+          }
           for (const attribute of node.attributes.properties) {
             if (!ts.isJsxAttribute(attribute) || attribute.name.getText(source) !== 'className') {
               continue;
@@ -649,7 +685,7 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       };
       visit(source);
     }
-    return { classes, owners, appClasses };
+    return { classes, owners, appClasses, proseSources };
   }
 
   /**

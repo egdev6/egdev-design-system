@@ -373,7 +373,7 @@ Codes are stable: a code is never reused for another check.
 | DS021 | error | External peers (`react`, `react-dom`, `three`) satisfy the packed ranges (exact, `^`, `\|\|`). |
 | DS030 | error | The CSS entry, or the Vite entry module, imports the mode's token file, `@egdev/ui/styles.css` and, with effects, `@egdev/effects/styles.css`. Order is not checked. |
 | DS031 | error | `theme.css` follows `@import "tailwindcss"`; `tokens.css` and `theme.css` are not both imported. |
-| DS040 | error | Guard: raw `<button`, `<input`, `<a`, `<label` in non-test `.tsx` under `sourceDirectory`, unless a sole `asChild` child or allowlisted. |
+| DS040 | error | Guard: raw `<button`, `<input`, `<a`, `<label` in non-test `.tsx` under `sourceDirectory`, unless a sole `asChild` child, allowlisted, or an `<a` in a file that renders `Prose` (see [Guard allowlist](#guard-allowlist)). |
 | DS041 | error | Guard: `.eg-*` or `[role=tab]` selectors in CSS outside `themeDirectory`, or CSS that does not parse. |
 | DS042 | error | Guard allowlist: invalid issue, empty reason, TODO mismatch, stale entry, or a file that does not load. |
 | DS043 | warning (error with `--fail-on-pending`) | Guard: `<localRepo>#TBD-*` placeholders pending. |
@@ -409,6 +409,20 @@ The guard reads `<sourceDirectory>/design-system-allowlist.ts`, which exports `d
 with Node's built-in type stripping, so the file may hold only `import type` lines and the array literal. A missing
 file is an empty allowlist. The guard resolves `typescript` and `postcss` from the project; doctor runs the project's
 own copies.
+
+DS040 accepts a raw `<a` in a non-test `.tsx` file that renders `Prose`, which styles the bare anchors of long-form
+content at the reading size: DS `Link` uses a smaller label step there. A file counts when one of its JSX elements is
+`Prose` imported by that export name from any module (`import { Prose }`, `import { Prose as Reading }` or a namespace
+member such as `<DS.Prose>`, from `@egdev/ui`, an app barrel such as `@/components/egdev-ui` or a relative path). The
+guard resolves no modules, so a type-only import, a default import, a re-export, a barrel alias that renames the export
+and a name shadowed by a parameter or local do not count. An anchor anywhere in that file is accepted, inside the
+`Prose` element or outside it, so an unrelated raw `<a` in the same file passes too, and so does one in a file that
+imports an app component under the export name `Prose`. `<button`, `<input` and `<label` are still reported there, and
+each file is judged alone: an anchor in a separate converter file stays reported, so keep it in the file that renders
+`Prose`, use an issue-backed exception or use `Link`. DS041 and DS046 to DS048 are unchanged. An exception that covered
+an anchor now accepted becomes stale (DS042): remove it. The guard does not check `href`, `rel`, `target` or the link
+text, and a bare anchor has none of what `Link` adds for an external link (`target`, a safe `rel`, a hidden notice), so
+set them yourself.
 
 DS046 checks static classes on JSX components imported from `@egdev/ui` or `@egdev/effects` in non-test `.tsx` files
 under `sourceDirectory`, including aliased and namespace imports. It collects string literals and static template parts
