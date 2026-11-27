@@ -40,7 +40,7 @@ Run `pi mcp list` to check the configured connection. The repository's `pnpm tes
 
 ## Usage examples
 
-These examples use `@egdev/mcp` 0.4.12 and `@egdev/system` 0.13.0 from the same release. Pass each request object to an MCP SDK client's `callTool(request)` after connecting to the server. The responses show the MCP envelope: successful `content[0].text` is a JSON-serialized string, so parse that string to access the result; it is not a top-level result or `structuredContent`. The complete `designSystem` identity identifies the artifact used for these examples. Responses from a different release can differ.
+These examples use `@egdev/mcp` 0.4.13 and `@egdev/system` 0.14.0 from the same release. Pass each request object to an MCP SDK client's `callTool(request)` after connecting to the server. The responses show the MCP envelope: successful `content[0].text` is a JSON-serialized string, so parse that string to access the result; it is not a top-level result or `structuredContent`. The complete `designSystem` identity identifies the artifact used for these examples. Responses from a different release can differ.
 
 ### Get a component
 
@@ -63,12 +63,12 @@ Complete success response:
   "content": [
     {
       "type": "text",
-      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.12\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.11.0\"}]},\"component\":{\"name\":\"AspectRatio\",\"package\":\"@egdev/ui\",\"source\":\"packages/ui/src/primitives/aspect-ratio/types.ts\",\"props\":[{\"name\":\"ratio\",\"type\":\"number\",\"required\":false,\"default\":\"1\",\"description\":\"Width divided by height. Non-positive, non-finite or unrepresentable\\nreciprocal percentages fall back to a square. The parent owns width.\",\"deprecated\":false}],\"variants\":[{\"name\":\"aspectRatioVariants\",\"classes\":[\"min-w-0\"]}],\"parts\":[],\"composedOf\":[],\"anatomy\":[{\"name\":\"aspectRatioVariants\",\"base\":[],\"variants\":{},\"compounds\":[]}],\"layout\":[],\"surfaceUsage\":[]},\"catalog\":{\"name\":\"AspectRatio\",\"level\":\"primitive\",\"package\":\"@egdev/ui\",\"radix\":\"AspectRatio\",\"composes\":[],\"action\":\"nuevo\",\"available\":true}}"
+      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.13\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.12.0\"}]},\"component\":{\"name\":\"AspectRatio\",\"package\":\"@egdev/ui\",\"source\":\"packages/ui/src/primitives/aspect-ratio/types.ts\",\"props\":[{\"name\":\"ratio\",\"type\":\"number\",\"required\":false,\"default\":\"1\",\"description\":\"Width divided by height. Non-positive, non-finite or unrepresentable\\nreciprocal percentages fall back to a square. The parent owns width.\",\"deprecated\":false}],\"variants\":[{\"name\":\"aspectRatioVariants\",\"classes\":[\"min-w-0\"]}],\"parts\":[],\"composedOf\":[],\"anatomy\":[{\"name\":\"aspectRatioVariants\",\"base\":[],\"variants\":{},\"compounds\":[]}],\"layout\":[],\"surfaceUsage\":[]},\"catalog\":{\"name\":\"AspectRatio\",\"level\":\"primitive\",\"package\":\"@egdev/ui\",\"radix\":\"AspectRatio\",\"composes\":[],\"action\":\"nuevo\",\"available\":true}}"
     }
   ]
 }
 ```
-<!-- mcp-response-sha256: 9b3b4c959780cba5032996c439938490fb669855594cf74cf9271ed369e37a60 -->
+<!-- mcp-response-sha256: 57fcd2d0114bb9e73f37cb3782a9685a3274b964b9abdcb3526e158a7d9731e0 -->
 <!-- /mcp-example:get_component -->
 
 An unknown name returns an error envelope. Its text is plain text, **not** serialized JSON:
@@ -116,12 +116,12 @@ Complete success response:
   "content": [
     {
       "type": "text",
-      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.12\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.11.0\"}]},\"components\":[{\"name\":\"HomeTemplate\",\"package\":\"@egdev/effects\",\"level\":\"template\",\"available\":true}],\"total\":1}"
+      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.13\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.12.0\"}]},\"components\":[{\"name\":\"HomeTemplate\",\"package\":\"@egdev/effects\",\"level\":\"template\",\"available\":true}],\"total\":1}"
     }
   ]
 }
 ```
-<!-- mcp-response-sha256: 621557d4bdf2a0f1b5188edf046eebc29811b73c7518c177e63fd0b83a631ced -->
+<!-- mcp-response-sha256: 165cc0a3207737c0d2e6e67a34eaff8554fe3e9aff7bbe766b80f70787ff63c1 -->
 <!-- /mcp-example:list_components -->
 
 ### Get tokens
@@ -145,12 +145,12 @@ Complete success response:
   "content": [
     {
       "type": "text",
-      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.12\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.11.0\"}]},\"tokens\":[{\"name\":\"--ambient-angle\",\"value\":\"315\",\"group\":\"root\"}],\"total\":1}"
+      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.13\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.12.0\"}]},\"tokens\":[{\"name\":\"--ambient-angle\",\"value\":\"315\",\"group\":\"root\"}],\"total\":1}"
     }
   ]
 }
 ```
-<!-- mcp-response-sha256: 75f905bb6a888769f9647560104f0ad369cdfc27f8789571c3408ffc3f03d023 -->
+<!-- mcp-response-sha256: 881e388fa0ccf17ae0945eb7acb724c443269199a7aa36e5e6fce23645fc0801 -->
 <!-- /mcp-example:get_tokens -->
 
 ### Get a Material recipe
@@ -174,12 +174,12 @@ Complete success response:
   "content": [
     {
       "type": "text",
-      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.12\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.11.0\"}]},\"recipes\":[{\"id\":\"Well\",\"semantics\":\"Recessed fill.\",\"tokens\":[\"--color-surface-0\",\"--shadow-well\"]}]}"
+      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.13\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.12.0\"}]},\"recipes\":[{\"id\":\"Well\",\"semantics\":\"Recessed fill.\",\"tokens\":[\"--color-surface-0\",\"--shadow-well\"]}]}"
     }
   ]
 }
 ```
-<!-- mcp-response-sha256: 030bfb56329d4498f2d524a77f5169b6ded8b22ce7cca606a8bec1dc797dbd6d -->
+<!-- mcp-response-sha256: da930c3957511340eef2f28a665a8f62b2d0b42d7c195b98c398177f68039c64 -->
 <!-- /mcp-example:get_material_recipe -->
 
 ### Get the design-system reference
@@ -203,10 +203,10 @@ Success response excerpt:
   "content": [
     {
       "type": "text",
-      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.12\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.11.0\"}]},\"systemMd\":\"## Composition guide\\n\\nStart with an existing organism; other"
+      "text": "{\"designSystem\":{\"name\":\"egdev-design-system\",\"schemaVersion\":\"1.0.0\",\"packages\":[{\"name\":\"@egdev/effects\",\"version\":\"0.2.13\"},{\"name\":\"@egdev/tokens\",\"version\":\"0.7.0\"},{\"name\":\"@egdev/ui\",\"version\":\"0.12.0\"}]},\"systemMd\":\"## Composition guide\\n\\nStart with an existing organism; other"
     }
   ]
 }
 ```
-<!-- mcp-response-sha256: 3765185a04679bbfa1559e481e17d112c12245d935b0bfa8fc904cf7b173282a -->
+<!-- mcp-response-sha256: e223c6801050b8fb263b13fd2d419b9cbfa796ba75fe0c7714270398bede9397 -->
 <!-- /mcp-example:get_design_system_md -->
