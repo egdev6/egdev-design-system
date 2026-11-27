@@ -8,6 +8,11 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- Documented the gallery lightbox composition pattern (#575): the `Recipes/Gallery lightbox` story composes a list of
+  `PhotoFrame` thumbnails, each with a `Button` beside it (never wrapping it, so the markup stays valid) that opens a
+  full-size `Dialog` holding a `Carousel` of `PhotoFrame` `fit='contain'` images, starting at the clicked photo, with
+  arrow, Home and End navigation, Escape to close and focus returned to the button. The app composes it, as decided
+  under #509, so there is no new component, prop, token or export.
 - `Embed` reserves the proportion of external content such as a video or an X post in a recessed frame and gives it a
   required accessible name (`label`). It renders a native `iframe` for an http(s) `src`, mounted only after hydration so
   the server never starts the request, or consumer `children` for embeds that a provider script fills, with a decorative

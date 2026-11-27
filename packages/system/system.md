@@ -3634,6 +3634,7 @@ Not exported:
 - ListItem row variant (catalog[] · docs/catalog.json)
 - Toast (catalog[] · docs/catalog.json)
 - CommunityGrid (catalog[] · docs/catalog.json)
+- GalleryLightbox (catalog[] · docs/catalog.json)
 - MobileMenu (catalog[] · docs/catalog.json)
 - ProjectsGrid (catalog[] · docs/catalog.json)
 - TipsSlider (catalog[] · docs/catalog.json)

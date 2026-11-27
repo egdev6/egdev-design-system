@@ -4,6 +4,11 @@
       "id": "recipes-scene-recipes",
       "name": "Scenerecipes",
       "reason": "Component-less story (packages/ui/src/recipes/scene-recipes.stories.tsx): docs-list lists it, docgen reports no component, and it is registered instead of adding a component meta (D4 (a), #344)."
+    },
+    {
+      "id": "recipes-gallery-lightbox",
+      "name": "Gallerylightbox",
+      "reason": "Component-less story (packages/ui/src/recipes/gallery-lightbox.stories.tsx): a documented Dialog, Carousel and PhotoFrame composition with no export, so docs-list lists it, docgen reports no component, and it is registered instead of adding a component meta (D4 (a), #344; #575)."
     }
   ],
   "undocumented": [

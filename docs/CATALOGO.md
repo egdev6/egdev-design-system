@@ -13,7 +13,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 | mantener | 30 |
 | mover | 30 |
 | extraer | 12 |
-| componer | 5 |
+| componer | 6 |
 | absorber | 4 |
 | fusionar | 3 |
 | separar | 3 |
@@ -21,7 +21,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 112 |
+| @egdev/ui | 113 |
 | @egdev/effects | 5 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -173,6 +173,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **ProjectsGrid** | ProjectsGrid (organismo) | — | ProjectCard | componer | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval. |
 | **CommunityGrid** | CommunityGrid (organismo) | — | CommunityCard | componer | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging CommunityCard instances; not a standalone export. |
 | **TipsSlider** | TipsSlider (organismo) | — | Carousel, TipCard | componer | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented Carousel plus TipCard composition; not a standalone export. It becomes an organism only if coverflow offsets are required. |
+| **GalleryLightbox** | — | Dialog (full) | Dialog, Carousel, PhotoFrame | componer | Documented composition for an enlarged gallery view ([#575](https://github.com/egdev6/egdev-design-system/issues/575)): a list of PhotoFrame thumbnails, each with a Button beside it (a sibling of the figure, never a wrapper) that triggers a Dialog `size='full'` holding a Carousel of PhotoFrame `fit='contain'` images that starts at the clicked one, with arrow, Home and End navigation, Escape to close and focus returned to the button. Composed by the app under the #509 decision ([PhotoFrame v0.5 fit amendment](components/photo-frame/v0.5/fit-amendment.md)); not a standalone export, component or Dialog variant. See the `Recipes/Gallery lightbox` story. |
 
 ## @egdev/effects
 

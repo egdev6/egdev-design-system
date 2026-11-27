@@ -1287,6 +1287,17 @@
     "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented Carousel plus TipCard composition; not a standalone export. It becomes an organism only if coverflow offsets are required."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "GalleryLightbox",
+    "nivel": "recipe",
+    "destino": "ui",
+    "radix": "Dialog (full)",
+    "compone": "Dialog, Carousel, PhotoFrame",
+    "accion": "componer",
+    "notas": "Documented composition for an enlarged gallery view ([#575](https://github.com/egdev6/egdev-design-system/issues/575)): a list of PhotoFrame thumbnails, each with a Button beside it (a sibling of the figure, never a wrapper) that triggers a Dialog `size='full'` holding a Carousel of PhotoFrame `fit='contain'` images that starts at the clicked one, with arrow, Home and End navigation, Escape to close and focus returned to the button. Composed by the app under the #509 decision ([PhotoFrame v0.5 fit amendment](components/photo-frame/v0.5/fit-amendment.md)); not a standalone export, component or Dialog variant. See the `Recipes/Gallery lightbox` story."
+  },
+  {
     "actual": "Isotipo3D",
     "nivelActual": "átomo (efecto)",
     "nombre": "Isotipo3D",
