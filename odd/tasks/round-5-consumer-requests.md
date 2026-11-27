@@ -91,4 +91,11 @@ Integration branch `integration/round-5`. egdev-website's Pulso parity requests 
   - Filed and added to this round: #576 (active filter on link chips) and #577 (several actions in a ProjectCard footer). Both need cataloging, a spec and a plan, and both come after the reading pieces.
   - "Featured once per view" is app policy under MATERIAL principle 7, so no issue was filed. The website was told: only the first featured project gets the featured variant in a listing.
   - T2–T4 are done: 9a55a01, d57066c, 48d9eb7.
+- L8 — Owner answers on the implementation findings, verbatim:
+  - #574: "A: agregar `box-border` (Recomendado)". This is an amendment to the approved utility inventory of the fallback layer.
+  - #563 F2: "Aceptarlo y dejarlo registrado (Recomendado)". The Chromium AX name is uppercased by `text-transform`, while the DOM text is unchanged. Record it in the evidence.
+  - #572 F1: "Agregar `wrap-anywhere` (Recomendado)". This is a small spec and code amendment so that unbroken link labels, tags and titles wrap.
+  - #569: "Dejar 65ch y corregir el selector de code (Recomendado)". Keep the token, and fix the inline-code selector so it also matches `code` directly under the root.
+
+  Each amendment records the owner's answer in approval.md with the old and new SHA256.
 - L2 — Size note: 14 consumer requests, each with three owner gates. This spans several sessions; resume from this document.
