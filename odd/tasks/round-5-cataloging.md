@@ -189,3 +189,11 @@ I couldn't run `gh` (this role has no shell). I read all seven issue bodies from
 **Merge or decline:**
 - Treat #575 as app composition under the #509 decision (a story or pattern, not a new component). Decline it as a component unless the owner reopens #509.
 - Consider having #572 and ArticleFeature share the metadata row later, but not in this round.
+
+
+## Listings (#576, #577), owner-approved 2026-11-27
+
+Owner approval, verbatim: "Aprobar las dos (Recomendado)".
+
+- **#576: Chip link current state.** Variant: a Chip v0.3 link-mode state painted only through the native `aria-current`, typed as a narrowed union `'page' | 'true'` as in TopBar. It reuses Pagination's selected recipe and its forced-colors outline. No new prop, no `data-state` on the link root, and no built-in check icon (the consumer passes `icon`). `chipVariants()` keeps the toggle recipe, so ChipGroup is unaffected. Atom, native `a`. Size S.
+- **#577: ProjectCard footer actions.** Variant: a ProjectCard v0.4 contract amendment. ProjectCardFooter takes one to three supplied Button/Link actions, as ModuleCard does. Add `flex-wrap` to the footer recipe, rewrite PC-08, and add a `WithActions` story. Not a list. Unique link names and the cap stay consumer obligations and are documented. Molecule, no Radix. Size XS–S.
