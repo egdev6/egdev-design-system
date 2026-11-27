@@ -4,6 +4,17 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## Unreleased
+
+### Added
+
+- `Grid` and `GridItem` lay out columns without consumer utilities. `Grid` draws 1, 2, 3, 4 or 12 equal columns with a
+  token `gap` and an `alignItems` choice, and `collapseBelow` (860 or 1080) stacks it into one column at and below that
+  viewport width, resetting each direct child's span. `GridItem` places an item with `span` (1 to 12) and `rowSpan`
+  (1 to 4). Both accept `asChild` for semantic lists (`ul` and `li`), add no role, ref or stylesheet, and keep DOM
+  order as reading order. The About and Community scene recipes use them, so their columns now stack at 860px instead
+  of 768px. (#395)
+
 ## 0.11.0
 
 ### Added

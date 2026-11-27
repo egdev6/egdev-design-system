@@ -1533,6 +1533,145 @@ test('Pagination publishes its six own props, the seven static part recipes, its
   );
 });
 
+test('Grid and GridItem publish their own props with the constant defaults, the static axis recipes, the four new conventions and the reused ones, and leave Stack unchanged (#395)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const grid = artifact.components.find(({ name }) => name === 'Grid');
+  const item = artifact.components.find(({ name }) => name === 'GridItem');
+  assert.ok(grid, 'the artifact lists Grid');
+  assert.ok(item, 'the artifact lists GridItem');
+  for (const part of [grid, item]) {
+    assert.equal(part.package, '@egdev/ui');
+    assert.equal(part.source, 'packages/ui/src/primitives/grid/types.ts');
+    // Both parts merge onto one child through Slot; neither paints, so no Surface.
+    assert.deepEqual(
+      part.composedOf.map(({ name }) => name),
+      ['Slot']
+    );
+    assert.equal(part.composedOf[0].source, 'packages/ui/src/primitives/grid/Grid.tsx');
+    assert.deepEqual(part.surfaceUsage, []);
+  }
+  // The generator lists the sibling component of the same file as a part of the first one, and no part of GridItem.
+  assert.deepEqual(
+    grid.parts.map(({ name, source }) => [name, source]),
+    [['GridItem', 'packages/ui/src/primitives/grid/Grid.tsx']]
+  );
+  assert.deepEqual(item.parts, []);
+  // Own props only: `children` and the native div attributes are inherited, not redeclared.
+  assert.deepEqual(
+    grid.props.map(({ name }) => name),
+    ['alignItems', 'asChild', 'collapseBelow', 'columnCount', 'gap']
+  );
+  assert.deepEqual(
+    item.props.map(({ name }) => name),
+    ['asChild', 'rowSpan', 'span']
+  );
+  const defaults = (component) => Object.fromEntries(component.props.map(({ name, default: value }) => [name, value]));
+  // A constant default only where the hook applies one; the optional collapse and spans have none.
+  assert.deepEqual(defaults(grid), {
+    alignItems: 'stretch',
+    asChild: 'false',
+    collapseBelow: null,
+    columnCount: '1',
+    gap: '4'
+  });
+  assert.deepEqual(defaults(item), { asChild: 'false', rowSpan: null, span: null });
+  for (const part of [grid, item]) {
+    for (const prop of part.props) {
+      assert.equal(prop.required, false, `${part.name}.${prop.name} is optional`);
+      assert.ok(prop.description.length > 0, `${part.name}.${prop.name} is described`);
+    }
+  }
+  assert.match(grid.props.find(({ name }) => name === 'collapseBelow').description, /at and below/);
+  assert.match(grid.props.find(({ name }) => name === 'collapseBelow').description, /inclusive/);
+  // The inline axis maps are listed, so every utility is visible to a consumer of the artifact.
+  const classes = (component, recipeName) => {
+    const recipe = component.variants.find(({ name }) => name === recipeName);
+    assert.ok(recipe, `${component.name} lists ${recipeName}`);
+    return recipe.classes.join(' ').split(/\s+/).filter(Boolean);
+  };
+  const gridClasses = classes(grid, 'gridVariants');
+  for (const utility of [
+    'eg-grid',
+    'grid',
+    'min-w-0',
+    'grid-cols-1',
+    'grid-cols-12',
+    'gap-0',
+    'gap-24',
+    'items-baseline',
+    '[@media(width<=860px)]:grid-cols-1',
+    '[@media(width<=860px)]:[&>*]:col-auto',
+    '[@media(width<=860px)]:[&>*]:row-auto',
+    '[@media(width<=1080px)]:grid-cols-1',
+    '[@media(width<=1080px)]:[&>*]:col-auto',
+    '[@media(width<=1080px)]:[&>*]:row-auto'
+  ]) {
+    assert.ok(gridClasses.includes(utility), `gridVariants lists ${utility}`);
+  }
+  const itemClasses = classes(item, 'gridItemVariants');
+  for (const utility of [
+    'eg-grid-item',
+    'min-w-0',
+    'col-span-1',
+    'col-span-7',
+    'col-span-12',
+    'row-span-2',
+    'row-span-4'
+  ]) {
+    assert.ok(itemClasses.includes(utility), `gridItemVariants lists ${utility}`);
+  }
+  // Nothing in either recipe can reorder content or paint.
+  for (const utility of [...gridClasses, ...itemClasses]) {
+    assert.doesNotMatch(
+      utility.split(':').at(-1),
+      /^(?:order|col-start|col-end|row-start|row-end|grid-flow)-/,
+      utility
+    );
+  }
+  // Stack is unchanged: same props, defaults and base recipe.
+  const stack = artifact.components.find(({ name }) => name === 'Stack');
+  assert.deepEqual(defaults(stack), { alignItems: 'stretch', asChild: 'false', gap: '4', justifyContent: 'start' });
+  assert.equal(stack.variants[0].name, 'stackVariants');
+  assert.deepEqual(stack.variants[0].classes, ['eg-stack flex min-w-0 flex-col flex-nowrap']);
+  // Four new conventions, approved by their own receipt, each owned by its Grid part; the reused ones list both.
+  for (const [id, name, components] of [
+    ['grid-columns', 'columnCount', ['Grid']],
+    ['layout-collapse-below', 'collapseBelow', ['Grid']],
+    ['grid-item-span', 'span', ['GridItem']],
+    ['grid-item-row-span', 'rowSpan', ['GridItem']]
+  ]) {
+    const convention = artifact.propNaming.find((entry) => entry.id === id);
+    assert.ok(convention, id);
+    assert.equal(convention.name, name, id);
+    assert.equal(convention.status, 'approved', id);
+    assert.deepEqual(convention.components, components, id);
+  }
+  for (const [id, components] of [
+    ['layout-gap', ['Grid']],
+    ['cross-axis-alignment', ['Grid']],
+    ['slot-composition', ['Grid', 'GridItem']]
+  ]) {
+    const convention = artifact.propNaming.find((entry) => entry.id === id);
+    assert.equal(convention.status, 'approved', id);
+    for (const component of components) {
+      assert.ok(convention.components.includes(component), `${id} lists ${component}`);
+    }
+  }
+  assert.equal(artifact.propNaming.find(({ id }) => id === 'table-columns').name, 'columns');
+  assert.deepEqual(
+    artifact.catalog.find(({ name }) => name === 'Grid / GridItem'),
+    {
+      name: 'Grid / GridItem',
+      level: 'primitive',
+      package: '@egdev/ui',
+      radix: 'Slot',
+      composes: [],
+      action: 'nuevo',
+      available: true
+    }
+  );
+});
+
 test('Embed publishes its six own props, the four static recipes, the Surface well it composes, its new convention and the reused ones (#574)', () => {
   const artifact = read('packages/system/design-system.json');
   const embed = artifact.components.find(({ name }) => name === 'Embed');
