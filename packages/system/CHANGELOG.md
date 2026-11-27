@@ -4,6 +4,9 @@
 
 ### Added
 
+- The source-derived artifact and reference include `Embed` (its six props and static recipes), the
+  `unavailable-content-fallback` naming concept (approved, with its receipt) and Embed among the users of two reused
+  conventions. (#574)
 - The source-derived artifact and reference include `Pagination` (its six props and static recipes), the `page-count`
   and `page-href` naming concepts (approved, with their receipt) and Pagination among the users of four reused
   conventions. (#571)

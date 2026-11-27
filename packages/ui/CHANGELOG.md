@@ -8,6 +8,13 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `Embed` reserves the proportion of external content such as a video or an X post in a recessed frame and gives it a
+  required accessible name (`label`). It renders a native `iframe` for an http(s) `src`, mounted only after hydration so
+  the server never starts the request, or consumer `children` for embeds that a provider script fills, with a decorative
+  loading state while the frame loads and a consumer `fallback` when there is no usable content. The component loads no
+  script and decides nothing about consent, cookies or URL trust: mount it only after your own consent decision, choose
+  `sandbox`, `allow` and `referrerPolicy` yourself, and pick a `ratio` that fits the content (default 16/9; taller
+  output is clipped). It has no variant, ref or `asChild`. (#574)
 - `Pagination` splits a long listing into pages with crawlable links: a named navigation landmark (required `label`)
   holding Previous and Next and numbered pages in a constant-width window of at most seven slots with ellipses, with
   the current page marked `aria-current="page"`. Every control is a native anchor whose URL the consumer builds with
