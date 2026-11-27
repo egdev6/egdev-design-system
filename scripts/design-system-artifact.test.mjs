@@ -331,8 +331,8 @@ test('Prose publishes its three own props, the static descendant recipe, the mea
     '[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]',
     '[&_pre]:shadow-[var(--shadow-well)]',
     '[&_th]:bg-surface-2',
-    '[&_:not(pre)>code]:text-fg-brand-default',
-    '[&_:not(pre)>code]:text-fg-brand-raised'
+    '[&_code:not(pre_code)]:text-fg-brand-default',
+    '[&_code:not(pre_code)]:text-fg-brand-raised'
   ]) {
     assert.ok(published.has(utility), `The Prose recipe lists ${utility}`);
   }
@@ -1261,7 +1261,7 @@ test('DetailHeader publishes its nine own props, the eight static part recipes, 
     'gap-y-3',
     'p-0'
   ]);
-  assert.deepEqual(recipes.detailHeaderLinkItemVariants, ['min-w-0']);
+  assert.deepEqual(recipes.detailHeaderLinkItemVariants, ['min-w-0', 'wrap-anywhere']);
   // The header paints nothing: no background, border, shadow, ring, outline, backdrop, filter or motion utility.
   for (const [name, classes] of Object.entries(recipes)) {
     for (const utility of classes) {

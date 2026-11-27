@@ -1141,8 +1141,12 @@ test('Prose ships the measure and one rule per descendant selector without a sty
       /border-inline-start-width:\s*calc\(var\(--border-width\)\s*\*\s*2\)/
     ],
     ['[&_code]:text-code', 'code', /font-size:\s*var\(--text-code[,)]/],
-    ['[&_:not(pre)>code]:text-fg-brand-default', ':not(pre) > code', /color:\s*var\(--color-fg-brand-default[,)]/],
-    ['[&_:not(pre)>code]:text-fg-brand-raised', ':not(pre) > code', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    [
+      '[&_code:not(pre_code)]:text-fg-brand-default',
+      'code:not(pre code)',
+      /color:\s*var\(--color-fg-brand-default[,)]/
+    ],
+    ['[&_code:not(pre_code)]:text-fg-brand-raised', 'code:not(pre code)', /color:\s*var\(--color-fg-brand-raised[,)]/],
     ['[&_pre]:shadow-[var(--shadow-well)]', 'pre', /--tw-shadow:\s*var\(--shadow-well\)/],
     [
       '[&_pre:focus-visible]:[box-shadow:var(--shadow-focus)]',
@@ -1191,11 +1195,11 @@ test('Prose package SSR renders one unmarked root around the unchanged children 
   const render = (html) => new JSDOM(html);
   const plain = render(renderToString(createElement('div', null, ...content())));
   for (const [props, step, brand] of [
-    [undefined, 'text-body-large', '[&_:not(pre)>code]:text-fg-brand-default'],
+    [undefined, 'text-body-large', '[&_code:not(pre_code)]:text-fg-brand-default'],
     [
       { size: 'sm', tone: 'raised', id: 'packed-prose', lang: 'en', className: 'mx-auto' },
       'text-body-default',
-      '[&_:not(pre)>code]:text-fg-brand-raised'
+      '[&_code:not(pre_code)]:text-fg-brand-raised'
     ]
   ]) {
     const dom = render(renderToString(createElement(exported.Prose, props, ...content())));

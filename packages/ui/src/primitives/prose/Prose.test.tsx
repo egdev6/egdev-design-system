@@ -183,7 +183,7 @@ const recipe = [
   ['hr', '&_hr', ['m-0', 'my-10', 'border-0', 'border-t', 'border-solid', 'border-border-hairline']]
 ] as const satisfies readonly (readonly [target: string, selector: string, utilities: readonly string[]])[];
 
-const inlineCode = '&_:not(pre)>code';
+const inlineCode = '&_code:not(pre_code)';
 
 describe('Prose root (PRS-01)', () => {
   it('renders one div with the stable marker around the unchanged children, in order', () => {
@@ -346,6 +346,56 @@ describe('Prose descendant recipe (PRS-04, PRS-06)', () => {
       expect(tokens.filter((token) => token.includes('text-fg-brand-') && token.includes('code'))).toEqual([
         `[${inlineCode}]:text-fg-brand-${tone === 'raised' ? 'raised' : 'default'}`
       ]);
+    }
+  });
+});
+
+describe('Prose inline code selector (PRS-06, Amendment 1)', () => {
+  // The recipe's own colour variant read as the CSS selector a browser evaluates: `&` is the root and `_` a space.
+  function inlineCodeSelector(tone: ProseTone): string {
+    const token = proseVariants({ tone })
+      .split(' ')
+      .find((candidate) => candidate.includes('text-fg-brand-') && candidate.includes('code'));
+    if (token === undefined) {
+      throw new Error('The inline code colour utility is missing');
+    }
+    const variant = token.slice(1, token.indexOf(']:'));
+    return `.eg-prose${variant.slice(1).replaceAll('_', ' ')}`;
+  }
+
+  it.each(['canvas', 'raised'] as const)('matches inline code anywhere under the %s root except inside pre', (tone) => {
+    render(
+      <Prose tone={tone}>
+        <code>direct child</code>
+        <p>
+          <code>in a paragraph</code>
+        </p>
+        <p>
+          <a href='#target'>
+            <code>in a link</code>
+          </a>
+        </p>
+        <ul>
+          <li>
+            <code>in a list item</code>
+          </li>
+        </ul>
+        <pre>
+          <code>block code</code>
+        </pre>
+        <pre>
+          <span>
+            <code>nested in a block</code>
+          </span>
+        </pre>
+      </Prose>
+    );
+    const selector = inlineCodeSelector(tone);
+    for (const inline of ['direct child', 'in a paragraph', 'in a link', 'in a list item']) {
+      expect(screen.getByText(inline).matches(selector), inline).toBe(true);
+    }
+    for (const block of ['block code', 'nested in a block']) {
+      expect(screen.getByText(block).matches(selector), block).toBe(false);
     }
   });
 });

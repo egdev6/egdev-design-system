@@ -47,7 +47,8 @@ export type ProseProps = ProseNativeProps & {
 // variant, so the Tailwind scanner emits it from this file and the elements stay bare, with no markers or classes.
 // Native consumers get no Preflight, so each element sets its own margin, padding, list style, border and font.
 // Descendant rules have specificity (0,1,1), pseudo-class rules (0,2,1) and the direct first and last child rules
-// (0,2,0), which is why the latter trim the outer margins.
+// (0,2,0), which is why the latter trim the outer margins. Inline code is any code outside a pre, a direct child of
+// the root included (the not() argument is a complex selector, so that rule has specificity (0,1,3)).
 export const proseVariants = cva(
   [
     'eg-prose box-border min-w-0 max-w-prose font-sans wrap-break-word text-pretty',
@@ -85,8 +86,8 @@ export const proseVariants = cva(
     variants: {
       size: { sm: 'text-body-default', md: 'text-body-large' },
       tone: {
-        canvas: '[&_:not(pre)>code]:text-fg-brand-default',
-        raised: '[&_:not(pre)>code]:text-fg-brand-raised'
+        canvas: '[&_code:not(pre_code)]:text-fg-brand-default',
+        raised: '[&_code:not(pre_code)]:text-fg-brand-raised'
       }
     },
     defaultVariants: { size: 'md', tone: 'canvas' }

@@ -1035,7 +1035,7 @@
         "source": {
           "path": "packages/ui/src/primitives/prose/types.ts",
           "symbol": "ProseProps",
-          "revision": "sha256:9fa0da50b17a2d7e58325c9b6447730377cc5a044668be6d199ed0da92a1527e"
+          "revision": "sha256:fea45507867ff2fc1088010361e918dee996d6a0d525e2f8a22207d0571dedae"
         }
       }
     ]
@@ -1620,7 +1620,7 @@
         "source": {
           "path": "packages/ui/src/primitives/prose/types.ts",
           "symbol": "ProseProps",
-          "revision": "sha256:9fa0da50b17a2d7e58325c9b6447730377cc5a044668be6d199ed0da92a1527e"
+          "revision": "sha256:fea45507867ff2fc1088010361e918dee996d6a0d525e2f8a22207d0571dedae"
         }
       }
     ]
@@ -3510,7 +3510,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       }
     ]
@@ -4398,7 +4398,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       },
       {
@@ -5576,7 +5576,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       }
     ]
@@ -5773,7 +5773,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       }
     ]
@@ -6112,7 +6112,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       }
     ]
@@ -6720,7 +6720,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       }
     ]
@@ -9201,7 +9201,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       }
     ]
@@ -9228,7 +9228,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       }
     ]
@@ -9255,7 +9255,7 @@
         "source": {
           "path": "packages/ui/src/molecules/detail-header/types.ts",
           "symbol": "DetailHeaderProps",
-          "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+          "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
         }
       }
     ]

@@ -5611,7 +5611,11 @@ function assertProseConsumerCSS(css) {
     ['[&_a:hover]:no-underline', 'a:hover', /text-decoration-line:\s*none/],
     ['[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]', 'a:focus-visible', /box-shadow:\s*var\(--shadow-focus\)/],
     ['[&_li::marker]:text-fg-muted', 'li::marker', /color:\s*var\(--color-fg-muted[,)]/],
-    ['[&_:not(pre)>code]:text-fg-brand-default', ':not(pre) > code', /color:\s*var\(--color-fg-brand-default[,)]/],
+    [
+      '[&_code:not(pre_code)]:text-fg-brand-default',
+      'code:not(pre code)',
+      /color:\s*var\(--color-fg-brand-default[,)]/
+    ],
     ['[&_pre]:shadow-[var(--shadow-well)]', 'pre', /--tw-shadow:\s*var\(--shadow-well\)/],
     ['[&_th]:bg-surface-2', 'th', /background-color:\s*var\(--color-surface-2[,)]/],
     ['[&_hr]:border-t', 'hr', /border-top-width:\s*1px/]
@@ -7034,10 +7038,10 @@ assert.equal(proseRoots.length, 2);
 const [proseRaised, proseDefault] = proseRoots;
 assert.equal(proseRaised.getAttribute('id'), 'packed-prose');
 assert.equal(proseRaised.getAttribute('lang'), 'en');
-for (const name of ['mx-auto', 'max-w-prose', 'text-body-default', '[&_:not(pre)>code]:text-fg-brand-raised']) {
+for (const name of ['mx-auto', 'max-w-prose', 'text-body-default', '[&_code:not(pre_code)]:text-fg-brand-raised']) {
   assert.ok(proseRaised.classList.contains(name), name);
 }
-for (const name of ['max-w-prose', 'text-body-large', '[&_:not(pre)>code]:text-fg-brand-default']) {
+for (const name of ['max-w-prose', 'text-body-large', '[&_code:not(pre_code)]:text-fg-brand-default']) {
   assert.ok(proseDefault.classList.contains(name), name);
 }
 for (const root of proseRoots) {

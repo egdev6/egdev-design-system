@@ -18,10 +18,22 @@
       }
     ],
     "specPath": "docs/components/detail-header/v0.1/spec.md",
-    "specPayloadSHA256": "sha256:df34b603ee5474f6019997d8f367117d2790e212511b538a6c6b289a10988ece",
+    "specPayloadSHA256": "sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8",
+    "specAmendments": [
+      {
+        "name": "Amendment 1",
+        "date": "2026-11-27",
+        "record": "docs/components/detail-header/v0.1/approval.md",
+        "change": "Adds the static utility wrap-anywhere to the link item recipe and the matching DH-11 wording; the three convention texts are byte-identical in both payloads.",
+        "ownerChoice": "Agregar `wrap-anywhere` (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L8",
+        "specPayloadSHA256Before": "sha256:df34b603ee5474f6019997d8f367117d2790e212511b538a6c6b289a10988ece",
+        "specPayloadSHA256After": "sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8"
+      }
+    ],
     "planPath": "docs/components/detail-header/v0.1/implementation-plan.md",
     "planPayloadSHA256": "sha256:f5cf17969cd2c77f7ef324e07410f2545d46218543f33ae9c2bccf96950a419b",
-    "interpretation": "Scoped convention approval only: it binds the exact payloads below, which the approved DetailHeader v0.1 spec quotes in its block 3 table of new proposals (OQ-5, approved by L5 with the recommended answer) and whose receipt the approved plan (L6, decision D2) authorized. It is not native review authority. The one bound field the owner's answers did not show is status: the spec table lists id, name, meaning, use and avoid, with no alias and no exception, and the plan (section 5.1, D2) states that hashing the approved form is the step D2 adds. The receipt does not approve the DetailHeader implementation, a visual capture, an alias, an exception or any other convention, and the three entries carry no exception."
+    "interpretation": "Scoped convention approval only: it binds the exact payloads below, which the approved DetailHeader v0.1 spec quotes in its block 3 table of new proposals (OQ-5, approved by L5 with the recommended answer) and whose receipt the approved plan (L6, decision D2) authorized. It is not native review authority. specPayloadSHA256 is the payload of the spec as amended by Amendment 1 (the owner's L8 answer, which only added wrap-anywhere to the link item recipe); the payload the owner approved at L5 is the digest recorded in specAmendments, and the convention texts are byte-identical in both. The one bound field the owner's answers did not show is status: the spec table lists id, name, meaning, use and avoid, with no alias and no exception, and the plan (section 5.1, D2) states that hashing the approved form is the step D2 adds. The receipt does not approve the DetailHeader implementation, a visual capture, an alias, an exception or any other convention, and the three entries carry no exception."
   },
   "priorReceipts": [],
   "previouslyProposedNowApproved": ["content-metadata", "content-tags", "external-links"],
@@ -43,7 +55,7 @@
       "source": {
         "path": "packages/ui/src/molecules/detail-header/types.ts",
         "symbol": "DetailHeaderProps",
-        "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+        "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
       }
     },
     {
@@ -62,7 +74,7 @@
       "source": {
         "path": "packages/ui/src/molecules/detail-header/types.ts",
         "symbol": "DetailHeaderProps",
-        "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+        "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
       }
     },
     {
@@ -81,7 +93,7 @@
       "source": {
         "path": "packages/ui/src/molecules/detail-header/types.ts",
         "symbol": "DetailHeaderProps",
-        "revision": "sha256:7bfec8db658eaf63a3814e835b1052bfc54f1329d59863405d85e755d362e3bc"
+        "revision": "sha256:2eaaade22493a48578a40ff8459637304412f8ecb3f04c0df6ff9da934eb43d1"
       }
     }
   ]

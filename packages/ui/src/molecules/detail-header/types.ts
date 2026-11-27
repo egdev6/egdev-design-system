@@ -153,5 +153,5 @@ export const detailHeaderTagsVariants = cva('eg-detail-header__tags m-0 flex min
 export const detailHeaderLinksVariants = cva(
   'eg-detail-header__links m-0 flex min-w-0 list-none flex-wrap gap-x-6 gap-y-3 p-0'
 );
-/** Link item: lets a long link label wrap instead of overflowing. */
-export const detailHeaderLinkItemVariants = cva('min-w-0');
+/** Link item: lets a long or unbroken link label wrap instead of overflowing. */
+export const detailHeaderLinkItemVariants = cva('min-w-0 wrap-anywhere');

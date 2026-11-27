@@ -871,6 +871,13 @@ describe('DetailHeader recipes', () => {
     expect(screen.getAllByRole('listitem').at(-1)).toHaveClass('min-w-0');
   });
 
+  it('lets an unbroken link label wrap: the link item keeps min-w-0 and carries wrap-anywhere (DH-11, Amendment 1)', () => {
+    render(<DetailHeader title='Release notes' links={[repository]} />);
+    const item = screen.getByRole('link').closest('li');
+    expect(item).toHaveClass('min-w-0', 'wrap-anywhere');
+    expect(detailHeaderLinkItemVariants().split(' ')).toEqual(['min-w-0', 'wrap-anywhere']);
+  });
+
   it('sets no inline style and mirrors no state on any element DetailHeader owns (DH-09)', () => {
     const { container } = render(full);
     const owned = container.querySelectorAll('.eg-detail-header, dl, dl > div, dt, dd, time, ul, li');

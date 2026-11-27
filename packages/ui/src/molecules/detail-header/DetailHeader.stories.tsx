@@ -148,8 +148,8 @@ export const Localized: Story = {
 };
 
 /**
- * A long multi-word title, an unbroken checksum value, a long link label and many tags: every part wraps and nothing
- * is truncated or clipped. Narrow the viewport to see the facts, the tags and the links reflow.
+ * A long multi-word title, an unbroken checksum value, a long link label, an unbroken link label and many tags: every
+ * part wraps and nothing is truncated or clipped. Narrow the viewport to see the facts, the tags and the links reflow.
  */
 export const LongContent: Story = {
   args: {
@@ -182,7 +182,11 @@ export const LongContent: Story = {
         label: 'A long link label that describes its destination in several words and wraps inside its own item',
         href: 'https://example.com/a/long/path/that/is/never/shown'
       },
-      { label: 'Repository', href: 'https://example.org/repository' }
+      { label: 'Repository', href: 'https://example.org/repository' },
+      {
+        label: 'ReleaseBundleIdentifier0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+        href: 'https://example.com/releases/bundle'
+      }
     ]
   }
 };

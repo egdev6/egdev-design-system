@@ -28,9 +28,9 @@ a local tarball from `pnpm release:pack`.
   entry may carry a `dateTime` for a native `time`), a named list of static tag pills (`tags`) and a named list of
   external links (`links`: absolute `https:` URLs that open in a new tab with a hidden notice, localizable through
   `newTabText`). The list names are English by default (`Tags`, `Links`) and localizable through `messages`. Blank or
-  invalid entries are skipped with a development warning and an unreadable title renders nothing. It paints no
-  surface: the host formats dates and text, places it inside `main` or `article` and supplies one page-level heading.
-  (#572)
+  invalid entries are skipped with a development warning and an unreadable title renders nothing. Long fact values and
+  link labels wrap instead of overflowing, unbroken ones included. It paints no surface: the host formats dates and
+  text, places it inside `main` or `article` and supplies one page-level heading. (#572)
 - `Breadcrumb` shows where the reader is on a detail page: a named navigation landmark (required `label`) holding an
   ordered trail of `items`, where every ancestor is a link (`href`, optional `onNavigate`) and the last entry is the
   current page, plain text marked `aria-current="page"`, with decorative chevrons between steps. The consumer supplies
@@ -44,10 +44,10 @@ a local tarball from `pnpm release:pack`.
   There is no built-in copy: consumers provide localized text. (#573)
 - `Prose` gives bare semantic content (`h2` to `h4`, paragraphs, lists, links, quotes, code, images, figures, simple
   tables and rules) a readable reading column: a built-in 65ch measure, a 16px body step (`size='sm'` selects the
-  compact step) and brand-coloured inline code by `tone`. It renders one `div`, never parses or sanitizes content and
-  takes no HTML string, so the app converts and sanitizes its rich text, caps heading levels, provides `alt` text and
-  wraps wide tables in a scroll region. Components that own a recipe (`PullQuote`, `Table`, `PhotoFrame`) are not
-  supported inside it. (#569)
+  compact step) and brand-coloured inline code by `tone` (any `code` outside a `pre`, one directly under the root
+  included). It renders one `div`, never parses or sanitizes content and takes no HTML string, so the app converts and
+  sanitizes its rich text, caps heading levels, provides `alt` text and wraps wide tables in a scroll region.
+  Components that own a recipe (`PullQuote`, `Table`, `PhotoFrame`) are not supported inside it. (#569)
 - Footer accepts an optional `wrap`: when true, one centered wrapper with the page content max-width and gutters
   encloses the motto, grid and legal row, so the footer content aligns with wrapped sections while the root
   hairlines and bottom padding stay full width. The default is `false`: the footer renders as before. (#561)

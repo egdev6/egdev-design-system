@@ -2023,10 +2023,36 @@ test('DetailHeader binds its scoped owner approval for three new conventions, re
   const specPayload = payload(specPath, /^## 1\. Purpose and scope$/m);
   assert.equal(receipt.evidence.specPath, specPath);
   assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(specPayload)));
+  // The receipt sits under the spec as amended by Amendment 1 (the owner's L8 answer): the live payload is the amended one.
   assert.equal(
     receipt.evidence.specPayloadSHA256,
-    'sha256:df34b603ee5474f6019997d8f367117d2790e212511b538a6c6b289a10988ece'
+    'sha256:97f8419da9fed153dd3cba8483f9295843edc4e55b113de6d540bade09b851c8'
   );
+  // The amendment changed the link item recipe only. It records the digest the owner approved at L5, the amended one,
+  // and the owner's verbatim answer, which the approval record and the task log both hold.
+  const amendmentQuote = 'Agregar `wrap-anywhere` (Recomendado)';
+  assert.deepEqual(receipt.evidence.specAmendments, [
+    {
+      name: 'Amendment 1',
+      date: '2026-11-27',
+      record: 'docs/components/detail-header/v0.1/approval.md',
+      change:
+        'Adds the static utility wrap-anywhere to the link item recipe and the matching DH-11 wording; the three convention texts are byte-identical in both payloads.',
+      ownerChoice: amendmentQuote,
+      provenance: 'odd/tasks/round-5-consumer-requests.md L8',
+      specPayloadSHA256Before: 'sha256:df34b603ee5474f6019997d8f367117d2790e212511b538a6c6b289a10988ece',
+      specPayloadSHA256After: receipt.evidence.specPayloadSHA256
+    }
+  ]);
+  const approvalRecord = fs.readFileSync(resolve(root, receipt.evidence.specAmendments[0].record), 'utf8');
+  for (const hash of [
+    receipt.evidence.specAmendments[0].specPayloadSHA256Before,
+    receipt.evidence.specAmendments[0].specPayloadSHA256After
+  ]) {
+    assert.ok(approvalRecord.includes(hash.replace('sha256:', '')), `approval.md must record ${hash}`);
+  }
+  assert.ok(approvalRecord.includes(`"${amendmentQuote}"`), 'approval.md must hold the amendment answer');
+  assert.ok(log.includes(`"${amendmentQuote}"`), 'The task log must hold the amendment answer (L8)');
   assert.equal(receipt.evidence.planPath, planPath);
   assert.equal(
     receipt.evidence.planPayloadSHA256,
