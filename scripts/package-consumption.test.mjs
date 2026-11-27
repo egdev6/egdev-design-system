@@ -2246,10 +2246,18 @@ const nowCardSample: NowCardProps = {
     })
   ]
 };
+// v0.4 (#564): the status band is opt-in. The label words and a decorative icon replace the Badge, and the typed
+// union is closed.
+const nowCardBandLabel = createElement(Fragment, null, createElement(Icon, { name: 'hammer', size: 'sm' }), 'Building');
+const nowCardBand: NowCardProps = { ...nowCardSample, statusBadge: nowCardBandLabel, statusPresentation: 'band' };
 export function NowCardSamples({ size = 'md' }: { size?: NowCardSize }) {
   return createElement('div', null,
     createElement(NowCard, { ...nowCardSample, size, id: 'now-card' }),
     createElement(NowCard, { ...nowCardSample, size: 'sm', id: 'now-card-sm' }),
+    createElement(NowCard, { ...nowCardBand, id: 'now-card-band' }),
+    createElement(NowCard, { ...nowCardBand, size: 'sm', id: 'now-card-band-sm' }),
+    // The explicit default presentation is the unchanged pill.
+    createElement(NowCard, { ...nowCardSample, statusPresentation: 'badge', id: 'now-card-pill' }),
     // Omitted, null and boolean slots render no wrapper at all.
     createElement(NowCard, { title: 'Currently exploring', id: 'now-omitted', children: createElement(NowCardBody, { children: 'Copy only.' }) }),
     createElement(NowCard, { title: 'Currently exploring', statusBadge: null, id: 'now-null', children: createElement(NowCardBody, { children: 'Copy only.' }) }),
@@ -2271,6 +2279,8 @@ const slottedNow: NowCardProps = { ...nowCardSample, asChild: true };
 const sizedNow: NowCardProps = { ...nowCardSample, size: 'xs' };
 // @ts-expect-error Heading rank is semantic 2-6, never a visual size.
 const rankedNow: NowCardProps = { ...nowCardSample, level: 1 };
+// @ts-expect-error The status presentation is a closed union: only badge and band.
+const ribbonNow: NowCardProps = { ...nowCardSample, statusPresentation: 'ribbon' };
 // @ts-expect-error Internal hook is not public.
 type NowCardPrivateHook = (typeof import('@egdev/ui'))['useNowCard'];
 // @ts-expect-error Internal part recipe is not public.
@@ -7949,6 +7959,27 @@ try {
   for (const id of ['now-omitted', 'now-null', 'now-boolean']) {
     assert.equal(document.getElementById(id).querySelector('.eg-now-card__badge'), null, id);
   }
+  // v0.4 (#564): the band paints recipe R1 around the supplied label, the prop never reaches the article, and the
+  // explicit default presentation is the same pill as the omitted one.
+  for (const [id, inset, size] of [['now-card-band', 'mx-6', 'md'], ['now-card-band-sm', 'mx-4', 'sm']]) {
+    const band = document.getElementById(id);
+    assert.equal(band.getAttribute('data-size'), size, id);
+    assert.equal(band.hasAttribute('statuspresentation'), false, id);
+    const wrapper = band.firstElementChild;
+    assert.ok(wrapper.classList.contains('eg-now-card__badge'), id);
+    for (const utility of [inset, 'mt-6', 'mb-3', 'items-center', 'gap-2', 'rounded-sm', 'border', 'border-alpha-red-22', 'bg-alpha-red-12', 'px-2.5', 'py-1.5', 'font-display', 'text-label-eyebrow', 'text-primitive-red-200', 'uppercase', 'shadow-edge', 'wrap-anywhere']) {
+      assert.ok(wrapper.classList.contains(utility), id + ' ' + utility);
+    }
+    for (const utility of ['px-6', 'pt-6', 'pb-3']) {
+      assert.equal(wrapper.classList.contains(utility), false, id + ' ' + utility);
+    }
+    assert.equal(wrapper.textContent, 'Building', id);
+    assert.equal(wrapper.hasAttribute('aria-hidden'), false, id);
+    assert.equal(wrapper.querySelector('svg').getAttribute('aria-hidden'), 'true', id);
+  }
+  const pill = document.getElementById('now-card-pill');
+  assert.equal(pill.hasAttribute('statuspresentation'), false);
+  assert.equal(pill.firstElementChild.className, badgeWrapper.className);
 } finally {
   nowDocument.window.close();
 }

@@ -6912,6 +6912,55 @@ test('NowCard ships badge-first named article SSR, full density copy and no priv
   assert.ok(ownedCopy);
   assert.doesNotMatch(ownedCopy.outerHTML, /truncate|line-clamp|whitespace-nowrap/);
   compactDOM.window.close();
+  // v0.4 (#564): the opt-in band. The wrapper carries recipe R1, the prop never reaches the article, and the default and
+  // the explicit 'badge' presentation (and an unknown runtime value) render the unchanged pill.
+  const bandUtilities = [
+    'flex',
+    'mt-6',
+    'mb-3',
+    'items-center',
+    'gap-2',
+    'rounded-sm',
+    'border',
+    'border-alpha-red-22',
+    'bg-alpha-red-12',
+    'px-2.5',
+    'py-1.5',
+    'font-display',
+    'text-label-eyebrow',
+    'text-primitive-red-200',
+    'uppercase',
+    'shadow-edge',
+    'wrap-anywhere'
+  ];
+  const label = createElement('span', null, 'Building');
+  for (const [size, inset] of [
+    ['md', 'mx-6'],
+    ['sm', 'mx-4']
+  ]) {
+    const band = render({ statusPresentation: 'band', statusBadge: label, size, id: 'now-band' });
+    assert.ok(!/statuspresentation/i.test(band), 'statusPresentation is consumed, never forwarded');
+    const bandDOM = new JSDOM(band);
+    const bandWrapper = bandDOM.window.document.querySelector('.eg-now-card__badge');
+    assert.ok(bandWrapper, `The ${size} band renders its wrapper`);
+    assert.equal(bandDOM.window.document.querySelector('article')?.firstElementChild, bandWrapper);
+    const classes = bandWrapper.className.split(/\s+/);
+    for (const utility of [...bandUtilities, inset]) {
+      assert.ok(classes.includes(utility), `The ${size} band carries ${utility}`);
+    }
+    for (const utility of ['px-6', 'pt-6', 'pb-3']) {
+      assert.ok(!classes.includes(utility), `The ${size} band drops ${utility}`);
+    }
+    assert.equal(classes.filter((name) => name.startsWith('mx-')).length, 1, 'One inset class');
+    assert.equal(bandWrapper.textContent, 'Building');
+    assert.equal(bandWrapper.closest('[aria-hidden="true"]'), null, 'The band stays readable');
+    bandDOM.window.close();
+  }
+  const pill = render({ id: 'now-pill' });
+  assert.match(pill, /class="eg-now-card__badge flex px-6 pt-6 pb-3"/, 'The default class list is unchanged');
+  for (const value of ['badge', 'ribbon', '']) {
+    assert.equal(render({ id: 'now-pill', statusPresentation: value }), pill, `statusPresentation ${value}`);
+  }
   for (const name of [
     'useNowCard',
     'NowCardContext',
@@ -6969,6 +7018,53 @@ test('NowCard ships Surface frame, banded footer, wrapping and sm density utilit
   assert.match(rule('.p-4'), /padding:\s*var\(--space-4[,)]/);
   assert.match(rule('.text-body-default'), /font-size:\s*var\(--text-body-default[,)]/);
   assert.match(rule('.text-body-large'), /font-size:\s*var\(--text-body-large[,)]/);
+  // v0.4 (#564): recipe R1 of the opt-in status band ships as static token-backed utilities, with no stylesheet.
+  for (const selector of [
+    '.mt-6',
+    '.mb-3',
+    '.mx-6',
+    '.mx-4',
+    '.items-center',
+    '.gap-2',
+    '.rounded-sm',
+    '.border',
+    '.border-alpha-red-22',
+    '.bg-alpha-red-12',
+    String.raw`.px-2\.5`,
+    String.raw`.py-1\.5`,
+    '.font-display',
+    '.text-label-eyebrow',
+    '.text-primitive-red-200',
+    '.uppercase',
+    '.shadow-edge',
+    '.wrap-anywhere'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing NowCard band utility ${selector}`);
+  }
+  assert.match(rule('.mt-6'), /margin-top:\s*var\(--space-6[,)]/);
+  assert.match(rule('.mb-3'), /margin-bottom:\s*var\(--space-3[,)]/);
+  assert.match(rule('.mx-6'), /margin-inline:\s*var\(--space-6[,)]/);
+  assert.match(rule('.mx-4'), /margin-inline:\s*var\(--space-4[,)]/);
+  assert.match(rule('.items-center'), /align-items:\s*center/);
+  assert.match(rule('.gap-2'), /gap:\s*var\(--space-2[,)]/);
+  assert.match(rule('.rounded-sm'), /border-radius:\s*var\(--radius-sm[,)]/);
+  // `.border` prefixes other utilities such as `.border-collapse`, so match its own rule exactly.
+  assert.match(cssBlock(utilities, /\.border\s*\{/), /border-width:\s*1px/);
+  assert.match(rule('.border-alpha-red-22'), /border-color:\s*var\(--color-alpha-red-22[,)]/);
+  assert.match(rule('.bg-alpha-red-12'), /background-color:\s*var\(--color-alpha-red-12[,)]/);
+  assert.match(rule(String.raw`.px-2\.5`), /padding-inline:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/);
+  assert.match(rule(String.raw`.py-1\.5`), /padding-block:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/);
+  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display[,)]/);
+  assert.match(rule('.text-primitive-red-200'), /color:\s*var\(--color-primitive-red-200[,)]/);
+  assert.match(rule('.uppercase'), /text-transform:\s*uppercase/);
+  assert.match(rule('.shadow-edge'), /--tw-shadow:\s*inset 0 1px 0/);
+  assert.match(rule('.wrap-anywhere'), /overflow-wrap:\s*anywhere/);
+  // The eyebrow step carries its four companion properties from the token, so the band reads 11.2px, 700, 0.12em.
+  const eyebrow = rule('.text-label-eyebrow');
+  assert.match(eyebrow, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  assert.match(eyebrow, /line-height:[^;]*--text-label-eyebrow--line-height/);
+  assert.match(eyebrow, /letter-spacing:[^;]*--text-label-eyebrow--letter-spacing/);
+  assert.match(eyebrow, /font-weight:[^;]*--text-label-eyebrow--font-weight/);
   assert.doesNotMatch(utilities, /\.eg-now-card[^{}]*\{/);
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/now-card/now-card.css')));
 });
