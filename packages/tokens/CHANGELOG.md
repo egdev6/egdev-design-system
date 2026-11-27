@@ -4,6 +4,11 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.7.0
+
+- Add `--container-prose` (`65ch`), a reading measure for long-form text, relative to the font metrics of the element
+  that uses it. `@egdev/ui` `Prose` reads it as `max-w-prose`. Refs #569.
+
 ## 0.6.1
 
 - The theme `:root` now declares `color-scheme: dark`, so native scrollbars, form controls and other browser UI render dark. An app `:root` `color-scheme` rule with equal specificity wins if it loads later.

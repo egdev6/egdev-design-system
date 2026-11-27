@@ -141,14 +141,17 @@ export type ProjectCardCodeProps = {
   className?: string;
 };
 
-/** Footer zone for the card's single action; the consumer supplies exactly one Link or Button.
+/** Footer zone for one to three supplied Button or Link actions; the card itself stays passive.
+ * The consumer owns the cap of three and keeps each action's accessible name unique within the card;
+ * neither is enforced at runtime. No whole-card link, no nested interactive controls, not a list.
  * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size
  */
 export type ProjectCardFooterProps = {
   /**
-   * One supplied action; the card itself stays passive and adds no tab stop of its own.
+   * One to three supplied Button or Link actions in importance order; the row wraps onto further lines
+   * in a narrow card. The card adds no tab stop, role or semantics of its own.
    * @control false
-   * @controlReason Non-serializable ReactNode content; see the WithLink story for the supplied action.
+   * @controlReason Non-serializable ReactNode content; see the WithLink and WithActions stories for the supplied actions.
    */
   children: ReactNode;
   /**
@@ -267,5 +270,8 @@ export const projectCardCodeLineVariants = cva('eg-project-card__code-line', {
 /** Decorative brand prompt glyph inside command lines. */
 export const projectCardCodeGlyphVariants = cva('text-fg-brand-raised');
 
-/** Footer zone for the card's single supplied action; no pinning, it follows the body flow. */
-export const projectCardFootVariants = cva('eg-project-card__foot flex items-center gap-3');
+/**
+ * Footer zone for one to three supplied actions; the row wraps onto further lines, with no pinning: it
+ * follows the body flow.
+ */
+export const projectCardFootVariants = cva('eg-project-card__foot flex flex-wrap items-center gap-3');

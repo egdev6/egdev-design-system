@@ -250,7 +250,7 @@ export type UseProjectCardFooterResult = {
   children: React.ReactNode;
 };
 
-/** Compose the footer zone for the card's single supplied action. */
+/** Compose the footer zone for one to three supplied Button or Link actions. */
 export function useProjectCardFooter({
   children,
   className

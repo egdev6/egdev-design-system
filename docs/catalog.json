@@ -55,6 +55,17 @@
     "notas": "Implemented in @egdev/ui: Text (paragraph eyebrow by default, title recipes or body/body-large/lede with semantic foreground and native strong emphasis; Slot `asChild`) and Heading (native h1–h6 from `level`, independent of its `section`/`hero`/`show`/`display`/`inverse`/`compact` recipe). Compact pairs heading-small metrics with display font and inherits its host or selects semantic foreground; display accents retain canvas/raised tone. No stylesheet; legacy `.eg-title`/`.eg-eyebrow` rules are unchanged. Contract: [#108](https://github.com/egdev6/egdev-design-system/issues/108); amendments: [#396](https://github.com/egdev6/egdev-design-system/issues/396), [#424](https://github.com/egdev6/egdev-design-system/issues/424)."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Prose",
+    "nivel": "primitive",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "—",
+    "accion": "nuevo",
+    "notas": "Implemented React primitive under the [approved v0.1 contract](components/prose/v0.1/spec.md): passive reading column (`div.eg-prose`) that gives bare semantic children (h2 to h4, paragraphs, lists, links, strong, blockquote, code, pre, images, figures, simple tables and rules) a token-backed long-form presentation, with a built-in reading measure (`--container-prose`, 65ch), `size` md or sm and a `tone` for inline code. Descendant utilities only: no stylesheet, ref, asChild, HTML-string input or part markers. The consumer converts and sanitizes content; nested recipe-owning components are unsupported. Browser, contrast and packed-consumer verification remain pending until observed."
+  },
+  {
     "actual": "Divider",
     "nivelActual": "átomo",
     "nombre": "Divider",
@@ -140,7 +151,7 @@
     "radix": "Slot + VisuallyHidden",
     "compone": "Icon",
     "accion": "mantener",
-    "notas": "Implemented in @egdev/ui: standalone borderless brand-colored native anchor with a centered 16px right arrow and reduced-motion-safe rightward hover movement, safe external new-tab semantics and a localizable hidden notice. Slot/Slottable support router anchors and forwarded refs. No stylesheet; legacy `.eg-link` remains unchanged. Contract: [#61](https://github.com/egdev6/egdev-design-system/issues/61). v0.3 ([#61](https://github.com/egdev6/egdev-design-system/issues/61)): opt-in `variant='underlined'` (1px `--color-border-brand` underline that turns neon on hover); the arrow keeps pointing right (the external up-right arrow was rejected). v0.4 ([underline on hover](components/link/v0.4/underline-hover-amendment.md)): every Link is underlined at rest in the link color; hover removes the underline without changing color while the arrow keeps moving; `underlined` is a deprecated alias of the default."
+    "notas": "Implemented in @egdev/ui: standalone borderless brand-colored native anchor with a centered 16px right arrow and reduced-motion-safe rightward hover movement, safe external new-tab semantics and a localizable hidden notice. Slot/Slottable support router anchors and forwarded refs. No stylesheet; legacy `.eg-link` remains unchanged. Contract: [#61](https://github.com/egdev6/egdev-design-system/issues/61). v0.3 ([#61](https://github.com/egdev6/egdev-design-system/issues/61)): opt-in `variant='underlined'` (1px `--color-border-brand` underline that turns neon on hover); the arrow keeps pointing right (the external up-right arrow was rejected). v0.4 ([underline on hover](components/link/v0.4/underline-hover-amendment.md)): every Link is underlined at rest in the link color; hover removes the underline without changing color while the arrow keeps moving; `underlined` is a deprecated alias of the default. v0.5 ([#562](https://github.com/egdev6/egdev-design-system/issues/562)): `variant='quiet'`, neutral ink with a brand underline for links inside cards and footer navigation; same label step, hover rule, arrow and motion as the default; `underlined` stays a deprecated alias; the footer adopts it through the Footer contract."
   },
   {
     "actual": "Icon",
@@ -239,7 +250,7 @@
     "radix": "Toggle",
     "compone": "—",
     "accion": "mantener",
-    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: always-pressable pill on Radix Toggle with controlled/uncontrolled pressed state, an optional decorative leading icon and the sheen/edge raised recipe with red-tinted glow when on. Public chipVariants for the future ChipGroup (ToggleGroup.Item). No ref, asChild, size axis or stylesheet; the Avatar variant (D5) is deferred and legacy `.eg-chip` is unchanged. Contract: [#55](https://github.com/egdev6/egdev-design-system/issues/55). v0.2 ([#55](https://github.com/egdev6/egdev-design-system/issues/55)): `mode` toggle (default), static (span) or link (anchor, with external new-tab semantics); Chip is no longer always pressable."
+    "notas": "Implemented in @egdev/ui under the approved v0.1 contract and its v0.2 and v0.3 amendments: one raised pill in three modes. `mode` toggle (default) is the pressable pill on Radix Toggle with controlled/uncontrolled pressed state and the sheen/edge raised recipe with red-tinted glow when on; static is a non-interactive span; link is a native anchor (with external new-tab semantics) painted as the current item when its native `aria-current` is `page` or `true` (v0.3, [#576](https://github.com/egdev6/egdev-design-system/issues/576)). An optional decorative leading icon in every mode. Public chipVariants (the toggle recipe by default) for ChipGroup (ToggleGroup.Item). No ref, asChild, size axis or stylesheet; the Avatar variant (D5) is deferred and legacy `.eg-chip` is unchanged. Contract: [#55](https://github.com/egdev6/egdev-design-system/issues/55)."
   },
   {
     "actual": "Tag + StatusBadge",
@@ -361,6 +372,17 @@
     "compone": "—",
     "accion": "nuevo",
     "notas": "Implemented React atom under the [approved v0.1 contract](components/step-meter/v0.1/spec.md): passive named image (`role=\"img\"`, required `label`) showing a coarse stepped level, default four steps filled from the inline start, token-backed flat steps with an approved clip-path literal and a forced-colors paint. The consumer owns the level and its wording; no stylesheet, ref or asChild. Packed React 18.3.1 and 19.3.0 consumers and Chromium geometry, contrast and forced-colors observations are recorded in the [implementation evidence](components/step-meter/v0.1/implementation-evidence.md); visual conformity is not evaluated."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Embed",
+    "nivel": "atom",
+    "destino": "ui",
+    "radix": "AspectRatio",
+    "compone": "Spinner, Surface recipe",
+    "accion": "nuevo",
+    "notas": "Implemented React atom under the [approved v0.1 contract](components/embed/v0.1/spec.md): a named, reserved frame for external content. A required `label` names a native `iframe` (http(s) `src`, mounted after hydration so no request starts on the server) or a `group` of consumer `children`; a decorative Spinner shows while the frame loads and a consumer `fallback` replaces unusable content. Material is the Surface well recipe. The component loads no script and decides nothing about consent, cookies or URL trust; fixed `ratio` (default 16/9), no stylesheet, ref or asChild. Browser and packed-consumer results are recorded in the [implementation evidence](components/embed/v0.1/implementation-evidence.md); visual conformity is not evaluated."
   },
   {
     "actual": "ProgressBar",
@@ -649,6 +671,28 @@
     "notas": "Implemented compact product heading (#94 v0.1; #412 v0.2): native h1–h6, optional eyebrow, plain lede and unchanged supplied leading IconButton and trailing actions; intrinsic wrapping, no paint or stylesheet. Separate from editorial SectionHeader."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Pagination",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "— (native nav, list and anchors)",
+    "compone": "Icon",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/pagination/v0.1/spec.md): a named navigation landmark of crawlable links over a derived constant-width window (Previous, Next, the current page, ellipses) for long listings. The consumer owns the data slice, `pageCount`, `value` and `getHref`; no state, Radix primitive, stylesheet, ref or asChild. Browser and packed-consumer results are recorded in the [implementation evidence](components/pagination/v0.1/implementation-evidence.md); visual conformity is not evaluated."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "EmptyState",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Icon; consumer Button/Link action",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/empty-state/v0.1/spec.md): passive empty state for a listing or filter combination that returns nothing: native heading (`title`, `level` 2 to 6, default 3), optional plain-text `description`, optional decorative `icon` and one consumer-supplied Button or Link in `actions`, unpainted on the host backdrop. No live region, no focus management and no built-in copy; the host announces and places focus. No stylesheet, ref or asChild. Browser, grafito contrast and packed-consumer verification remain pending until observed."
+  },
+  {
     "actual": "ModuleCard",
     "nivelActual": "molécula",
     "nombre": "ModuleCard",
@@ -669,6 +713,17 @@
     "compone": "Heading, Text, Divider",
     "accion": "mantener",
     "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/100) and [v0.2 multilingual amendment](components/section-header/v0.2/multilingual-amendment.md): passive editorial header with stack/split/inline arrangements, section-scale Heading, optional eyebrow/accent/lede and a decorative inline Divider. Title, eyebrow and lede accept plain strings or ordered language-tagged text runs with decorative separators; the lede composes Text. Split starts at the approved 860px breakpoint; missing lede/eyebrow collapses split/inline to stack. Distinct from PageHeader: no actions or register axis. Keeps eg-section-head and eg-section-head__lede; no stylesheet."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "DetailHeader",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "SectionHeader, Chip, Link",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/detail-header/v0.1/spec.md): passive detail-page header composing SectionHeader (optional eyebrow, a heading at `level`, default 1, and an optional lede) with an optional label/value facts list (`metadata`, with a `time` element for dates), a named list of static tag Chips and a named list of external Links (absolute HTTPS, opened in a new tab, with localizable names and notice); native `div` root with no role or name and the DOM order heading, facts, tags, links; no paint, no stylesheet, no ref or asChild. The consumer owns text, dates and localization, and invalid entries are skipped with a development warning. Browser and packed-consumer results are recorded in the [implementation evidence](components/detail-header/v0.1/implementation-evidence.md); visual conformity is not evaluated."
   },
   {
     "actual": "—",
@@ -822,7 +877,7 @@
     "radix": "—",
     "compone": "Surface, Text",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 current-status card with approved badge-first slot, smaller sm copy and a surface-0 footer band. See [approved amendment](components/now-card/v0.1/badge-order-amendment.md). v0.3 ([approval](components/now-card/v0.3/approval.md)) documents one optional consumer-supplied StepMeter in the footer; the card renders no meter."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 current-status card with approved badge-first slot, smaller sm copy and a surface-0 footer band. See [approved amendment](components/now-card/v0.1/badge-order-amendment.md). v0.3 ([approval](components/now-card/v0.3/approval.md)) documents one optional consumer-supplied StepMeter in the footer; the card renders no meter. v0.4 ([#564](https://github.com/egdev6/egdev-design-system/issues/564)) adds the opt-in `statusPresentation='band'`: the card paints the status as a full-width, uppercase, brand-tinted band around the supplied label; the default presentation is unchanged."
   },
   {
     "actual": "ProjectCard",
@@ -833,7 +888,7 @@
     "radix": "—",
     "compone": "Surface, Badge, Link",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 project card on the Surface recipe; static Chip tags, labelled code well and a supplied footer action. See [approved plan](components/project-card/v0.1/implementation-plan.md)."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 project card on the Surface recipe; static Chip tags, labelled code well and one to three supplied footer actions (v0.4, [#577](https://github.com/egdev6/egdev-design-system/issues/577)). See [approved plan](components/project-card/v0.1/implementation-plan.md)."
   },
   {
     "actual": "NoteItem",
@@ -922,6 +977,17 @@
     "compone": "Shared private Gauge geometry",
     "accion": "nuevo",
     "notas": "Implemented in @egdev/ui under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/31): two or three independent passive readings with a decorative transparent concentric diagram and ordered visible list. No aggregate or GaugeDock extension."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Breadcrumb",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "— (native nav, ordered list and links)",
+    "compone": "Link, Icon",
+    "accion": "nuevo",
+    "notas": "Implemented React molecule under the [approved v0.1 contract](components/breadcrumb/v0.1/spec.md): named navigation landmark (`label`) holding an ordered trail of `items` from the root to the current page: ancestors are Link `quiet` links, the last supplied entry is the current page as plain text marked `aria-current=\"page\"`, and decorative chevrons separate the steps. The consumer supplies localized entries, and invalid entries are omitted with a development warning. Wraps instead of truncating; no router integration, ref, asChild or stylesheet. Browser and packed-consumer results are recorded in the [implementation evidence](components/breadcrumb/v0.1/implementation-evidence.md); visual conformity is not evaluated."
   },
   {
     "actual": "Dialog",
@@ -1086,7 +1152,7 @@
     "radix": "Popover",
     "compone": "Native section links, Pixel, ProgressBar, Icon; Surface overlay",
     "accion": "mover",
-    "notas": "Implemented under approved v0.1 contract (#301): host-driven section navigation with explicit disclosure and separate next link, decorative progress edge and Pixel markers; Popover owns portal and focus. No scroll tracking or global shortcuts."
+    "notas": "Implemented under approved v0.1 contract (#301): host-driven section navigation with explicit disclosure and separate next link, decorative progress edge and Pixel markers; Popover owns portal and focus. v0.3 ([#563](https://github.com/egdev6/egdev-design-system/issues/563)) shows each section's number zero-padded (`01`) in the raised brand colour and its label in uppercase display type, in the disclosure and in the index, with no API change. No scroll tracking or global shortcuts."
   },
   {
     "actual": "Footer",
@@ -1097,7 +1163,7 @@
     "radix": "— (native footer and navigation)",
     "compone": "Link; consumer Logo and SocialLinks",
     "accion": "mover",
-    "notas": "Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/293): passive native footer with optional motto, brand, labelled navigation, social and legal parts. Navigation accepts ordered destinations; consumers supply brand, social profiles and legal content. The host owns background and placement; no choreography, stylesheet, ref or asChild."
+    "notas": "Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/293): passive native footer with optional motto, brand, labelled navigation, social and legal parts. Navigation accepts ordered destinations; consumers supply brand, social profiles and legal content. v0.4 ([#561](https://github.com/egdev6/egdev-design-system/issues/561), [#565](https://github.com/egdev6/egdev-design-system/issues/565)) adds the optional `wrap` (a centered page-width content wrapper; hairlines and bottom padding stay full width) and `register='grafito'` (the Grafito reading wash on the footer root); with `register` omitted the host owns the background, the group-edge fade is always host-owned, and navigation links render with Link `quiet`. The host owns placement; no choreography, stylesheet, ref or asChild."
   },
   {
     "actual": "Hero",
@@ -1108,7 +1174,7 @@
     "radix": "—",
     "compone": "Heading, Text, Button, SocialLinks; host SectionShell; consumer media",
     "accion": "mover",
-    "notas": "Implemented under approved v0.1 contract (#318): passive introductory scene with structured copy, consumer actions, social links and decorative media; host owns section semantics and choreography."
+    "notas": "Implemented under approved v0.1 contract (#318): passive introductory scene with structured copy, consumer actions, social links and decorative media; host owns section semantics and choreography. v0.2 ([#560](https://github.com/egdev6/egdev-design-system/issues/560)): optional `titleVariant` (`hero` by default, or the smaller `show` step, whose accent does not glow) on the scene's own heading; no other change."
   },
   {
     "actual": "ChapterBreak",
@@ -1119,7 +1185,7 @@
     "radix": "—",
     "compone": "Heading, Text; host SectionShell and consumer media",
     "accion": "mover",
-    "notas": "Implemented React organism under the approved v0.1 contract (#324): passive chapter interlude with consumer-supplied copy and decorative media. The host owns the section and effects; no children, effect import or choreography."
+    "notas": "Implemented React organism under the approved v0.1 contract (#324): passive chapter interlude with consumer-supplied copy and decorative media. The host owns the section and effects; no children, effect import or choreography. v0.2 ([#560](https://github.com/egdev6/egdev-design-system/issues/560)): optional `titleVariant` (`hero` by default, or the smaller `show` step, whose accent does not glow) on the scene's own heading; no other change."
   },
   {
     "actual": "LabStage",
@@ -1130,7 +1196,7 @@
     "radix": "—",
     "compone": "Heading, Text; host SectionShell; consumer Surface, Badge, Link and media",
     "accion": "mover",
-    "notas": "Implemented React organism under the approved v0.1 contract (#325): passive static scene with consumer-supplied experiment content and decorative media. The host owns the section and effects; no glitch, effect import or choreography."
+    "notas": "Implemented React organism under the approved v0.1 contract (#325): passive static scene with consumer-supplied experiment content and decorative media. The host owns the section and effects; no glitch, effect import or choreography. v0.2 ([#560](https://github.com/egdev6/egdev-design-system/issues/560)): optional `titleVariant` (`hero` by default, or the smaller `show` step, whose accent does not glow) on the scene's own heading; no other change."
   },
   {
     "actual": "Closing",
@@ -1141,7 +1207,7 @@
     "radix": "—",
     "compone": "Heading, Text; consumer Button, Link and SectionShell",
     "accion": "mover",
-    "notas": "Implemented React organism under the approved v0.1 contract (#319): passive concluding scene with consumer-supplied copy, CTAs and decorative media. The host owns the section and effects; no effect import or choreography."
+    "notas": "Implemented React organism under the approved v0.1 contract (#319): passive concluding scene with consumer-supplied copy, CTAs and decorative media. The host owns the section and effects; no effect import or choreography. v0.2 ([#560](https://github.com/egdev6/egdev-design-system/issues/560)): optional `titleVariant` (`hero` by default, or the smaller `show` step, whose accent does not glow) on the scene's own heading; no other change."
   },
   {
     "actual": "NotesBoard",
@@ -1219,6 +1285,17 @@
     "compone": "Carousel, TipCard",
     "accion": "componer",
     "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented Carousel plus TipCard composition; not a standalone export. It becomes an organism only if coverflow offsets are required."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "GalleryLightbox",
+    "nivel": "recipe",
+    "destino": "ui",
+    "radix": "Dialog (full)",
+    "compone": "Dialog, Carousel, PhotoFrame",
+    "accion": "componer",
+    "notas": "Documented composition for an enlarged gallery view ([#575](https://github.com/egdev6/egdev-design-system/issues/575)): a list of PhotoFrame thumbnails, each with a Button beside it (a sibling of the figure, never a wrapper) that triggers a Dialog `size='full'` holding a Carousel of PhotoFrame `fit='contain'` images that starts at the clicked one, with arrow, Home and End navigation, Escape to close and focus returned to the button. Composed by the app under the #509 decision ([PhotoFrame v0.5 fit amendment](components/photo-frame/v0.5/fit-amendment.md)); not a standalone export, component or Dialog variant. See the `Recipes/Gallery lightbox` story."
   },
   {
     "actual": "Isotipo3D",
@@ -1306,6 +1383,6 @@
     "radix": "—",
     "compone": "Private Isotipo3D and AmbientBackground engines; consumer content",
     "accion": "mover",
-    "notas": "Implemented React template in @egdev/effects under the [approved v0.1 plan](components/home-template/v0.1/implementation-plan.md): consumer-defined zone choreography and measured decorative anchors with fail-open fallback. Browser and packed-consumer verification remain pending."
+    "notas": "Implemented React template in @egdev/effects under the [approved v0.1 plan](components/home-template/v0.1/implementation-plan.md): consumer-defined zone choreography and measured decorative anchors with fail-open fallback. v0.2 ([#566](https://github.com/egdev6/egdev-design-system/issues/566)) publishes the `HomeTemplateAnchor` `className` geometry contract (`@classNameAllows`), and `egdev-ds` DS046 honors it from `@egdev/cli` 0.5.0. Browser and packed-consumer verification remain pending."
   }
 ]

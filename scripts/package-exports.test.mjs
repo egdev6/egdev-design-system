@@ -692,6 +692,34 @@ function cssBlock(css, opening) {
   assert.fail(`Unclosed emitted CSS block ${opening}`);
 }
 
+// Headers of the blocks that enclose a position in emitted CSS, outermost first (quote- and escape-aware).
+function enclosingBlocks(css, position) {
+  const headers = [];
+  let start = 0;
+  let quote = '';
+  for (let index = 0; index < position; index++) {
+    const char = css[index];
+    if (char === '\\') {
+      index++;
+    } else if (quote) {
+      if (char === quote) {
+        quote = '';
+      }
+    } else if (char === '"' || char === "'") {
+      quote = char;
+    } else if (char === '{') {
+      headers.push(css.slice(start, index).trim());
+      start = index + 1;
+    } else if (char === '}') {
+      headers.pop();
+      start = index + 1;
+    } else if (char === ';') {
+      start = index + 1;
+    }
+  }
+  return headers;
+}
+
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[color\\,background-color\\,border-color\\\]|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\]|\\\[color\\,transform\\\])(?=\s*\{))[\w\\]/;
@@ -706,6 +734,19 @@ test('Footer ships every scanned recipe utility and retains legacy component CSS
     true
   );
   const classes = new Set();
+  // The options object (the register axis) carries utilities too; defaultVariants only names variants.
+  function collectOptions(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collectOptions);
+    }
+  }
   function visit(node) {
     if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
       for (const argument of node.arguments) {
@@ -713,6 +754,8 @@ test('Footer ships every scanned recipe utility and retains legacy component CSS
           for (const name of argument.text.split(/\s+/).filter(Boolean)) {
             classes.add(name);
           }
+        } else {
+          collectOptions(argument);
         }
       }
     }
@@ -720,6 +763,17 @@ test('Footer ships every scanned recipe utility and retains legacy component CSS
   }
   visit(source);
   assert.ok(classes.size > 30);
+  for (const name of [
+    'bg-surface-0/50',
+    'bg-none',
+    '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0',
+    'eg-footer__wrap',
+    'max-w-[var(--content-max)]',
+    'mx-auto',
+    'px-[var(--gutter)]'
+  ]) {
+    assert.ok(classes.has(name), `The Footer recipes must declare ${name}`);
+  }
   for (const name of classes) {
     if (name.startsWith('eg-') || name === 'footer-brand') {
       continue;
@@ -733,6 +787,99 @@ test('Footer ships every scanned recipe utility and retains legacy component CSS
   assert.match(utilities, /border-(?:top|bottom)-width:\s*var\(--border-width[,)]/);
   assert.doesNotMatch(utilities, /\.eg-footer(?:__[\w-]+)?\s*\{/);
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-footer/);
+  // v0.4 (#561, #565): the Grafito wash, its solid reduced-transparency fallback and the content wrapper. The sheet
+  // may already carry these selectors through SectionShell, so this proves what the packed sheet contains.
+  const emitted = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const rule = (name) =>
+    cssBlock(utilities, new RegExp(`${emitted(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  const wash = rule('bg-surface-0/50');
+  assert.match(wash, /--color-surface-0/);
+  assert.match(wash, /50%/);
+  assert.match(rule('bg-none'), /background-image:\s*none/);
+  for (const [name, declaration] of [
+    ['box-border', /box-sizing:\s*border-box/],
+    ['w-full', /width:\s*100%/],
+    ['max-w-[var(--content-max)]', /max-width:\s*var\(--content-max\)/],
+    ['mx-auto', /margin-inline:\s*auto/],
+    ['px-[var(--gutter)]', /padding-inline:\s*var\(--gutter\)/]
+  ]) {
+    assert.match(rule(name), declaration, `Footer wrapper utility ${name}`);
+  }
+  const fallback = '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0';
+  assert.match(rule(fallback), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.ok(
+    enclosingBlocks(utilities, utilities.indexOf(emitted(fallback))).some((header) =>
+      /^@media\s*\(\s*prefers-reduced-transparency\s*:\s*reduce\s*\)$/.test(header)
+    ),
+    'The solid Grafito fallback must sit inside a prefers-reduced-transparency block'
+  );
+});
+
+test('Footer package SSR renders the wrapped Grafito footer with quiet navigation links', async () => {
+  const uiExports = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const html = renderToString(
+    h(uiExports.Footer, {
+      wrap: true,
+      register: 'grafito',
+      children: [
+        h(uiExports.FooterMotto, { key: 'motto', children: h('p', null, 'Motto') }),
+        h(uiExports.FooterNavigation, {
+          key: 'nav',
+          label: 'Explore',
+          items: [
+            { href: '#one', label: 'One' },
+            { href: '#two', label: 'Two', 'aria-current': 'page' }
+          ]
+        }),
+        h(uiExports.FooterLegal, { key: 'legal', children: h('a', { href: '#legal' }, 'Legal') })
+      ]
+    })
+  );
+  const dom = new JSDOM(html);
+  try {
+    const footer = dom.window.document.querySelector('footer');
+    assert.equal(footer.children.length, 1);
+    const wrapper = footer.firstElementChild;
+    assert.equal(wrapper.tagName, 'DIV');
+    for (const name of [
+      'eg-footer__wrap',
+      'box-border',
+      'w-full',
+      'max-w-[var(--content-max)]',
+      'mx-auto',
+      'px-[var(--gutter)]'
+    ]) {
+      assert.ok(wrapper.classList.contains(name), `Missing wrapper class ${name}`);
+    }
+    assert.ok(![...wrapper.classList].some((name) => name.includes('bg-')), 'The wash belongs to the root');
+    assert.deepEqual(
+      [...wrapper.children].map((child) => child.className.match(/eg-footer__(stage|grid|legal)/)?.[1]),
+      ['stage', 'grid', 'legal']
+    );
+    for (const name of [
+      'bg-surface-0/50',
+      'bg-none',
+      '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0',
+      'text-fg-default'
+    ]) {
+      assert.ok(footer.classList.contains(name), `Missing root class ${name}`);
+    }
+    assert.equal(footer.hasAttribute('wrap'), false);
+    assert.equal(footer.hasAttribute('register'), false);
+    assert.equal(footer.hasAttribute('role'), false);
+    const anchors = [...footer.querySelectorAll('nav a')];
+    assert.equal(anchors.length, 2);
+    for (const anchor of anchors) {
+      assert.ok(anchor.classList.contains('text-fg-default'), 'Footer links ship the quiet ink');
+      assert.ok(anchor.classList.contains('decoration-fg-brand-default'));
+      assert.ok(!anchor.classList.contains('text-link-default'));
+    }
+  } finally {
+    dom.window.close();
+  }
 });
 
 test('Footer package SSR keeps navigation and social list separately named', async () => {
@@ -922,6 +1069,1136 @@ test('StepMeter ships all scanned utilities, the clip-path literal and both forc
   assert.doesNotMatch(css, /\.eg-now-card__meter[^{]*(?:\.eg-step-meter|\[data-state)/);
 });
 
+test('Prose ships the measure and one rule per descendant selector without a stylesheet (#569)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/primitives/prose/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      // Default variant values are axis names, not utilities.
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size >= 100, 'The Prose recipe must expose its static utilities');
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes(escapeClass(name)), `Missing Prose utility ${name}`);
+    }
+  }
+  // The measure reads the owner-confirmed token and keeps its ch fallback, as .max-w-quote-pull does.
+  assert.match(utilities, /\.max-w-prose\s*\{[^}]*max-width:\s*var\(--container-prose,\s*65ch\)/);
+  // One rule per target selector, each reading the token it is meant to read.
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, target, declaration] of [
+    ['[&>:first-child]:mt-0', '> :first-child', /margin-top:\s*var\(--space-0\)/],
+    ['[&>:last-child]:mb-0', '> :last-child', /margin-bottom:\s*var\(--space-0\)/],
+    ['[&_h2]:mt-12', 'h2', /margin-top:\s*var\(--space-12\)/],
+    ['[&_h3]:text-heading-small', 'h3', /font-size:\s*var\(--text-heading-small[,)]/],
+    [
+      '[&_h4]:[font-weight:var(--text-heading-small--font-weight)]',
+      'h4',
+      /font-weight:\s*var\(--text-heading-small--font-weight\)/
+    ],
+    ['[&_p]:mb-5', 'p', /margin-bottom:\s*var\(--space-5\)/],
+    ['[&_a]:text-link-default', 'a', /color:\s*var\(--color-link-default[,)]/],
+    ['[&_a:hover]:no-underline', 'a:hover', /text-decoration-line:\s*none/],
+    ['[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]', 'a:focus-visible', /box-shadow:\s*var\(--shadow-focus\)/],
+    [
+      '[&_strong]:[font-weight:var(--text-heading-small--font-weight)]',
+      'strong',
+      /font-weight:\s*var\(--text-heading-small--font-weight\)/
+    ],
+    ['[&_ul]:list-disc', 'ul', /list-style-type:\s*disc/],
+    ['[&_ol]:list-decimal', 'ol', /list-style-type:\s*decimal/],
+    ['[&_li]:mt-2', 'li', /margin-top:\s*var\(--space-2\)/],
+    ['[&_li::marker]:text-fg-muted', 'li::marker', /color:\s*var\(--color-fg-muted[,)]/],
+    [
+      '[&_blockquote]:border-s-[length:calc(var(--border-width)*2)]',
+      'blockquote',
+      /border-inline-start-width:\s*calc\(var\(--border-width\)\s*\*\s*2\)/
+    ],
+    ['[&_code]:text-code', 'code', /font-size:\s*var\(--text-code[,)]/],
+    [
+      '[&_code:not(pre_code)]:text-fg-brand-default',
+      'code:not(pre code)',
+      /color:\s*var\(--color-fg-brand-default[,)]/
+    ],
+    ['[&_code:not(pre_code)]:text-fg-brand-raised', 'code:not(pre code)', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    ['[&_pre]:shadow-[var(--shadow-well)]', 'pre', /--tw-shadow:\s*var\(--shadow-well\)/],
+    [
+      '[&_pre:focus-visible]:[box-shadow:var(--shadow-focus)]',
+      'pre:focus-visible',
+      /box-shadow:\s*var\(--shadow-focus\)/
+    ],
+    ['[&_img]:rounded-md', 'img', /border-radius:\s*var\(--radius-md[,)]/],
+    ['[&_figure]:my-8', 'figure', /margin-block:\s*var\(--space-8\)/],
+    ['[&_figcaption]:text-fg-muted', 'figcaption', /color:\s*var\(--color-fg-muted[,)]/],
+    ['[&_table]:border-collapse', 'table', /border-collapse:\s*collapse/],
+    ['[&_th]:bg-surface-2', 'th', /background-color:\s*var\(--color-surface-2[,)]/],
+    ['[&_td]:border-border-subtle', 'td', /border-color:\s*var\(--color-border-subtle[,)]/],
+    ['[&_hr]:border-t', 'hr', /border-top-width:\s*1px/]
+  ]) {
+    assert.match(
+      utilities,
+      new RegExp(`${escapeRegExp(`${escapeClass(token)} ${target}`)}\\s*\\{[^}]*${declaration.source}`),
+      `Missing Prose rule ${token} ${target}`
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the Prose marker.
+  assert.doesNotMatch(css, /\.eg-prose\b/);
+});
+
+test('Prose package SSR renders one unmarked root around the unchanged children and keeps its recipe internal (#569)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Prose, 'function');
+  for (const name of ['proseVariants', 'useProse']) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Prose`);
+  }
+  const content = () => [
+    createElement('h2', { key: 'title' }, 'Title'),
+    createElement(
+      'p',
+      { key: 'body' },
+      'Body with ',
+      createElement('a', { href: '#packed' }, 'a link'),
+      ' and ',
+      createElement('code', null, 'code'),
+      '.'
+    )
+  ];
+  const render = (html) => new JSDOM(html);
+  const plain = render(renderToString(createElement('div', null, ...content())));
+  for (const [props, step, brand] of [
+    [undefined, 'text-body-large', '[&_code:not(pre_code)]:text-fg-brand-default'],
+    [
+      { size: 'sm', tone: 'raised', id: 'packed-prose', lang: 'en', className: 'mx-auto' },
+      'text-body-default',
+      '[&_code:not(pre_code)]:text-fg-brand-raised'
+    ]
+  ]) {
+    const dom = render(renderToString(createElement(exported.Prose, props, ...content())));
+    try {
+      const body = dom.window.document.body;
+      assert.equal(body.children.length, 1);
+      const root = body.firstElementChild;
+      assert.equal(root.tagName, 'DIV');
+      assert.ok(root.classList.contains('eg-prose'));
+      assert.ok(root.classList.contains('max-w-prose'));
+      assert.ok(root.classList.contains(step));
+      assert.ok(root.classList.contains(brand));
+      for (const attribute of ['role', 'tabindex', 'data-state', 'aria-label', 'aria-labelledby']) {
+        assert.equal(root.hasAttribute(attribute), false, attribute);
+      }
+      assert.equal(root.hasAttribute('size'), false);
+      assert.equal(root.hasAttribute('tone'), false);
+      assert.equal(root.innerHTML, plain.window.document.body.firstElementChild.innerHTML);
+      if (props) {
+        assert.equal(root.getAttribute('id'), 'packed-prose');
+        assert.equal(root.getAttribute('lang'), 'en');
+        assert.ok(root.classList.contains('mx-auto'));
+      }
+    } finally {
+      dom.window.close();
+    }
+  }
+  plain.window.close();
+  // An untyped HTML string is discarded: the children render and React does not throw.
+  const html = render(
+    renderToString(
+      createElement(exported.Prose, { dangerouslySetInnerHTML: { __html: '<b>injected</b>' } }, 'Rendered text')
+    )
+  );
+  try {
+    assert.equal(html.window.document.body.firstElementChild.textContent, 'Rendered text');
+    assert.equal(html.window.document.querySelector('b'), null);
+  } finally {
+    html.window.close();
+  }
+});
+
+test('EmptyState ships every static recipe utility with its token declaration and no rule of its own (#573)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/empty-state/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 5, 'EmptyState declares exactly five static recipes');
+  assert.equal(classes.size, 24, 'The approved inventory is the stable marker plus 23 utilities');
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes(escapeClass(name)), `Missing EmptyState utility ${name}`);
+    }
+  }
+  // Every utility reads the property and the token the approved recipe names; a row per utility keeps this complete.
+  const rows = [
+    ['flex', /display:\s*flex/],
+    ['inline-flex', /display:\s*inline-flex/],
+    ['flex-col', /flex-direction:\s*column/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['items-center', /align-items:\s*center/],
+    ['justify-center', /justify-content:\s*center/],
+    ['shrink-0', /flex-shrink:\s*0/],
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['max-w-full', /max-width:\s*100%/],
+    ['text-center', /text-align:\s*center/],
+    ['gap-3', /gap:\s*var\(--space-3\)/],
+    ['gap-2', /gap:\s*var\(--space-2\)/],
+    ['px-4', /padding-inline:\s*var\(--space-4\)/],
+    ['py-8', /padding-block:\s*var\(--space-8\)/],
+    ['m-0', /margin:\s*var\(--space-0\)/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-heading-small', /font-size:\s*var\(--text-heading-small[,)]/],
+    ['text-heading-small', /font-weight:[^;}]*--text-heading-small--font-weight/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/],
+    ['text-body-default', /font-weight:[^;}]*--text-body-default--font-weight/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['max-w-[var(--bp-sm)]', /max-width:\s*var\(--bp-sm\)/]
+  ];
+  assert.deepEqual(
+    [...new Set(rows.map(([token]) => token))].sort(),
+    [...classes].filter((name) => !name.startsWith('eg-')).sort(),
+    'Every recipe utility has a declaration row'
+  );
+  for (const [token, declaration] of rows) {
+    assert.match(
+      utilities,
+      new RegExp(`${escapeRegExp(escapeClass(token))}\\s*\\{[^}]*${declaration.source}`),
+      `Missing EmptyState rule ${token}`
+    );
+  }
+  // The block paints nothing and has no stylesheet: no paint utility in the recipes, no rule for the marker.
+  for (const name of classes) {
+    assert.doesNotMatch(
+      name,
+      /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|transform|rounded)\b/
+    );
+  }
+  assert.doesNotMatch(css, /\.eg-empty-state\b/);
+});
+
+test('EmptyState package SSR renders one unmarked root, a hidden icon and nothing for a blank title, and keeps its recipes internal (#573)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.EmptyState, 'function');
+  for (const name of [
+    'useEmptyState',
+    'emptyStateVariants',
+    'emptyStateIconVariants',
+    'emptyStateTitleVariants',
+    'emptyStateDescriptionVariants',
+    'emptyStateActionsVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to EmptyState`);
+  }
+  const action = createElement(exported.Button, { variant: 'secondary' }, 'Clear filters');
+  const dom = new JSDOM(
+    renderToString(
+      createElement(exported.EmptyState, {
+        title: 'No posts',
+        level: 2,
+        description: 'Try another filter.',
+        icon: 'search',
+        actions: action,
+        id: 'packed-empty',
+        lang: 'en',
+        className: 'mt-6'
+      })
+    )
+  );
+  try {
+    const body = dom.window.document.body;
+    assert.equal(body.children.length, 1);
+    const root = body.firstElementChild;
+    assert.equal(root.tagName, 'DIV');
+    for (const name of ['eg-empty-state', 'mt-6']) {
+      assert.ok(root.classList.contains(name), name);
+    }
+    for (const attribute of ['role', 'title', 'tabindex', 'aria-label', 'aria-labelledby', 'aria-live', 'data-state']) {
+      assert.equal(root.hasAttribute(attribute), false, attribute);
+    }
+    assert.equal(root.getAttribute('id'), 'packed-empty');
+    assert.equal(root.getAttribute('lang'), 'en');
+    assert.deepEqual(
+      [...root.children].map((node) => node.tagName),
+      ['SPAN', 'H2', 'P', 'DIV']
+    );
+    const [icon, heading, description, actions] = root.children;
+    assert.equal(icon.getAttribute('aria-hidden'), 'true');
+    assert.ok(icon.querySelector('svg.eg-icon.size-7'));
+    assert.equal(heading.textContent, 'No posts');
+    assert.equal(description.textContent, 'Try another filter.');
+    assert.equal(actions.children.length, 1);
+    assert.equal(actions.querySelector('button').textContent, 'Clear filters');
+  } finally {
+    dom.window.close();
+  }
+  // A title-only state holds the heading and nothing else.
+  const titleOnly = new JSDOM(renderToString(createElement(exported.EmptyState, { title: 'Nothing here' })));
+  try {
+    assert.equal(titleOnly.window.document.body.firstElementChild.children.length, 1);
+    assert.equal(titleOnly.window.document.querySelector('h3').textContent, 'Nothing here');
+  } finally {
+    titleOnly.window.close();
+  }
+  // A blank title renders nothing and warns once in development.
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (message) => warnings.push(message);
+  try {
+    assert.equal(renderToStaticMarkup(createElement(exported.EmptyState, { title: '   ' })), '');
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(warnings, ['EmptyState requires a non-empty title. Nothing was rendered.']);
+});
+
+test('Breadcrumb ships every static recipe utility with its token declaration and no rule of its own (#570)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/breadcrumb/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 6, 'Breadcrumb declares exactly six static recipes');
+  assert.equal(classes.size, 20, 'The approved inventory is the stable marker plus 19 utilities');
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes(escapeClass(name)), `Missing Breadcrumb utility ${name}`);
+    }
+  }
+  // Every utility reads the property and the token the approved recipe names; a row per utility keeps this complete.
+  const rows = [
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/],
+    ['m-0', /margin:\s*var\(--space-0\)/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['list-none', /list-style-type:\s*none/],
+    ['flex', /display:\s*flex/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['items-center', /align-items:\s*center/],
+    ['gap-x-2', /column-gap:\s*var\(--space-2\)/],
+    ['gap-y-1', /row-gap:\s*var\(--space-1\)/],
+    ['gap-2', /gap:\s*var\(--space-2\)/],
+    ['min-h-14', /min-height:\s*var\(--space-14\)/],
+    ['self-stretch', /align-self:\s*stretch/],
+    ['self-center', /align-self:\s*center/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-label-default', /font-size:\s*var\(--text-label-default[,)]/],
+    ['text-label-default', /font-weight:[^;}]*--text-label-default--font-weight/],
+    ['text-label-default', /line-height:[^;}]*--text-label-default--line-height/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    // The shipped CSS is not optimized, so it keeps the calc form that the optimized preview CSS folds to -90deg.
+    ['-rotate-90', /rotate:\s*calc\(90deg\s*\*\s*-1\)/]
+  ];
+  assert.deepEqual(
+    [...new Set(rows.map(([token]) => token))].sort(),
+    [...classes].filter((name) => !name.startsWith('eg-')).sort(),
+    'Every recipe utility has a declaration row'
+  );
+  for (const [token, declaration] of rows) {
+    assert.match(
+      utilities,
+      new RegExp(`${escapeRegExp(escapeClass(token))}\\s*\\{[^}]*${declaration.source}`),
+      `Missing Breadcrumb rule ${token}`
+    );
+  }
+  // The trail paints nothing and has no stylesheet: no paint or motion utility in the recipes, no rule for the marker.
+  for (const name of classes) {
+    assert.doesNotMatch(
+      name,
+      /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|duration|ease|transform|rounded)\b/
+    );
+  }
+  assert.doesNotMatch(css, /\.eg-breadcrumb\b/);
+});
+
+test('Breadcrumb package SSR renders one named landmark, a marked current page and hidden separators, and keeps its recipes internal (#570)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Breadcrumb, 'function');
+  for (const name of [
+    'useBreadcrumb',
+    'breadcrumbVariants',
+    'breadcrumbListVariants',
+    'breadcrumbStepVariants',
+    'breadcrumbLinkVariants',
+    'breadcrumbCurrentVariants',
+    'breadcrumbSeparatorVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Breadcrumb`);
+  }
+  const dom = new JSDOM(
+    renderToString(
+      createElement(exported.Breadcrumb, {
+        label: 'Breadcrumb',
+        items: [
+          { label: 'Home', href: '#home' },
+          { label: 'Editorial', href: '#editorial' },
+          { label: 'Post title', href: '#ignored' }
+        ],
+        id: 'packed-trail',
+        lang: 'en',
+        className: 'mt-6'
+      })
+    )
+  );
+  try {
+    const body = dom.window.document.body;
+    assert.equal(body.children.length, 1);
+    const nav = body.firstElementChild;
+    assert.equal(nav.tagName, 'NAV');
+    for (const name of ['eg-breadcrumb', 'mt-6']) {
+      assert.ok(nav.classList.contains(name), name);
+    }
+    assert.equal(nav.getAttribute('aria-label'), 'Breadcrumb');
+    assert.equal(nav.getAttribute('id'), 'packed-trail');
+    assert.equal(nav.getAttribute('lang'), 'en');
+    for (const attribute of ['role', 'aria-labelledby', 'tabindex', 'data-state', 'style']) {
+      assert.equal(nav.hasAttribute(attribute), false, attribute);
+    }
+    assert.deepEqual(
+      [...nav.children].map((node) => node.tagName),
+      ['OL']
+    );
+    const items = [...nav.querySelectorAll('ol > li')];
+    assert.equal(items.length, 3);
+    const links = [...nav.querySelectorAll('a')];
+    assert.deepEqual(
+      links.map((link) => [link.textContent, link.getAttribute('href')]),
+      [
+        ['Home', '#home'],
+        ['Editorial', '#editorial']
+      ]
+    );
+    for (const link of links) {
+      assert.ok(link.classList.contains('eg-link'));
+      assert.equal(link.querySelector('svg'), null);
+      assert.equal(link.hasAttribute('target'), false);
+      assert.equal(link.hasAttribute('rel'), false);
+    }
+    // The last entry is the current page: text with aria-current, never a link, whatever href it supplied.
+    const current = nav.querySelectorAll('[aria-current]');
+    assert.equal(current.length, 1);
+    assert.equal(current[0].tagName, 'SPAN');
+    assert.equal(current[0].getAttribute('aria-current'), 'page');
+    assert.equal(current[0].textContent, 'Post title');
+    assert.equal(nav.querySelector('a[href="#ignored"]'), null);
+    // One decorative separator after each ancestor and none after the current page.
+    const separators = [...nav.querySelectorAll('svg')];
+    assert.equal(separators.length, 2);
+    for (const separator of separators) {
+      assert.equal(separator.getAttribute('aria-hidden'), 'true');
+      assert.equal(separator.getAttribute('focusable'), 'false');
+    }
+    assert.equal(items[2].querySelector('svg'), null);
+    assert.equal(nav.textContent, 'HomeEditorialPost title');
+  } finally {
+    dom.window.close();
+  }
+  // A blank label renders nothing, never an unnamed landmark, and warns once in development.
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (message) => warnings.push(message);
+  try {
+    assert.equal(
+      renderToStaticMarkup(createElement(exported.Breadcrumb, { label: '   ', items: [{ label: 'Home' }] })),
+      ''
+    );
+    assert.equal(renderToStaticMarkup(createElement(exported.Breadcrumb, { label: 'Breadcrumb', items: [] })), '');
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(warnings, ['Breadcrumb requires a non-empty label. Nothing was rendered.']);
+});
+
+test('DetailHeader ships every static recipe utility with its token declaration and no rule of its own (#572)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/detail-header/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 9, 'DetailHeader declares exactly nine static recipes');
+  assert.equal(classes.size, 27, 'The approved inventory is four stable markers plus 23 utilities');
+  assert.deepEqual([...classes].filter((name) => name.startsWith('eg-')).sort(), [
+    'eg-detail-header',
+    'eg-detail-header__links',
+    'eg-detail-header__meta',
+    'eg-detail-header__tags'
+  ]);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes(escapeClass(name)), `Missing DetailHeader utility ${name}`);
+    }
+  }
+  // Every utility reads the property and the token the approved recipe names; a row per utility keeps this complete.
+  const rows = [
+    ['flex', /display:\s*flex/],
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['flex-col', /flex-direction:\s*column/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['gap-6', /gap:\s*var\(--space-6\)/],
+    ['gap-1', /gap:\s*var\(--space-1\)/],
+    // The 1.5 step is derived from the --space-1 token, not a token of its own: Chip and the ProjectCard tag list ship it.
+    ['gap-1.5', /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/],
+    ['gap-x-8', /column-gap:\s*var\(--space-8\)/],
+    ['gap-x-6', /column-gap:\s*var\(--space-6\)/],
+    ['gap-y-4', /row-gap:\s*var\(--space-4\)/],
+    ['gap-y-3', /row-gap:\s*var\(--space-3\)/],
+    ['m-0', /margin:\s*var\(--space-0\)/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['list-none', /list-style-type:\s*none/],
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-label-eyebrow', /font-size:\s*var\(--text-label-eyebrow[,)]/],
+    ['text-label-eyebrow', /font-weight:[^;}]*--text-label-eyebrow--font-weight/],
+    ['text-label-eyebrow', /line-height:[^;}]*--text-label-eyebrow--line-height/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/],
+    ['text-body-default', /font-weight:[^;}]*--text-body-default--font-weight/],
+    ['text-body-default', /line-height:[^;}]*--text-body-default--line-height/],
+    ['uppercase', /text-transform:\s*uppercase/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['whitespace-normal', /white-space:\s*normal/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/]
+  ];
+  assert.deepEqual(
+    [...new Set(rows.map(([token]) => token))].sort(),
+    [...classes].filter((name) => !name.startsWith('eg-')).sort(),
+    'Every recipe utility has a declaration row'
+  );
+  for (const [token, declaration] of rows) {
+    assert.match(
+      utilities,
+      new RegExp(`${escapeRegExp(escapeClass(token))}\\s*\\{[^}]*${declaration.source}`),
+      `Missing DetailHeader rule ${token}`
+    );
+  }
+  // The header paints nothing and has no stylesheet: no paint or motion utility in the recipes, no rule for a marker.
+  for (const name of classes) {
+    assert.doesNotMatch(
+      name,
+      /^(?:bg|border|shadow|ring|outline|backdrop|filter|transition|animate|duration|ease|transform|rounded)\b/
+    );
+  }
+  assert.doesNotMatch(css, /\.eg-detail-header\b/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/detail-header/detail-header.css')), false);
+});
+
+test('DetailHeader package SSR renders one header, a description list, two named lists and safe external links, and keeps its recipes internal (#572)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.DetailHeader, 'function');
+  for (const name of [
+    'useDetailHeader',
+    'detailHeaderVariants',
+    'detailHeaderMetaVariants',
+    'detailHeaderMetaEntryVariants',
+    'detailHeaderTermVariants',
+    'detailHeaderValueVariants',
+    'detailHeaderTagsVariants',
+    'detailHeaderTagLabelVariants',
+    'detailHeaderLinksVariants',
+    'detailHeaderLinkItemVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to DetailHeader`);
+  }
+  const props = {
+    eyebrow: 'Event',
+    title: 'Conference',
+    lede: 'Two days of talks.',
+    metadata: [
+      { label: 'Date', value: 'December 12, 2026', dateTime: '2026-12-12' },
+      { label: 'Place', value: 'Example Hall' },
+      { label: '', value: 'dropped' }
+    ],
+    tags: ['Design', ' ', 'Systems'],
+    links: [
+      { label: 'Event page', href: '  https://example.com/events/conference  ' },
+      { label: 'Plain', href: 'http://example.com/insecure' },
+      { label: 'Script', href: 'javascript:alert(1)' }
+    ],
+    id: 'packed-header',
+    lang: 'en',
+    className: 'mt-6',
+    role: 'region',
+    style: { color: 'red' }
+  };
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (message) => warnings.push(message);
+  let markup;
+  try {
+    markup = renderToString(createElement(exported.DetailHeader, props));
+    // Deterministic markup: a second render of the same props is byte-identical.
+    assert.equal(renderToString(createElement(exported.DetailHeader, props)), markup);
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual([...new Set(warnings)].sort(), [
+    'DetailHeader: skipping a blank tag.',
+    'DetailHeader: skipping an invalid link entry.',
+    'DetailHeader: skipping an invalid metadata entry.'
+  ]);
+  assert.equal(markup.includes('javascript'), false);
+  assert.equal(markup.includes('http://'), false);
+  const dom = new JSDOM(markup);
+  try {
+    const body = dom.window.document.body;
+    assert.equal(body.children.length, 1);
+    const rootElement = body.firstElementChild;
+    assert.equal(rootElement.tagName, 'DIV');
+    for (const name of ['eg-detail-header', 'mt-6']) {
+      assert.ok(rootElement.classList.contains(name), name);
+    }
+    assert.equal(rootElement.getAttribute('id'), 'packed-header');
+    assert.equal(rootElement.getAttribute('lang'), 'en');
+    for (const attribute of ['role', 'aria-label', 'aria-labelledby', 'title', 'tabindex', 'data-state', 'style']) {
+      assert.equal(rootElement.hasAttribute(attribute), false, attribute);
+    }
+    assert.deepEqual(
+      [...rootElement.children].map((node) => node.tagName),
+      ['HEADER', 'DL', 'UL', 'UL']
+    );
+    // Exactly one header (SectionHeader's), never nested, holding the eyebrow, the page heading and the lede.
+    assert.equal(body.querySelectorAll('header').length, 1);
+    const header = rootElement.firstElementChild;
+    assert.deepEqual(
+      [...header.children].map((node) => node.tagName),
+      ['P', 'H1', 'P']
+    );
+    assert.equal(header.querySelector('h1').textContent, 'Conference');
+    // The facts: one wrapper div per entry with its term and definition; a date gets a native time element.
+    const list = rootElement.querySelector('dl');
+    assert.equal(list.classList.contains('eg-detail-header__meta'), true);
+    assert.deepEqual(
+      [...list.children].map((node) => [...node.children].map((child) => child.tagName)),
+      [
+        ['DT', 'DD'],
+        ['DT', 'DD']
+      ]
+    );
+    assert.deepEqual(
+      [...list.querySelectorAll('dt')].map((node) => node.textContent),
+      ['Date', 'Place']
+    );
+    const time = list.querySelector('time');
+    assert.equal(time.getAttribute('datetime'), '2026-12-12');
+    assert.equal(time.textContent, 'December 12, 2026');
+    // The two unordered lists carry the explicit list role and their default English names.
+    const [tags, links] = rootElement.querySelectorAll('ul');
+    assert.equal(tags.getAttribute('role'), 'list');
+    assert.equal(tags.getAttribute('aria-label'), 'Tags');
+    assert.equal(tags.classList.contains('eg-detail-header__tags'), true);
+    assert.deepEqual(
+      [...tags.querySelectorAll('li')].map((node) => [
+        node.textContent,
+        node.firstElementChild.className.includes('eg-chip')
+      ]),
+      [
+        ['Design', true],
+        ['Systems', true]
+      ]
+    );
+    assert.equal(tags.querySelector('a, button, [role], [tabindex]'), null);
+    // Each tag label sits in a span inside the Chip that restores wrapping, so an unbroken tag cannot overflow.
+    assert.deepEqual(
+      [...tags.querySelectorAll('li > .eg-chip > span')].map((node) => [node.textContent, node.className]),
+      [
+        ['Design', 'whitespace-normal wrap-anywhere'],
+        ['Systems', 'whitespace-normal wrap-anywhere']
+      ]
+    );
+    assert.equal(links.getAttribute('role'), 'list');
+    assert.equal(links.getAttribute('aria-label'), 'Links');
+    assert.equal(links.classList.contains('eg-detail-header__links'), true);
+    const anchors = [...links.querySelectorAll('a')];
+    assert.equal(anchors.length, 1);
+    assert.equal(anchors[0].getAttribute('href'), 'https://example.com/events/conference');
+    assert.equal(anchors[0].getAttribute('target'), '_blank');
+    const rel = anchors[0].getAttribute('rel').split(/\s+/);
+    assert.ok(rel.includes('noopener') && rel.includes('noreferrer'));
+    assert.equal(anchors[0].classList.contains('eg-link'), true);
+    // The accessible name is the label, one space and the hidden notice; the arrow is decorative.
+    assert.equal(anchors[0].textContent, 'Event page (opens in a new tab)');
+    assert.equal(anchors[0].querySelector('svg').getAttribute('aria-hidden'), 'true');
+    // No inline style on any element DetailHeader owns: the root, the lists, their entries, terms and values.
+    for (const element of rootElement.querySelectorAll('dl, dl > div, dt, dd, time, ul, li')) {
+      assert.equal(element.hasAttribute('style'), false, element.tagName);
+    }
+  } finally {
+    dom.window.close();
+  }
+  // An unreadable title renders nothing, however valid the rest is, and warns once in development.
+  const unreadable = [];
+  console.warn = (message) => unreadable.push(message);
+  try {
+    assert.equal(
+      renderToStaticMarkup(
+        createElement(exported.DetailHeader, { ...props, title: '   ', role: undefined, style: undefined })
+      ),
+      ''
+    );
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(unreadable, ['DetailHeader requires a non-blank title; nothing was rendered.']);
+});
+
+test('Pagination ships every static recipe utility with its token declaration, in the right variant and media block, and no rule of its own (#571)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/pagination/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      // defaultVariants names a variant; it is not a utility.
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 7, 'Pagination declares exactly seven static recipes');
+  assert.deepEqual(
+    [...classes].filter((name) => name.startsWith('eg-')),
+    ['eg-pagination']
+  );
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  // Split a class name into its variants and base at the top-level colons: arbitrary values keep their own colon.
+  const variantsOf = (token) => {
+    const parts = [];
+    let depth = 0;
+    let start = 0;
+    for (const [index, character] of [...token].entries()) {
+      if (character === '[' || character === '(') {
+        depth += 1;
+      } else if (character === ']' || character === ')') {
+        depth -= 1;
+      } else if (character === ':' && depth === 0) {
+        parts.push(token.slice(start, index));
+        start = index + 1;
+      }
+    }
+    return parts;
+  };
+  // How the shipped, flattened stylesheet serializes each variant: a selector suffix, a media block, or both.
+  const shape = {
+    hover: { suffix: ':hover', media: '\\(hover: hover\\)' },
+    'focus-visible': { suffix: ':focus-visible' },
+    'aria-[current=page]': { suffix: '[aria-current="page"]' },
+    'data-[disabled]': { suffix: '[data-disabled]' },
+    rtl: { suffix: ':where(:dir(rtl), [dir="rtl"], [dir="rtl"] *)' },
+    'forced-colors': { media: '\\(forced-colors: active\\)' },
+    'pointer-coarse': { media: '\\(pointer: coarse\\)' },
+    'motion-reduce': { media: '\\(prefers-reduced-motion: reduce\\)' }
+  };
+  // Every block of one media query, each read to its own closing brace.
+  const mediaBlocks = (query) =>
+    [...utilities.matchAll(new RegExp(`@media ${query}\\s*\\{`, 'g'))].map(({ index }) =>
+      cssBlock(utilities.slice(index), new RegExp(`^@media ${query}\\s*\\{`))
+    );
+  // Declarations of every flat rule whose selector list holds this exact selector (top-level commas only).
+  const declarationsOf = (selector, within) => {
+    const found = [];
+    for (const [, list, body] of within.matchAll(/(?<=^|[{}])\s*([^{}]+?)\s*\{([^{}]*)\}/g)) {
+      const selectors = [];
+      let depth = 0;
+      let start = 0;
+      for (const [index, character] of [...list].entries()) {
+        if (character === '(' || character === '[') {
+          depth += 1;
+        } else if (character === ')' || character === ']') {
+          depth -= 1;
+        } else if (character === ',' && depth === 0) {
+          selectors.push(list.slice(start, index).trim());
+          start = index + 1;
+        }
+      }
+      selectors.push(list.slice(start).trim());
+      if (selectors.includes(selector)) {
+        found.push(body);
+      }
+    }
+    return found.join('\n');
+  };
+  // The focus ring is the system token, resolved inline by the installed utility: derive it from theme.css.
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  const ring = /--shadow-focus:\s*([^;]+);/.exec(theme)?.[1]?.trim();
+  assert.ok(ring, '--shadow-focus must exist in theme.css');
+  const tokenRing = ring
+    .split(/\s*,\s*/)
+    .map((layer) => layer.replace(/(#[0-9A-Fa-f]{3,8})$/, (hex) => `var(--tw-shadow-color, ${hex})`))
+    .join(', ');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const space = (step) => new RegExp(`var\\(--space-${step}[,)]`).source;
+  const rows = [
+    ['m-0', new RegExp(`margin:\\s*${space('0')}`)],
+    ['p-0', new RegExp(`padding:\\s*${space('0')}`)],
+    ['list-none', /list-style-type:\s*none/],
+    ['flex', /display:\s*flex/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['items-center', /align-items:\s*center/],
+    ['justify-center', /justify-content:\s*center/],
+    ['gap-1', new RegExp(`gap:\\s*${space('1')}`)],
+    ['gap-2', new RegExp(`gap:\\s*${space('2')}`)],
+    ['box-border', /box-sizing:\s*border-box/],
+    ['inline-flex', /display:\s*inline-flex/],
+    ['min-h-10', new RegExp(`min-height:\\s*${space('10')}`)],
+    ['min-w-10', new RegExp(`min-width:\\s*${space('10')}`)],
+    ['rounded-md', /border-radius:\s*var\(--radius-md[,)]/],
+    ['border', /border-width:\s*1px/],
+    ['border-solid', /border-style:\s*solid/],
+    ['border-transparent', /border-color:\s*(?:transparent|#0000(?:0000)?)/],
+    ['px-2', new RegExp(`padding-inline:\\s*${space('2')}`)],
+    ['pointer-coarse:min-h-14', new RegExp(`min-height:\\s*${space('14')}`)],
+    ['pointer-coarse:min-w-14', new RegExp(`min-width:\\s*${space('14')}`)],
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['text-meta', /font-size:\s*var\(--text-meta[,)]/],
+    ['text-meta', /line-height:[^;}]*--text-meta--line-height/],
+    ['text-meta', /letter-spacing:[^;}]*--text-meta--letter-spacing/],
+    ['text-meta', /font-weight:[^;}]*--text-meta--font-weight/],
+    ['tabular-nums', /--tw-numeric-spacing:\s*tabular-nums/],
+    ['uppercase', /text-transform:\s*uppercase/],
+    ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['no-underline', /text-decoration-line:\s*none/],
+    ['transition-colors', /transition-property:\s*color,\s*background-color,\s*border-color/],
+    ['duration-(--duration-fast)', /transition-duration:\s*var\(--duration-fast\)/],
+    ['ease-(--ease-out)', /transition-timing-function:\s*var\(--ease-out\)/],
+    ['motion-reduce:transition-none', /transition-property:\s*none/],
+    ['hover:bg-surface-2', /background-color:\s*var\(--color-surface-2[,)]/],
+    ['hover:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['aria-[current=page]:border-state-selected', /border-color:\s*var\(--color-state-selected[,)]/],
+    [
+      'aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
+      /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)/
+    ],
+    ['aria-[current=page]:shadow-[var(--shadow-edge-strong)]', /--tw-shadow:\s*var\(--shadow-edge-strong\)/],
+    ['aria-[current=page]:shadow-[var(--shadow-edge-strong)]', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+    ['aria-[current=page]:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['focus-visible:outline-none', /outline-style:\s*none/],
+    ['focus-visible:shadow-focus', new RegExp(`--tw-shadow:\\s*${escapeRegExp(tokenRing)}`)],
+    ['focus-visible:shadow-focus', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+    ['aria-[current=page]:focus-visible:shadow-focus', new RegExp(`--tw-shadow:\\s*${escapeRegExp(tokenRing)}`)],
+    ['aria-[current=page]:focus-visible:shadow-focus', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+    ['forced-colors:focus-visible:outline-solid', /outline-style:\s*solid/],
+    ['forced-colors:focus-visible:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+    ['forced-colors:focus-visible:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+    ['forced-colors:aria-[current=page]:outline-solid', /outline-style:\s*solid/],
+    ['forced-colors:aria-[current=page]:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+    ['forced-colors:aria-[current=page]:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+    ['data-[disabled]:opacity-45', /opacity:\s*(?:\.45|45%)/],
+    ['rtl:rotate-180', /rotate:\s*180deg/]
+  ];
+  assert.deepEqual(
+    [...new Set(rows.map(([token]) => token))].sort(),
+    [...classes].filter((name) => name !== 'eg-pagination').sort(),
+    'Every recipe utility has a declaration row'
+  );
+  for (const [token, declaration] of rows) {
+    const variants = variantsOf(token);
+    const selector = `${escapeClass(token)}${variants.map((variant) => shape[variant]?.suffix ?? '').join('')}`;
+    for (const variant of variants) {
+      assert.ok(shape[variant], `${token}: unknown variant ${variant}`);
+    }
+    const queries = variants.map((variant) => shape[variant]?.media).filter(Boolean);
+    assert.ok(queries.length <= 1, `${token} sits in at most one media block`);
+    const within = queries.length === 0 ? utilities : mediaBlocks(queries[0]).join('\n');
+    assert.match(declarationsOf(selector, within), declaration, `${token} (${selector})`);
+  }
+  // The current-page paint exists only behind the attribute: nothing unscoped carries it.
+  for (const name of ['border-state-selected', 'shadow-\\[var\\(--shadow-edge-strong\\)\\]']) {
+    assert.doesNotMatch(css, new RegExp(`(?<!\\\\:)\\.${name}\\s*[,{]`), name);
+  }
+  // No stylesheet: nothing in the shipped CSS selects the marker, and no file exists for it.
+  assert.doesNotMatch(css, /\.eg-pagination\b/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/pagination/pagination.css')), false);
+});
+
+test('Pagination package SSR renders one named landmark of crawlable links, hidden placeholders and ellipses, and nothing for invalid input, and keeps its recipes internal (#571)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Pagination, 'function');
+  for (const name of [
+    'useEmbed',
+    'embedVariants',
+    'embedLoadingVariants',
+    'embedFrameVariants',
+    'embedFallbackVariants',
+    'usePagination',
+    'defaultPaginationMessages',
+    'paginationVariants',
+    'paginationListVariants',
+    'paginationItemVariants',
+    'paginationLinkVariants',
+    'paginationEllipsisVariants',
+    'paginationPlaceholderVariants',
+    'paginationIconVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Pagination`);
+  }
+  const getHref = (page) => `/editorial?topic=design&page=${page}`;
+  const props = {
+    label: 'Editorial pages',
+    value: 6,
+    pageCount: 12,
+    getHref,
+    id: 'packed-pagination',
+    lang: 'en',
+    className: 'mt-6',
+    role: 'region',
+    'aria-label': 'injected',
+    'aria-labelledby': 'other',
+    children: 'injected'
+  };
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (message) => warnings.push(message);
+  let markup;
+  try {
+    markup = renderToString(createElement(exported.Pagination, props));
+    // Deterministic markup: a second render of the same props is byte-identical.
+    assert.equal(renderToString(createElement(exported.Pagination, props)), markup);
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(warnings, []);
+  // Every destination is in the server markup without JavaScript, and nothing relies on a handler.
+  assert.equal(markup.includes('injected'), false);
+  assert.equal(/onclick|javascript:/i.test(markup), false);
+  const dom = new JSDOM(markup);
+  try {
+    const body = dom.window.document.body;
+    assert.equal(body.children.length, 1);
+    const nav = body.firstElementChild;
+    assert.equal(nav.tagName, 'NAV');
+    for (const name of ['eg-pagination', 'mt-6']) {
+      assert.ok(nav.classList.contains(name), name);
+    }
+    assert.equal(nav.getAttribute('aria-label'), 'Editorial pages');
+    assert.equal(nav.getAttribute('id'), 'packed-pagination');
+    assert.equal(nav.getAttribute('lang'), 'en');
+    for (const attribute of ['role', 'aria-labelledby', 'style', 'tabindex']) {
+      assert.equal(nav.hasAttribute(attribute), false, attribute);
+    }
+    assert.equal(nav.children.length, 1);
+    const list = nav.firstElementChild;
+    assert.equal(list.tagName, 'UL');
+    assert.equal(list.getAttribute('role'), 'list');
+    const items = [...list.children];
+    assert.deepEqual(
+      items.map((item) => item.textContent),
+      ['Previous', '1', '…', '5', '6', '7', '…', '12', 'Next']
+    );
+    assert.deepEqual(
+      items.map((item) => item.hasAttribute('aria-hidden')),
+      [false, false, true, false, false, false, true, false, false]
+    );
+    // Seven crawlable anchors in order, each with the consumer's own URL and the filter it carries.
+    const anchors = [...list.querySelectorAll('a')];
+    assert.deepEqual(
+      anchors.map((anchor) => anchor.getAttribute('href')),
+      [5, 1, 5, 6, 7, 12, 7].map(getHref)
+    );
+    assert.deepEqual(
+      anchors.map((anchor) => anchor.getAttribute('rel')),
+      ['prev', null, null, null, null, null, 'next']
+    );
+    assert.deepEqual(
+      anchors.map((anchor) => anchor.getAttribute('aria-label')),
+      [null, 'Page 1', 'Page 5', 'Page 6', 'Page 7', 'Page 12', null]
+    );
+    const current = [...list.querySelectorAll('[aria-current]')];
+    assert.equal(current.length, 1);
+    assert.equal(current[0].tagName, 'A');
+    assert.equal(current[0].getAttribute('aria-current'), 'page');
+    assert.equal(current[0].textContent, '6');
+    assert.equal(list.querySelectorAll('svg[aria-hidden="true"]').length, 2);
+    // No inline style or data-state on anything Pagination owns; the current page is told apart by the attribute.
+    assert.equal(list.querySelectorAll('[style], [data-state]').length, 0);
+    assert.equal(
+      new Set([...list.querySelectorAll('a')].filter((a) => !a.hasAttribute('rel')).map((a) => a.className)).size,
+      1
+    );
+  } finally {
+    dom.window.close();
+  }
+  // A boundary keeps its slot as a hidden placeholder: no anchor, no href, nothing to tab to.
+  const first = new JSDOM(renderToString(createElement(exported.Pagination, { ...props, value: 1 })));
+  try {
+    const item = first.window.document.querySelector('li');
+    assert.equal(item.getAttribute('aria-hidden'), 'true');
+    assert.equal(item.textContent, 'Previous');
+    assert.equal(item.querySelector('a'), null);
+    assert.equal(item.firstElementChild.tagName, 'SPAN');
+    assert.equal(item.firstElementChild.hasAttribute('data-disabled'), true);
+    assert.equal(first.window.document.querySelectorAll('a').length, 7);
+  } finally {
+    first.window.close();
+  }
+  // Invalid input renders nothing and warns once in development; a single page is a quiet no-op.
+  for (const [override, message] of [
+    [{ label: '   ' }, 'Pagination requires a non-empty label. Nothing was rendered.'],
+    [{ value: Number.NaN }, 'Pagination requires a finite numeric value. Nothing was rendered.'],
+    [{ pageCount: Number.POSITIVE_INFINITY }, 'Pagination requires a finite numeric pageCount. Nothing was rendered.'],
+    [{ getHref: undefined }, 'Pagination requires a getHref function. Nothing was rendered.'],
+    [
+      { getHref: () => '' },
+      'Pagination requires getHref to return a non-empty string for every rendered page. Nothing was rendered.'
+    ]
+  ]) {
+    const emitted = [];
+    console.warn = (text) => emitted.push(text);
+    try {
+      assert.equal(renderToStaticMarkup(createElement(exported.Pagination, { ...props, ...override })), '');
+    } finally {
+      console.warn = warn;
+    }
+    assert.deepEqual(emitted, [message]);
+  }
+  const quiet = [];
+  console.warn = (text) => quiet.push(text);
+  try {
+    assert.equal(renderToStaticMarkup(createElement(exported.Pagination, { ...props, pageCount: 1 })), '');
+  } finally {
+    console.warn = warn;
+  }
+  assert.deepEqual(quiet, []);
+});
+
 test('StepMeter package SSR renders a named image of presentational steps and nothing for invalid input', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -974,6 +2251,256 @@ test('StepMeter package SSR renders a named image of presentational steps and no
   } finally {
     console.warn = warn;
   }
+});
+
+test('Embed ships every static recipe utility with its token declaration and no rule of its own (#574)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/embed/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 4, 'Embed declares exactly four static recipes');
+  assert.deepEqual(
+    [...classes].filter((name) => name.startsWith('eg-')),
+    ['eg-embed']
+  );
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  // The selector is escaped for CSS, then again for the regular expression that reads it.
+  const ruleOf = (token) => {
+    const selector = escapeClass(token).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const match = new RegExp(`${selector}\\s*\\{([^}]*)\\}`).exec(utilities);
+    assert.ok(match, `Missing Embed utility ${token}`);
+    return match[1];
+  };
+  // The Surface well recipe composed by the hook is shipped through the Surface recipe, not through Embed's own.
+  const well = ['bg-surface-0', 'border-border-hairline', 'shadow-[var(--shadow-well)]', 'rounded-xl', 'p-0'];
+  const own = [...classes].filter((name) => !name.startsWith('eg-'));
+  assert.deepEqual(
+    own,
+    [
+      'min-w-0',
+      'overflow-hidden',
+      'absolute',
+      'inset-0',
+      'grid',
+      'place-items-center',
+      'text-fg-muted',
+      'relative',
+      'block',
+      'size-full',
+      'border-0',
+      'box-border',
+      'p-6',
+      'text-center',
+      'font-sans',
+      'text-body-default'
+    ].filter((name, index, all) => all.indexOf(name) === index)
+  );
+  for (const token of [...own, ...well]) {
+    assert.ok(ruleOf(token).length > 0, `Empty Embed utility ${token}`);
+  }
+  // The token declarations the spec's emission inventory names: clip, well, layers, frame and fallback.
+  const rows = [
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['overflow-hidden', /overflow:\s*hidden/],
+    ['bg-surface-0', /background-color:\s*var\(--color-surface-0[,)]/],
+    ['border-border-hairline', /border-color:\s*var\(--color-border-hairline[,)]/],
+    ['shadow-[var(--shadow-well)]', /--tw-shadow:\s*var\(--shadow-well\)/],
+    ['rounded-xl', /border-radius:\s*var\(--radius-xl[,)]/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['absolute', /position:\s*absolute/],
+    ['inset-0', /inset:\s*var\(--space-0\)/],
+    ['grid', /display:\s*grid/],
+    ['place-items-center', /place-items:\s*center/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['relative', /position:\s*relative/],
+    ['block', /display:\s*block/],
+    ['size-full', /width:\s*100%/],
+    ['size-full', /height:\s*100%/],
+    ['border-0', /border-width:\s*0px/],
+    ['box-border', /box-sizing:\s*border-box/],
+    ['p-6', /padding:\s*var\(--space-6\)/],
+    ['text-center', /text-align:\s*center/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/]
+  ];
+  for (const [token, declaration] of rows) {
+    assert.match(ruleOf(token), declaration, token);
+  }
+  // The values those declarations resolve to are the ones the spec's arithmetic uses (all token-scaled by 0.8).
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  assert.match(theme, /--space-6:\s*19\.2px;/);
+  assert.match(theme, /--radius-xl:\s*17\.6px;/);
+  assert.match(theme, /--text-body-default:\s*12\.8px;/);
+  // Nothing in Embed's recipes transitions, transforms or animates: the only motion is the Spinner's own.
+  for (const name of classes) {
+    assert.doesNotMatch(name, /^(?:transition|transform|duration|ease|animate|rotate|scale|translate|motion-)/, name);
+    assert.doesNotMatch(name, /[#!]|\d+px|\[/, name);
+  }
+  // No stylesheet: nothing in the shipped CSS selects the marker, and the legacy bundle has no Embed rule.
+  assert.doesNotMatch(css, /eg-embed/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/atoms/embed/embed.css')), false);
+});
+
+test('Embed package SSR reserves the box without a frame or a src and renders nothing without a name (#574)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Embed, 'function');
+  for (const name of [
+    'useEmbed',
+    'embedVariants',
+    'embedLoadingVariants',
+    'embedFrameVariants',
+    'embedFallbackVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Embed`);
+  }
+  const warn = console.warn;
+  const warnings = [];
+  console.warn = (message) => warnings.push(message);
+  try {
+    // Frame branch: loading, busy, a decorative Spinner, the reserved box and no frame or src at all.
+    const html = renderToString(
+      createElement(exported.Embed, { label: 'Keynote recording', src: 'https://video.example/embed/1', ratio: 4 / 3 })
+    );
+    assert.doesNotMatch(html, /<iframe|video\.example/);
+    assert.equal(
+      renderToString(
+        createElement(exported.Embed, {
+          label: 'Keynote recording',
+          src: 'https://video.example/embed/1',
+          ratio: 4 / 3
+        })
+      ),
+      html
+    );
+    const dom = new JSDOM(html);
+    try {
+      const document = dom.window.document;
+      const embed = document.querySelector('div.eg-embed');
+      assert.ok(embed);
+      assert.equal(document.body.children.length, 1);
+      assert.equal(embed.getAttribute('data-state'), 'loading');
+      assert.equal(embed.getAttribute('aria-busy'), 'true');
+      for (const attribute of ['role', 'aria-label', 'tabindex', 'style', 'title']) {
+        assert.equal(embed.hasAttribute(attribute), false, attribute);
+      }
+      const boxes = embed.querySelectorAll('[data-radix-aspect-ratio-wrapper]');
+      assert.equal(boxes.length, 1);
+      assert.equal(boxes[0].style.paddingBottom, '75%');
+      const spinner = embed.querySelector('.eg-spinner');
+      assert.equal(spinner?.getAttribute('aria-hidden'), 'true');
+      assert.equal(embed.querySelector('[role], [aria-live], iframe, script'), null);
+      // Material comes from the Surface well recipe, composed in the hook.
+      for (const name of [
+        'eg-surface',
+        'bg-surface-0',
+        'border-border-hairline',
+        'rounded-xl',
+        'p-0',
+        'overflow-hidden'
+      ]) {
+        assert.ok(embed.classList.contains(name), name);
+      }
+      // The only inline styles are the two geometry styles Radix owns inside AspectRatio.
+      for (const node of embed.querySelectorAll('[style]')) {
+        assert.ok(node.hasAttribute('data-radix-aspect-ratio-wrapper') || node.classList.contains('eg-aspect-ratio'));
+      }
+    } finally {
+      dom.window.close();
+    }
+    // Content branch: the children are rendered in the box, ready, inside a group named by the label.
+    const content = new JSDOM(
+      renderToString(
+        createElement(exported.Embed, { label: 'Post by @egdev6', children: createElement('p', null, 'Post') })
+      )
+    );
+    try {
+      const embed = content.window.document.querySelector('div.eg-embed');
+      assert.equal(embed?.getAttribute('data-state'), 'ready');
+      assert.equal(embed?.getAttribute('role'), 'group');
+      assert.equal(embed?.getAttribute('aria-label'), 'Post by @egdev6');
+      assert.equal(embed?.hasAttribute('aria-busy'), false);
+      assert.equal(embed?.querySelector('.eg-spinner, iframe'), null);
+      assert.equal(embed?.querySelector('.eg-aspect-ratio > p')?.textContent, 'Post');
+    } finally {
+      content.window.close();
+    }
+    // Fallback state: no src, so no request; and a rejected scheme never reaches the markup.
+    for (const src of [undefined, '   ', 'javascript:alert(1)', 'data:text/html,x']) {
+      const markup = renderToString(
+        createElement(exported.Embed, {
+          label: 'Keynote recording',
+          src,
+          fallback: createElement('p', null, 'Unavailable')
+        })
+      );
+      assert.doesNotMatch(markup, /<iframe|javascript:|data:text/);
+      const fallback = new JSDOM(markup);
+      try {
+        const embed = fallback.window.document.querySelector('div.eg-embed');
+        assert.equal(embed?.getAttribute('data-state'), 'fallback');
+        assert.equal(embed?.getAttribute('role'), 'group');
+        assert.equal(embed?.getAttribute('aria-label'), 'Keynote recording');
+        assert.equal(embed?.hasAttribute('aria-busy'), false);
+        assert.equal(embed?.querySelector('.eg-aspect-ratio > div > p')?.textContent, 'Unavailable');
+        // The only part with padding is sized border-box in the markup itself, so a host without a preflight cannot overflow.
+        const layer = embed?.querySelector('.eg-aspect-ratio > div');
+        for (const name of ['box-border', 'grid', 'size-full', 'place-items-center', 'p-6']) {
+          assert.ok(layer?.classList.contains(name), `Missing fallback layer class ${name}`);
+        }
+      } finally {
+        fallback.window.close();
+      }
+    }
+    // An unnamed frame is never rendered, and an unusable ratio silently falls back to 16:9.
+    assert.equal(
+      renderToString(createElement(exported.Embed, { label: '  ', src: 'https://video.example/embed/1' })),
+      ''
+    );
+    assert.equal(renderToString(createElement(exported.Embed, { src: 'https://video.example/embed/1' })), '');
+    const square = new JSDOM(
+      renderToString(createElement(exported.Embed, { label: 'Keynote recording', src: '/embed/1', ratio: 0 }))
+    );
+    try {
+      assert.equal(
+        square.window.document.querySelector('[data-radix-aspect-ratio-wrapper]')?.style.paddingBottom,
+        `${100 / (16 / 9)}%`
+      );
+    } finally {
+      square.window.close();
+    }
+  } finally {
+    console.warn = warn;
+  }
+  assert.ok(warnings.includes('Embed requires a non-empty label. Nothing was rendered.'));
+  assert.ok(warnings.includes('Embed ignored a src that is not an http(s) URL. The fallback state was rendered.'));
 });
 
 test('NotesBoard ships every scanned utility and bounded responsive resets', () => {
@@ -1539,6 +3066,81 @@ test('Hero package SSR keeps responsive classes on its own elements and omits em
   }
 });
 
+test('Scene titleVariant renders in the package SSR of all four scenes (#560)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const glow = '[text-shadow:var(--text-shadow-title-hero)]';
+  const scenes = [
+    ['Closing', 'eg-closing', { children: h('a', { href: '#one' }, 'One') }],
+    ['Hero', 'eg-hero', {}],
+    ['ChapterBreak', 'eg-chapter-break', {}],
+    ['LabStage', 'eg-lab', { children: h('article', null, 'Experiment') }]
+  ];
+  for (const [name, marker, extra] of scenes) {
+    const html = (props) =>
+      renderToString(
+        h(exported[name], {
+          title: 'Build ',
+          accent: 'together',
+          level: 2,
+          id: 'scene-title',
+          media: h('span', null, 'Decorative'),
+          ...extra,
+          ...props
+        })
+      );
+    const parse = (markup) => {
+      const dom = new JSDOM(markup);
+      const doc = dom.window.document;
+      const root = doc.querySelector(`.${marker}`);
+      assert.ok(root, `${name} root`);
+      const heading = root.querySelector('h2#scene-title');
+      assert.ok(heading, `${name} heading`);
+      const accent = heading.querySelector('.eg-heading__accent');
+      assert.ok(accent, `${name} accent`);
+      const result = {
+        rootAttributes: root.getAttributeNames(),
+        headingClasses: [...heading.classList],
+        accentClasses: [...accent.classList],
+        text: heading.textContent
+      };
+      dom.window.close();
+      return result;
+    };
+    const base = html({});
+    // The default is the hero recipe with its glow, byte for byte with and without the explicit value.
+    assert.equal(html({ titleVariant: 'hero' }), base, `${name} explicit hero`);
+    const hero = parse(base);
+    assert.equal(hero.text, 'Build together');
+    assert.ok(hero.headingClasses.includes('text-title-hero'), `${name} hero recipe`);
+    assert.ok(!hero.headingClasses.includes('text-title-show'), `${name} hero is not show`);
+    assert.ok(hero.accentClasses.includes(glow), `${name} hero glow`);
+    // show swaps the heading recipe and drops the glow, and nothing else in the markup moves.
+    const showHtml = html({ titleVariant: 'show' });
+    const show = parse(showHtml);
+    assert.equal(show.text, 'Build together');
+    assert.ok(show.headingClasses.includes('text-title-show'), `${name} show recipe`);
+    assert.ok(!show.headingClasses.includes('text-title-hero'), `${name} show is not hero`);
+    for (const required of ['block', 'text-fg-brand-default', '[text-shadow:none]']) {
+      assert.ok(show.accentClasses.includes(required), `${name} show accent ${required}`);
+    }
+    assert.ok(!show.accentClasses.includes(glow), `${name} show has no glow`);
+    assert.deepEqual(show.rootAttributes, ['class'], `${name} show root attributes`);
+    assert.doesNotMatch(showHtml, /title-?variant/i, `${name} the prop never reaches the markup`);
+    assert.equal(
+      showHtml,
+      base.replace('text-title-hero', 'text-title-show').replace(glow, '[text-shadow:none]'),
+      `${name} only the recipe and the glow change`
+    );
+    // Any other runtime value resolves to hero and never reaches the DOM.
+    for (const value of ['display', 'section', 'inverse', 'compact', 'SHOW', '', null, 42]) {
+      assert.equal(html({ titleVariant: value }), base, `${name} ${JSON.stringify(value)}`);
+    }
+  }
+});
+
 test('SectionNav ships every recipe utility in the bounded compact block', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -1578,6 +3180,25 @@ test('SectionNav ships every recipe utility in the bounded compact block', () =>
   assert.match(utilities, /bottom:\s*calc\(var\(--space-6\)\s*\+\s*env\(safe-area-inset-bottom,\s*0px\)\)/);
   assert.doesNotMatch(utilities, /\.eg-section-nav\s*\{/);
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-section-nav/);
+});
+
+test('SectionNav ships the declarations of its number and label utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    ['.font-display', /font-family:\s*var\(--font-display[,)]/],
+    [
+      '.text-meta',
+      /font-size:\s*var\(--text-meta[,)][\s\S]*line-height:[^;]*--text-meta--line-height[\s\S]*letter-spacing:[^;]*--text-meta--letter-spacing[\s\S]*font-weight:[^;]*--text-meta--font-weight/
+    ],
+    ['.tabular-nums', /font-variant-numeric:[^;]*--tw-numeric-spacing/],
+    ['.text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    ['.uppercase', /text-transform:\s*uppercase\s*;/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
 });
 
 test('SectionNav package SSR keeps one named landmark and compact classes on its own elements', async () => {
@@ -1623,6 +3244,18 @@ test('SectionNav package SSR keeps one named landmark and compact classes on its
     for (const name of ['[@media(width<=520px)]:h-14', '[@media(width<=520px)]:px-3']) {
       assert.ok(trigger.parentElement.classList.contains(name));
     }
+    // v0.3 (#563): the padded number and the uppercase label are two parts joined by a real text node.
+    const [number, label] = [...trigger.children].filter((node) => node.tagName === 'SPAN');
+    assert.equal(number?.textContent, '01');
+    assert.equal(label?.textContent, 'One');
+    for (const name of ['font-display', 'text-meta', 'tabular-nums', 'text-fg-brand-raised']) {
+      assert.ok(number.classList.contains(name), `SectionNav number must carry ${name}`);
+    }
+    for (const name of ['font-display', 'text-meta', 'uppercase']) {
+      assert.ok(label.classList.contains(name), `SectionNav label must carry ${name}`);
+    }
+    assert.equal(number.nextSibling?.nodeType, 3, 'a text node separates the number from the label');
+    assert.equal(trigger.textContent, '01 One');
     assert.equal(doc.querySelector('[role="dialog"]'), null);
   } finally {
     dom.window.close();
@@ -2866,6 +4499,98 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
     assert.ok(css.includes(selector), `Missing Chip utility ${selector}`);
   }
   assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
+  // Link-mode current state (v0.3, #576): recipe R1 ships under the attribute value each utility names, the current
+  // paint follows the hover rules, the focus ring follows the current edge shadow and the forced-colours outline
+  // follows outline-none.
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  const focusRing = /--shadow-focus:\s*([^;]+);/.exec(theme)?.[1]?.trim();
+  assert.ok(focusRing, '--shadow-focus must exist in theme.css');
+  const tokenRing = focusRing
+    .split(/\s*,\s*/)
+    .map((layer) => layer.replace(/(#[0-9A-Fa-f]{3,8})$/, (hex) => `var(--tw-shadow-color, ${hex})`))
+    .join(', ');
+  const block = (selector, within = utilities) => cssBlock(within, new RegExp(`${escapeRegExp(selector)}\\s*\\{`));
+  const position = (selector) => {
+    const index = css.indexOf(selector);
+    assert.ok(index > -1, `Missing Chip selector ${selector}`);
+    return index;
+  };
+  const hover = (token) => position(`${escapeClass(token)}:hover`);
+  const ringAt = position(String.raw`.focus-visible\:shadow-focus:focus-visible`);
+  const noneAt = position(String.raw`.focus-visible\:outline-none:focus-visible`);
+  for (const value of ['page', 'true']) {
+    const attribute = `[aria-current="${value}"]`;
+    const named = (utility, suffix = attribute) => `${escapeClass(`aria-[current=${value}]:${utility}`)}${suffix}`;
+    const paint = [
+      ['border-state-selected', /border-color:\s*var\(--color-state-selected[,)]/],
+      [
+        '[background:var(--gradient-chip-active),var(--color-surface-1)]',
+        /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)\s*;/
+      ],
+      ['shadow-[var(--shadow-edge-strong)]', /--tw-shadow:\s*var\(--shadow-edge-strong\)\s*;/],
+      ['shadow-[var(--shadow-edge-strong)]', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+      ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/]
+    ];
+    for (const [utility, declaration] of paint) {
+      assert.match(block(named(utility)), declaration, `${value} ${utility}`);
+      // Every rule of this class carries the attribute value it names and nothing else.
+      const suffixes = [
+        ...css.matchAll(
+          new RegExp(
+            `${escapeRegExp(escapeClass(`aria-[current=${value}]:${utility}`))}(?![\\w\\\\-])([^\\s{,]*)\\s*[{,]`,
+            'g'
+          )
+        )
+      ].map((match) => match[1]);
+      assert.deepEqual([...new Set(suffixes)], [attribute], `${value} ${utility} selectors`);
+    }
+    const compound = block(named('focus-visible:shadow-focus', `${attribute}:focus-visible`));
+    assert.match(compound, new RegExp(`--tw-shadow:\\s*${escapeRegExp(tokenRing)}`));
+    assert.match(compound, /box-shadow:[^;}]*var\(--tw-shadow\)/);
+    // Cascade: the plain ring, then the current edge shadow, then the compound ring that restores it on focus.
+    const edgeAt = position(named('shadow-[var(--shadow-edge-strong)]'));
+    const compoundAt = position(named('focus-visible:shadow-focus', `${attribute}:focus-visible`));
+    assert.ok(ringAt < edgeAt && edgeAt < compoundAt, `The ${value} focus ring must follow the current edge shadow`);
+    // A hovered current chip keeps its own paint: the current rules follow the hover rules.
+    for (const [hovered, utility] of [
+      ['hover:border-border-hairline-strong', 'border-state-selected'],
+      [
+        'hover:[background:var(--gradient-sheen),var(--color-surface-2)]',
+        '[background:var(--gradient-chip-active),var(--color-surface-1)]'
+      ],
+      ['hover:text-fg-default', 'text-fg-default']
+    ]) {
+      assert.ok(position(named(utility)) > hover(hovered), `The ${value} paint must follow ${hovered}`);
+    }
+  }
+  // The current paint exists only behind the attribute: no unscoped utility carries it.
+  for (const name of ['border-state-selected', 'shadow-\\[var\\(--shadow-edge-strong\\)\\]']) {
+    assert.doesNotMatch(css, new RegExp(`(?<!\\\\:)\\.${name}\\s*[,{]`), name);
+  }
+  const forcedBlocks = [...utilities.matchAll(/@media\s*\(forced-colors:\s*active\)\s*\{/g)]
+    .map(({ index }) => cssBlock(utilities.slice(index), /@media\s*\(forced-colors:\s*active\)\s*\{/))
+    .join('\n');
+  for (const [prefix, suffix] of [
+    ['forced-colors:focus-visible:', ':focus-visible'],
+    ['forced-colors:aria-[current=page]:', '[aria-current="page"]'],
+    ['forced-colors:aria-[current=true]:', '[aria-current="true"]']
+  ]) {
+    for (const [utility, declaration] of [
+      ['outline-solid', /outline-style:\s*solid\s*;/],
+      ['outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)\s*;/],
+      ['outline-[color:Highlight]', /outline-color:\s*highlight\s*;/i]
+    ]) {
+      const selector = `${escapeClass(`${prefix}${utility}`)}${suffix}`;
+      assert.match(
+        block(selector, forcedBlocks),
+        declaration,
+        `${prefix}${utility} sits in the forced-colors media block`
+      );
+      assert.ok(position(selector) > noneAt, `${prefix}${utility} must follow outline-none`);
+    }
+  }
 });
 
 test('SocialLinks ships static collection utilities and native SSR composition without a second visual engine', async () => {
@@ -4487,6 +6212,8 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   for (const [selector, declaration] of [
     ['.border-0', /border-width:\s*0(?:px)?\s*;/],
     ['.text-link-default', /color:\s*var\(--color-link-default[,)]/],
+    ['.text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['.decoration-fg-brand-default', /text-decoration-color:\s*var\(--color-fg-brand-default[,)]/],
     ['.pb-0', /padding-bottom:\s*var\(--space-0\)/],
     ['.underline', /text-decoration-line:\s*underline/],
     [String.raw`.underline-offset-\(--space-1\)`, /text-underline-offset:\s*var\(--space-1\)/],
@@ -4546,6 +6273,12 @@ test('UI Link exports safe native and slotted navigation with decorative small I
   );
   assert.match(slotted, /^<a [^>]*href="#router"/);
   assert.doesNotMatch(slotted, /<svg|asChild=|external=|arrow=/);
+  const quiet = renderToString(createElement(Link, { href: '#docs', variant: 'quiet' }, 'Docs'));
+  for (const text of ['eg-link', 'text-fg-default', 'decoration-fg-brand-default']) {
+    assert.ok(quiet.includes(text), `Quiet Link SSR must render ${text}`);
+  }
+  assert.ok(!quiet.includes('text-link-default'), 'Quiet Link SSR must not render the plain ink');
+  assert.doesNotMatch(quiet, /variant=/);
 });
 
 test('AppIcon ships its scanned Surface and contained-image recipe with passive SSR', async () => {
@@ -5179,6 +6912,55 @@ test('NowCard ships badge-first named article SSR, full density copy and no priv
   assert.ok(ownedCopy);
   assert.doesNotMatch(ownedCopy.outerHTML, /truncate|line-clamp|whitespace-nowrap/);
   compactDOM.window.close();
+  // v0.4 (#564): the opt-in band. The wrapper carries recipe R1, the prop never reaches the article, and the default and
+  // the explicit 'badge' presentation (and an unknown runtime value) render the unchanged pill.
+  const bandUtilities = [
+    'flex',
+    'mt-6',
+    'mb-3',
+    'items-center',
+    'gap-2',
+    'rounded-sm',
+    'border',
+    'border-alpha-red-22',
+    'bg-alpha-red-12',
+    'px-2.5',
+    'py-1.5',
+    'font-display',
+    'text-label-eyebrow',
+    'text-primitive-red-200',
+    'uppercase',
+    'shadow-edge',
+    'wrap-anywhere'
+  ];
+  const label = createElement('span', null, 'Building');
+  for (const [size, inset] of [
+    ['md', 'mx-6'],
+    ['sm', 'mx-4']
+  ]) {
+    const band = render({ statusPresentation: 'band', statusBadge: label, size, id: 'now-band' });
+    assert.ok(!/statuspresentation/i.test(band), 'statusPresentation is consumed, never forwarded');
+    const bandDOM = new JSDOM(band);
+    const bandWrapper = bandDOM.window.document.querySelector('.eg-now-card__badge');
+    assert.ok(bandWrapper, `The ${size} band renders its wrapper`);
+    assert.equal(bandDOM.window.document.querySelector('article')?.firstElementChild, bandWrapper);
+    const classes = bandWrapper.className.split(/\s+/);
+    for (const utility of [...bandUtilities, inset]) {
+      assert.ok(classes.includes(utility), `The ${size} band carries ${utility}`);
+    }
+    for (const utility of ['px-6', 'pt-6', 'pb-3']) {
+      assert.ok(!classes.includes(utility), `The ${size} band drops ${utility}`);
+    }
+    assert.equal(classes.filter((name) => name.startsWith('mx-')).length, 1, 'One inset class');
+    assert.equal(bandWrapper.textContent, 'Building');
+    assert.equal(bandWrapper.closest('[aria-hidden="true"]'), null, 'The band stays readable');
+    bandDOM.window.close();
+  }
+  const pill = render({ id: 'now-pill' });
+  assert.match(pill, /class="eg-now-card__badge flex px-6 pt-6 pb-3"/, 'The default class list is unchanged');
+  for (const value of ['badge', 'ribbon', '']) {
+    assert.equal(render({ id: 'now-pill', statusPresentation: value }), pill, `statusPresentation ${value}`);
+  }
   for (const name of [
     'useNowCard',
     'NowCardContext',
@@ -5236,6 +7018,53 @@ test('NowCard ships Surface frame, banded footer, wrapping and sm density utilit
   assert.match(rule('.p-4'), /padding:\s*var\(--space-4[,)]/);
   assert.match(rule('.text-body-default'), /font-size:\s*var\(--text-body-default[,)]/);
   assert.match(rule('.text-body-large'), /font-size:\s*var\(--text-body-large[,)]/);
+  // v0.4 (#564): recipe R1 of the opt-in status band ships as static token-backed utilities, with no stylesheet.
+  for (const selector of [
+    '.mt-6',
+    '.mb-3',
+    '.mx-6',
+    '.mx-4',
+    '.items-center',
+    '.gap-2',
+    '.rounded-sm',
+    '.border',
+    '.border-alpha-red-22',
+    '.bg-alpha-red-12',
+    String.raw`.px-2\.5`,
+    String.raw`.py-1\.5`,
+    '.font-display',
+    '.text-label-eyebrow',
+    '.text-primitive-red-200',
+    '.uppercase',
+    '.shadow-edge',
+    '.wrap-anywhere'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing NowCard band utility ${selector}`);
+  }
+  assert.match(rule('.mt-6'), /margin-top:\s*var\(--space-6[,)]/);
+  assert.match(rule('.mb-3'), /margin-bottom:\s*var\(--space-3[,)]/);
+  assert.match(rule('.mx-6'), /margin-inline:\s*var\(--space-6[,)]/);
+  assert.match(rule('.mx-4'), /margin-inline:\s*var\(--space-4[,)]/);
+  assert.match(rule('.items-center'), /align-items:\s*center/);
+  assert.match(rule('.gap-2'), /gap:\s*var\(--space-2[,)]/);
+  assert.match(rule('.rounded-sm'), /border-radius:\s*var\(--radius-sm[,)]/);
+  // `.border` prefixes other utilities such as `.border-collapse`, so match its own rule exactly.
+  assert.match(cssBlock(utilities, /\.border\s*\{/), /border-width:\s*1px/);
+  assert.match(rule('.border-alpha-red-22'), /border-color:\s*var\(--color-alpha-red-22[,)]/);
+  assert.match(rule('.bg-alpha-red-12'), /background-color:\s*var\(--color-alpha-red-12[,)]/);
+  assert.match(rule(String.raw`.px-2\.5`), /padding-inline:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/);
+  assert.match(rule(String.raw`.py-1\.5`), /padding-block:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/);
+  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display[,)]/);
+  assert.match(rule('.text-primitive-red-200'), /color:\s*var\(--color-primitive-red-200[,)]/);
+  assert.match(rule('.uppercase'), /text-transform:\s*uppercase/);
+  assert.match(rule('.shadow-edge'), /--tw-shadow:\s*inset 0 1px 0/);
+  assert.match(rule('.wrap-anywhere'), /overflow-wrap:\s*anywhere/);
+  // The eyebrow step carries its four companion properties from the token, so the band reads 11.2px, 700, 0.12em.
+  const eyebrow = rule('.text-label-eyebrow');
+  assert.match(eyebrow, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  assert.match(eyebrow, /line-height:[^;]*--text-label-eyebrow--line-height/);
+  assert.match(eyebrow, /letter-spacing:[^;]*--text-label-eyebrow--letter-spacing/);
+  assert.match(eyebrow, /font-weight:[^;]*--text-label-eyebrow--font-weight/);
   assert.doesNotMatch(utilities, /\.eg-now-card[^{}]*\{/);
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/now-card/now-card.css')));
 });
@@ -5415,6 +7244,33 @@ test('ProjectCard ships named passive article SSR and keeps its composition reci
   assert.ok(compact.includes('eg-project-card__code'), 'sm density never hides the code well');
   assert.match(compact, /class="[^\"]*\bp-3\b/);
   assert.doesNotMatch(compact, /\bp-0\b/);
+  // v0.4 (#577): the footer holds one to three supplied actions, in supplied order, in one wrapping row.
+  const actions = renderToStaticMarkup(
+    createElement(exported.ProjectCard, {
+      title: 'Pulso',
+      children: createElement(exported.ProjectCardFooter, {
+        children: [
+          createElement(exported.Link, { key: 'details', href: '#pulso', variant: 'quiet', children: 'Details' }),
+          createElement(exported.Link, { key: 'source', href: '#pulso-source', variant: 'quiet', children: 'GitHub' }),
+          createElement(exported.Button, { key: 'demo', size: 'sm', variant: 'neutral', children: 'Demo' })
+        ]
+      })
+    })
+  );
+  assert.equal(actions.split('eg-project-card__foot').length - 1, 1, 'One footer holds the three actions');
+  const footerStart = actions.indexOf('<div class="eg-project-card__foot');
+  assert.ok(footerStart >= 0, 'The footer renders as its marked div');
+  const footerHtml = actions.slice(footerStart);
+  const footerClass = /^<div class="([^"]*)"/.exec(footerHtml)?.[1] ?? '';
+  for (const utility of ['flex', 'flex-wrap', 'items-center', 'gap-3']) {
+    assert.ok(footerClass.split(' ').includes(utility), `The footer carries ${utility}`);
+  }
+  const at = (needle) => footerHtml.indexOf(needle);
+  assert.ok(at('>Details') > 0 && at('>Details') < at('>GitHub'), 'The first link precedes the second');
+  assert.ok(at('>GitHub') < at('<button') && at('<button') < at('>Demo'), 'The button follows both links');
+  assert.equal(footerHtml.split('<a ').length - 1, 2, 'Two links render');
+  assert.equal(footerHtml.split('<button').length - 1, 1, 'One button renders');
+  assert.doesNotMatch(actions, /tabindex=|role="list"|<ul|<li\b/);
   // Without a status the card renders no row, wrapper or marker, and none of the row utilities.
   for (const absent of ['eg-project-card__badge', 'ms-auto', 'self-stretch']) {
     assert.ok(!html.includes(absent), `${absent} must not appear without a status`);
@@ -5978,6 +7834,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'BlogGridFeature',
       'BlogGridRow',
       'BlogGridRows',
+      'Breadcrumb',
       'Button',
       'ButtonGroup',
       'CalendarGrid',
@@ -5998,12 +7855,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'CommunityCardAction',
       'CommunityCardMark',
       'Countdown',
+      'DetailHeader',
       'Dialog',
       'DialogClose',
       'DialogContent',
       'DialogTrigger',
       'Divider',
       'Dropzone',
+      'Embed',
+      'EmptyState',
       'Field',
       'FieldMessage',
       'Footer',
@@ -6056,6 +7916,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'NowCardFooter',
       'NowStrip',
       'PageHeader',
+      'Pagination',
       'Panel',
       'PanelBody',
       'PanelFooter',
@@ -6075,6 +7936,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ProjectCardFooter',
       'ProjectCardMark',
       'ProjectCardTags',
+      'Prose',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
@@ -6298,6 +8160,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'BlogGridRowProps',
     'BlogGridRows',
     'BlogGridRowsProps',
+    'Breadcrumb',
+    'BreadcrumbItem',
+    'BreadcrumbProps',
     'Button',
     'ButtonGroup',
     'ButtonGroupProps',
@@ -6359,6 +8224,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CountdownSize',
     'CountdownTone',
     'CountdownUnits',
+    'DetailHeader',
+    'DetailHeaderLink',
+    'DetailHeaderMessages',
+    'DetailHeaderMetadataItem',
+    'DetailHeaderProps',
     'Dialog',
     'DialogClose',
     'DialogCloseProps',
@@ -6374,6 +8244,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'DividerProps',
     'Dropzone',
     'DropzoneProps',
+    'Embed',
+    'EmbedProps',
+    'EmptyState',
+    'EmptyStateLevel',
+    'EmptyStateProps',
     'Field',
     'FieldCounter',
     'FieldLayout',
@@ -6393,6 +8268,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'FooterNavigationLevel',
     'FooterNavigationProps',
     'FooterProps',
+    'FooterRegister',
     'FooterSocial',
     'FooterSocialProps',
     'Gauge',
@@ -6534,6 +8410,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PageHeader',
     'PageHeaderLevel',
     'PageHeaderProps',
+    'Pagination',
+    'PaginationMessages',
+    'PaginationProps',
     'Panel',
     'PanelBody',
     'PanelBodyProps',
@@ -6587,6 +8466,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ProjectCardTags',
     'ProjectCardTagsProps',
     'ProjectCardVariant',
+    'Prose',
+    'ProseProps',
+    'ProseSize',
+    'ProseTone',
     'PullQuote',
     'PullQuoteProps',
     'PullQuoteTone',
@@ -6810,6 +8693,35 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useDetailHeader',
+    'detailHeaderVariants',
+    'detailHeaderMetaVariants',
+    'detailHeaderMetaEntryVariants',
+    'detailHeaderTermVariants',
+    'detailHeaderValueVariants',
+    'detailHeaderTagsVariants',
+    'detailHeaderLinksVariants',
+    'detailHeaderLinkItemVariants',
+    'DetailHeaderNativeProps'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
+    'usePagination',
+    'defaultPaginationMessages',
+    'paginationVariants',
+    'paginationListVariants',
+    'paginationItemVariants',
+    'paginationLinkVariants',
+    'paginationEllipsisVariants',
+    'paginationPlaceholderVariants',
+    'paginationIconVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
     'useToastProvider',
     'toastVariants',
     'toastViewportVariants',
@@ -6905,6 +8817,22 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'Embed',
+    'EmbedProps',
+    'EmptyState',
+    'EmptyStateLevel',
+    'EmptyStateProps',
+    'Breadcrumb',
+    'BreadcrumbItem',
+    'BreadcrumbProps',
+    'DetailHeader',
+    'DetailHeaderLink',
+    'DetailHeaderMessages',
+    'DetailHeaderMetadataItem',
+    'DetailHeaderProps',
+    'Pagination',
+    'PaginationMessages',
+    'PaginationProps',
     'AttachmentField',
     'AttachmentFieldMessages',
     'AttachmentFieldProps',
@@ -6999,6 +8927,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'MeterRowVariant',
     'Portal',
     'PortalProps',
+    'Prose',
+    'ProseProps',
+    'ProseSize',
+    'ProseTone',
     'RadioGroup',
     'RadioGroupOption',
     'RadioGroupOrientation',
@@ -7179,6 +9111,25 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     createElement(exported.Chip, { mode: 'link', href: '#topics', children: 'Topics' })
   );
   assert.doesNotMatch(sameTabLinkChipHtml, /target=|rel=|\(opens in a new tab\)/);
+  assert.doesNotMatch(sameTabLinkChipHtml, /aria-current=/, 'A link chip is not current unless the consumer says so');
+  // v0.3 (#576): the consumer's aria-current reaches the anchor and the current-state utilities ride in the class list.
+  for (const value of ['page', 'true']) {
+    const currentLinkChipHtml = renderToString(
+      createElement(exported.Chip, { mode: 'link', href: '#topics', 'aria-current': value, children: 'Topics' })
+    );
+    assert.match(currentLinkChipHtml, new RegExp(`^<a [^>]*aria-current="${value}"`));
+    assert.match(
+      currentLinkChipHtml,
+      new RegExp(`class="eg-chip [^"]*aria-\\[current=${value}\\]:border-state-selected`)
+    );
+    assert.match(
+      currentLinkChipHtml,
+      new RegExp(`forced-colors:aria-\\[current=${value}\\]:outline-\\[color:Highlight\\]`)
+    );
+    assert.doesNotMatch(currentLinkChipHtml, /aria-pressed|data-state|role=|style=/);
+  }
+  assert.doesNotMatch(toggleChipHtml, /aria-\[current/, 'The toggle recipe carries no current-state utility');
+  assert.doesNotMatch(staticChipHtml, /aria-\[current/, 'The static recipe carries no current-state utility');
   assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
   const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
   assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');

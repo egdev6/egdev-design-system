@@ -571,6 +571,15 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.titleVariant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'hero' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.titleVariant?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'hero',
+      'show'
+    ]);
     expect(publicAPI.LabStage).toBeDefined();
   });
   it('extracts ChapterBreak inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
@@ -599,6 +608,15 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['children', 'role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.titleVariant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'hero' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.titleVariant?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'hero',
+      'show'
+    ]);
     expect(publicAPI.ChapterBreak).toBeDefined();
   });
   it('extracts Closing inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
@@ -625,6 +643,15 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['role', 'style', 'dangerouslySetInnerHTML']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.titleVariant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'hero' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.titleVariant?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'hero',
+      'show'
+    ]);
     expect(publicAPI.Closing).toBeDefined();
   });
   it('extracts Hero inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
@@ -641,6 +668,15 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.titleVariant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'hero' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.titleVariant?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'hero',
+      'show'
+    ]);
     expect(publicAPI.Hero).toBeDefined();
     expect('heroVariants' in publicAPI).toBe(false);
   });
@@ -657,6 +693,7 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['children', 'role', 'aria-label', 'aria-labelledby', 'style', 'dangerouslySetInnerHTML']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.items?.description).toMatch(/zero-padded/);
     expect(publicAPI.SectionNav).toBeDefined();
   });
   it('extracts Pixel state and passive native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
@@ -767,6 +804,340 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(readFileSync(source('atoms/step-meter/StepMeter.stories.tsx'), 'utf8')).not.toMatch(
       /\b(?:argTypes|play)\s*:/
     );
+  });
+  it('extracts Embed own props with their annotations, the shown native rows and the documented stories (EM-13)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser.parse(source('atoms/embed/Embed.tsx')).find(({ displayName }) => displayName === 'Embed');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      label: 'text',
+      ratio: 'number',
+      fallback: 'false',
+      src: 'text',
+      loading: 'select',
+      children: 'false'
+    };
+    const file = ast(source('atoms/embed/types.ts'));
+    const own = ownProps(file, ['EmbedSharedProps', 'EmbedFrameProps', 'EmbedContentProps']);
+    // The two branches both declare children and src, each declaration carrying its own annotation.
+    expect(own.map((property) => property.name.getText(file))).toEqual([
+      'label',
+      'ratio',
+      'fallback',
+      'src',
+      'loading',
+      'children',
+      'children',
+      'src'
+    ]);
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      // Only the two constants carry a default: the rest of the rules live in the description bodies.
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(name === 'ratio' || name === 'loading');
+      if (controls[name] === 'false') {
+        expect(tags.filter(({ tagName }) => tagName.text === 'controlReason').length, `${name} reason`).toBe(1);
+      }
+    }
+    // Repeated identical directives of a union normalize to one distinct value.
+    const tagOf = (name: string, tag: string) => [
+      ...new Set(
+        String((props[name]?.tags as Record<string, string> | undefined)?.[tag] ?? '')
+          .split(/\r?\n/)
+          .map((line) => line.trim())
+          .filter(Boolean)
+      )
+    ];
+    for (const [name, control] of Object.entries(controls)) {
+      expect(tagOf(name, 'control'), name).toEqual([control]);
+    }
+    expect(props.label).toMatchObject({ required: true, type: { name: 'string' }, defaultValue: null });
+    expect(props.ratio).toMatchObject({ required: false, type: { name: 'number' } });
+    expect(normalize(props.ratio?.defaultValue?.value)).toBe('16 / 9');
+    expect(props.src).toMatchObject({ required: false, type: { name: 'string' }, defaultValue: null });
+    expect(props.fallback).toMatchObject({ required: false, defaultValue: null });
+    expect(props.children).toMatchObject({ defaultValue: null });
+    expect(props.loading).toMatchObject({ required: false, type: { name: 'enum' } });
+    expect(normalize(props.loading?.defaultValue?.value)).toBe('lazy');
+    expect(
+      (props.loading?.type as { value?: { value: string }[] } | undefined)?.value
+        ?.map(({ value }) => normalize(value))
+        .sort()
+    ).toEqual(['eager', 'lazy']);
+    const reasonOf = (name: string) => tagOf(name, 'controlReason').join(' ');
+    expect(reasonOf('fallback')).toMatch(/ReactNode content is not serializable; see Fallback/);
+    expect(reasonOf('children')).toMatch(/ReactNode content is not serializable; see ScriptEmbed/);
+    for (const name of [
+      'allow',
+      'allowFullScreen',
+      'referrerPolicy',
+      'sandbox',
+      'onLoad',
+      'id',
+      'dir',
+      'lang',
+      'aria-describedby',
+      'className'
+    ]) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'title',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'aria-busy',
+      'tabIndex',
+      'style',
+      'dangerouslySetInnerHTML',
+      'contentEditable',
+      'onClick',
+      'onKeyDown',
+      'onError',
+      'srcDoc',
+      'name',
+      'width',
+      'height',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The component and its prop type are public; the hook and the four recipes stay internal.
+    expect(publicAPI.Embed).toBeDefined();
+    for (const name of [
+      'useEmbed',
+      'embedVariants',
+      'embedLoadingVariants',
+      'embedFrameVariants',
+      'embedFallbackVariants'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('atoms/embed/index.ts'), 'utf8')).not.toMatch(/Variants|useEmbed/);
+    const stories = source('atoms/embed/Embed.stories.tsx');
+    expect(exportedStoryNames(ast(stories))).toEqual(['Default', 'Ratios', 'ScriptEmbed', 'Fallback', 'OnGrafito']);
+    const text = readFileSync(stories, 'utf8');
+    expect(text).toMatch(/title: 'Atoms\/Embed'/);
+    expect(text).not.toMatch(/\b(?:argTypes|play)\s*:/);
+    // No story requests third-party content: no string literal is an absolute or scheme-relative URL.
+    const urls: string[] = [];
+    (function visit(node: ts.Node) {
+      if (
+        (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) &&
+        /^(?:https?:)?\/\//i.test(node.text)
+      ) {
+        urls.push(node.text);
+      }
+      ts.forEachChild(node, visit);
+    })(ast(stories));
+    expect(urls).toEqual([]);
+  });
+  it('extracts Breadcrumb own props with their annotations, the shown native rows and the dropped boundaries (BC-16)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(source('molecules/breadcrumb/Breadcrumb.tsx'))
+      .find(({ displayName }) => displayName === 'Breadcrumb');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = { label: 'text', items: 'false', onNavigate: 'false' };
+    const file = ast(source('molecules/breadcrumb/types.ts'));
+    const own = ownProps(file, ['BreadcrumbProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(['label', 'items', 'onNavigate']);
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      // No @default anywhere: the absence and omission rules live in the description bodies.
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(false);
+      expect((props[name]?.tags as Record<string, string> | undefined)?.control, name).toBe(controls[name]);
+      expect(props[name]?.defaultValue, name).toBeNull();
+    }
+    // The entry type carries its own two annotated fields: both text controls, neither with a default.
+    const entry = ownProps(file, ['BreadcrumbItem']);
+    expect(entry.map((property) => property.name.getText(file))).toEqual(['label', 'href']);
+    for (const declaration of entry) {
+      const tags = ts.getJSDocTags(declaration);
+      const name = declaration.name.getText(file);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        `BreadcrumbItem.${name}`
+      ).toEqual(['text']);
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        `BreadcrumbItem.${name}`
+      ).toBe(false);
+    }
+    expect(props.label).toMatchObject({ required: true, type: { name: 'string' } });
+    expect(props.items?.required).toBe(true);
+    expect(props.onNavigate?.required).toBe(false);
+    const reasonOf = (name: string) => (props[name]?.tags as Record<string, string> | undefined)?.controlReason;
+    expect(reasonOf('items')).toMatch(/Structured entry data is not a scalar control; see .*Default.*Wrapping/);
+    expect(reasonOf('onNavigate')).toMatch(/Callback functions are not serializable; see ClientRouting/);
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The component and its types are public; the six recipes and the hook stay internal.
+    expect(publicAPI.Breadcrumb).toBeDefined();
+    for (const name of [
+      'useBreadcrumb',
+      'breadcrumbVariants',
+      'breadcrumbListVariants',
+      'breadcrumbStepVariants',
+      'breadcrumbLinkVariants',
+      'breadcrumbCurrentVariants',
+      'breadcrumbSeparatorVariants'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('molecules/breadcrumb/index.ts'), 'utf8')).not.toMatch(/Variants|useBreadcrumb/);
+    const stories = source('molecules/breadcrumb/Breadcrumb.stories.tsx');
+    expect(exportedStoryNames(ast(stories))).toEqual([
+      'Default',
+      'SingleStep',
+      'Wrapping',
+      'OnSurfaces',
+      'ClientRouting'
+    ]);
+    expect(readFileSync(stories, 'utf8')).toMatch(/title: 'Molecules\/Breadcrumb'/);
+    expect(readFileSync(stories, 'utf8')).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
+  it('extracts Pagination own props, message fields, the shown native rows and the documented stories (PG-16)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(source('molecules/pagination/Pagination.tsx'))
+      .find(({ displayName }) => displayName === 'Pagination');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      label: 'text',
+      value: 'number',
+      pageCount: 'number',
+      getHref: 'false',
+      onNavigate: 'false',
+      messages: 'false'
+    };
+    const file = ast(source('molecules/pagination/types.ts'));
+    const own = ownProps(file, ['PaginationProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(Object.keys(controls));
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      // No @default anywhere: the normalization and absence rules live in the description bodies.
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(false);
+      expect((props[name]?.tags as Record<string, string> | undefined)?.control, name).toBe(controls[name]);
+      expect(props[name]?.defaultValue, name).toBeNull();
+    }
+    // The dictionary type carries its own three annotated fields: two text controls and one formatter.
+    const messageControls: Record<string, string> = { previous: 'text', next: 'text', page: 'false' };
+    const fields = ownProps(file, ['PaginationMessages']);
+    expect(fields.map((property) => property.name.getText(file))).toEqual(Object.keys(messageControls));
+    for (const declaration of fields) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        `PaginationMessages.${name}`
+      ).toEqual([messageControls[name]]);
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        `PaginationMessages.${name}`
+      ).toBe(false);
+    }
+    expect(props.label).toMatchObject({ required: true, type: { name: 'string' } });
+    expect(props.value).toMatchObject({ required: true, type: { name: 'number' } });
+    expect(props.pageCount).toMatchObject({ required: true, type: { name: 'number' } });
+    expect(props.getHref?.required).toBe(true);
+    expect(props.onNavigate?.required).toBe(false);
+    expect(props.messages?.required).toBe(false);
+    const reasonOf = (name: string) => (props[name]?.tags as Record<string, string> | undefined)?.controlReason;
+    expect(reasonOf('getHref')).toMatch(/A function is not serializable; see Default and ClientRouting/);
+    expect(reasonOf('onNavigate')).toMatch(/Callback functions are not serializable; see ClientRouting/);
+    expect(reasonOf('messages')).toMatch(/The dictionary includes a formatter function; see Localized/);
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'style',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone',
+      'defaultValue',
+      'onValueChange'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The component and its types are public; the hook, the eight recipes and the English defaults stay internal.
+    expect(publicAPI.Pagination).toBeDefined();
+    for (const name of [
+      'usePagination',
+      'defaultPaginationMessages',
+      'paginationVariants',
+      'paginationListVariants',
+      'paginationItemVariants',
+      'paginationLinkVariants',
+      'paginationEllipsisVariants',
+      'paginationPlaceholderVariants',
+      'paginationIconVariants'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('molecules/pagination/index.ts'), 'utf8')).not.toMatch(
+      /Variants|usePagination|defaultPaginationMessages/
+    );
+    const stories = source('molecules/pagination/Pagination.stories.tsx');
+    expect(exportedStoryNames(ast(stories))).toEqual(['Default', 'Window', 'ClientRouting', 'Localized']);
+    expect(readFileSync(stories, 'utf8')).toMatch(/title: 'Molecules\/Pagination'/);
+    expect(readFileSync(stories, 'utf8')).not.toMatch(/\b(?:argTypes|play)\s*:/);
   });
   it('extracts NotesBoard parts and sticky metadata', () => {
     const extracted = parser.parse(source('organisms/notes-board/NotesBoard.tsx'));
@@ -957,6 +1328,21 @@ describe('Storybook TypeScript docgen contract', () => {
     const extracted = parser.parse(source('organisms/footer/Footer.tsx'));
     const root = extracted.find(({ displayName }) => displayName === 'Footer');
     expect(root?.props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    // v0.4 (#561, #565): the optional content wrapper and Grafito register.
+    expect(root?.props.wrap).toMatchObject({
+      required: false,
+      defaultValue: { value: 'false' },
+      tags: { control: 'boolean' }
+    });
+    expect(root?.props.register).toMatchObject({
+      required: false,
+      defaultValue: { value: 'none' },
+      tags: { control: 'select' }
+    });
+    expect(root?.props.register?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'none',
+      'grafito'
+    ]);
     for (const name of [
       'id',
       'title',
@@ -1005,6 +1391,8 @@ describe('Storybook TypeScript docgen contract', () => {
       'href',
       'label',
       "'aria-current'",
+      'wrap',
+      'register',
       'children',
       'children',
       'children',
@@ -1345,6 +1733,7 @@ describe('Storybook TypeScript docgen contract', () => {
     const props = doc?.props ?? {};
     const controls: Record<string, string> = {
       statusBadge: 'false',
+      statusPresentation: 'select',
       title: 'text',
       level: 'select',
       size: 'select',
@@ -1352,7 +1741,7 @@ describe('Storybook TypeScript docgen contract', () => {
     };
     const file = ast(source('molecules/now-card/types.ts'));
     const own = ownProps(file, ['NowCardProps', 'NowCardBodyProps', 'NowCardFooterProps', 'NowCardDetailProps']);
-    expect(own).toHaveLength(11);
+    expect(own).toHaveLength(12);
     for (const declaration of own) {
       const name = declaration.name.getText(file);
       const tags = ts.getJSDocTags(declaration);
@@ -1375,7 +1764,7 @@ describe('Storybook TypeScript docgen contract', () => {
       controlReason: expect.stringMatching(/ReactNode.*Default.*WithBadge/)
     });
     expect(props.title).toMatchObject({ required: true, type: { name: 'string' }, defaultValue: null });
-    for (const [name, value] of Object.entries({ level: '3', size: 'md' })) {
+    for (const [name, value] of Object.entries({ level: '3', size: 'md', statusPresentation: 'badge' })) {
       expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
     }
     expect(props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
@@ -1386,6 +1775,13 @@ describe('Storybook TypeScript docgen contract', () => {
       '6'
     ]);
     expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
+    // NowCard v0.4 (#564): the presentation is an optional select in union order; the slot keeps its ReactNode row.
+    expect(props.statusPresentation).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(props.statusPresentation?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'badge',
+      'band'
+    ]);
+    expect(props.statusPresentation?.description).toMatch(/full-width,\s+uppercase,\s+brand-tinted\s+band/);
     expect(props.children).toMatchObject({ required: false, tags: { control: 'false' } });
     for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
       expect(props[name], name).toBeDefined();
@@ -1459,6 +1855,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(exportedStoryNames(stories)).toEqual([
       'Default',
       'WithBadge',
+      'WithStatusBand',
       'WithLink',
       'WithNextDate',
       'WithStepMeter',
@@ -1576,6 +1973,10 @@ describe('Storybook TypeScript docgen contract', () => {
       expect(part?.props[requiredProp]?.required, `${displayName}.${requiredProp}`).toBe(true);
     }
     expect(extracted.find(({ displayName }) => displayName === 'ProjectCardCode')?.props.items?.required).toBe(true);
+    // v0.4 (#577): the footer documents one to three supplied actions, as extracted from the real source.
+    expect(
+      extracted.find(({ displayName }) => displayName === 'ProjectCardFooter')?.props.children?.description
+    ).toMatch(/to three supplied Button or Link actions/);
     const stories = ast(source('molecules/project-card/ProjectCard.stories.tsx'));
     expect(exportedStoryNames(stories)).toEqual([
       'Default',
@@ -1587,6 +1988,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tags',
       'Code',
       'WithLink',
+      'WithActions',
       'LongContent',
       'WithStatus',
       'StatusPlacements',
@@ -1669,6 +2071,111 @@ describe('Storybook TypeScript docgen contract', () => {
       'Widths'
     ]);
     expect(stories.getText()).toMatch(/title: 'Molecules\/TipCard'/);
+    expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
+  it('extracts EmptyState own props with their annotations, the shown native rows and the dropped boundaries (ES-12)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser
+      .parse(source('molecules/empty-state/EmptyState.tsx'))
+      .find(({ displayName }) => displayName === 'EmptyState');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      title: 'text',
+      level: 'select',
+      description: 'text',
+      icon: 'select',
+      actions: 'false'
+    };
+    const file = ast(source('molecules/empty-state/types.ts'));
+    const own = ownProps(file, ['EmptyStateProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual([
+      'title',
+      'level',
+      'description',
+      'icon',
+      'actions'
+    ]);
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      // Only `level` is a constant default: the absence and fallback rules live in the description bodies.
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'default').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual(name === 'level' ? ['3'] : []);
+      const extractedTags = props[name]?.tags as Record<string, string> | undefined;
+      expect(extractedTags?.control, name).toBe(controls[name]);
+    }
+    expect(props.title).toMatchObject({ required: true, defaultValue: null, type: { name: 'string' } });
+    for (const name of ['level', 'description', 'icon', 'actions']) {
+      expect(props[name]?.required, name).toBe(false);
+    }
+    expect(normalize(props.level?.defaultValue?.value)).toBe('3');
+    expect(props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    for (const name of ['description', 'icon', 'actions']) {
+      expect(props[name]?.defaultValue, name).toBeNull();
+    }
+    const glyphs: string[] = props.icon?.type.value.map(({ value }: { value: string }) => normalize(value)) ?? [];
+    expect(glyphs).toHaveLength(48);
+    expect([...glyphs].sort()).toEqual([...expectedIconNames].sort());
+    const reason = (props.actions?.tags as Record<string, string> | undefined)?.controlReason;
+    expect(reason).toMatch(/Non-serializable ReactElement\/boolean union.*Default, WithLinkAction and AsLinkButton/);
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'ref',
+      'asChild',
+      'role',
+      'aria-live',
+      'aria-atomic',
+      'aria-relevant',
+      'aria-label',
+      'aria-labelledby',
+      'tabIndex',
+      'contentEditable',
+      'dangerouslySetInnerHTML'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The component and its types are public; the recipes and the hook stay internal.
+    expect(publicAPI.EmptyState).toBeDefined();
+    for (const name of [
+      'useEmptyState',
+      'emptyStateVariants',
+      'emptyStateIconVariants',
+      'emptyStateTitleVariants',
+      'emptyStateDescriptionVariants',
+      'emptyStateActionsVariants'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('molecules/empty-state/index.ts'), 'utf8')).not.toMatch(/Variants|useEmptyState/);
+    const stories = ast(source('molecules/empty-state/EmptyState.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'TitleOnly',
+      'WithLinkAction',
+      'AsLinkButton',
+      'HeadingLevels',
+      'LongContent',
+      'FilteredListing',
+      'OnGrafitoSection'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/EmptyState'/);
     expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
   });
   it('extracts FieldMessage plain content, five tones and native-only opt-in announcements', () => {
@@ -2087,6 +2594,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/chip',
       './atoms/countdown',
       './atoms/dropzone',
+      './atoms/embed',
       './atoms/field-message',
       './atoms/gauge',
       './atoms/icon',
@@ -2116,6 +2624,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/alert-dialog',
       './molecules/article-feature',
       './molecules/attachment-field',
+      './molecules/breadcrumb',
       './molecules/button-group',
       './molecules/carousel',
       './molecules/chip-group',
@@ -2123,7 +2632,9 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/color-swatch-group',
       './molecules/command-palette',
       './molecules/community-card',
+      './molecules/detail-header',
       './molecules/dialog',
+      './molecules/empty-state',
       './molecules/field',
       './molecules/gauge-group',
       './molecules/list-item',
@@ -2134,6 +2645,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/notice',
       './molecules/now-card',
       './molecules/page-header',
+      './molecules/pagination',
       './molecules/panel',
       './molecules/popover',
       './molecules/project-card',
@@ -2167,6 +2679,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/divider',
       './primitives/label',
       './primitives/portal',
+      './primitives/prose',
       './primitives/skeleton',
       './primitives/slot',
       './primitives/stack',
@@ -2197,6 +2710,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'BlogGridFeature',
       'BlogGridRow',
       'BlogGridRows',
+      'Breadcrumb',
       'Button',
       'ButtonGroup',
       'CalendarGrid',
@@ -2217,12 +2731,15 @@ describe('Storybook TypeScript docgen contract', () => {
       'CommunityCardAction',
       'CommunityCardMark',
       'Countdown',
+      'DetailHeader',
       'Dialog',
       'DialogClose',
       'DialogContent',
       'DialogTrigger',
       'Divider',
       'Dropzone',
+      'Embed',
+      'EmptyState',
       'Field',
       'FieldMessage',
       'Footer',
@@ -2275,6 +2792,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'NowCardFooter',
       'NowStrip',
       'PageHeader',
+      'Pagination',
       'Panel',
       'PanelBody',
       'PanelFooter',
@@ -2294,6 +2812,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'ProjectCardFooter',
       'ProjectCardMark',
       'ProjectCardTags',
+      'Prose',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
@@ -2639,6 +3158,157 @@ describe('Storybook TypeScript docgen contract', () => {
       level: '2',
       tone: 'canvas'
     });
+  });
+
+  it('extracts DetailHeader own props, entry fields, defaults, the native boundary and the documented stories (DH-14)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const file = ast(source('molecules/detail-header/types.ts'));
+    const controls: Record<string, string> = {
+      title: 'false',
+      eyebrow: 'false',
+      lede: 'false',
+      level: 'select',
+      metadata: 'false',
+      tags: 'false',
+      links: 'false',
+      newTabText: 'text',
+      messages: 'false'
+    };
+    const own = ownProps(file, ['DetailHeaderProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(Object.keys(controls));
+    // Sixteen own declarations in all: nine root props and the seven fields of the three entry types.
+    const entryTypes: [alias: string, names: string[]][] = [
+      ['DetailHeaderMetadataItem', ['label', 'value', 'dateTime']],
+      ['DetailHeaderLink', ['label', 'href']],
+      ['DetailHeaderMessages', ['tags', 'links']]
+    ];
+    let declarations = own.length;
+    for (const [alias, names] of entryTypes) {
+      const fields = ownProps(file, [alias]);
+      expect(
+        fields.map((property) => property.name.getText(file)),
+        alias
+      ).toEqual(names);
+      for (const field of fields) {
+        const tags = ts.getJSDocTags(field);
+        expect(
+          tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+          `${alias}.${field.name.getText(file)}`
+        ).toEqual(['text']);
+        expect(
+          tags.some(({ tagName }) => tagName.text === 'default'),
+          `${alias}.${field.name.getText(file)}`
+        ).toBe(false);
+      }
+      declarations += fields.length;
+    }
+    expect(declarations).toBe(16);
+    const doc = parser
+      .parse(source('molecules/detail-header/DetailHeader.tsx'))
+      .find(({ displayName }) => displayName === 'DetailHeader');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control'),
+        name
+      ).toHaveLength(1);
+      expect((props[name]?.tags as Record<string, string> | undefined)?.control, name).toBe(controls[name]);
+      // @default belongs to the two constants only; the required title never carries one.
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(name === 'level' || name === 'newTabText');
+    }
+    expect(props.title?.required).toBe(true);
+    expect(props.title?.type.name).not.toBe('string');
+    expect(props.title?.defaultValue).toBeNull();
+    for (const name of ['title', 'eyebrow', 'lede', 'metadata', 'tags', 'links', 'messages']) {
+      const reason = (props[name]?.tags as Record<string, string> | undefined)?.controlReason;
+      expect(reason, name).toEqual(expect.stringMatching(/\bsee [A-Z]/));
+      if (name !== 'title') {
+        expect(props[name]?.required, name).toBe(false);
+      }
+    }
+    for (const name of ['title', 'eyebrow', 'lede']) {
+      expect((props[name]?.tags as Record<string, string>).controlReason, name).toMatch(/Default and Localized/);
+    }
+    for (const name of ['metadata', 'tags', 'links', 'messages']) {
+      expect(props[name]?.defaultValue, name).toBeNull();
+    }
+    expect(props.level).toMatchObject({ required: false, defaultValue: { value: '1' }, tags: { control: 'select' } });
+    expect(props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(props.newTabText).toMatchObject({
+      required: false,
+      type: { name: 'string' },
+      defaultValue: { value: '(opens in a new tab)' },
+      tags: { control: 'text' }
+    });
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'style',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'tone',
+      'accent',
+      'titleId'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The own title is the heading text, not the native title attribute.
+    expect(props.title?.description).toMatch(/page title/);
+    const stories = ast(source('molecules/detail-header/DetailHeader.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Event',
+      'Project',
+      'Note',
+      'TitleOnly',
+      'Levels',
+      'Localized',
+      'LongContent'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/DetailHeader'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(defaults(source('molecules/detail-header/useDetailHeader.ts'), false)).toEqual({
+      level: '1',
+      newTabText: '(opens in a new tab)'
+    });
+    // The component and its types are public; the hook, the eight recipes and the native-props alias stay internal.
+    expect(publicAPI.DetailHeader).toBeDefined();
+    for (const name of [
+      'useDetailHeader',
+      'detailHeaderVariants',
+      'detailHeaderMetaVariants',
+      'detailHeaderMetaEntryVariants',
+      'detailHeaderTermVariants',
+      'detailHeaderValueVariants',
+      'detailHeaderTagsVariants',
+      'detailHeaderLinksVariants',
+      'detailHeaderLinkItemVariants',
+      'DetailHeaderNativeProps'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('molecules/detail-header/index.ts'), 'utf8')).not.toMatch(/Variants|useDetailHeader/);
   });
 
   it('extracts Notice required lead, native role, constant defaults and every own directive', () => {
@@ -3508,6 +4178,75 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
 
+  it('extracts Prose children, size and tone with their annotations and passive native rows', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser.parse(source('primitives/prose/Prose.tsx')).find(({ displayName }) => displayName === 'Prose');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    expect(props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect((props.children?.tags as Record<string, string> | undefined)?.controlReason).toMatch(
+      /ReactNode.*Default and Elements/
+    );
+    expect(props.size).toMatchObject({ required: false, type: { name: 'enum' }, tags: { control: 'select' } });
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect((props.size?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'md',
+      'sm'
+    ]);
+    expect(props.tone).toMatchObject({ required: false, type: { name: 'enum' }, tags: { control: 'select' } });
+    expect(normalize(props.tone?.defaultValue?.value)).toBe('canvas');
+    expect((props.tone?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'canvas',
+      'raised'
+    ]);
+    for (const name of ['id', 'title', 'lang', 'dir', 'aria-describedby', 'className', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'onClick',
+      'ref',
+      'asChild'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    const file = ast(source('primitives/prose/types.ts'));
+    const own = ownProps(file, ['ProseProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(['children', 'size', 'tone']);
+    const controls: Record<string, string> = { children: 'false', size: 'select', tone: 'select' };
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'default').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual(name === 'size' ? ['md'] : name === 'tone' ? ['canvas'] : []);
+    }
+    expect(publicAPI.Prose).toBeDefined();
+    for (const name of ['proseVariants', 'useProse']) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('primitives/prose/index.ts'), 'utf8')).not.toMatch(/Variants|useProse/);
+    expect(exportedStoryNames(ast(source('primitives/prose/Prose.stories.tsx')))).toEqual([
+      'Default',
+      'Elements',
+      'Sizes',
+      'RaisedTone',
+      'Overflow'
+    ]);
+    const stories = readFileSync(source('primitives/prose/Prose.stories.tsx'), 'utf8');
+    expect(stories).toMatch(/title: 'Primitives\/Prose'/);
+    expect(stories).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
+
   it('extracts Surface from both public branches with single constant defaults', () => {
     const doc = docs.find((item) => item.displayName === 'Surface');
     expect(doc, 'Surface must be discovered from its real component').toBeDefined();
@@ -4196,10 +4935,28 @@ describe('Link navigation metadata contract', () => {
     // The deprecation is of one value, not of the prop: no @deprecated tag may strike the whole axis.
     expect(props.variant?.description).toMatch(/`underlined` is deprecated/);
     expect(props.variant?.tags).not.toHaveProperty('deprecated');
+    // quiet is documented as the card and footer-navigation look, and plain is no longer the only treatment.
+    expect(props.variant?.description).toMatch(/quiet/);
+    expect(props.variant?.description).not.toMatch(/only treatment/);
     for (const prop of ['disabled', 'size']) {
       expect(props[prop]).toBeUndefined();
     }
   }, 20_000);
+
+  it('documents the quiet variant with a single link, a card footer and the four tonal surfaces', () => {
+    expect(exportedStoryNames(ast(source('atoms/link/Link.stories.tsx')))).toEqual([
+      'Default',
+      'External',
+      'CustomNotice',
+      'WithoutArrow',
+      'AsChild',
+      'States',
+      'Underlined',
+      'Quiet',
+      'QuietInCardFooter',
+      'QuietOnSurfaces'
+    ]);
+  });
 });
 
 describe('Logo brand-artwork metadata contract', () => {
@@ -5623,6 +6380,7 @@ describe('Chip metadata contract', () => {
     mode: 'select',
     disabled: 'boolean',
     href: 'text',
+    'aria-current': 'false',
     external: 'boolean',
     newTabText: 'text'
   };
@@ -5633,6 +6391,10 @@ describe('Chip metadata contract', () => {
     external: 'false',
     newTabText: '(opens in a new tab)'
   };
+  // Own declarations that docgen merges into a union row whose first declaration is React's AriaAttributes: the
+  // Storybook propFilter drops that row, so it appears in neither the Docs table nor Controls (plan section 5.2).
+  const chipMergedNativeRows = ['aria-current'];
+  const chipRows = Object.keys(chipControls).filter((name) => !chipMergedNativeRows.includes(name));
 
   it('annotates every non-never own prop with one control and only actual constant defaults', () => {
     const file = ast(source('atoms/chip/types.ts'));
@@ -5647,7 +6409,7 @@ describe('Chip metadata contract', () => {
       if (property.type?.getText(file) === 'never') {
         continue;
       }
-      const name = property.name.getText(file);
+      const name = normalize(property.name.getText(file));
       declarations.set(name, [...(declarations.get(name) ?? []), property]);
     }
     expect([...declarations.keys()].sort()).toEqual(Object.keys(chipControls).sort());
@@ -5664,7 +6426,11 @@ describe('Chip metadata contract', () => {
         chipDefaults[name] ? [chipDefaults[name]] : []
       );
       if (chipControls[name] === 'false') {
-        expect(values('controlReason')[0], `Chip.${name} reason`).toMatch(/Non-serializable.*stor(?:y|ies)\.$/);
+        expect(values('controlReason')[0], `Chip.${name} reason`).toMatch(
+          name === 'aria-current'
+            ? /native unions of all three modes.*LinkCurrent story\.$/
+            : /Non-serializable.*stor(?:y|ies)\.$/
+        );
       }
     }
   });
@@ -5684,9 +6450,13 @@ describe('Chip metadata contract', () => {
       throw new Error('Missing docgen for Chip');
     }
     const { props } = doc;
-    for (const [prop, control] of Object.entries(chipControls)) {
+    for (const prop of chipRows) {
+      const control = chipControls[prop];
       expect(props[prop], `Chip.${prop}`).toMatchObject({ required: prop === 'children', tags: { control } });
       expect(normalize(props[prop]?.defaultValue?.value ?? ''), `Chip.${prop} default`).toBe(chipDefaults[prop] ?? '');
+    }
+    for (const prop of chipMergedNativeRows) {
+      expect(props[prop], `Chip.${prop} is filtered out of the Storybook rows`).toBeUndefined();
     }
     expect(props.mode?.type.raw, 'mode enum').toBe('"link" | "toggle" | "static"');
     expect(
@@ -5698,22 +6468,36 @@ describe('Chip metadata contract', () => {
       expect(props[prop]?.type.name, prop).toBe('boolean');
     }
     expect(Object.keys(props).sort()).toEqual(
-      [
-        ...Object.keys(chipControls),
-        'id',
-        'title',
-        'name',
-        'onClick',
-        'aria-describedby',
-        'className',
-        'target',
-        'rel'
-      ].sort()
+      [...chipRows, 'id', 'title', 'name', 'onClick', 'aria-describedby', 'className', 'target', 'rel'].sort()
     );
     for (const prop of ['type', 'value', 'asChild', 'aria-pressed', 'data-state', 'chipVariants', 'chipIconVariants']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
+
+  it(
+    'keeps the narrowed aria-current tags on the unfiltered merged row that the Storybook filter drops',
+    () => {
+      const { propFilter: _projectFilter, ...unfiltered } = config.typescript?.reactDocgenTypescriptOptions ?? {};
+      const scoped = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), unfiltered);
+      const doc = scoped.parse(source('atoms/chip/Chip.tsx')).find((item) => item.displayName === 'Chip');
+      const row = doc?.props['aria-current'];
+      if (!row) {
+        throw new Error('Missing unfiltered aria-current row for Chip');
+      }
+      // The merged row is the union of the three modes' native types and keeps the link branch's own annotation.
+      expect(row.parent?.name).toBe('AriaAttributes');
+      expect(row.required).toBe(false);
+      expect(row.defaultValue).toBeNull();
+      expect(row.tags).toMatchObject({ control: 'false' });
+      expect((row.tags as Record<string, string> | undefined)?.controlReason).toMatch(
+        /native unions of all three modes.*LinkCurrent story\.$/
+      );
+      expect(row.description).toContain('Marks the link as the current item');
+      expect(row.declarations?.some((declaration) => declaration.fileName.endsWith('atoms/chip/types.ts'))).toBe(true);
+    },
+    heavyDocgenTimeoutMs
+  );
 
   it('exports exactly the contract stories', () => {
     expect(exportedStoryNames(ast(source('atoms/chip/Chip.stories.tsx')))).toEqual([
@@ -5725,6 +6509,8 @@ describe('Chip metadata contract', () => {
       'Static',
       'Link',
       'ExternalLink',
+      'LinkCurrent',
+      'LinkCurrentWithIcon',
       'StaticInList',
       'CustomAccent'
     ]);

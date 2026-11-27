@@ -49,7 +49,8 @@ function nameOrDefault(value: string, fallback: string, prop: string): string {
   return fallback;
 }
 
-function destination(href: string): string | undefined {
+/** Trimmed absolute HTTPS destination without credentials or raw controls, or undefined; DetailHeader reuses it. */
+export function destination(href: string): string | undefined {
   // URL parsing normalizes away some raw controls; reject them before trimming/parsing.
   if (
     [...href].some((character) => {

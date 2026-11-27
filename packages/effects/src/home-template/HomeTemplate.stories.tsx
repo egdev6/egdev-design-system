@@ -20,6 +20,15 @@ function Fallback() {
   );
 }
 
+/** A block-level fallback that keeps its viewBox ratio: it adds no baseline gap, so it fits inside the anchor. */
+function RatioFallback({ viewBox }: { viewBox: string }) {
+  return (
+    <svg aria-hidden='true' viewBox={viewBox} className='block w-full'>
+      <circle cx='50%' cy='50%' r='30%' fill='currentColor' />
+    </svg>
+  );
+}
+
 function Page() {
   return (
     <main>
@@ -111,6 +120,40 @@ export const TwoAnchorTravel: Story = {
             level={2}
             lede='After the two anchors, the ambient layer takes over.'
           />
+        </section>
+      </main>
+    )
+  }
+};
+
+/**
+ * The anchor's own `aspect-square w-full` makes its measured box equal the square scene frame; the unsized
+ * contrast takes its height from its 638:612 fallback. Both fallbacks are block-level: the consumer keeps the
+ * fallback within the box.
+ */
+export const AnchorFillsMediaFrame: Story = {
+  args: {
+    zoneTable: [
+      { id: 'filled', isotipo: true, scene: 'hero' },
+      { id: 'unsized', isotipo: true, scene: 'lab' }
+    ],
+    children: (
+      <main>
+        <section data-zone='filled' className='min-h-screen p-8'>
+          <h2>Anchor sized to its frame</h2>
+          <div className='aspect-square w-full max-w-[calc(var(--space-24)*4)]'>
+            <HomeTemplateAnchor zone='filled' className='aspect-square w-full'>
+              <RatioFallback viewBox='0 0 100 100' />
+            </HomeTemplateAnchor>
+          </div>
+        </section>
+        <section data-zone='unsized' className='min-h-screen p-8'>
+          <h2>Unsized anchor, contrast</h2>
+          <div className='aspect-square w-full max-w-[calc(var(--space-24)*4)]'>
+            <HomeTemplateAnchor zone='unsized'>
+              <RatioFallback viewBox='0 0 638 612' />
+            </HomeTemplateAnchor>
+          </div>
         </section>
       </main>
     )

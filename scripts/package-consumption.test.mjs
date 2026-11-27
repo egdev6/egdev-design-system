@@ -96,6 +96,18 @@ import { Pixel } from '@egdev/ui';
 import type { PixelProps, PixelState } from '@egdev/ui';
 import { StepMeter } from '@egdev/ui';
 import type { StepMeterProps } from '@egdev/ui';
+import { Prose } from '@egdev/ui';
+import type { ProseProps, ProseSize, ProseTone } from '@egdev/ui';
+import { EmptyState } from '@egdev/ui';
+import type { EmptyStateLevel, EmptyStateProps } from '@egdev/ui';
+import { Breadcrumb } from '@egdev/ui';
+import type { BreadcrumbItem, BreadcrumbProps } from '@egdev/ui';
+import { DetailHeader } from '@egdev/ui';
+import type { DetailHeaderLink, DetailHeaderMessages, DetailHeaderMetadataItem, DetailHeaderProps } from '@egdev/ui';
+import { Pagination } from '@egdev/ui';
+import type { PaginationMessages, PaginationProps } from '@egdev/ui';
+import { Embed } from '@egdev/ui';
+import type { EmbedProps } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -115,7 +127,7 @@ import type { SectionNavItem, SectionNavProps } from '@egdev/ui';
 import { NowStrip } from '@egdev/ui';
 import type { NowStripProps } from '@egdev/ui';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
-import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterSocialProps } from '@egdev/ui';
+import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterRegister, FooterSocialProps } from '@egdev/ui';
 import { TopBar, TopBarBrand, TopBarEnd, TopBarMobileTrigger, TopBarSearchCompact, TopBarSearchFull, TopBarUserMenu } from '@egdev/ui';
 import type { TopBarItem, TopBarPartProps, TopBarProps } from '@egdev/ui';
 import { SectionShell } from '@egdev/ui';
@@ -617,6 +629,280 @@ type StepMeterPrivateStep = (typeof import('@egdev/ui'))['stepMeterStepVariants'
 type StepMeterPrivateHook = (typeof import('@egdev/ui'))['useStepMeter'];
 export type StepMeterNegatives = [typeof stepMeterMissingLabel, typeof stepMeterMissingValue, typeof stepMeterStringValue, typeof stepMeterStringSteps, typeof stepMeterRole, typeof stepMeterAriaLabel, typeof stepMeterAriaLabelledBy, typeof stepMeterHidden, typeof stepMeterValueNow, typeof stepMeterData, typeof stepMeterChildren, typeof stepMeterHtml, typeof stepMeterTitle, typeof stepMeterTab, typeof stepMeterEditable, typeof stepMeterClick, typeof stepMeterRef, typeof stepMeterSlot, StepMeterPrivateRoot, StepMeterPrivateStep, StepMeterPrivateHook];
 
+export const proseProps: ProseProps = { size: 'sm', tone: 'raised', id: 'packed-prose', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mx-auto', children: 'Reading text' };
+export const proseSizes: ProseSize[] = ['sm', 'md'];
+export const proseTones: ProseTone[] = ['canvas', 'raised'];
+export function ProseSamples() {
+  return createElement(Fragment, null,
+    createElement(Prose, {
+      id: 'packed-prose',
+      lang: 'en',
+      className: 'mx-auto',
+      size: 'sm',
+      tone: 'raised',
+      children: createElement(Fragment, null,
+        createElement('h2', null, 'Title'),
+        createElement('p', null, 'Body with ', createElement('a', { href: '#packed' }, 'a link'), ' and ', createElement('code', null, 'code'), '.'))
+    }),
+    createElement(Prose, { children: createElement('p', null, 'Default root') }));
+}
+// @ts-expect-error The content is required.
+const proseMissingChildren: ProseProps = {};
+// @ts-expect-error The root is a generic div: a landmark wraps Prose.
+const proseRole: ProseProps = { children: 'x', role: 'article' };
+// @ts-expect-error The root carries no accessible name.
+const proseAriaLabel: ProseProps = { children: 'x', 'aria-label': 'x' };
+// @ts-expect-error The root carries no accessible name.
+const proseAriaLabelledBy: ProseProps = { children: 'x', 'aria-labelledby': 'x' };
+// @ts-expect-error Raw HTML is protected: the app converts and sanitizes its content.
+const proseHtml: ProseProps = { children: 'x', dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Slot composition is not supported.
+const proseSlot: ProseProps = { children: 'x', asChild: true };
+// @ts-expect-error A root ref is not part of this API.
+const proseRef: ProseProps = { children: 'x', ref: null };
+// @ts-expect-error The size is a closed set.
+const proseBadSize: ProseProps = { children: 'x', size: 'lg' };
+// @ts-expect-error The tone is a closed set.
+const proseBadTone: ProseProps = { children: 'x', tone: 'flood' };
+// @ts-expect-error The descendant recipe is private.
+type ProsePrivateRecipe = (typeof import('@egdev/ui'))['proseVariants'];
+// @ts-expect-error The internal hook is not public.
+type ProsePrivateHook = (typeof import('@egdev/ui'))['useProse'];
+export type ProseNegatives = [typeof proseMissingChildren, typeof proseRole, typeof proseAriaLabel, typeof proseAriaLabelledBy, typeof proseHtml, typeof proseSlot, typeof proseRef, typeof proseBadSize, typeof proseBadTone, ProsePrivateRecipe, ProsePrivateHook];
+
+// Keep EmptyState samples outside App so the existing button-count/focus harness stays unchanged.
+// createElement erases the exotic Button and Link target identity; restore only these known factory targets.
+const emptyStateButton = createElement(Button, { variant: 'secondary', children: 'Clear filters' }) as ReactElement<ButtonProps, typeof Button>;
+const emptyStateLink = createElement(Link, { href: '#all-posts', children: 'Browse all posts' }) as ReactElement<LinkProps, typeof Link>;
+export const emptyStateProps: EmptyStateProps = { title: 'No posts match', level: 2, description: 'Try another filter.', icon: 'search', actions: emptyStateButton, id: 'packed-empty', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
+export const emptyStateLevels: EmptyStateLevel[] = [2, 3, 4, 5, 6];
+export function EmptyStateSamples() {
+  return createElement(Fragment, null,
+    createElement(EmptyState, emptyStateProps),
+    createElement(EmptyState, { title: 'Nothing here' }),
+    createElement(EmptyState, { title: 'No posts yet', icon: 'inbox', actions: emptyStateLink }),
+    createElement(EmptyState, { title: 'Hidden extras', description: '   ', actions: null }));
+}
+// @ts-expect-error The title is required.
+const emptyStateMissingTitle: EmptyStateProps = {};
+// @ts-expect-error The title is plain text, never a rich node.
+const emptyStateRichTitle: EmptyStateProps = { title: createElement('em', null, 'x') };
+// @ts-expect-error The heading rank starts at 2: h1 belongs to the page header.
+const emptyStateLevelOne: EmptyStateProps = { title: 'x', level: 1 };
+// @ts-expect-error The heading rank stops at 6.
+const emptyStateLevelSeven: EmptyStateProps = { title: 'x', level: 7 };
+// @ts-expect-error The pictogram is a name of the closed icon set.
+const emptyStateBadIcon: EmptyStateProps = { title: 'x', icon: 'sparkles' };
+// @ts-expect-error The explanation is plain text.
+const emptyStateRichDescription: EmptyStateProps = { title: 'x', description: createElement('em', null, 'x') };
+// @ts-expect-error An array is not one supported action element.
+const emptyStateArrayActions: EmptyStateProps = { title: 'x', actions: [emptyStateButton] };
+// @ts-expect-error Text is not a supported action element.
+const emptyStateTextActions: EmptyStateProps = { title: 'x', actions: 'Clear' };
+// @ts-expect-error There is no children slot.
+const emptyStateChildren: EmptyStateProps = { title: 'x', children: 'x' };
+// @ts-expect-error The root is a generic container: no role.
+const emptyStateRole: EmptyStateProps = { title: 'x', role: 'status' };
+// @ts-expect-error The component renders no live region.
+const emptyStateLive: EmptyStateProps = { title: 'x', 'aria-live': 'polite' };
+// @ts-expect-error A generic container takes no accessible name.
+const emptyStateAriaLabel: EmptyStateProps = { title: 'x', 'aria-label': 'x' };
+// @ts-expect-error A generic container takes no accessible name.
+const emptyStateAriaLabelledBy: EmptyStateProps = { title: 'x', 'aria-labelledby': 'x' };
+// @ts-expect-error The root is not a tab stop.
+const emptyStateTab: EmptyStateProps = { title: 'x', tabIndex: 0 };
+// @ts-expect-error No editable content.
+const emptyStateEditable: EmptyStateProps = { title: 'x', contentEditable: true };
+// @ts-expect-error Raw HTML is protected.
+const emptyStateHtml: EmptyStateProps = { title: 'x', dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A root ref is not part of this API.
+const emptyStateRef: EmptyStateProps = { title: 'x', ref: null };
+// @ts-expect-error Slot composition is not supported.
+const emptyStateSlot: EmptyStateProps = { title: 'x', asChild: true };
+// @ts-expect-error The recipes are private.
+type EmptyStatePrivateRecipe = (typeof import('@egdev/ui'))['emptyStateVariants'];
+// @ts-expect-error The internal hook is not public.
+type EmptyStatePrivateHook = (typeof import('@egdev/ui'))['useEmptyState'];
+export type EmptyStateNegatives = [typeof emptyStateMissingTitle, typeof emptyStateRichTitle, typeof emptyStateLevelOne, typeof emptyStateLevelSeven, typeof emptyStateBadIcon, typeof emptyStateRichDescription, typeof emptyStateArrayActions, typeof emptyStateTextActions, typeof emptyStateChildren, typeof emptyStateRole, typeof emptyStateLive, typeof emptyStateAriaLabel, typeof emptyStateAriaLabelledBy, typeof emptyStateTab, typeof emptyStateEditable, typeof emptyStateHtml, typeof emptyStateRef, typeof emptyStateSlot, EmptyStatePrivateRecipe, EmptyStatePrivateHook];
+
+// Keep Breadcrumb samples outside App so the existing link-count/focus harness stays unchanged.
+export const breadcrumbItems: BreadcrumbItem[] = [{ label: 'Home', href: '#home' }, { label: 'Editorial', href: '#editorial' }, { label: 'Post title' }];
+export const breadcrumbProps: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, onNavigate: (item, event) => { void item.label; void event.button; }, id: 'packed-trail', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
+export function BreadcrumbSamples() {
+  return createElement(Fragment, null,
+    createElement(Breadcrumb, breadcrumbProps),
+    createElement(Breadcrumb, { label: 'Single step', items: [{ label: 'Home' }] }),
+    createElement(Breadcrumb, { label: 'Trailing href', items: [{ label: 'Home', href: '#home' }, { label: 'Post title', href: '#ignored' }] }),
+    createElement(Breadcrumb, { label: 'Long trail', items: [{ label: 'Home', href: '#home' }, { label: 'Editorial', href: '#editorial' }, { label: 'Notes', href: '#notes' }, { label: 'Architecture', href: '#architecture' }, { label: 'A long post title' }] }));
+}
+// @ts-expect-error The label is required.
+const breadcrumbMissingLabel: BreadcrumbProps = { items: breadcrumbItems };
+// @ts-expect-error The items are required.
+const breadcrumbMissingItems: BreadcrumbProps = { label: 'Breadcrumb' };
+// @ts-expect-error The landmark keeps the navigation role.
+const breadcrumbRole: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, role: 'presentation' };
+// @ts-expect-error The landmark name is label, never aria-label.
+const breadcrumbAriaLabel: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, 'aria-label': 'x' };
+// @ts-expect-error The landmark name is label, never aria-labelledby.
+const breadcrumbAriaLabelledBy: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, 'aria-labelledby': 'x' };
+// @ts-expect-error The trail is data: there are no children.
+const breadcrumbChildren: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, children: 'x' };
+// @ts-expect-error Raw HTML is protected.
+const breadcrumbHtml: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A root ref is not part of this API.
+const breadcrumbRef: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const breadcrumbSlot: BreadcrumbProps = { label: 'Breadcrumb', items: breadcrumbItems, asChild: true };
+// @ts-expect-error An entry label is a string.
+const breadcrumbNumericLabel: BreadcrumbProps = { label: 'Breadcrumb', items: [{ label: 1 }] };
+// @ts-expect-error The recipes are private.
+type BreadcrumbPrivateRecipe = (typeof import('@egdev/ui'))['breadcrumbVariants'];
+// @ts-expect-error The internal hook is not public.
+type BreadcrumbPrivateHook = (typeof import('@egdev/ui'))['useBreadcrumb'];
+export type BreadcrumbNegatives = [typeof breadcrumbMissingLabel, typeof breadcrumbMissingItems, typeof breadcrumbRole, typeof breadcrumbAriaLabel, typeof breadcrumbAriaLabelledBy, typeof breadcrumbChildren, typeof breadcrumbHtml, typeof breadcrumbRef, typeof breadcrumbSlot, typeof breadcrumbNumericLabel, BreadcrumbPrivateRecipe, BreadcrumbPrivateHook];
+
+// Keep DetailHeader samples outside App so the existing link-count/focus harness stays unchanged.
+export const detailHeaderMetadata: DetailHeaderMetadataItem[] = [{ label: 'Date', value: 'December 12, 2026', dateTime: '2026-12-12' }, { label: 'Place', value: 'Example Hall' }];
+export const detailHeaderLinks: DetailHeaderLink[] = [{ label: 'Event page', href: 'https://example.com/events/conference' }, { label: 'Recording', href: 'https://example.org/recordings/conference' }];
+export const detailHeaderMessages: Partial<DetailHeaderMessages> = { tags: 'Topics', links: 'Related pages' };
+export const detailHeaderProps: DetailHeaderProps = { eyebrow: 'Event', title: 'Conference', lede: 'Two days of talks.', level: 1, metadata: detailHeaderMetadata, tags: ['Design', 'Systems'], links: detailHeaderLinks, id: 'packed-header', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6', onClick: () => undefined };
+export function DetailHeaderSamples() {
+  return createElement(Fragment, null,
+    createElement(DetailHeader, detailHeaderProps),
+    createElement(DetailHeader, { title: 'Title only' }),
+    createElement(DetailHeader, { title: [['Release notes ', 'en'], ['/ ', undefined, true], ['changelog', 'en']], eyebrow: [['Localized page', 'en']], lede: [['Language-tagged runs.', 'en']], level: 3, metadata: [{ label: 'Published', value: 'November 26, 2026', dateTime: '2026-11-26' }], tags: ['Release'], links: [{ label: 'Download', href: 'https://example.org/download' }], messages: detailHeaderMessages, newTabText: '(opens in a new window)' }),
+    createElement(DetailHeader, { title: 'Facts only', metadata: [{ label: 'Status', value: 'Active' }] }),
+    createElement(DetailHeader, { title: 'Invalid entries', metadata: [{ label: '', value: 'dropped' }], tags: [' '], links: [{ label: 'Plain', href: 'http://example.com' }] }));
+}
+// @ts-expect-error The title is required.
+const detailHeaderMissingTitle: DetailHeaderProps = {};
+// @ts-expect-error The root has no children: the content comes from props.
+const detailHeaderChildren: DetailHeaderProps = { title: 'x', children: 'x' };
+// @ts-expect-error The root has no role.
+const detailHeaderRole: DetailHeaderProps = { title: 'x', role: 'region' };
+// @ts-expect-error The heading names the content, never aria-label.
+const detailHeaderAriaLabel: DetailHeaderProps = { title: 'x', 'aria-label': 'x' };
+// @ts-expect-error The heading names the content, never aria-labelledby.
+const detailHeaderAriaLabelledBy: DetailHeaderProps = { title: 'x', 'aria-labelledby': 'x' };
+// @ts-expect-error The component paints no inline appearance.
+const detailHeaderStyle: DetailHeaderProps = { title: 'x', style: { color: 'red' } };
+// @ts-expect-error Raw HTML is protected.
+const detailHeaderHtml: DetailHeaderProps = { title: 'x', dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A root ref is not part of this API.
+const detailHeaderRef: DetailHeaderProps = { title: 'x', ref: null };
+// @ts-expect-error Slot composition is not supported.
+const detailHeaderSlot: DetailHeaderProps = { title: 'x', asChild: true };
+// @ts-expect-error A heading rank is 1 to 6.
+const detailHeaderLevel: DetailHeaderProps = { title: 'x', level: 7 };
+// @ts-expect-error A fact needs a value.
+const detailHeaderNoValue: DetailHeaderProps = { title: 'x', metadata: [{ label: 'x' }] };
+// @ts-expect-error A link needs a destination.
+const detailHeaderNoHref: DetailHeaderProps = { title: 'x', links: [{ label: 'x' }] };
+// @ts-expect-error The recipes are private.
+type DetailHeaderPrivateRecipe = (typeof import('@egdev/ui'))['detailHeaderVariants'];
+// @ts-expect-error The internal hook is not public.
+type DetailHeaderPrivateHook = (typeof import('@egdev/ui'))['useDetailHeader'];
+export type DetailHeaderNegatives = [typeof detailHeaderMissingTitle, typeof detailHeaderChildren, typeof detailHeaderRole, typeof detailHeaderAriaLabel, typeof detailHeaderAriaLabelledBy, typeof detailHeaderStyle, typeof detailHeaderHtml, typeof detailHeaderRef, typeof detailHeaderSlot, typeof detailHeaderLevel, typeof detailHeaderNoValue, typeof detailHeaderNoHref, DetailHeaderPrivateRecipe, DetailHeaderPrivateHook];
+
+// Keep Pagination samples outside App so the existing link-count/focus harness stays unchanged.
+export const paginationMessages: Partial<PaginationMessages> = { previous: 'Newer', next: 'Older', page: (page) => 'Results page ' + page };
+export const paginationHref = (page: number) => '/editorial?topic=design&page=' + page;
+export const paginationProps: PaginationProps = { label: 'Editorial pages', value: 6, pageCount: 12, getHref: paginationHref, onNavigate: (page, event) => { void page.toFixed(0); void event.button; }, id: 'packed-pagination', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
+export function PaginationSamples() {
+  return createElement(Fragment, null,
+    createElement(Pagination, paginationProps),
+    createElement(Pagination, { label: 'First page', value: 1, pageCount: 12, getHref: paginationHref }),
+    createElement(Pagination, { label: 'Last page', value: 12, pageCount: 12, getHref: paginationHref }),
+    createElement(Pagination, { label: 'Short row', value: 5, pageCount: 5, getHref: paginationHref }),
+    createElement(Pagination, { label: 'Results pages', value: 3, pageCount: 9, getHref: paginationHref, messages: paginationMessages }),
+    createElement(Pagination, { label: 'Single page', value: 1, pageCount: 1, getHref: paginationHref }));
+}
+// @ts-expect-error The landmark name is required.
+const paginationMissingLabel: PaginationProps = { value: 1, pageCount: 2, getHref: paginationHref };
+// @ts-expect-error The current page is required.
+const paginationMissingValue: PaginationProps = { label: 'x', pageCount: 2, getHref: paginationHref };
+// @ts-expect-error The page count is required.
+const paginationMissingCount: PaginationProps = { label: 'x', value: 1, getHref: paginationHref };
+// @ts-expect-error The destination builder is required.
+const paginationMissingHref: PaginationProps = { label: 'x', value: 1, pageCount: 2 };
+// @ts-expect-error The current page is a number, not text.
+const paginationStringValue: PaginationProps = { label: 'x', value: '1', pageCount: 2, getHref: paginationHref };
+// @ts-expect-error A destination is a string.
+const paginationNumericHref: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: (page: number) => page };
+// @ts-expect-error The landmark keeps the navigation role.
+const paginationRole: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, role: 'presentation' };
+// @ts-expect-error The landmark name is label, never aria-label.
+const paginationAriaLabel: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, 'aria-label': 'x' };
+// @ts-expect-error The landmark name is label, never aria-labelledby.
+const paginationAriaLabelledBy: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, 'aria-labelledby': 'x' };
+// @ts-expect-error The row is derived: there are no children.
+const paginationChildren: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, children: 'x' };
+// @ts-expect-error A root ref is not part of this API.
+const paginationRef: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const paginationSlot: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, asChild: true };
+// @ts-expect-error The navigation callback receives the page number, not an entry.
+const paginationEntryCallback: PaginationProps = { label: 'x', value: 1, pageCount: 2, getHref: paginationHref, onNavigate: (item: { href: string }) => item.href };
+// @ts-expect-error The recipes are private.
+type PaginationPrivateRecipe = (typeof import('@egdev/ui'))['paginationVariants'];
+// @ts-expect-error The internal hook is not public.
+type PaginationPrivateHook = (typeof import('@egdev/ui'))['usePagination'];
+export type PaginationNegatives = [typeof paginationMissingLabel, typeof paginationMissingValue, typeof paginationMissingCount, typeof paginationMissingHref, typeof paginationStringValue, typeof paginationNumericHref, typeof paginationRole, typeof paginationAriaLabel, typeof paginationAriaLabelledBy, typeof paginationChildren, typeof paginationRef, typeof paginationSlot, typeof paginationEntryCallback, PaginationPrivateRecipe, PaginationPrivateHook];
+
+// Keep Embed samples outside App so the existing link-count/focus harness stays unchanged.
+export const embedFrameProps: EmbedProps = { label: 'Keynote recording', src: 'https://video.example/embed/1', ratio: 4 / 3, loading: 'eager', allow: 'fullscreen', allowFullScreen: true, referrerPolicy: 'no-referrer', sandbox: 'allow-scripts', onLoad: (event) => { void event.currentTarget.src; }, id: 'packed-embed', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
+export const embedContentProps: EmbedProps = { label: 'Post by @egdev6', ratio: 1, children: createElement('p', null, 'Post'), fallback: createElement('p', null, 'Unavailable') };
+export function EmbedSamples() {
+  return createElement(Fragment, null,
+    createElement(Embed, embedFrameProps),
+    createElement(Embed, embedContentProps),
+    createElement(Embed, { label: 'Unavailable recording', fallback: createElement('p', null, 'Unavailable') }),
+    createElement(Embed, { label: 'Default frame', src: '/embed/1' }));
+}
+// @ts-expect-error The accessible name is required.
+const embedMissingLabel: EmbedProps = { src: '/embed/1' };
+// @ts-expect-error The name is label, never title.
+const embedTitle: EmbedProps = { ...embedFrameProps, title: 'x' };
+// @ts-expect-error The root has no role override.
+const embedRole: EmbedProps = { ...embedFrameProps, role: 'region' };
+// @ts-expect-error The name is label, never aria-label.
+const embedAriaLabel: EmbedProps = { ...embedFrameProps, 'aria-label': 'x' };
+// @ts-expect-error The name is label, never aria-labelledby.
+const embedAriaLabelledBy: EmbedProps = { ...embedFrameProps, 'aria-labelledby': 'x' };
+// @ts-expect-error The component owns the busy hint.
+const embedBusy: EmbedProps = { ...embedFrameProps, 'aria-busy': true };
+// @ts-expect-error The component adds no tab stop.
+const embedTab: EmbedProps = { ...embedFrameProps, tabIndex: 0 };
+// @ts-expect-error No inline appearance.
+const embedStyle: EmbedProps = { ...embedFrameProps, style: { color: 'red' } };
+// @ts-expect-error No injected markup.
+const embedHtml: EmbedProps = { ...embedFrameProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error The component has no click handler of its own.
+const embedClick: EmbedProps = { ...embedFrameProps, onClick: () => {} };
+// @ts-expect-error A frame reports no navigation failure.
+const embedError: EmbedProps = { ...embedFrameProps, onError: () => {} };
+// @ts-expect-error A root ref is not part of this API.
+const embedRef: EmbedProps = { ...embedFrameProps, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const embedSlot: EmbedProps = { ...embedFrameProps, asChild: true };
+// @ts-expect-error Inline documents are not supported.
+const embedSrcDoc: EmbedProps = { ...embedFrameProps, srcDoc: '<p>x</p>' };
+// @ts-expect-error A frame and children are exclusive.
+const embedBoth: EmbedProps = { label: 'x', src: '/embed/1', children: 'y' };
+// @ts-expect-error Frame attributes belong to the frame branch.
+const embedSandboxChildren: EmbedProps = { label: 'x', children: 'y', sandbox: '' };
+// @ts-expect-error Loading belongs to the frame branch.
+const embedLoadingChildren: EmbedProps = { label: 'x', children: 'y', loading: 'eager' };
+// @ts-expect-error The ratio is a number, never text.
+const embedTextRatio: EmbedProps = { label: 'x', src: '/embed/1', ratio: '16 / 9' };
+// @ts-expect-error Loading is lazy or eager.
+const embedAutoLoading: EmbedProps = { label: 'x', src: '/embed/1', loading: 'auto' };
+// @ts-expect-error The recipes are private.
+type EmbedPrivateRecipe = (typeof import('@egdev/ui'))['embedVariants'];
+// @ts-expect-error The internal hook is not public.
+type EmbedPrivateHook = (typeof import('@egdev/ui'))['useEmbed'];
+export type EmbedNegatives = [typeof embedMissingLabel, typeof embedTitle, typeof embedRole, typeof embedAriaLabel, typeof embedAriaLabelledBy, typeof embedBusy, typeof embedTab, typeof embedStyle, typeof embedHtml, typeof embedClick, typeof embedError, typeof embedRef, typeof embedSlot, typeof embedSrcDoc, typeof embedBoth, typeof embedSandboxChildren, typeof embedLoadingChildren, typeof embedTextRatio, typeof embedAutoLoading, EmbedPrivateRecipe, EmbedPrivateHook];
+
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
 export const notesProps: NotesBoardProps = { sticky: true, children: [createElement(NotesBoardSide, { key: 'side', ...notesSide }), createElement(NotesBoardList, { key: 'list', ...notesList })] };
@@ -655,6 +941,11 @@ type BlogGridPrivate = (typeof import('@egdev/ui'))['blogGridVariants'];
 export type BlogGridNegatives = [typeof blogMissing, typeof blogHtml, typeof blogSlot, typeof blogRef, typeof blogPartClass, BlogGridPrivate];
 export const chapterBreakProps: ChapterBreakProps = { title: 'Build ', level: 2, id: 'chapter-title', accent: 'together', media: createElement('span', null, 'Decorative') };
 export function ChapterBreakSamples({ empty = false }: { empty?: boolean } = {}) { return createElement(ChapterBreak, empty ? { title: 'Plain', level: 3 } : chapterBreakProps); }
+export const chapterBreakShow: ChapterBreakProps = { ...chapterBreakProps, titleVariant: 'show' };
+export const chapterBreakHero: ChapterBreakProps = { ...chapterBreakProps, titleVariant: 'hero' };
+export function ChapterBreakTitleSamples({ titleVariant }: { titleVariant: 'show' | 'hero' }) { return createElement(ChapterBreak, titleVariant === 'show' ? chapterBreakShow : chapterBreakHero); }
+// @ts-expect-error Only the hero and show title recipes are supported.
+const chapterTitleVariant: ChapterBreakProps = { ...chapterBreakProps, titleVariant: 'display' };
 // @ts-expect-error Title is required.
 const chapterMissingTitle: ChapterBreakProps = { level: 2 };
 // @ts-expect-error Heading rank is required.
@@ -677,9 +968,14 @@ const chapterRef: ChapterBreakProps = { ...chapterBreakProps, ref: createRef<HTM
 type ChapterPrivate = (typeof import('@egdev/ui'))['chapterBreakVariants'];
 // @ts-expect-error Media recipe is private.
 type ChapterMediaPrivate = (typeof import('@egdev/ui'))['chapterBreakMediaVariants'];
-export type ChapterNegatives = [typeof chapterMissingTitle, typeof chapterMissingLevel, typeof chapterChildren, typeof chapterLevel, typeof chapterRole, typeof chapterStyle, typeof chapterHtml, typeof chapterSlot, typeof chapterRef, ChapterPrivate, ChapterMediaPrivate];
+export type ChapterNegatives = [typeof chapterMissingTitle, typeof chapterMissingLevel, typeof chapterChildren, typeof chapterLevel, typeof chapterRole, typeof chapterStyle, typeof chapterHtml, typeof chapterSlot, typeof chapterRef, typeof chapterTitleVariant, ChapterPrivate, ChapterMediaPrivate];
 export const labStageProps: LabStageProps = { title: 'Build ', level: 2, id: 'lab-title', accent: 'together', media: createElement('span', null, 'Decorative'), lede: 'Try ideas.', children: createElement('article', null, createElement('a', { href: '#experiment' }, 'Experiment')) };
 export function LabStageSamples({ empty = false }: { empty?: boolean } = {}) { return createElement(LabStage, empty ? { title: 'Plain', level: 3 } : labStageProps); }
+export const labStageShow: LabStageProps = { ...labStageProps, titleVariant: 'show' };
+export const labStageHero: LabStageProps = { ...labStageProps, titleVariant: 'hero' };
+export function LabStageTitleSamples({ titleVariant }: { titleVariant: 'show' | 'hero' }) { return createElement(LabStage, titleVariant === 'show' ? labStageShow : labStageHero); }
+// @ts-expect-error Only the hero and show title recipes are supported.
+const labTitleVariant: LabStageProps = { ...labStageProps, titleVariant: 'display' };
 // @ts-expect-error Title is required.
 const labMissingTitle: LabStageProps = { level: 2 };
 // @ts-expect-error Heading rank is required.
@@ -700,9 +996,14 @@ const labRef: LabStageProps = { ...labStageProps, ref: createRef<HTMLDivElement>
 type LabPrivate = (typeof import('@egdev/ui'))['labStageVariants'];
 // @ts-expect-error Media recipe is private.
 type LabMediaPrivate = (typeof import('@egdev/ui'))['labStageMediaVariants'];
-export type LabStageNegatives = [typeof labMissingTitle, typeof labMissingLevel, typeof labLevel, typeof labRole, typeof labStyle, typeof labHtml, typeof labSlot, typeof labRef, LabPrivate, LabMediaPrivate];
+export type LabStageNegatives = [typeof labMissingTitle, typeof labMissingLevel, typeof labLevel, typeof labRole, typeof labStyle, typeof labHtml, typeof labSlot, typeof labRef, typeof labTitleVariant, LabPrivate, LabMediaPrivate];
 export const closingProps: ClosingProps = { title: 'Build ', level: 2, id: 'closing-title', accent: 'together', media: createElement('span', null, 'Decorative'), children: [createElement('a', { key: 'one', href: '#one' }, 'One'), createElement('a', { key: 'two', href: '#two' }, 'Two')] };
 export function ClosingSamples() { return createElement(Closing, closingProps); }
+export const closingShow: ClosingProps = { ...closingProps, titleVariant: 'show' };
+export const closingHero: ClosingProps = { ...closingProps, titleVariant: 'hero' };
+export function ClosingTitleSamples({ titleVariant }: { titleVariant: 'show' | 'hero' }) { return createElement(Closing, titleVariant === 'show' ? closingShow : closingHero); }
+// @ts-expect-error Only the hero and show title recipes are supported.
+const closingTitleVariant: ClosingProps = { ...closingProps, titleVariant: 'display' };
 // @ts-expect-error Title is required.
 const closingMissingTitle: ClosingProps = { level: 2, children: null };
 // @ts-expect-error Heading rank is required.
@@ -725,9 +1026,14 @@ const closingRef: ClosingProps = { ...closingProps, ref: createRef<HTMLDivElemen
 type ClosingPrivate = (typeof import('@egdev/ui'))['closingVariants'];
 // @ts-expect-error Media recipe is private.
 type ClosingMediaPrivate = (typeof import('@egdev/ui'))['closingMediaVariants'];
-export type ClosingNegatives = [typeof closingMissingTitle, typeof closingMissingLevel, typeof closingMissingChildren, typeof closingLevel, typeof closingRole, typeof closingStyle, typeof closingHtml, typeof closingSlot, typeof closingRef, ClosingPrivate, ClosingMediaPrivate];
+export type ClosingNegatives = [typeof closingMissingTitle, typeof closingMissingLevel, typeof closingMissingChildren, typeof closingLevel, typeof closingRole, typeof closingStyle, typeof closingHtml, typeof closingSlot, typeof closingRef, typeof closingTitleVariant, ClosingPrivate, ClosingMediaPrivate];
 export const heroProps: HeroProps = { title: 'Build ', accent: 'together', level: 2, id: 'intro', eyebrow: 'Hello', lede: 'Intro', media: createElement('span', null, 'Artwork'), social: createElement('span', null, 'Profiles'), children: createElement('button', null, 'Go') };
 export function HeroSamples({ empty = false }: { empty?: boolean }) { return createElement(Hero, empty ? { title: 'Plain', level: 3 } : heroProps); }
+export const heroShow: HeroProps = { ...heroProps, titleVariant: 'show' };
+export const heroHero: HeroProps = { ...heroProps, titleVariant: 'hero' };
+export function HeroTitleSamples({ titleVariant }: { titleVariant: 'show' | 'hero' }) { return createElement(Hero, titleVariant === 'show' ? heroShow : heroHero); }
+// @ts-expect-error Only the hero and show title recipes are supported.
+const heroTitleVariant: HeroProps = { ...heroProps, titleVariant: 'display' };
 // @ts-expect-error Role is protected.
 const heroRole: HeroProps = { ...heroProps, role: 'region' };
 // @ts-expect-error Inline style is protected.
@@ -742,7 +1048,7 @@ const heroAsChild: HeroProps = { ...heroProps, asChild: true };
 const heroMissing: HeroProps = { title: 'Missing level' };
 // @ts-expect-error Recipe is private.
 type HeroPrivate = (typeof import('@egdev/ui'))['heroVariants'];
-export type HeroNegatives = [typeof heroRole, typeof heroStyle, typeof heroHtml, typeof heroRef, typeof heroAsChild, typeof heroMissing, HeroPrivate];
+export type HeroNegatives = [typeof heroRole, typeof heroStyle, typeof heroHtml, typeof heroRef, typeof heroAsChild, typeof heroMissing, typeof heroTitleVariant, HeroPrivate];
 const sectionNavItems: SectionNavItem[] = [{ id: 'one', label: 'One', href: '#one' }, { id: 'two', label: 'Two', href: '#two' }];
 export const sectionNavProps: SectionNavProps = { label: 'Sections', disclosureLabel: 'Open index', nextLabel: 'Next section', items: sectionNavItems, activeId: 'one', value: 50 };
 export function SectionNavSamples() { return createElement(SectionNav, sectionNavProps); }
@@ -806,6 +1112,9 @@ const footerSocial: FooterSocialProps = { children: createElement(SocialLinks, {
 const footerLegal: FooterLegalProps = { children: createElement('a', { href: '#legal' }, 'Legal') };
 export const footerProps: FooterProps = { children: [createElement(FooterMotto, { key: 'motto', ...footerMotto }), createElement(FooterBrand, { key: 'brand', ...footerBrand }), createElement(FooterNavigation, { key: 'nav', ...footerNav }), createElement(FooterSocial, { key: 'social', ...footerSocial }), createElement(FooterLegal, { key: 'legal', ...footerLegal })] };
 export function FooterSamples() { return createElement(Footer, footerProps); }
+export const footerRegisters: readonly FooterRegister[] = ['none', 'grafito'];
+export const footerWrappedProps: FooterProps = { wrap: true, register: 'grafito', children: [createElement(FooterNavigation, { key: 'nav', ...footerNav }), createElement(FooterLegal, { key: 'legal', ...footerLegal })] };
+export function FooterWrappedSamples() { return createElement(Footer, footerWrappedProps); }
 // @ts-expect-error Children are required.
 const footerMissing: FooterProps = {};
 // @ts-expect-error Root role is protected.
@@ -820,7 +1129,13 @@ const footerDestination: FooterNavigationItem = { label: 'Missing' };
 const footerCurrentStep: FooterNavigationItem = { href: '#one', label: 'One', 'aria-current': 'step' };
 // @ts-expect-error Internal recipes are not exported.
 type FooterPrivate = (typeof import('@egdev/ui'))['footerVariants'];
-export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, typeof footerCurrentStep, FooterPrivate];
+// @ts-expect-error Register accepts none and grafito only.
+const footerRegister: FooterProps = { children: null, register: 'pro' };
+// @ts-expect-error A group-edge fade input is outside the contract; the host owns the fade.
+const footerFade: FooterProps = { children: null, fade: true };
+// @ts-expect-error The wrapper recipe is not exported.
+type FooterWrapPrivate = (typeof import('@egdev/ui'))['footerWrapVariants'];
+export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, typeof footerCurrentStep, FooterPrivate, typeof footerRegister, typeof footerFade, FooterWrapPrivate];
 const topBarItem: TopBarItem = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' };
 const topBarPart: TopBarPartProps = { children: createElement('a', { href: '/' }, 'Brand') };
 export const topBarProps: TopBarProps = { label: 'Main', items: [topBarItem], initialBackground: 'solid', contentWidth: 'full', 'data-state': 'glass', style: { zIndex: 10 }, children: [
@@ -1769,6 +2084,21 @@ const projectCardStatus: ProjectCardProps = {
 export function ProjectCardStatusSample() {
   return createElement(ProjectCard, projectCardStatus);
 }
+// The footer takes one to three consumer-supplied actions: the card renders them verbatim in one wrapping row.
+const projectCardActions: ProjectCardFooterProps = {
+  children: [
+    createElement(Link, { key: 'details', href: '#packed-details', variant: 'quiet', children: 'Details' }),
+    createElement(Link, { key: 'source', href: '#packed-source', variant: 'quiet', children: 'GitHub' }),
+    createElement(Button, { key: 'demo', size: 'sm', variant: 'neutral', children: 'Demo' })
+  ]
+};
+export function ProjectCardActionsSample() {
+  return createElement(ProjectCard, {
+    title: 'Packed actions',
+    id: 'packed-actions',
+    children: createElement(ProjectCardFooter, projectCardActions)
+  });
+}
 // @ts-expect-error The generated heading owns the article name.
 const relabelledProjectCard: ProjectCardProps = { ...projectCardBase, 'aria-label': 'Other' };
 // @ts-expect-error Passive articles have no root tab stop API.
@@ -1916,10 +2246,18 @@ const nowCardSample: NowCardProps = {
     })
   ]
 };
+// v0.4 (#564): the status band is opt-in. The label words and a decorative icon replace the Badge, and the typed
+// union is closed.
+const nowCardBandLabel = createElement(Fragment, null, createElement(Icon, { name: 'hammer', size: 'sm' }), 'Building');
+const nowCardBand: NowCardProps = { ...nowCardSample, statusBadge: nowCardBandLabel, statusPresentation: 'band' };
 export function NowCardSamples({ size = 'md' }: { size?: NowCardSize }) {
   return createElement('div', null,
     createElement(NowCard, { ...nowCardSample, size, id: 'now-card' }),
     createElement(NowCard, { ...nowCardSample, size: 'sm', id: 'now-card-sm' }),
+    createElement(NowCard, { ...nowCardBand, id: 'now-card-band' }),
+    createElement(NowCard, { ...nowCardBand, size: 'sm', id: 'now-card-band-sm' }),
+    // The explicit default presentation is the unchanged pill.
+    createElement(NowCard, { ...nowCardSample, statusPresentation: 'badge', id: 'now-card-pill' }),
     // Omitted, null and boolean slots render no wrapper at all.
     createElement(NowCard, { title: 'Currently exploring', id: 'now-omitted', children: createElement(NowCardBody, { children: 'Copy only.' }) }),
     createElement(NowCard, { title: 'Currently exploring', statusBadge: null, id: 'now-null', children: createElement(NowCardBody, { children: 'Copy only.' }) }),
@@ -1941,6 +2279,8 @@ const slottedNow: NowCardProps = { ...nowCardSample, asChild: true };
 const sizedNow: NowCardProps = { ...nowCardSample, size: 'xs' };
 // @ts-expect-error Heading rank is semantic 2-6, never a visual size.
 const rankedNow: NowCardProps = { ...nowCardSample, level: 1 };
+// @ts-expect-error The status presentation is a closed union: only badge and band.
+const ribbonNow: NowCardProps = { ...nowCardSample, statusPresentation: 'ribbon' };
 // @ts-expect-error Internal hook is not public.
 type NowCardPrivateHook = (typeof import('@egdev/ui'))['useNowCard'];
 // @ts-expect-error Internal part recipe is not public.
@@ -2422,10 +2762,12 @@ const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>(
 );
 export const linkDefaults: LinkProps = { href: '#docs', children: 'Documentation' };
 const linkUnderlinedVariant: LinkVariant = 'underlined';
+const linkQuietVariant: LinkVariant = 'quiet';
 export function LinkSamples({ external = true }: { external?: boolean }) {
   return createElement('section', { 'aria-label': 'Text navigation' },
     createElement(Link, { ...linkDefaults, id: 'link-native', ref: linkNativeRef, className: 'mt-2 mt-4 self-start' }),
     createElement(Link, { ...linkDefaults, variant: linkUnderlinedVariant, id: 'link-underlined', children: 'Read the guide' }),
+    createElement(Link, { ...linkDefaults, variant: linkQuietVariant, id: 'link-quiet', children: 'Read the quiet guide' }),
     createElement(Link, { href: '#external', external, rel: 'author noopener', id: 'link-external', children: 'Repository' }),
     createElement(Link, { href: '#legal', arrow: false, id: 'link-plain', children: 'Legal information' }),
     createElement(Link, { asChild: true, external, rel: 'author', ref: linkSlotRef, newTabText: '(new window)',
@@ -2439,7 +2781,7 @@ const slottedLinkDestination: LinkProps = { asChild: true, href: '#docs', childr
 const missingLinkContent: LinkProps = { href: '#docs' };
 // @ts-expect-error Disabled links are not supported; use plain text without a destination.
 const disabledLink: LinkProps = { href: '#docs', children: 'Docs', disabled: true };
-// @ts-expect-error Link only accepts plain and its deprecated underlined alias.
+// @ts-expect-error Link only accepts plain, quiet and its deprecated underlined alias.
 const variantLink: LinkProps = { href: '#docs', children: 'Docs', variant: 'primary' };
 // @ts-expect-error The public ref is an anchor ref, never a button ref.
 const wrongLinkRef: ComponentProps<typeof Link> = { href: '#docs', children: 'Docs', ref: createRef<HTMLButtonElement>() };
@@ -2953,6 +3295,12 @@ const chipExternalLink: Extract<ChipProps, { mode: 'link' }> = {
   newTabText: '(new window)',
   children: 'Documentation'
 };
+const chipCurrentLink: Extract<ChipProps, { mode: 'link' }> = {
+  mode: 'link',
+  href: '#topics',
+  'aria-current': 'true',
+  children: 'Topics'
+};
 export function ChipSamples() {
   return createElement('section', { 'aria-label': 'Chip samples' },
     createElement(Chip, { ...chipDefaults, id: 'chip-default', onPressedChange: (next) => chipChanges.push(next) }),
@@ -2962,6 +3310,7 @@ export function ChipSamples() {
     createElement('ul', { 'aria-label': 'Topics' },
       createElement('li', null, createElement(Chip, { ...chipStatic, id: 'chip-static' })),
       createElement('li', null, createElement(Chip, { ...chipLink, id: 'chip-link' })),
+      createElement('li', null, createElement(Chip, { ...chipCurrentLink, id: 'chip-current' })),
       createElement('li', null, createElement(Chip, { ...chipExternalLink, id: 'chip-external' }))));
 }
 // @ts-expect-error Chip always requires its visible label.
@@ -2992,6 +3341,10 @@ const linkedStaticChip: ChipProps = { mode: 'static', children: 'Design', href: 
 const hrefLessLinkChip: ChipProps = { mode: 'link', children: 'Design' };
 // @ts-expect-error Link mode rejects pressed state.
 const pressedLinkChip: ChipProps = { mode: 'link', href: '#topics', children: 'Design', pressed: true };
+// @ts-expect-error Link mode narrows aria-current to page or true: step is rejected.
+const stepCurrentLinkChip: ChipProps = { mode: 'link', href: '#topics', children: 'Design', 'aria-current': 'step' };
+// @ts-expect-error Link mode narrows aria-current to page or true: a boolean is rejected.
+const booleanCurrentLinkChip: ChipProps = { mode: 'link', href: '#topics', children: 'Design', 'aria-current': true };
 // @ts-expect-error Toggle mode rejects a destination.
 const hrefToggleChip: ChipProps = { children: 'Design', href: '#topics' };
 // @ts-expect-error mode is a closed union of the three roles.
@@ -3637,6 +3990,76 @@ function assertChipCSS(css) {
   assert.match(css, /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-glow-base\)/);
   assert.match(css, /translate:\s*none/);
   assert.match(css, /scale:\s*none/);
+  // Link-mode current state (v0.3, #576): recipe R1 is emitted under the attribute value each utility names, the
+  // current paint follows the hover rules, the focus ring follows the current edge shadow, and the forced-colours
+  // outline follows outline-none.
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const ring =
+    /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #ff0036\)/i;
+  const rule = (token, suffix, declaration) => {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + suffix + '\\s*\\{[^}]*' + declaration.source, declaration.flags),
+      'Missing Chip current-state rule ' + token + suffix
+    );
+  };
+  const at = (token, suffix) => {
+    const match = new RegExp(escapeRegExp(escapeClass(token)) + suffix + '\\s*\\{').exec(css);
+    assert.ok(match, 'Missing Chip selector ' + token + suffix);
+    return match.index;
+  };
+  const ringAt = at('focus-visible:shadow-focus', ':focus-visible');
+  const noneAt = at('focus-visible:outline-none', ':focus-visible');
+  for (const value of ['page', 'true']) {
+    const attribute = '\\[aria-current="?' + value + '"?\\]';
+    const named = (utility) => 'aria-[current=' + value + ']:' + utility;
+    rule(named('border-state-selected'), attribute, /border-color:\s*var\(--color-state-selected[,)]/);
+    rule(
+      named('[background:var(--gradient-chip-active),var(--color-surface-1)]'),
+      attribute,
+      /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)/
+    );
+    rule(named('shadow-[var(--shadow-edge-strong)]'), attribute, /--tw-shadow:\s*var\(--shadow-edge-strong\)/);
+    rule(named('text-fg-default'), attribute, /color:\s*var\(--color-fg-default[,)]/);
+    rule(named('focus-visible:shadow-focus'), attribute + ':focus-visible', ring);
+    rule('forced-colors:aria-[current=' + value + ']:outline-solid', attribute, /outline-style:\s*solid/);
+    rule(
+      'forced-colors:aria-[current=' + value + ']:outline-(length:--focus-width)',
+      attribute,
+      /outline-width:\s*var\(--focus-width\)/
+    );
+    rule(
+      'forced-colors:aria-[current=' + value + ']:outline-[color:Highlight]',
+      attribute,
+      /outline-color:\s*highlight/i
+    );
+    const edgeAt = at(named('shadow-[var(--shadow-edge-strong)]'), attribute);
+    const compoundAt = at(named('focus-visible:shadow-focus'), attribute + ':focus-visible');
+    assert.ok(
+      ringAt < edgeAt && edgeAt < compoundAt,
+      'The ' + value + ' focus ring must follow the current edge shadow'
+    );
+    assert.ok(
+      at(named('border-state-selected'), attribute) > at('hover:border-border-hairline-strong', ':hover'),
+      'The ' + value + ' paint must keep itself under hover'
+    );
+    assert.ok(
+      at('forced-colors:aria-[current=' + value + ']:outline-solid', attribute) > noneAt,
+      'The ' + value + ' forced-colours outline must follow outline-none'
+    );
+  }
+  rule('forced-colors:focus-visible:outline-solid', ':focus-visible', /outline-style:\s*solid/);
+  rule(
+    'forced-colors:focus-visible:outline-(length:--focus-width)',
+    ':focus-visible',
+    /outline-width:\s*var\(--focus-width\)/
+  );
+  rule('forced-colors:focus-visible:outline-[color:Highlight]', ':focus-visible', /outline-color:\s*highlight/i);
+  assert.ok(
+    at('forced-colors:focus-visible:outline-solid', ':focus-visible') > noneAt,
+    'The forced-colours focus outline must follow outline-none'
+  );
 }
 
 // Checkbox ships only its fixed geometry and Radix-state token recipes, never a marker rule.
@@ -5300,6 +5723,272 @@ function assertPixelConsumerCSS(css) {
   assert.doesNotMatch(utilities, /\.eg-pixel\s*\{/);
 }
 
+function assertProseConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // The measure reads the owner-confirmed token and keeps its ch fallback for apps on an older tokens version.
+  assert.match(utilities, /\.max-w-prose\s*\{[^}]*max-width:\s*var\(--container-prose,\s*65ch\)/);
+  for (const [token, target, declaration] of [
+    ['[&>:first-child]:mt-0', '> :first-child', /margin-top:\s*var\(--space-0\)/],
+    ['[&_h2]:text-heading-section', 'h2', /font-size:\s*var\(--text-heading-section[,)]/],
+    ['[&_a:hover]:no-underline', 'a:hover', /text-decoration-line:\s*none/],
+    ['[&_a:focus-visible]:[box-shadow:var(--shadow-focus)]', 'a:focus-visible', /box-shadow:\s*var\(--shadow-focus\)/],
+    ['[&_li::marker]:text-fg-muted', 'li::marker', /color:\s*var\(--color-fg-muted[,)]/],
+    [
+      '[&_code:not(pre_code)]:text-fg-brand-default',
+      'code:not(pre code)',
+      /color:\s*var\(--color-fg-brand-default[,)]/
+    ],
+    ['[&_pre]:shadow-[var(--shadow-well)]', 'pre', /--tw-shadow:\s*var\(--shadow-well\)/],
+    ['[&_th]:bg-surface-2', 'th', /background-color:\s*var\(--color-surface-2[,)]/],
+    ['[&_hr]:border-t', 'hr', /border-top-width:\s*1px/]
+  ]) {
+    assert.match(
+      utilities,
+      new RegExp(escapeRegExp(escapeClass(token) + ' ' + target) + '\\s*\\{[^}]*' + declaration.source),
+      'Missing Prose rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the Prose marker.
+  assert.doesNotMatch(css, /\.eg-prose\b/);
+}
+
+function assertEmptyStateConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, declaration] of [
+    ['flex-col', /flex-direction:\s*column/],
+    ['inline-flex', /display:\s*inline-flex/],
+    ['gap-3', /gap:\s*var\(--space-3\)/],
+    ['gap-2', /gap:\s*var\(--space-2\)/],
+    ['px-4', /padding-inline:\s*var\(--space-4\)/],
+    ['py-8', /padding-block:\s*var\(--space-8\)/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/],
+    ['text-heading-small', /font-size:\s*var\(--text-heading-small[,)]/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['max-w-[var(--bp-sm)]', /max-width:\s*var\(--bp-sm\)/]
+  ]) {
+    assert.match(
+      utilities,
+      new RegExp(escapeRegExp(escapeClass(token)) + '\\s*\\{[^}]*' + declaration.source),
+      'Missing EmptyState rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the EmptyState marker.
+  assert.doesNotMatch(css, /\.eg-empty-state\b/);
+}
+
+function assertBreadcrumbConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, declaration] of [
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/],
+    ['list-none', /list-style-type:\s*none/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['gap-x-2', /column-gap:\s*var\(--space-2\)/],
+    ['gap-y-1', /row-gap:\s*var\(--space-1\)/],
+    ['gap-2', /gap:\s*var\(--space-2\)/],
+    ['min-h-14', /min-height:\s*var\(--space-14\)/],
+    ['self-stretch', /align-self:\s*stretch/],
+    ['self-center', /align-self:\s*center/],
+    ['text-label-default', /font-size:\s*var\(--text-label-default[,)]/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['-rotate-90', /rotate:\s*calc\(90deg\s*\*\s*-1\)/]
+  ]) {
+    assert.match(
+      utilities,
+      new RegExp(escapeRegExp(escapeClass(token)) + '\\s*\\{[^}]*' + declaration.source),
+      'Missing Breadcrumb rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the Breadcrumb marker.
+  assert.doesNotMatch(css, /\.eg-breadcrumb\b/);
+}
+
+// DetailHeader ships no stylesheet: every utility of its nine recipes is emitted for native and Tailwind consumers.
+function assertDetailHeaderCSS(css) {
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, declaration] of [
+    ['flex', /display:\s*flex/],
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['flex-col', /flex-direction:\s*column/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['gap-6', /gap:\s*var\(--space-6\)/],
+    ['gap-1', /gap:\s*var\(--space-1\)/],
+    ['gap-1.5', /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/],
+    ['gap-x-8', /column-gap:\s*var\(--space-8\)/],
+    ['gap-x-6', /column-gap:\s*var\(--space-6\)/],
+    ['gap-y-4', /row-gap:\s*var\(--space-4\)/],
+    ['gap-y-3', /row-gap:\s*var\(--space-3\)/],
+    ['m-0', /margin:\s*var\(--space-0\)/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['list-none', /list-style-type:\s*none/],
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-label-eyebrow', /font-size:\s*var\(--text-label-eyebrow[,)]/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/],
+    ['uppercase', /text-transform:\s*uppercase/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['whitespace-normal', /white-space:\s*normal/],
+    ['wrap-anywhere', /overflow-wrap:\s*anywhere/]
+  ]) {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + '[^{}]*\\{[^}]*' + declaration.source),
+      'Missing DetailHeader rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects a DetailHeader marker.
+  assert.doesNotMatch(css, /\.eg-detail-header\b/);
+}
+
+// Pagination ships no stylesheet: every utility of its seven recipes is emitted for native and Tailwind consumers, the
+// current-page paint sits behind aria-current, the focus ring comes after it and the forced-colours outline after outline-none.
+function assertPaginationCSS(css) {
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const space = (step) => 'var\\(--space-' + step + '[,)]';
+  for (const [token, declaration] of [
+    ['m-0', new RegExp('margin:\\s*' + space('0'))],
+    ['p-0', new RegExp('padding:\\s*' + space('0'))],
+    ['list-none', /list-style-type:\s*none/],
+    ['flex-wrap', /flex-wrap:\s*wrap/],
+    ['justify-center', /justify-content:\s*center/],
+    ['gap-1', new RegExp('gap:\\s*' + space('1'))],
+    ['gap-2', new RegExp('gap:\\s*' + space('2'))],
+    ['box-border', /box-sizing:\s*border-box/],
+    ['inline-flex', /display:\s*inline-flex/],
+    ['min-h-10', new RegExp('min-height:\\s*' + space('10'))],
+    ['min-w-10', new RegExp('min-width:\\s*' + space('10'))],
+    ['rounded-md', /border-radius:\s*var\(--radius-md[,)]/],
+    ['border-solid', /border-style:\s*solid/],
+    ['px-2', new RegExp('padding-inline:\\s*' + space('2'))],
+    ['pointer-coarse:min-h-14', new RegExp('min-height:\\s*' + space('14'))],
+    ['pointer-coarse:min-w-14', new RegExp('min-width:\\s*' + space('14'))],
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['text-meta', /font-size:\s*var\(--text-meta[,)]/],
+    ['tabular-nums', /--tw-numeric-spacing:\s*tabular-nums/],
+    ['uppercase', /text-transform:\s*uppercase/],
+    ['text-fg-secondary', /color:\s*var\(--color-fg-secondary[,)]/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['no-underline', /text-decoration-line:\s*none/],
+    ['transition-colors', /transition-property:\s*color,\s*background-color,\s*border-color/],
+    ['duration-(--duration-fast)', /transition-duration:\s*var\(--duration-fast\)/],
+    ['ease-(--ease-out)', /transition-timing-function:\s*var\(--ease-out\)/],
+    ['motion-reduce:transition-none', /transition-property:\s*none/],
+    ['hover:bg-surface-2', /background-color:\s*var\(--color-surface-2[,)]/],
+    ['hover:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['aria-[current=page]:border-state-selected', /border-color:\s*var\(--color-state-selected[,)]/],
+    [
+      'aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
+      /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)/
+    ],
+    ['aria-[current=page]:shadow-[var(--shadow-edge-strong)]', /--tw-shadow:\s*var\(--shadow-edge-strong\)/],
+    ['aria-[current=page]:text-fg-default', /color:\s*var\(--color-fg-default[,)]/],
+    ['focus-visible:outline-none', /outline-style:\s*none/],
+    [
+      'focus-visible:shadow-focus',
+      /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #ff0036\)/i
+    ],
+    [
+      'aria-[current=page]:focus-visible:shadow-focus',
+      /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #ff0036\)/i
+    ],
+    ['forced-colors:focus-visible:outline-solid', /outline-style:\s*solid/],
+    ['forced-colors:focus-visible:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+    ['forced-colors:focus-visible:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+    ['forced-colors:aria-[current=page]:outline-solid', /outline-style:\s*solid/],
+    ['forced-colors:aria-[current=page]:outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)/],
+    ['forced-colors:aria-[current=page]:outline-[color:Highlight]', /outline-color:\s*highlight/i],
+    ['data-[disabled]:opacity-45', /opacity:\s*(?:\.45|45%)/],
+    ['rtl:rotate-180', /rotate:\s*180deg/]
+  ]) {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + '[^{}]*\\{[^}]*' + declaration.source, declaration.flags),
+      'Missing Pagination rule ' + token
+    );
+  }
+  // Cascade: with equal specificity the later rule wins, so the order of the emitted rules is part of the contract.
+  const at = (token, suffix) => {
+    const match = new RegExp(escapeRegExp(escapeClass(token)) + suffix + '\\s*\\{').exec(css);
+    assert.ok(match, 'Missing Pagination selector ' + token + suffix);
+    return match.index;
+  };
+  const current = '\\[aria-current="?page"?\\]';
+  const edge = at('aria-[current=page]:shadow-[var(--shadow-edge-strong)]', current);
+  const ring = at('focus-visible:shadow-focus', ':focus-visible');
+  const compound = at('aria-[current=page]:focus-visible:shadow-focus', current + ':focus-visible');
+  assert.ok(compound > edge && compound > ring, 'The focus ring must come after the current-page edge shadow');
+  assert.ok(
+    at('forced-colors:focus-visible:outline-solid', ':focus-visible') >
+      at('focus-visible:outline-none', ':focus-visible'),
+    'The forced-colours outline must come after outline-none'
+  );
+  assert.ok(
+    at('aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)]', current) >
+      at('hover:bg-surface-2', ':hover'),
+    'The current page must keep its own paint under hover'
+  );
+  // No stylesheet: nothing in the shipped CSS selects the Pagination marker.
+  assert.doesNotMatch(css, /\.eg-pagination\b/);
+}
+
+// Embed ships no stylesheet: every utility of its four recipes and of the Surface well it composes is emitted for native and
+// Tailwind consumers with the token declarations of the spec's emission inventory, and nothing selects the marker.
+function assertEmbedCSS(css) {
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, declaration] of [
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['overflow-hidden', /overflow:\s*hidden/],
+    ['bg-surface-0', /background-color:\s*var\(--color-surface-0[,)]/],
+    ['border-border-hairline', /border-color:\s*var\(--color-border-hairline[,)]/],
+    ['shadow-[var(--shadow-well)]', /--tw-shadow:\s*var\(--shadow-well\)/],
+    ['rounded-xl', /border-radius:\s*var\(--radius-xl[,)]/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['absolute', /position:\s*absolute/],
+    ['inset-0', /inset:\s*var\(--space-0\)/],
+    ['grid', /display:\s*grid/],
+    ['place-items-center', /place-items:\s*center/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['relative', /position:\s*relative/],
+    ['block', /display:\s*block/],
+    ['size-full', /width:\s*100%/],
+    ['size-full', /height:\s*100%/],
+    ['border-0', /border-width:\s*0px/],
+    ['box-border', /box-sizing:\s*border-box/],
+    ['p-6', /padding:\s*var\(--space-6\)/],
+    ['text-center', /text-align:\s*center/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/]
+  ]) {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + '[^{}]*\\{[^}]*' + declaration.source, declaration.flags),
+      'Missing Embed rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the Embed marker.
+  assert.doesNotMatch(css, /\.eg-embed\b/);
+}
+
 function assertStepMeterConsumerCSS(css) {
   const utilitiesStart = css.search(/@layer utilities\s*\{/);
   assert.ok(utilitiesStart >= 0);
@@ -5564,6 +6253,19 @@ function assertSectionNavConsumerCSS(css) {
   }
   assert.match(utilities, /safe-area-inset-right/);
   assert.match(utilities, /safe-area-inset-bottom/);
+  for (const [selector, declaration] of [
+    ['font-display', /font-family:\s*var\(--font-display[,)]/],
+    ['text-meta', /font-size:\s*var\(--text-meta[,)]/],
+    ['tabular-nums', /font-variant-numeric:/],
+    ['text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    ['uppercase', /text-transform:\s*uppercase/]
+  ]) {
+    assert.match(
+      block(utilities, new RegExp('\\.' + selector + '\\s*\\{')),
+      declaration,
+      'Missing SectionNav utility .' + selector
+    );
+  }
   assert.doesNotMatch(utilities, /\.eg-section-nav\s*\{/);
   assert.match(block(css, /@layer components\s*\{/), /\.eg-section-nav/);
 }
@@ -5642,6 +6344,22 @@ function assertFooterConsumerCSS(css) {
   assert.match(utilities, /border-top-style:\s*solid/);
   assert.match(utilities, /border-bottom-style:\s*solid/);
   assert.match(utilities, /border-(?:top|bottom)-width:\s*var\(--border-width[,)]/);
+  // v0.4 (#561, #565): the Grafito wash with its reduced-transparency fallback, and the content wrapper utilities.
+  for (const selector of [
+    String.raw`.bg-surface-0\/50`,
+    '.bg-none',
+    String.raw`.\[\@media\(prefers-reduced-transparency\:reduce\)\]\:bg-surface-0`,
+    '.box-border',
+    '.w-full',
+    '.mx-auto',
+    String.raw`.max-w-\[var\(--content-max\)\]`,
+    String.raw`.px-\[var\(--gutter\)\]`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Footer packed utility ' + selector);
+  }
+  assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(utilities, /max-width:\s*var\(--content-max\)/);
+  assert.match(utilities, /padding-inline:\s*var\(--gutter\)/);
 }
 
 function assertTopBarConsumerCSS(css) {
@@ -5815,6 +6533,18 @@ ${assertPixelConsumerCSS.toString()}
 assertPixelConsumerCSS(shippedStyles);
 ${assertStepMeterConsumerCSS.toString()}
 assertStepMeterConsumerCSS(shippedStyles);
+${assertProseConsumerCSS.toString()}
+assertProseConsumerCSS(shippedStyles);
+${assertEmptyStateConsumerCSS.toString()}
+assertEmptyStateConsumerCSS(shippedStyles);
+${assertBreadcrumbConsumerCSS.toString()}
+assertBreadcrumbConsumerCSS(shippedStyles);
+${assertDetailHeaderCSS.toString()}
+assertDetailHeaderCSS(shippedStyles);
+${assertPaginationCSS.toString()}
+assertPaginationCSS(shippedStyles);
+${assertEmbedCSS.toString()}
+assertEmbedCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -5906,6 +6636,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'BlogGridFeature',
   'BlogGridRow',
   'BlogGridRows',
+  'Breadcrumb',
   'Button',
   'ButtonGroup',
   'CalendarGrid',
@@ -5926,12 +6657,15 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'CommunityCardAction',
   'CommunityCardMark',
   'Countdown',
+  'DetailHeader',
   'Dialog',
   'DialogClose',
   'DialogContent',
   'DialogTrigger',
   'Divider',
   'Dropzone',
+  'Embed',
+  'EmptyState',
   'Field',
   'FieldMessage',
   'Footer',
@@ -5984,6 +6718,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'NowCardFooter',
   'NowStrip',
   'PageHeader',
+  'Pagination',
   'Panel',
   'PanelBody',
   'PanelFooter',
@@ -6003,6 +6738,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ProjectCardFooter',
   'ProjectCardMark',
   'ProjectCardTags',
+  'Prose',
   'PullQuote',
   'RadioGroup',
   'SearchTrigger',
@@ -6280,6 +7016,8 @@ function assertLinkCSS(css) {
   for (const selector of [
     '.border-0',
     '.text-link-default',
+    '.text-fg-default',
+    '.decoration-fg-brand-default',
     '.text-label-default',
     '.underline',
     String.raw`.underline-offset-\(--space-1\)`,
@@ -6299,6 +7037,7 @@ function assertLinkCSS(css) {
   ]) {
     assert.ok(css.includes(selector), 'Missing Link utility ' + selector);
   }
+  assert.match(css, /\.decoration-fg-brand-default\s*\{[^}]*text-decoration-color:\s*var\(--color-fg-brand-default/);
   assert.match(css, /\.transform-none\s*\{[^}]*transform:\s*none/);
   assert.match(css, /translate:\s*var\(--tw-translate-x\) var\(--tw-translate-y\)/);
   assert.match(css, /transition-property:\s*translate/);
@@ -6419,6 +7158,181 @@ for (const meter of stepMeters) {
   }
 }
 stepMeterDocument.window.close();
+const { ProseSamples } = await import('./consumer.ts');
+const proseDocument = new JSDOM(renderToString(createElement(ProseSamples)));
+const proseRoots = [...proseDocument.window.document.querySelectorAll('div.eg-prose')];
+assert.equal(proseRoots.length, 2);
+const [proseRaised, proseDefault] = proseRoots;
+assert.equal(proseRaised.getAttribute('id'), 'packed-prose');
+assert.equal(proseRaised.getAttribute('lang'), 'en');
+for (const name of ['mx-auto', 'max-w-prose', 'text-body-default', '[&_code:not(pre_code)]:text-fg-brand-raised']) {
+  assert.ok(proseRaised.classList.contains(name), name);
+}
+for (const name of ['max-w-prose', 'text-body-large', '[&_code:not(pre_code)]:text-fg-brand-default']) {
+  assert.ok(proseDefault.classList.contains(name), name);
+}
+for (const root of proseRoots) {
+  for (const attribute of ['role', 'tabindex', 'data-state', 'aria-label', 'aria-labelledby', 'size', 'tone']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+}
+assert.deepEqual([...proseRaised.children].map((node) => node.tagName), ['H2', 'P']);
+assert.equal(proseRaised.querySelector('a[href="#packed"]').textContent, 'a link');
+proseDocument.window.close();
+const { EmptyStateSamples } = await import('./consumer.ts');
+const emptyStateDocument = new JSDOM(renderToString(createElement(EmptyStateSamples)));
+const emptyStateRoots = [...emptyStateDocument.window.document.querySelectorAll('div.eg-empty-state')];
+assert.equal(emptyStateRoots.length, 4);
+const [emptyFull, emptyTitleOnly, emptyLink, emptyBlankDescription] = emptyStateRoots;
+assert.equal(emptyFull.getAttribute('id'), 'packed-empty');
+assert.equal(emptyFull.getAttribute('lang'), 'en');
+assert.equal(emptyFull.getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(emptyFull.classList.contains('mt-6'));
+assert.deepEqual([...emptyFull.children].map((node) => node.tagName), ['SPAN', 'H2', 'P', 'DIV']);
+assert.equal(emptyFull.children[0].getAttribute('aria-hidden'), 'true');
+assert.ok(emptyFull.children[0].querySelector('svg.eg-icon.size-7'));
+assert.equal(emptyFull.querySelector('h2').textContent, 'No posts match');
+assert.equal(emptyFull.querySelector('button').textContent, 'Clear filters');
+assert.deepEqual([...emptyTitleOnly.children].map((node) => node.tagName), ['H3']);
+assert.deepEqual([...emptyLink.children].map((node) => node.tagName), ['SPAN', 'H3', 'DIV']);
+assert.ok(emptyLink.querySelector('a[href="#all-posts"]').textContent.includes('Browse all posts'));
+assert.deepEqual([...emptyBlankDescription.children].map((node) => node.tagName), ['H3']);
+for (const root of emptyStateRoots) {
+  for (const attribute of ['role', 'title', 'tabindex', 'aria-label', 'aria-labelledby', 'aria-live', 'data-state']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+}
+emptyStateDocument.window.close();
+const { BreadcrumbSamples } = await import('./consumer.ts');
+const breadcrumbDocument = new JSDOM(renderToString(createElement(BreadcrumbSamples)));
+const breadcrumbRoots = [...breadcrumbDocument.window.document.querySelectorAll('nav.eg-breadcrumb')];
+assert.equal(breadcrumbRoots.length, 4);
+const [trailFull, trailSingle, trailTrailingHref, trailLong] = breadcrumbRoots;
+assert.equal(trailFull.getAttribute('aria-label'), 'Breadcrumb');
+assert.equal(trailFull.getAttribute('id'), 'packed-trail');
+assert.equal(trailFull.getAttribute('lang'), 'en');
+assert.equal(trailFull.getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(trailFull.classList.contains('mt-6'));
+assert.deepEqual([...trailFull.children].map((node) => node.tagName), ['OL']);
+assert.equal(trailFull.querySelectorAll('ol > li').length, 3);
+assert.deepEqual([...trailFull.querySelectorAll('a')].map((link) => link.getAttribute('href')), ['#home', '#editorial']);
+assert.equal(trailFull.querySelectorAll('[aria-current]').length, 1);
+assert.equal(trailFull.querySelector('span[aria-current="page"]').textContent, 'Post title');
+assert.equal(trailFull.querySelectorAll('svg[aria-hidden="true"][focusable="false"]').length, 2);
+assert.equal(trailFull.textContent, 'HomeEditorialPost title');
+assert.equal(trailSingle.querySelectorAll('li').length, 1);
+assert.equal(trailSingle.querySelectorAll('a, svg').length, 0);
+assert.equal(trailSingle.querySelector('span[aria-current="page"]').textContent, 'Home');
+assert.equal(trailTrailingHref.querySelectorAll('a').length, 1);
+assert.equal(trailTrailingHref.querySelector('a[href="#ignored"]'), null);
+assert.equal(trailTrailingHref.querySelector('span[aria-current="page"]').textContent, 'Post title');
+assert.equal(trailLong.querySelectorAll('ol > li').length, 5);
+assert.equal(trailLong.querySelectorAll('svg').length, 4);
+assert.equal(trailLong.querySelectorAll('a').length, 4);
+for (const root of breadcrumbRoots) {
+  for (const attribute of ['role', 'aria-labelledby', 'tabindex', 'data-state', 'style']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+}
+breadcrumbDocument.window.close();
+const { DetailHeaderSamples } = await import('./consumer.ts');
+const detailHeaderDocument = new JSDOM(renderToString(createElement(DetailHeaderSamples)));
+const detailHeaderRoots = [...detailHeaderDocument.window.document.querySelectorAll('.eg-detail-header')];
+assert.equal(detailHeaderRoots.length, 5);
+const [headerFull, headerTitleOnly, headerLocalized, headerFacts, headerInvalid] = detailHeaderRoots;
+for (const root of detailHeaderRoots) {
+  assert.equal(root.tagName, 'DIV');
+  assert.equal(root.querySelectorAll('header').length, 1);
+  for (const attribute of ['role', 'aria-label', 'aria-labelledby', 'tabindex', 'data-state', 'style', 'title']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+  for (const element of root.querySelectorAll('dl, dl > div, dt, dd, time, ul, li')) {
+    assert.equal(element.hasAttribute('style'), false, element.tagName);
+  }
+}
+assert.equal(headerFull.getAttribute('id'), 'packed-header');
+assert.equal(headerFull.getAttribute('lang'), 'en');
+assert.equal(headerFull.getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(headerFull.classList.contains('mt-6'));
+assert.deepEqual([...headerFull.children].map((node) => node.tagName), ['HEADER', 'DL', 'UL', 'UL']);
+assert.equal(headerFull.querySelector('h1').textContent, 'Conference');
+assert.deepEqual([...headerFull.querySelectorAll('dt')].map((node) => node.textContent), ['Date', 'Place']);
+assert.equal(headerFull.querySelector('time').getAttribute('datetime'), '2026-12-12');
+const [fullTags, fullLinks] = headerFull.querySelectorAll('ul');
+assert.equal(fullTags.getAttribute('role'), 'list');
+assert.equal(fullTags.getAttribute('aria-label'), 'Tags');
+assert.deepEqual([...fullTags.querySelectorAll('li')].map((node) => node.textContent), ['Design', 'Systems']);
+assert.deepEqual([...fullTags.querySelectorAll('li > .eg-chip > span')].map((node) => node.className), ['whitespace-normal wrap-anywhere', 'whitespace-normal wrap-anywhere']);
+assert.equal(fullLinks.getAttribute('role'), 'list');
+assert.equal(fullLinks.getAttribute('aria-label'), 'Links');
+assert.deepEqual([...fullLinks.querySelectorAll('a')].map((link) => link.getAttribute('href')), ['https://example.com/events/conference', 'https://example.org/recordings/conference']);
+for (const link of fullLinks.querySelectorAll('a')) {
+  assert.equal(link.getAttribute('target'), '_blank');
+  const rel = link.getAttribute('rel').split(/\\s+/);
+  assert.ok(rel.includes('noopener') && rel.includes('noreferrer'));
+}
+assert.deepEqual([...fullLinks.querySelectorAll('a')].map((link) => link.textContent), ['Event page (opens in a new tab)', 'Recording (opens in a new tab)']);
+assert.deepEqual([...headerTitleOnly.children].map((node) => node.tagName), ['HEADER']);
+assert.equal(headerTitleOnly.querySelectorAll('dl, ul, li, a, time').length, 0);
+assert.equal(headerLocalized.querySelector('h3').textContent, 'Release notes / changelog');
+assert.equal(headerLocalized.querySelector('h3 span[aria-hidden="true"]').textContent, '/ ');
+assert.equal(headerLocalized.querySelector('h3 span[lang="en"]').textContent, 'Release notes ');
+assert.deepEqual([...headerLocalized.querySelectorAll('ul')].map((list) => list.getAttribute('aria-label')), ['Topics', 'Related pages']);
+assert.equal(headerLocalized.querySelector('a').textContent, 'Download (opens in a new window)');
+assert.deepEqual([...headerFacts.children].map((node) => node.tagName), ['HEADER', 'DL']);
+assert.equal(headerFacts.querySelector('time'), null);
+assert.deepEqual([...headerInvalid.children].map((node) => node.tagName), ['HEADER']);
+assert.equal(headerInvalid.querySelectorAll('a, dl, ul').length, 0);
+detailHeaderDocument.window.close();
+const { PaginationSamples } = await import('./consumer.ts');
+const paginationDocument = new JSDOM(renderToString(createElement(PaginationSamples)));
+const paginationRoots = [...paginationDocument.window.document.querySelectorAll('nav.eg-pagination')];
+// The single-page sample renders nothing, so five of the six samples are landmarks.
+assert.equal(paginationRoots.length, 5);
+const [pagesFull, pagesFirst, pagesLast, pagesShort, pagesLocalized] = paginationRoots;
+const pageRow = (root) => [...root.querySelectorAll('li')].map((item) => item.textContent);
+const pageHref = (page) => '/editorial?topic=design&page=' + page;
+for (const root of paginationRoots) {
+  assert.deepEqual([...root.children].map((node) => node.tagName), ['UL']);
+  assert.equal(root.querySelector('ul').getAttribute('role'), 'list');
+  for (const attribute of ['role', 'aria-labelledby', 'tabindex', 'data-state', 'style']) {
+    assert.equal(root.hasAttribute(attribute), false, attribute);
+  }
+  assert.equal(root.querySelectorAll('[style], [data-state], [tabindex], button, [role="button"]').length, 0);
+  assert.equal(root.querySelectorAll('[aria-current]').length, 1);
+  assert.equal(root.querySelector('[aria-current]').tagName, 'A');
+}
+assert.equal(pagesFull.getAttribute('aria-label'), 'Editorial pages');
+assert.equal(pagesFull.getAttribute('id'), 'packed-pagination');
+assert.equal(pagesFull.getAttribute('lang'), 'en');
+assert.equal(pagesFull.getAttribute('aria-describedby'), 'packed-hint');
+assert.ok(pagesFull.classList.contains('mt-6'));
+assert.deepEqual(pageRow(pagesFull), ['Previous', '1', '…', '5', '6', '7', '…', '12', 'Next']);
+assert.deepEqual([...pagesFull.querySelectorAll('a')].map((link) => link.getAttribute('href')), [5, 1, 5, 6, 7, 12, 7].map(pageHref));
+assert.deepEqual([...pagesFull.querySelectorAll('a')].map((link) => link.getAttribute('rel')), ['prev', null, null, null, null, null, 'next']);
+assert.deepEqual([...pagesFull.querySelectorAll('a')].map((link) => link.getAttribute('aria-label') ?? link.textContent), ['Previous', 'Page 1', 'Page 5', 'Page 6', 'Page 7', 'Page 12', 'Next']);
+assert.equal(pagesFull.querySelector('a[aria-current="page"]').textContent, '6');
+assert.deepEqual([...pagesFull.querySelectorAll('li[aria-hidden="true"]')].map((item) => item.textContent), ['…', '…']);
+assert.equal(pagesFull.querySelectorAll('svg[aria-hidden="true"][focusable="false"]').length, 2);
+assert.deepEqual(pageRow(pagesFirst), ['Previous', '1', '2', '3', '4', '5', '…', '12', 'Next']);
+assert.equal(pagesFirst.querySelector('li').getAttribute('aria-hidden'), 'true');
+assert.equal(pagesFirst.querySelector('li:first-child a'), null);
+assert.equal(pagesFirst.querySelector('li span[data-disabled]').textContent, 'Previous');
+assert.equal(pagesFirst.querySelectorAll('a').length, 7);
+assert.equal(pagesFirst.querySelector('a[aria-current="page"]').textContent, '1');
+assert.deepEqual(pageRow(pagesLast), ['Previous', '1', '…', '8', '9', '10', '11', '12', 'Next']);
+assert.equal(pagesLast.querySelector('li:last-child').getAttribute('aria-hidden'), 'true');
+assert.equal(pagesLast.querySelector('li:last-child a'), null);
+assert.equal(pagesLast.querySelectorAll('a').length, 7);
+assert.equal(pagesLast.querySelector('a[aria-current="page"]').textContent, '12');
+assert.deepEqual(pageRow(pagesShort), ['Previous', '1', '2', '3', '4', '5', 'Next']);
+assert.equal(pagesShort.textContent.includes('…'), false);
+assert.equal(pagesShort.querySelectorAll('li[aria-hidden="true"]').length, 1);
+assert.equal(pagesShort.querySelector('a[aria-current="page"]').textContent, '5');
+assert.deepEqual([...pagesLocalized.querySelectorAll('a')].map((link) => link.getAttribute('aria-label') ?? link.textContent), ['Newer', 'Results page 1', 'Results page 2', 'Results page 3', 'Results page 4', 'Results page 5', 'Results page 9', 'Older']);
+assert.deepEqual([...pagesLocalized.querySelectorAll('a')].map((link) => link.textContent), ['Newer', '1', '2', '3', '4', '5', '9', 'Older']);
+assert.equal(pagesLocalized.querySelector('a[aria-current="page"]').getAttribute('aria-label'), 'Results page 3');
+paginationDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');
@@ -6454,6 +7368,24 @@ for (const empty of [false, true]) {
     }
   } finally { dom.window.close(); }
 }
+const { ChapterBreakTitleSamples } = await import('./consumer.ts');
+for (const titleVariant of ['show', 'hero']) {
+  const dom = new JSDOM(renderToString(createElement(ChapterBreakTitleSamples, { titleVariant })));
+  try {
+    const root = dom.window.document.querySelector('.eg-chapter-break');
+    assert.ok(root);
+    const heading = root.querySelector('h2#chapter-title');
+    assert.ok(heading);
+    const accent = heading.querySelector('.eg-heading__accent');
+    assert.ok(accent);
+    assert.equal(heading.textContent, 'Build together');
+    assert.equal(heading.classList.contains('text-title-show'), titleVariant === 'show');
+    assert.equal(heading.classList.contains('text-title-hero'), titleVariant === 'hero');
+    assert.equal(accent.classList.contains('[text-shadow:none]'), titleVariant === 'show');
+    assert.equal(accent.classList.contains('[text-shadow:var(--text-shadow-title-hero)]'), titleVariant === 'hero');
+    assert.deepEqual(root.getAttributeNames(), ['class']);
+  } finally { dom.window.close(); }
+}
 const { LabStageSamples } = await import('./consumer.ts');
 for (const empty of [false, true]) {
   const dom = new JSDOM(renderToString(createElement(LabStageSamples, { empty })));
@@ -6483,6 +7415,24 @@ for (const empty of [false, true]) {
     }
   } finally { dom.window.close(); }
 }
+const { LabStageTitleSamples } = await import('./consumer.ts');
+for (const titleVariant of ['show', 'hero']) {
+  const dom = new JSDOM(renderToString(createElement(LabStageTitleSamples, { titleVariant })));
+  try {
+    const root = dom.window.document.querySelector('.eg-lab');
+    assert.ok(root);
+    const heading = root.querySelector('h2#lab-title');
+    assert.ok(heading);
+    const accent = heading.querySelector('.eg-heading__accent');
+    assert.ok(accent);
+    assert.equal(heading.textContent, 'Build together');
+    assert.equal(heading.classList.contains('text-title-show'), titleVariant === 'show');
+    assert.equal(heading.classList.contains('text-title-hero'), titleVariant === 'hero');
+    assert.equal(accent.classList.contains('[text-shadow:none]'), titleVariant === 'show');
+    assert.equal(accent.classList.contains('[text-shadow:var(--text-shadow-title-hero)]'), titleVariant === 'hero');
+    assert.deepEqual(root.getAttributeNames(), ['class']);
+  } finally { dom.window.close(); }
+}
 const { ClosingSamples } = await import('./consumer.ts');
 {
   const dom = new JSDOM(renderToString(createElement(ClosingSamples)));
@@ -6499,6 +7449,24 @@ const { ClosingSamples } = await import('./consumer.ts');
     for (const name of ['[@media(width<=860px)]:order-first', '[@media(width<=860px)]:w-[min(100%,34svh,calc(var(--space-24)*4))]']) assert.ok(media.classList.contains(name));
     assert.deepEqual([...root.querySelectorAll('a')].map((a) => a.getAttribute('href')), ['#one', '#two']);
     assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
+  } finally { dom.window.close(); }
+}
+const { ClosingTitleSamples } = await import('./consumer.ts');
+for (const titleVariant of ['show', 'hero']) {
+  const dom = new JSDOM(renderToString(createElement(ClosingTitleSamples, { titleVariant })));
+  try {
+    const root = dom.window.document.querySelector('.eg-closing');
+    assert.ok(root);
+    const heading = root.querySelector('h2#closing-title');
+    assert.ok(heading);
+    const accent = heading.querySelector('.eg-heading__accent');
+    assert.ok(accent);
+    assert.equal(heading.textContent, 'Build together');
+    assert.equal(heading.classList.contains('text-title-show'), titleVariant === 'show');
+    assert.equal(heading.classList.contains('text-title-hero'), titleVariant === 'hero');
+    assert.equal(accent.classList.contains('[text-shadow:none]'), titleVariant === 'show');
+    assert.equal(accent.classList.contains('[text-shadow:var(--text-shadow-title-hero)]'), titleVariant === 'hero');
+    assert.deepEqual(root.getAttributeNames(), ['class']);
   } finally { dom.window.close(); }
 }
 const { HeroSamples } = await import('./consumer.ts');
@@ -6525,6 +7493,24 @@ for (const empty of [false, true]) {
     }
   } finally { dom.window.close(); }
 }
+const { HeroTitleSamples } = await import('./consumer.ts');
+for (const titleVariant of ['show', 'hero']) {
+  const dom = new JSDOM(renderToString(createElement(HeroTitleSamples, { titleVariant })));
+  try {
+    const root = dom.window.document.querySelector('.eg-hero');
+    assert.ok(root);
+    const heading = root.querySelector('h2#intro');
+    assert.ok(heading);
+    const accent = heading.querySelector('.eg-heading__accent');
+    assert.ok(accent);
+    assert.equal(heading.textContent, 'Build together');
+    assert.equal(heading.classList.contains('text-title-show'), titleVariant === 'show');
+    assert.equal(heading.classList.contains('text-title-hero'), titleVariant === 'hero');
+    assert.equal(accent.classList.contains('[text-shadow:none]'), titleVariant === 'show');
+    assert.equal(accent.classList.contains('[text-shadow:var(--text-shadow-title-hero)]'), titleVariant === 'hero');
+    assert.deepEqual(root.getAttributeNames(), ['class']);
+  } finally { dom.window.close(); }
+}
 const { SectionNavSamples } = await import('./consumer.ts');
 {
   const dom = new JSDOM(renderToString(createElement(SectionNavSamples)));
@@ -6542,6 +7528,13 @@ const { SectionNavSamples } = await import('./consumer.ts');
       for (const name of ['[@media(width<=520px)]:min-w-14', '[@media(width<=520px)]:min-h-14']) assert.ok(node.classList.contains(name));
     }
     for (const name of ['[@media(width<=520px)]:h-14', '[@media(width<=520px)]:px-3']) assert.ok(trigger.parentElement.classList.contains(name));
+    const [number, label] = [...trigger.children].filter((node) => node.tagName === 'SPAN');
+    assert.equal(number?.textContent, '01');
+    assert.equal(label?.textContent, 'One');
+    for (const name of ['font-display', 'text-meta', 'tabular-nums', 'text-fg-brand-raised']) assert.ok(number.classList.contains(name), 'SectionNav number must carry ' + name);
+    for (const name of ['font-display', 'text-meta', 'uppercase']) assert.ok(label.classList.contains(name), 'SectionNav label must carry ' + name);
+    assert.equal(number.nextSibling?.nodeType, 3);
+    assert.equal(trigger.textContent, '01 One');
     assert.equal(doc.querySelector('[role="dialog"]'), null);
   } finally { dom.window.close(); }
 }
@@ -6589,6 +7582,18 @@ assert.equal(footerCurrentLinks.length, 1);
 assert.equal(footerCurrentLinks[0].getAttribute('href'), '#two');
 assert.equal(footerCurrentLinks[0].getAttribute('aria-current'), 'page');
 footerDocument.window.close();
+const { FooterWrappedSamples } = await import('./consumer.ts');
+const wrappedFooterDocument = new JSDOM(renderToString(createElement(FooterWrappedSamples)));
+const wrappedFooter = wrappedFooterDocument.window.document.querySelector('footer');
+assert.equal(wrappedFooter.children.length, 1);
+assert.ok(wrappedFooter.firstElementChild.classList.contains('eg-footer__wrap'));
+for (const name of ['bg-surface-0/50', 'bg-none', '[@media(prefers-reduced-transparency:reduce)]:bg-surface-0']) {
+  assert.ok(wrappedFooter.classList.contains(name), 'Missing wrapped Footer root class ' + name);
+}
+assert.equal(wrappedFooter.hasAttribute('wrap'), false);
+assert.equal(wrappedFooter.hasAttribute('register'), false);
+assert.ok([...wrappedFooter.querySelectorAll('nav a')].every((anchor) => anchor.classList.contains('text-fg-default') && !anchor.classList.contains('text-link-default')));
+wrappedFooterDocument.window.close();
 const { NowStripSamples } = await import('./consumer.ts');
 const nowStripDocument = new JSDOM(renderToString(createElement(NowStripSamples)));
 const nowStripGroup = nowStripDocument.window.document.querySelector('[role="group"].eg-now-strip');
@@ -6660,6 +7665,75 @@ try {
   assert.equal(root.querySelector('a').getAttribute('href'), '#content');
   assert.equal(root.querySelector('a').textContent, 'Visible packed content');
 } finally { revealDOM.window.close(); }
+const { EmbedSamples } = await import('./consumer.ts');
+const embedHTML = renderToString(createElement(EmbedSamples));
+writeFileSync(new URL('./embed-hydration.html', import.meta.url), embedHTML);
+// The server never starts a request: no frame and no src in the markup of any sample.
+for (const forbidden of ['<iframe', 'video.example', '/embed/1']) assert.equal(embedHTML.includes(forbidden), false, forbidden);
+const embedDOM = new JSDOM(embedHTML);
+try {
+  const embeds = [...embedDOM.window.document.querySelectorAll('div.eg-embed')];
+  assert.equal(embeds.length, 4);
+  const [embedFrame, embedContent, embedFallback, embedDefault] = embeds;
+  assert.deepEqual(embeds.map((embed) => embed.getAttribute('data-state')), ['loading', 'ready', 'fallback', 'loading']);
+  const reservedOf = (embed) => embed.querySelector('[data-radix-aspect-ratio-wrapper]').style.paddingBottom;
+  assert.deepEqual(embeds.map(reservedOf), ['75%', '100%', String(100 / (16 / 9)) + '%', String(100 / (16 / 9)) + '%']);
+  assert.equal(embedFrame.getAttribute('id'), 'packed-embed');
+  assert.equal(embedFrame.getAttribute('lang'), 'en');
+  assert.equal(embedFrame.getAttribute('aria-describedby'), 'packed-hint');
+  assert.ok(embedFrame.classList.contains('mt-6'));
+  // Frame branch: busy, a decorative Spinner, and no role or name on the root (the frame carries it once mounted).
+  for (const embed of [embedFrame, embedDefault]) {
+    assert.equal(embed.getAttribute('aria-busy'), 'true');
+    assert.equal(embed.hasAttribute('role'), false);
+    assert.equal(embed.hasAttribute('aria-label'), false);
+    assert.equal(embed.querySelector('.eg-spinner').getAttribute('aria-hidden'), 'true');
+  }
+  // Content branch: the children in the box, ready, a group named by the label; the fallback is not rendered.
+  assert.equal(embedContent.getAttribute('role'), 'group');
+  assert.equal(embedContent.getAttribute('aria-label'), 'Post by @egdev6');
+  assert.equal(embedContent.hasAttribute('aria-busy'), false);
+  assert.equal(embedContent.querySelector('.eg-aspect-ratio > p').textContent, 'Post');
+  assert.equal(embedContent.textContent, 'Post');
+  assert.equal(embedContent.querySelector('.eg-spinner'), null);
+  // Fallback state: a group named by the label holding the consumer fallback.
+  assert.equal(embedFallback.getAttribute('role'), 'group');
+  assert.equal(embedFallback.getAttribute('aria-label'), 'Unavailable recording');
+  assert.equal(embedFallback.hasAttribute('aria-busy'), false);
+  assert.equal(embedFallback.querySelector('.eg-aspect-ratio > div > p').textContent, 'Unavailable');
+  // The only part with padding is sized border-box in the markup itself, so a host without a preflight cannot overflow.
+  const embedFallbackLayer = embedFallback.querySelector('.eg-aspect-ratio > div');
+  for (const name of ['box-border', 'grid', 'size-full', 'place-items-center', 'p-6']) assert.ok(embedFallbackLayer.classList.contains(name), 'Missing fallback layer class ' + name);
+  for (const embed of embeds) {
+    for (const name of ['eg-surface', 'bg-surface-0', 'border-border-hairline', 'rounded-xl', 'p-0', 'min-w-0', 'overflow-hidden']) {
+      assert.ok(embed.classList.contains(name), 'Missing Embed root class ' + name);
+    }
+    assert.equal(embed.hasAttribute('style'), false);
+    assert.equal(embed.hasAttribute('tabindex'), false);
+    assert.equal(embed.querySelectorAll('[tabindex], iframe, script').length, 0);
+    for (const node of embed.querySelectorAll('[style]')) {
+      assert.ok(node.hasAttribute('data-radix-aspect-ratio-wrapper') || node.classList.contains('eg-aspect-ratio'));
+    }
+  }
+} finally { embedDOM.window.close(); }
+{
+  const { Embed } = await import('@egdev/ui');
+  const embedWarnings = [];
+  const embedWarn = console.warn;
+  console.warn = (message) => embedWarnings.push(message);
+  try {
+    // A scheme that is not http(s) never reaches the markup, whatever the obfuscation.
+    for (const src of ['javascript:alert(1)', 'data:text/html,x', 'blob:https://video.example/x', ' vbscript:x', 'jav' + String.fromCharCode(9) + 'ascript:alert(1)']) {
+      const markup = renderToString(createElement(Embed, { label: 'Keynote recording', src, fallback: createElement('p', null, 'Unavailable') }));
+      assert.doesNotMatch(markup, /<iframe|script:|data:text|blob:/i);
+      assert.match(markup, /data-state="fallback"/);
+    }
+    // An unnamed frame is never rendered.
+    assert.equal(renderToString(createElement(Embed, { label: '  ', src: '/embed/1' })), '');
+  } finally { console.warn = embedWarn; }
+  assert.ok(embedWarnings.includes('Embed requires a non-empty label. Nothing was rendered.'));
+  assert.ok(embedWarnings.includes('Embed ignored a src that is not an http(s) URL. The fallback state was rendered.'));
+}
 import { AmbientSamples, IsotipoSamples } from './consumer.ts';
 const isotipoHTML = renderToString(createElement(IsotipoSamples));
 writeFileSync(new URL('./isotipo-hydration.html', import.meta.url), isotipoHTML);
@@ -6885,6 +7959,27 @@ try {
   for (const id of ['now-omitted', 'now-null', 'now-boolean']) {
     assert.equal(document.getElementById(id).querySelector('.eg-now-card__badge'), null, id);
   }
+  // v0.4 (#564): the band paints recipe R1 around the supplied label, the prop never reaches the article, and the
+  // explicit default presentation is the same pill as the omitted one.
+  for (const [id, inset, size] of [['now-card-band', 'mx-6', 'md'], ['now-card-band-sm', 'mx-4', 'sm']]) {
+    const band = document.getElementById(id);
+    assert.equal(band.getAttribute('data-size'), size, id);
+    assert.equal(band.hasAttribute('statuspresentation'), false, id);
+    const wrapper = band.firstElementChild;
+    assert.ok(wrapper.classList.contains('eg-now-card__badge'), id);
+    for (const utility of [inset, 'mt-6', 'mb-3', 'items-center', 'gap-2', 'rounded-sm', 'border', 'border-alpha-red-22', 'bg-alpha-red-12', 'px-2.5', 'py-1.5', 'font-display', 'text-label-eyebrow', 'text-primitive-red-200', 'uppercase', 'shadow-edge', 'wrap-anywhere']) {
+      assert.ok(wrapper.classList.contains(utility), id + ' ' + utility);
+    }
+    for (const utility of ['px-6', 'pt-6', 'pb-3']) {
+      assert.equal(wrapper.classList.contains(utility), false, id + ' ' + utility);
+    }
+    assert.equal(wrapper.textContent, 'Building', id);
+    assert.equal(wrapper.hasAttribute('aria-hidden'), false, id);
+    assert.equal(wrapper.querySelector('svg').getAttribute('aria-hidden'), 'true', id);
+  }
+  const pill = document.getElementById('now-card-pill');
+  assert.equal(pill.hasAttribute('statuspresentation'), false);
+  assert.equal(pill.firstElementChild.className, badgeWrapper.className);
 } finally {
   nowDocument.window.close();
 }
@@ -6941,7 +8036,7 @@ import { App, AttachmentFieldSamples, ButtonGroupSamples, ButtonWrapSamples, Car
     terminalDocument.window.close();
   }
 }
-import { ProjectCardSamples, ProjectCardStatusSample } from './consumer.ts';
+import { ProjectCardActionsSample, ProjectCardSamples, ProjectCardStatusSample } from './consumer.ts';
 for (const [projectVariant, projectSize] of [
   ['default', 'md'],
   ['featured', 'sm']
@@ -7000,6 +8095,30 @@ try {
   assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is still the only tab stop');
 } finally {
   statusDocument.window.close();
+}
+const actionsDocument = new JSDOM(renderToString(createElement(ProjectCardActionsSample)));
+try {
+  const document = actionsDocument.window.document;
+  const card = document.getElementById('packed-actions');
+  const footers = card.querySelectorAll('.eg-project-card__foot');
+  assert.equal(footers.length, 1, 'One footer holds the supplied actions');
+  const controls = [...footers[0].children];
+  assert.deepEqual(
+    controls.map((control) => control.tagName),
+    ['A', 'A', 'BUTTON'],
+    'The actions render verbatim in supplied order'
+  );
+  assert.deepEqual(
+    controls.map((control) => control.textContent),
+    ['Details', 'GitHub', 'Demo']
+  );
+  assert.ok(footers[0].classList.contains('flex-wrap'), 'The footer row wraps');
+  assert.equal(card.hasAttribute('role'), false);
+  assert.equal(card.hasAttribute('tabindex'), false);
+  assert.equal(card.querySelectorAll('a, button').length, 3, 'The three supplied actions are the only tab stops');
+  assert.equal(card.querySelector('ul, ol, [role="list"]'), null, 'The footer adds no list semantics');
+} finally {
+  actionsDocument.window.close();
 }
 import { TipCardSamples } from './consumer.ts';
 for (const [tipBadge, tipLevel, tipTitle] of [
@@ -7790,6 +8909,14 @@ try {
   assert.ok(archived.disabled);
   assert.ok(archived.hasAttribute('data-disabled'));
   assert.equal(archived.getAttribute('aria-pressed'), 'true');
+  const currentChip = document.getElementById('chip-current');
+  assert.equal(currentChip.tagName, 'A');
+  assert.equal(currentChip.getAttribute('aria-current'), 'true', 'The consumer aria-current reaches the anchor');
+  assert.ok(currentChip.classList.contains('eg-chip'));
+  assert.ok(currentChip.classList.contains('aria-[current=true]:border-state-selected'), 'The current recipe rides in the class list');
+  assert.equal(currentChip.hasAttribute('aria-pressed'), false);
+  assert.equal(currentChip.hasAttribute('data-state'), false);
+  assert.equal(document.getElementById('chip-link').hasAttribute('aria-current'), false, 'A link chip is not current on its own');
 } finally {
   chipDocument.window.close();
 }
@@ -7848,6 +8975,18 @@ try {
   const underlinedLink = document.getElementById('link-underlined');
   assert.deepEqual([...underlinedLink.classList].sort(), [...link.classList].filter((name) => !['mt-4', 'self-start'].includes(name)).sort());
   assert.ok(!underlinedLink.classList.contains('border-b') && !underlinedLink.classList.contains('border-border-brand'));
+  // quiet swaps only the ink and adds the brand underline colour; every other class is the default's.
+  const quietLink = document.getElementById('link-quiet');
+  assert.equal(quietLink.tagName, 'A');
+  assert.ok(quietLink.classList.contains('eg-link') && quietLink.classList.contains('text-fg-default'));
+  assert.ok(quietLink.classList.contains('decoration-fg-brand-default'));
+  assert.ok(!quietLink.classList.contains('text-link-default') && quietLink.getAttribute('variant') === null);
+  assert.ok(quietLink.classList.contains('underline') && quietLink.classList.contains('hover:no-underline'));
+  assert.ok(quietLink.classList.contains('border-0') && quietLink.classList.contains('pb-0'));
+  assert.deepEqual(
+    [...quietLink.classList].filter((name) => !['text-fg-default', 'decoration-fg-brand-default'].includes(name)).sort(),
+    [...underlinedLink.classList].filter((name) => name !== 'text-link-default').sort()
+  );
   assert.ok(link.classList.contains('border-0'));
   assert.ok(!link.classList.contains('border-b'));
   assert.equal(link.querySelector('svg').getAttribute('aria-hidden'), 'true');
@@ -8658,6 +9797,53 @@ try {
   await act(async () => revealHydrated.unmount());
   assert.equal(scrollRevealRef.current, null);
   revealHost.remove();
+  const { Embed } = await import('@egdev/ui');
+  const { EmbedSamples } = await import('./consumer.ts');
+  const embedHost = document.createElement('section');
+  embedHost.innerHTML = readWaveFile(new URL('./embed-hydration.html', import.meta.url), 'utf8');
+  document.body.append(embedHost);
+  assert.equal(embedHost.querySelectorAll('iframe').length, 0);
+  const embedServerRoots = [...embedHost.querySelectorAll('div.eg-embed')];
+  const embedRecoveries = [];
+  let embedHydrated;
+  await act(async () => {
+    embedHydrated = hydrateRoot(embedHost, createElement(EmbedSamples), { onRecoverableError: error => embedRecoveries.push(error) });
+  });
+  // Hydration finds the server markup unchanged, keeps its nodes, and the frames mount only afterwards.
+  assert.deepEqual(embedRecoveries, []);
+  assert.deepEqual([...embedHost.querySelectorAll('div.eg-embed')], embedServerRoots);
+  const embedFrames = [...embedHost.querySelectorAll('iframe')];
+  assert.deepEqual(embedFrames.map((frame) => [frame.getAttribute('title'), frame.getAttribute('src'), frame.getAttribute('loading')]), [['Keynote recording', 'https://video.example/embed/1', 'eager'], ['Default frame', '/embed/1', 'lazy']]);
+  assert.equal(embedFrames[0].getAttribute('allow'), 'fullscreen');
+  assert.ok(embedFrames[0].hasAttribute('allowfullscreen'));
+  assert.equal(embedFrames[0].getAttribute('referrerpolicy'), 'no-referrer');
+  assert.equal(embedFrames[0].getAttribute('sandbox'), 'allow-scripts');
+  for (const name of ['allow', 'allowfullscreen', 'referrerpolicy', 'sandbox']) assert.equal(embedFrames[1].hasAttribute(name), false, name);
+  assert.deepEqual(embedFrames.map((frame) => frame.closest('div.eg-embed').getAttribute('data-state')), ['loading', 'loading']);
+  await act(async () => embedFrames[0].dispatchEvent(new Event('load')));
+  const embedLoaded = embedFrames[0].closest('div.eg-embed');
+  assert.equal(embedLoaded.getAttribute('data-state'), 'ready');
+  assert.equal(embedLoaded.hasAttribute('aria-busy'), false);
+  assert.equal(embedLoaded.querySelector('.eg-spinner'), null);
+  assert.equal(embedFrames[1].closest('div.eg-embed').getAttribute('data-state'), 'loading');
+  await act(async () => embedHydrated.unmount());
+  assert.equal(embedHost.querySelector('iframe'), null);
+  embedHost.remove();
+  // A client render: the frame mounts after the first render, loads once, and a new src is a fresh frame again.
+  await act(async () => root.render(createElement(Embed, { label: 'Keynote recording', src: '/embed/1' })));
+  const embedFirstFrame = document.querySelector('iframe');
+  assert.equal(embedFirstFrame.getAttribute('src'), '/embed/1');
+  assert.equal(document.querySelector('div.eg-embed').getAttribute('data-state'), 'loading');
+  await act(async () => embedFirstFrame.dispatchEvent(new Event('load')));
+  assert.equal(document.querySelector('div.eg-embed').getAttribute('data-state'), 'ready');
+  await act(async () => root.render(createElement(Embed, { label: 'Keynote recording', src: '/embed/2' })));
+  assert.notEqual(document.querySelector('iframe'), embedFirstFrame);
+  assert.equal(embedFirstFrame.isConnected, false);
+  assert.equal(document.querySelector('div.eg-embed').getAttribute('data-state'), 'loading');
+  await act(async () => root.render(createElement(Embed, { label: 'Keynote recording', src: '', fallback: createElement('p', null, 'Unavailable') })));
+  assert.equal(document.querySelector('iframe'), null);
+  assert.equal(document.querySelector('div.eg-embed').getAttribute('data-state'), 'fallback');
+  await act(async () => root.render(null));
   await act(async () => root.render(createElement(ScrollRevealSamples)));
   assert.equal(scrollRevealRef.current, document.getElementById('packed-scroll-reveal'));
   await act(async () => root.render(null));
@@ -8989,6 +10175,11 @@ try {
   assert.equal(disabledChip.getAttribute('aria-pressed'), 'true');
   assert.ok(disabledChip.disabled);
   assert.ok(chipRecipe.split(' ').includes('eg-chip'), 'Public chipVariants resolves the stable root marker');
+  assert.equal(chipRecipe.includes('aria-[current'), false, 'The toggle recipe carries no current-state utility');
+  const currentChipNode = document.getElementById('chip-current');
+  assert.equal(currentChipNode.getAttribute('aria-current'), 'true');
+  assert.ok(currentChipNode.classList.contains('forced-colors:aria-[current=true]:outline-[color:Highlight]'));
+  assert.equal(document.getElementById('chip-link').hasAttribute('aria-current'), false);
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
@@ -10407,6 +11598,9 @@ ${assertAttachmentFieldCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertTimelineCSS.toString()}
 ${assertSectionHeaderCSS.toString()}
+${assertDetailHeaderCSS.toString()}
+${assertPaginationCSS.toString()}
+${assertEmbedCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertSocialLinksCSS.toString()}
 ${assertMenuCSS.toString()}
@@ -10464,6 +11658,9 @@ ${assertMeterRowCSS.toString()}
 assertMeterRowCSS(emitted);
 assertStatCSS(emitted);
 assertSectionHeaderCSS(emitted);
+assertDetailHeaderCSS(emitted);
+assertPaginationCSS(emitted);
+assertEmbedCSS(emitted);
 ${assertListItemCSS.toString()}
 assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
@@ -10529,7 +11726,8 @@ const partialTypography = ${JSON.stringify(partialTypography)};
 // #425 adds 14 owner-confirmed semantic role aliases: 297 + 14 = 311.
 // #465 adds the owner-approved --gradient-spectrum: 311 + 1 = 312.
 // Tabs v0.4 adds the owner-approved --mask-scroll-fade-inline: 312 + 1 = 313.
-assert.equal(names.length, 313, 'Packed native artifact must expose 313 variables');
+// Prose v0.1 adds the owner-confirmed --container-prose reading measure (#569): 313 + 1 = 314.
+assert.equal(names.length, 314, 'Packed native artifact must expose 314 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
@@ -10594,6 +11792,9 @@ assertMeterRowCSS(twCss);
 assertStatCSS(twCss);
 assertModuleCardCSS(twCss);
 assertSectionHeaderCSS(twCss);
+assertDetailHeaderCSS(twCss);
+assertPaginationCSS(twCss);
+assertEmbedCSS(twCss);
 assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertToastCSS(twCss);

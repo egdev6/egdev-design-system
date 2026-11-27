@@ -17,6 +17,7 @@ export function useClosing(props: ClosingProps) {
   const {
     title,
     level,
+    titleVariant,
     eyebrow,
     accent,
     lede,
@@ -30,9 +31,12 @@ export function useClosing(props: ClosingProps) {
     ...native
   } = props as ClosingProps & Pick<ComponentPropsWithoutRef<'div'>, 'role' | 'style' | 'dangerouslySetInnerHTML'>;
   const hasMedia = Children.toArray(media).length > 0;
+  // Only 'show' selects the smaller recipe; any other runtime value, including null, resolves to the default.
+  const titleRecipe: NonNullable<ClosingProps['titleVariant']> = titleVariant === 'show' ? 'show' : 'hero';
   return {
     title,
     level,
+    titleVariant: titleRecipe,
     eyebrow,
     accent,
     lede,

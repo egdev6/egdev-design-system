@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { Badge } from '../../atoms/badge';
+import { Button } from '../../atoms/button';
 import { Icon } from '../../atoms/icon';
 import { Link } from '../../atoms/link';
 import {
@@ -15,19 +17,22 @@ import {
  * ## Description
  * A passive project card for presenting open-source projects, tools and experiments in web views.
  * It carries an optional decorative index, an optional eyebrow, a generated heading, free body copy,
- * an optional technology chip list, an optional labelled code sample and one footer action.
+ * an optional technology chip list, an optional labelled code sample and one to three footer actions.
  *
  * ## Dependencies
  * - Chip (static mode): renders each technology label as a non-interactive pill.
- * - Link (consumer-supplied): the card's single interactive element lives in the footer.
+ * - Button and Link (consumer-supplied): the card's interactive elements live in the footer, one to three of them.
  * - Surface recipes: the raised Material frame composes `surfaceVariants` internally.
  *
  * ## Usage guidelines
  * The card is passive: it adds no tab stop and never reacts to pointer hover. The only focusable
- * element is the one action the consumer supplies inside `ProjectCardFooter`. At most one card per
- * view should use `variant="featured"`, which adds only the brand edge, halo and index ink.
+ * elements are the one to three actions the consumer supplies inside `ProjectCardFooter`. At most one card
+ * per view should use `variant="featured"`, which adds only the brand edge, halo and index ink.
  * `size="sm"` reduces density but never hides supplied content; omit `ProjectCardCode` instead.
  * `className` supports outer layout only (grid placement, margin, width), not internal appearance.
+ * Keep the cap of three and give each action an accessible name that is unique within the card, adding the
+ * project name when the same wording repeats across a listing: the card enforces neither, adds no whole-card
+ * link and never nests controls.
  *
  * `statusBadge` takes one consumer-supplied, non-interactive Badge composition, typically a short status
  * such as a warning "testing" Badge with an alert icon. It sits in a header row at the inline end, after the
@@ -172,7 +177,7 @@ export const Code: Story = {
   }
 };
 
-/** The footer hosts exactly one action; the card itself adds no tab stop. */
+/** A footer with one action; the card itself adds no tab stop. */
 export const WithLink: Story = {
   args: {
     title: 'Pulso',
@@ -183,6 +188,33 @@ export const WithLink: Story = {
           View project
         </Link>
       </ProjectCardFooter>
+    )
+  }
+};
+
+/**
+ * The footer holds one to three supplied Button or Link actions in importance order and wraps in a narrow card.
+ * The card adds no tab stop; the cap of three and unique accessible names within the card are the consumer's to keep.
+ */
+export const WithActions: Story = {
+  args: {
+    title: 'Pulso',
+    eyebrow: 'Open source',
+    children: (
+      <>
+        <p>An autonomous agent workspace that watches your repositories and reports what changed.</p>
+        <ProjectCardFooter>
+          <Link href='#pulso' variant='quiet'>
+            Details
+          </Link>
+          <Link href='#pulso-source' variant='quiet'>
+            GitHub
+          </Link>
+          <Button size='sm' variant='neutral' onClick={action('Open demo')}>
+            Demo
+          </Button>
+        </ProjectCardFooter>
+      </>
     )
   }
 };

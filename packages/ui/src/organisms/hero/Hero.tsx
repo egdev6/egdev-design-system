@@ -14,7 +14,14 @@ export function Hero(props: HeroProps) {
           </div>
         )}
         <div className={hero.headingClass}>
-          <Heading id={hero.id} variant='hero' tone='canvas' level={hero.level} accent={hero.accent} accentBreak={true}>
+          <Heading
+            id={hero.id}
+            variant={hero.titleVariant}
+            tone='canvas'
+            level={hero.level}
+            accent={hero.accent}
+            accentBreak={true}
+          >
             {hero.title}
           </Heading>
         </div>

@@ -18,6 +18,7 @@ const components = [
   ['Timeline', 'molecules/timeline'],
   ['Avatar', 'atoms/avatar'],
   ['NavList', 'molecules/nav-list'],
+  ['Pagination', 'molecules/pagination'],
   ['Button', 'atoms/button'],
   ['Carousel', 'molecules/carousel'],
   ['ButtonGroup', 'molecules/button-group'],
@@ -54,6 +55,7 @@ const components = [
   ['SearchTrigger', 'atoms/search-trigger'],
   ['SocialLinks', 'molecules/social-links'],
   ['SectionHeader', 'molecules/section-header'],
+  ['DetailHeader', 'molecules/detail-header'],
   ['Notice', 'molecules/notice'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
@@ -134,7 +136,11 @@ const components = [
   ['WebSection', 'organisms/web-section'],
   ['WebTemplate', 'templates/web-template'],
   ['AppIcon', 'atoms/app-icon'],
-  ['StepMeter', 'atoms/step-meter']
+  ['StepMeter', 'atoms/step-meter'],
+  ['Prose', 'primitives/prose'],
+  ['EmptyState', 'molecules/empty-state'],
+  ['Breadcrumb', 'molecules/breadcrumb'],
+  ['Embed', 'atoms/embed']
 ] as const;
 const expectedIconNames = [
   'github',
@@ -241,6 +247,7 @@ const expected: Record<string, Record<string, string | false>> = {
   labstage: {
     title: 'text',
     level: 'select',
+    titleVariant: 'select',
     eyebrow: 'text',
     accent: 'text',
     lede: 'text',
@@ -251,6 +258,7 @@ const expected: Record<string, Record<string, string | false>> = {
   chapterbreak: {
     title: 'text',
     level: 'select',
+    titleVariant: 'select',
     eyebrow: 'text',
     accent: 'text',
     lede: 'text',
@@ -260,6 +268,7 @@ const expected: Record<string, Record<string, string | false>> = {
   closing: {
     title: 'text',
     level: 'select',
+    titleVariant: 'select',
     eyebrow: 'text',
     accent: 'text',
     lede: 'text',
@@ -269,6 +278,7 @@ const expected: Record<string, Record<string, string | false>> = {
   hero: {
     title: 'text',
     level: 'select',
+    titleVariant: 'select',
     eyebrow: 'text',
     accent: 'text',
     lede: 'text',
@@ -291,6 +301,8 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   pixel: { state: 'select' },
   stepmeter: { label: 'text', value: 'number', steps: 'number' },
+  prose: { children: false, size: 'select', tone: 'select' },
+  emptystate: { title: 'text', level: 'select', description: 'text', icon: 'select', actions: false },
   notesboard: { children: false, sticky: 'boolean' },
   notesboardlist: { children: false },
   notesboardside: { children: false },
@@ -306,7 +318,7 @@ const expected: Record<string, Record<string, string | false>> = {
   livebandstreams: { children: false },
   livebandvod: { children: false, href: 'text' },
   nowstrip: { label: 'text', children: false },
-  footer: { children: false },
+  footer: { wrap: 'boolean', register: 'select', children: false },
   footermotto: { children: false },
   footerbrand: { children: false },
   footernavigation: { label: 'text', level: 'select', items: false },
@@ -380,7 +392,14 @@ const expected: Record<string, Record<string, string | false>> = {
     tone: 'select',
     actions: false
   },
-  nowcard: { statusBadge: false, title: 'text', level: 'select', size: 'select', children: false },
+  nowcard: {
+    statusBadge: false,
+    statusPresentation: 'select',
+    title: 'text',
+    level: 'select',
+    size: 'select',
+    children: false
+  },
   nowcardbody: { children: false, className: 'text' },
   nowcardfooter: { children: false, className: 'text' },
   nowcarddetail: { children: false, className: 'text' },
@@ -475,6 +494,27 @@ const expected: Record<string, Record<string, string | false>> = {
   appicon: { monogram: 'text', src: 'text', label: 'text', size: 'select' },
   avatar: { src: 'text', label: 'text', size: 'select', paused: 'boolean' },
   navlist: { label: 'text', items: false, onNavigate: false },
+  breadcrumb: { label: 'text', items: false, onNavigate: false },
+  embed: { label: 'text', ratio: 'number', src: 'text', children: false, fallback: false, loading: 'select' },
+  pagination: {
+    label: 'text',
+    value: 'number',
+    pageCount: 'number',
+    getHref: false,
+    onNavigate: false,
+    messages: false
+  },
+  detailheader: {
+    title: false,
+    eyebrow: false,
+    lede: false,
+    level: 'select',
+    metadata: false,
+    tags: false,
+    links: false,
+    newTabText: 'text',
+    messages: false
+  },
   button: {
     children: false,
     variant: 'select',
@@ -749,13 +789,15 @@ const expected: Record<string, Record<string, string | false>> = {
 const ownPropCounts: Record<string, number> = {
   websection: 5,
   webtemplate: 4,
-  labstage: 8,
-  chapterbreak: 7,
-  closing: 7,
-  hero: 9,
+  labstage: 9,
+  chapterbreak: 8,
+  closing: 8,
+  hero: 10,
   sectionnav: 10,
   pixel: 1,
   stepmeter: 3,
+  prose: 3,
+  emptystate: 5,
   notesboard: 2,
   notesboardlist: 1,
   notesboardside: 1,
@@ -771,7 +813,7 @@ const ownPropCounts: Record<string, number> = {
   livebandstreams: 1,
   livebandvod: 2,
   nowstrip: 2,
-  footer: 1,
+  footer: 3,
   footermotto: 1,
   footerbrand: 1,
   footernavigation: 3,
@@ -803,7 +845,7 @@ const ownPropCounts: Record<string, number> = {
   collapsibletrigger: 2,
   collapsiblecontent: 3,
   modulecard: 10,
-  nowcard: 5,
+  nowcard: 6,
   nowcardbody: 2,
   nowcardfooter: 2,
   nowcarddetail: 2,
@@ -850,6 +892,10 @@ const ownPropCounts: Record<string, number> = {
   radiogroup: 9,
   searchtrigger: 3,
   navlist: 3,
+  breadcrumb: 3,
+  embed: 6,
+  pagination: 6,
+  detailheader: 9,
   sociallinks: 8,
   sectionheader: 9,
   notice: 7,
@@ -1305,6 +1351,20 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.variant?.table?.defaultValue?.summary).toBe('"default"');
     expect(args).toEqual({});
   });
+  it.each(['Hero', 'Closing', 'ChapterBreak', 'LabStage'])(
+    'maps %s titleVariant as an optional select without injecting an argument (#560)',
+    (name) => {
+      const metadata = component(name);
+      const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics, name).toEqual([]);
+      const { argTypes, args } = story(name);
+      expect(argTypes.titleVariant?.control, name).toEqual({ type: 'select' });
+      expect([...(argTypes.titleVariant?.options ?? [])].sort(), name).toEqual(['hero', 'show']);
+      expect(argTypes.titleVariant?.type?.required, name).not.toBe(true);
+      expect(argTypes.titleVariant?.table?.defaultValue?.summary, name).toBe('"hero"');
+      expect(args, name).toEqual({});
+    }
+  );
   it('maps Collapsible part controls and defaults through the registered pipeline', () => {
     for (const name of ['CollapsibleHeader', 'CollapsibleTrigger', 'CollapsibleContent']) {
       const metadata = component(name);
@@ -1636,11 +1696,12 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['NotesBoard', { sticky: 'false' }],
     ['Pixel', { state: '"idle"' }],
     ['StepMeter', { steps: '4' }],
+    ['Embed', { ratio: '16 / 9', loading: '"lazy"' }],
     ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
-    ['NowCard', { level: '3', size: '"md"' }],
+    ['NowCard', { level: '3', size: '"md"', statusPresentation: '"badge"' }],
     ['NowCardBody', {}],
     ['NowCardFooter', {}],
     ['NowCardDetail', {}],
@@ -1663,6 +1724,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       }
     ],
     ['Heading', { variant: '"section"', foreground: '"inherit"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
+    ['Prose', { size: '"md"', tone: '"canvas"' }],
+    ['EmptyState', { level: '3' }],
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
@@ -1690,6 +1753,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       }
     ],
     ['SectionHeader', { variant: '"stack"', tone: '"canvas"', level: '2', accentBreak: 'false' }],
+    ['DetailHeader', { level: '1', newTabText: '"(opens in a new tab)"' }],
     ['Notice', { tone: '"neutral"', size: '"md"' }],
     ['ButtonGroup', { variant: '"spaced"' }],
     ['Textarea', { variant: '"default"' }],
@@ -1810,7 +1874,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     for (const [name, prop, required] of [
       ['Icon', 'name', true],
-      ['FieldMessage', 'icon', false]
+      ['FieldMessage', 'icon', false],
+      ['EmptyState', 'icon', false]
     ] as const) {
       const metadata = component(name);
       expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
@@ -2020,7 +2085,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
     }
     expect(argTypes.variant?.control).toEqual({ type: 'select' });
-    expect(argTypes.variant?.options).toEqual(['plain', 'underlined']);
+    expect(argTypes.variant?.options).toEqual(['plain', 'underlined', 'quiet']);
     for (const prop of ['id', 'title', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style']) {
       expect(argTypes[prop], prop).toBeDefined();
       expect(argTypes[prop], prop).toEqual(story('Link', false).argTypes[prop]);
@@ -2138,6 +2203,265 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'tabIndex',
       'contentEditable',
       'onClick',
+      'ref',
+      'asChild'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Embed required label text, the ratio and source rows, the loading select and two ReactNode rows without defaults they do not own', () => {
+    const { argTypes, args } = story('Embed');
+    const tags = (name: string) =>
+      component('Embed').__docgenInfo.props[name]?.tags as Record<string, string> | undefined;
+    const reasons = (name: string) => new Set((tags(name)?.controlReason ?? '').split('\n').map((line) => line.trim()));
+    expect([...reasons('fallback')]).toEqual([
+      expect.stringMatching(/ReactNode content is not serializable; see Fallback/)
+    ]);
+    expect([...reasons('children')]).toEqual([
+      expect.stringMatching(/ReactNode content is not serializable; see ScriptEmbed/)
+    ]);
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.ratio?.type).toMatchObject({ name: 'number', required: false });
+    expect(argTypes.ratio?.control).toEqual({ type: 'number' });
+    expect(argTypes.ratio?.table?.defaultValue?.summary).toBe('16 / 9');
+    expect(argTypes.src?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.src?.control).toEqual({ type: 'text' });
+    expect(argTypes.src?.table?.defaultValue).toBeUndefined();
+    // The select keeps the extracted values and their extracted order: the order is read, never chosen.
+    expect(argTypes.loading?.control).toEqual({ type: 'select' });
+    expect(argTypes.loading?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.loading?.options).toEqual(['eager', 'lazy']);
+    expect(argTypes.loading?.options).toEqual(story('Embed', false).argTypes.loading?.options);
+    expect(argTypes.loading?.table?.defaultValue?.summary).toBe('"lazy"');
+    // The two ReactNode rows stay documented with no widget and no hidden table row.
+    for (const name of ['children', 'fallback']) {
+      expect(argTypes[name]?.control, name).toBe(false);
+      expect(argTypes[name]?.table?.disable, name).toBeUndefined();
+      expect(argTypes[name]?.table?.defaultValue, name).toBeUndefined();
+    }
+    expect(argTypes.fallback?.type).toMatchObject({ required: false });
+    // Documentation must not initialize any control just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of [
+      'allow',
+      'allowFullScreen',
+      'referrerPolicy',
+      'sandbox',
+      'onLoad',
+      'id',
+      'dir',
+      'lang',
+      'aria-describedby',
+      'className'
+    ]) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Embed', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'title',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'aria-busy',
+      'tabIndex',
+      'style',
+      'onClick',
+      'onKeyDown',
+      'onError',
+      'srcDoc',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Breadcrumb required label text, the items and onNavigate rows without widgets or defaults', () => {
+    const { argTypes, args } = story('Breadcrumb');
+    const tags = (name: string) =>
+      component('Breadcrumb').__docgenInfo.props[name]?.tags as Record<string, string> | undefined;
+    expect(tags('items')?.controlReason).toMatch(/Structured entry data is not a scalar control; see Default/);
+    expect(tags('onNavigate')?.controlReason).toMatch(/Callback functions are not serializable; see ClientRouting/);
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    // The two rows stay documented with no widget: structured data and a callback cannot be edited as a value.
+    expect(argTypes.items?.type).toMatchObject({ required: true });
+    expect(argTypes.items?.control).toBe(false);
+    expect(argTypes.items?.table?.disable).toBeUndefined();
+    expect(argTypes.items?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.onNavigate?.type).toMatchObject({ required: false });
+    expect(argTypes.onNavigate?.control).toBe(false);
+    expect(argTypes.onNavigate?.table?.disable).toBeUndefined();
+    expect(argTypes.onNavigate?.table?.defaultValue).toBeUndefined();
+    // Documentation must not initialize any control just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Breadcrumb', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Pagination required label text, the numeric page rows and three function-like rows without widgets or defaults', () => {
+    const { argTypes, args } = story('Pagination');
+    const tags = (name: string) =>
+      component('Pagination').__docgenInfo.props[name]?.tags as Record<string, string> | undefined;
+    expect(tags('getHref')?.controlReason).toMatch(/A function is not serializable; see Default and ClientRouting/);
+    expect(tags('onNavigate')?.controlReason).toMatch(/Callback functions are not serializable; see ClientRouting/);
+    expect(tags('messages')?.controlReason).toMatch(/The dictionary includes a formatter function; see Localized/);
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    // The two numeric rows are number widgets and required: the route owns them, so no default is invented.
+    for (const name of ['value', 'pageCount']) {
+      expect(argTypes[name]?.type, name).toMatchObject({ name: 'number', required: true });
+      expect(argTypes[name]?.control, name).toEqual({ type: 'number' });
+    }
+    // The three function-like rows stay documented with no widget: a function cannot be edited as a value.
+    expect(argTypes.getHref?.type).toMatchObject({ required: true });
+    for (const name of ['getHref', 'onNavigate', 'messages']) {
+      expect(argTypes[name]?.control, name).toBe(false);
+      expect(argTypes[name]?.table?.disable, name).toBeUndefined();
+    }
+    expect(argTypes.onNavigate?.type).toMatchObject({ required: false });
+    expect(argTypes.messages?.type).toMatchObject({ required: false });
+    // No @default exists, so the Default column stays empty everywhere.
+    for (const name of ['label', 'value', 'pageCount', 'getHref', 'onNavigate', 'messages']) {
+      expect(argTypes[name]?.table?.defaultValue, name).toBeUndefined();
+    }
+    // Documentation must not initialize any control just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Pagination', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'style',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone',
+      'defaultValue',
+      'onValueChange'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('keeps the narrowed Chip aria-current declaration out of the rows without a diagnostic or an injected argument', () => {
+    const metadata = component('Chip');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    // The merged union row starts at React's AriaAttributes, so the Storybook propFilter drops it before Controls:
+    // there is no row to map, no widget to offer and no diagnostic for the pure helper to raise.
+    expect(metadata.__docgenInfo.props['aria-current']).toBeUndefined();
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const { argTypes, args } = story('Chip');
+    expect(argTypes['aria-current']).toBeUndefined();
+    expect(args).toEqual({});
+    // The ten annotated own rows keep their widgets: the narrowing changes none of them.
+    expect(argTypes.href?.control).toEqual({ type: 'text' });
+    expect(argTypes.mode?.control).toEqual({ type: 'select' });
+  });
+
+  it('retains Prose children without a widget, size and tone selects with constant defaults and passive native rows', () => {
+    const { argTypes, args } = story('Prose');
+    const tags = component('Prose').__docgenInfo.props.children?.tags as Record<string, string> | undefined;
+    expect(tags?.controlReason).toMatch(/ReactNode.*Default and Elements/);
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.disable).toBeUndefined();
+    expect(argTypes.children?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.size?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.size?.control).toEqual({ type: 'select' });
+    expect(argTypes.size?.options).toEqual(story('Prose', false).argTypes.size?.options);
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect(argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
+    expect(argTypes.tone?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.tone?.control).toEqual({ type: 'select' });
+    expect(argTypes.tone?.options).toEqual(story('Prose', false).argTypes.tone?.options);
+    expect([...(argTypes.tone?.options ?? [])].sort()).toEqual(['canvas', 'raised']);
+    expect(argTypes.tone?.table?.defaultValue?.summary).toBe('"canvas"');
+    // Documentation must not initialize the optional size and tone controls just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'lang', 'dir', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Prose', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML',
+      'onClick',
+      'ref',
+      'asChild'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains EmptyState required title text, the level select with its constant default and the actions reason', () => {
+    const { argTypes, args } = story('EmptyState');
+    const tags = component('EmptyState').__docgenInfo.props.actions?.tags as Record<string, string> | undefined;
+    expect(tags?.controlReason).toMatch(/ReactElement\/boolean union.*Default, WithLinkAction and AsLinkButton/);
+    expect(argTypes.title?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.title?.control).toEqual({ type: 'text' });
+    expect(argTypes.title?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.level?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.level?.control).toEqual({ type: 'select' });
+    expect(argTypes.level?.options).toEqual([2, 3, 4, 5, 6]);
+    expect(argTypes.level?.options).toEqual(story('EmptyState', false).argTypes.level?.options);
+    expect(argTypes.level?.table?.defaultValue?.summary).toBe('3');
+    expect(argTypes.description?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.description?.control).toEqual({ type: 'text' });
+    expect(argTypes.description?.table?.defaultValue).toBeUndefined();
+    // The actions row stays documented but has no widget: a ReactElement/boolean union cannot be edited as a value.
+    expect(argTypes.actions?.control).toBe(false);
+    expect(argTypes.actions?.table?.disable).toBeUndefined();
+    expect(argTypes.actions?.table?.defaultValue).toBeUndefined();
+    // Documentation must not initialize the optional controls just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('EmptyState', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-live',
+      'aria-atomic',
+      'aria-relevant',
+      'aria-label',
+      'aria-labelledby',
+      'tabIndex',
+      'contentEditable',
+      'dangerouslySetInnerHTML',
       'ref',
       'asChild'
     ]) {
@@ -2281,6 +2605,54 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const name of ['children', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'actions', 'layout']) {
       expect(argTypes[name]).toBeUndefined();
     }
+    expect(args).toEqual({});
+  });
+
+  it('retains DetailHeader required title, the collection and messages rows, the level select and the constant defaults', () => {
+    const { argTypes, args } = story('DetailHeader');
+    const reason = (name: string) =>
+      (component('DetailHeader').__docgenInfo.props[name]?.tags as Record<string, string> | undefined)?.controlReason;
+    expect(argTypes.title?.type).toMatchObject({ required: true });
+    // Every row without a widget stays documented, never disabled, and never gets an invented default.
+    for (const name of ['title', 'eyebrow', 'lede', 'metadata', 'tags', 'links', 'messages']) {
+      expect(argTypes[name]?.control, name).toBe(false);
+      expect(argTypes[name]?.table?.disable, name).toBeUndefined();
+      expect(argTypes[name]?.table?.defaultValue, name).toBeUndefined();
+    }
+    for (const name of ['title', 'eyebrow', 'lede']) {
+      expect(reason(name), name).toMatch(
+        /Text or structured multilingual runs cannot be represented by one control; see/
+      );
+    }
+    expect(reason('metadata')).toMatch(/Structured entries are not a scalar control; see .*Event.*Note/);
+    expect(reason('tags')).toMatch(/An array of strings is not a scalar control; see .*Project/);
+    expect(reason('links')).toMatch(/Structured entries are not a scalar control; see .*Event/);
+    expect(reason('messages')).toMatch(/A partial object of two names is not a scalar control; see Localized/);
+    expect([...(argTypes.level?.options ?? [])].sort()).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(argTypes.level?.control).toEqual({ type: 'select' });
+    expect(argTypes.level?.table?.defaultValue?.summary).toBe('1');
+    expect(argTypes.newTabText?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.newTabText?.control).toEqual({ type: 'text' });
+    expect(argTypes.newTabText?.table?.defaultValue?.summary).toBe('"(opens in a new tab)"');
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(argTypes[name], name).toBeDefined();
+      expect(argTypes[name], name).toEqual(story('DetailHeader', false).argTypes[name]);
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'style',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'tone'
+    ]) {
+      expect(argTypes[name], name).toBeUndefined();
+    }
+    // Documentation must not initialize any control just to fill the UI.
     expect(args).toEqual({});
   });
 

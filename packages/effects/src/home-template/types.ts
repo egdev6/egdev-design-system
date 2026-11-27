@@ -42,6 +42,12 @@ export type HomeTemplateProps = Omit<
   onZoneChange?: (change: { zone: string; previous: string | null }) => void;
 };
 
+/**
+ * Measured 3D anchor. className sizes the box: width, height, their constraints and
+ * aspect-ratio, beside the shared outer placement. Appearance overrides are unsupported;
+ * the anchor invariants (relative, block) take precedence in cn().
+ * @classNameAllows width min-width max-width inline-size min-inline-size max-inline-size height min-height max-height block-size min-block-size max-block-size aspect-ratio
+ */
 export type HomeTemplateAnchorProps = Omit<
   ComponentPropsWithoutRef<'div'>,
   'dangerouslySetInnerHTML' | 'role' | 'style'

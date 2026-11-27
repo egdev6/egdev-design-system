@@ -11,7 +11,7 @@ export function Closing(props: ClosingProps) {
         <div className={scene.copy}>
           {scene.eyebrow != null && <Text variant='eyebrow'>{scene.eyebrow}</Text>}
           <div className={scene.heading}>
-            <Heading id={scene.id} level={scene.level} variant='hero' accent={scene.accent}>
+            <Heading id={scene.id} level={scene.level} variant={scene.titleVariant} accent={scene.accent}>
               {scene.title}
             </Heading>
           </div>

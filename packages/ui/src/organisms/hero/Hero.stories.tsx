@@ -5,7 +5,10 @@ import { SocialLinks } from '../../molecules/social-links';
 import { SectionShell } from '../../templates/section-shell';
 import { Hero } from './Hero';
 
-/** A passive scene hosted in a named show section. */
+/**
+ * A passive scene hosted in a named show section. `titleVariant` chooses the heading's size recipe, and `show` also
+ * drops the accent glow.
+ */
 const meta = {
   title: 'Organisms/Hero',
   component: Hero,
@@ -57,6 +60,28 @@ export const FullScene: Story = {
 export const NoMedia: Story = { args: { lede: 'A scene without media.' } };
 /** Decorative consumer image and no actions. */
 export const MediaOnlyDecoration: Story = { args: { media } };
+/**
+ * The smaller `show` heading recipe beside decorative media and two actions. Its accent does not glow. It narrows the
+ * risk of a long word breaking inside itself and does not remove it, so shorten the copy for wider viewports.
+ */
+export const ShowTitle: Story = {
+  args: {
+    eyebrow: 'Introduction',
+    title: 'Build something extraordinary ',
+    accent: 'together',
+    lede: 'Make meaningful things.',
+    titleVariant: 'show',
+    media,
+    children: (
+      <>
+        <Button size='lg'>Explore</Button>
+        <Button size='lg' variant='secondary'>
+          Learn more
+        </Button>
+      </>
+    )
+  }
+};
 /** One independent action. */
 export const OneAction: Story = { args: { children: <Button size='lg'>Explore</Button> } };
 /** Two distinct independent actions. */

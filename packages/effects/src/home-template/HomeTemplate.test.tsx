@@ -116,6 +116,26 @@ it('forwards safe native attributes and protects owned attributes and merge inva
   expect(click).toHaveBeenCalledTimes(1);
 });
 
+it('keeps box geometry classes on the anchor while its position and display invariants still win', () => {
+  const { getByText } = render(
+    <HomeTemplate zoneTable={table}>
+      <HomeTemplateAnchor zone='hero' className='size-full aspect-square max-h-full absolute hidden'>
+        Geometry
+      </HomeTemplateAnchor>
+    </HomeTemplate>
+  );
+  const anchor = getByText('Geometry').parentElement as HTMLElement;
+  expect(anchor).toHaveClass(
+    'size-full',
+    'aspect-square',
+    'max-h-full',
+    'eg-home-template-anchor',
+    'relative',
+    'block'
+  );
+  expect(anchor).not.toHaveClass('absolute', 'hidden');
+});
+
 it('warns for duplicate and non-3D bindings and re-resolves on removal without rerender churn', () => {
   const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
   const view = render(

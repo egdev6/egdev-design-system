@@ -16,6 +16,6 @@ When a consumer app (Nexo, egdev-website or any other) needs a DS change, follow
 
 ## Tests and releases
 
-- CI (`.github/workflows/build-and-test.yml`) runs two jobs: `Verify` (lint, prop naming, typecheck, build, `pnpm test`, `pnpm test:cli`, token contract, package exports and packed consumption) and `egdev-ds end to end` (`pnpm test:cli:consumer`, real npm + Vite and pnpm + Next.js installs).
+- CI (`.github/workflows/build-and-test.yml`) runs two jobs: `Verify` (lint, prop naming, typecheck, build, `pnpm test`, `pnpm test:cli`, `pnpm test:mcp` (the MCP server and its README examples), token contract, package exports and packed consumption) and `egdev-ds end to end` (`pnpm test:cli:consumer`, real npm + Vite and pnpm + Next.js installs).
 - Locally, `pnpm test:cli` runs the `egdev-ds` unit tests; `pnpm test:cli:consumer` needs the network and skips when the registry does not resolve or `EGDEV_SKIP_CLI_CONSUMER=1` is set.
 - Version bumps, changelogs and `pnpm release:pack` (tarballs plus `release/release.json`) follow [versioning.md](docs/distribution/versioning.md).

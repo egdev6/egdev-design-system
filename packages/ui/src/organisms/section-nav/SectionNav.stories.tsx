@@ -8,7 +8,15 @@ const items = [
   { id: 'work', label: 'Work', href: '#work' },
   { id: 'contact', label: 'Contact', href: '#contact' }
 ];
-/** Host supplies section destinations, names and equivalent progress text. */
+const manySections = Array.from({ length: 12 }, (_, index) => ({
+  id: `section-${index + 1}`,
+  label: `Section ${index + 1}`,
+  href: `#section-${index + 1}`
+}));
+/**
+ * Host supplies section destinations, names and equivalent progress text. Each section is numbered by its position
+ * in `items`, zero-padded, and labels render uppercase through CSS.
+ */
 const meta = {
   title: 'Organisms/SectionNav',
   component: SectionNav,
@@ -70,6 +78,16 @@ export const Progress: Story = {
 };
 /** Open the index and hover or focus its controls to inspect their states. */
 export const Hover: Story = { args: { defaultOpen: true } };
+/** Twelve sections with the tenth current: the open index shows zero-padded numbers across the 09 and 10 boundary. */
+export const ManySections: Story = {
+  args: {
+    items: manySections,
+    activeId: 'section-10',
+    nextLabel: 'Go to section 11',
+    value: 83,
+    defaultOpen: true
+  }
+};
 /** View the navigation in a narrow host and resize the viewport to inspect fixed positioning. */
 export const Responsive: Story = {
   render: (args) => (

@@ -1,6 +1,6 @@
 {
   "name": "@egdev/tokens",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "type": "module",
   "description": "Tokens de EGDEV Foundation: fuente CSS manual (theme.css) y artefacto nativo compilado (tokens.css).",
   "exports": {

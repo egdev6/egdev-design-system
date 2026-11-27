@@ -14,7 +14,7 @@ export function ChapterBreak(props: ChapterBreakProps) {
             <Heading
               id={scene.id}
               level={scene.level}
-              variant='hero'
+              variant={scene.titleVariant}
               tone='canvas'
               accent={scene.accent}
               accentBreak={true}

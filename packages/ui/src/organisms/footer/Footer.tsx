@@ -17,22 +17,23 @@ import {
   useFooterSocial
 } from './useFooter';
 
-/** Passive site footer; the host owns its placement and background. */
+/** Passive site footer; the host owns its placement and, unless the Grafito register is selected, its background. */
 export const Footer: FC<FooterProps> = (props) => {
-  const { rootProps, stage, grid, legal, gridClassName } = useFooter(props, {
+  const { rootProps, wrapped, wrapClassName, stage, grid, legal, gridClassName } = useFooter(props, {
     motto: FooterMotto,
     brand: FooterBrand,
     navigation: FooterNavigation,
     social: FooterSocial,
     legal: FooterLegal
   });
-  return (
-    <footer {...rootProps}>
+  const body = (
+    <>
       {stage}
       {grid.length > 0 && <div className={gridClassName}>{grid}</div>}
       {legal}
-    </footer>
+    </>
   );
+  return <footer {...rootProps}>{wrapped ? <div className={wrapClassName}>{body}</div> : body}</footer>;
 };
 /** Non-interactive motto stage. */
 export const FooterMotto: FC<FooterMottoProps> = (props) => {

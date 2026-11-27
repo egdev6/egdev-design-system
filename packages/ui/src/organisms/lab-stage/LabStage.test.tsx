@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Badge } from '../../atoms/badge';
 import { Button } from '../../atoms/button';
 import { Surface } from '../../primitives/surface';
@@ -224,5 +224,129 @@ describe('LabStage contract', () => {
     // @ts-expect-error asChild is unsupported.
     const asChild: LabStageProps = { ...valid, asChild: true };
     expect([title, level, rank, role, style, html, ref, asChild]).toHaveLength(8);
+  });
+});
+
+describe('LabStage titleVariant (#560)', () => {
+  // Every optional part is present. Plain elements keep ids out of the markup, so two renders compare byte for byte.
+  const props = {
+    title: 'Build ',
+    accent: 'the lab',
+    level: 2,
+    id: 'lab-title',
+    eyebrow: 'Ideas',
+    lede: 'Discover works in progress.',
+    children: <article>Experiment</article>,
+    media: <span>Art</span>
+  } satisfies LabStageProps;
+  const glow = '[text-shadow:var(--text-shadow-title-hero)]';
+  const baseline = () => {
+    const view = render(<LabStage {...props} />);
+    const html = view.container.innerHTML;
+    view.unmount();
+    return html;
+  };
+
+  it('TV-01 renders the default recipe, byte for byte, with the prop omitted and with hero', () => {
+    const expected = baseline();
+    const { container } = render(<LabStage {...props} titleVariant='hero' />);
+    expect(container.innerHTML).toBe(expected);
+    const heading = screen.getByRole('heading', { level: 2, name: 'Build the lab' });
+    expect(heading).toHaveClass('text-title-hero');
+    expect(heading).not.toHaveClass('text-title-show');
+    expect(screen.getByText('the lab')).toHaveClass('block', 'text-fg-brand-default', glow);
+    expect(screen.getByText('the lab')).not.toHaveClass('[text-shadow:none]');
+  });
+
+  it('TV-02 selects the show recipe on the same heading and drops the accent glow', () => {
+    const { container } = render(<LabStage {...props} titleVariant='show' />);
+    const heading = screen.getByRole('heading', { level: 2, name: 'Build the lab' });
+    expect(heading).toHaveAttribute('id', 'lab-title');
+    expect(heading).toHaveClass('text-title-show');
+    expect(heading).not.toHaveClass('text-title-hero');
+    expect(screen.getByText('the lab')).toHaveClass('block', 'text-fg-brand-default', '[text-shadow:none]');
+    expect(screen.getByText('the lab')).not.toHaveClass(glow);
+    expect(container.querySelectorAll('h1, h2, h3, h4, h5, h6')).toHaveLength(1);
+  });
+
+  it.each(['display', 'section', 'inverse', 'compact', 'SHOW', '', null, 42])(
+    'TV-03 resolves the untyped value %j to hero and never reaches the DOM',
+    (value) => {
+      const expected = baseline();
+      const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      try {
+        const untyped = { titleVariant: value } as unknown as LabStageProps;
+        const { container } = render(<LabStage {...props} {...untyped} />);
+        expect(container.innerHTML).toBe(expected);
+        expect(container.innerHTML).not.toMatch(/title-?variant/i);
+        expect(container.querySelector('.eg-lab')?.getAttributeNames()).toEqual(['class']);
+        expect(screen.getByRole('heading', { level: 2 })).toHaveClass('text-title-hero');
+        expect(error).not.toHaveBeenCalled();
+      } finally {
+        error.mockRestore();
+      }
+    }
+  );
+
+  it('TV-03 accepts only hero and show at compile time', () => {
+    const base = { title: 'Title', level: 2 as const };
+    const hero: LabStageProps = { ...base, titleVariant: 'hero' };
+    const show: LabStageProps = { ...base, titleVariant: 'show' };
+    // @ts-expect-error display is not a supported scene recipe.
+    const display: LabStageProps = { ...base, titleVariant: 'display' };
+    // @ts-expect-error section is not a supported scene recipe.
+    const section: LabStageProps = { ...base, titleVariant: 'section' };
+    // @ts-expect-error inverse is not a supported scene recipe.
+    const inverse: LabStageProps = { ...base, titleVariant: 'inverse' };
+    // @ts-expect-error compact is not a supported scene recipe.
+    const compact: LabStageProps = { ...base, titleVariant: 'compact' };
+    // @ts-expect-error a number is not a recipe.
+    const numeric: LabStageProps = { ...base, titleVariant: 42 };
+    expect([hero, show, display, section, inverse, compact, numeric]).toHaveLength(7);
+  });
+
+  it('TV-04 changes nothing but the recipe class and the glow utility', () => {
+    const hero = render(<LabStage {...props} titleVariant='hero' />);
+    const heroHtml = hero.container.innerHTML;
+    hero.unmount();
+    const { container } = render(<LabStage {...props} titleVariant='show' />);
+    expect(heroHtml.split('text-title-hero')).toHaveLength(2);
+    expect(heroHtml.split(glow)).toHaveLength(2);
+    const swapped = heroHtml.replace('text-title-hero', 'text-title-show').replace(glow, '[text-shadow:none]');
+    expect(container.innerHTML).toBe(swapped);
+    expect(container.innerHTML).not.toBe(heroHtml);
+    expect(container.querySelector('[style]')).toBeNull();
+    const markers = (html: string) => html.match(/\beg-[\w-]+/g);
+    expect(markers(container.innerHTML)).toEqual(markers(heroHtml));
+  });
+
+  it('TV-05 keeps the heading node and id across hero, show and hero again', () => {
+    const { rerender } = render(<LabStage {...props} />);
+    const heading = screen.getByRole('heading', { level: 2 });
+    rerender(<LabStage {...props} titleVariant='show' />);
+    expect(screen.getByRole('heading', { level: 2 })).toBe(heading);
+    expect(heading).toHaveClass('text-title-show');
+    expect(heading).not.toHaveClass('text-title-hero');
+    expect(heading).toHaveAttribute('id', 'lab-title');
+    rerender(<LabStage {...props} titleVariant='hero' />);
+    expect(screen.getByRole('heading', { level: 2 })).toBe(heading);
+    expect(heading).toHaveClass('text-title-hero');
+    expect(heading).not.toHaveClass('text-title-show');
+    expect(heading).toHaveAttribute('id', 'lab-title');
+  });
+
+  it('TV-05 keeps instance ids distinct when scenes choose different recipes', () => {
+    const { container } = render(
+      <>
+        <LabStage {...props} id='first-lab' titleVariant='show' />
+        <LabStage {...props} id='second-lab' title='Another ' />
+      </>
+    );
+    const [first, second] = screen.getAllByRole('heading', { level: 2 });
+    expect(first).toHaveAttribute('id', 'first-lab');
+    expect(second).toHaveAttribute('id', 'second-lab');
+    expect(first).toHaveClass('text-title-show');
+    expect(second).toHaveClass('text-title-hero');
+    expect(container.querySelectorAll('[id]')).toHaveLength(2);
   });
 });

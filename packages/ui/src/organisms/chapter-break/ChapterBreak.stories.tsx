@@ -14,7 +14,10 @@ function SceneHost({ children }: { children: (id: string) => ReactNode }) {
   );
 }
 
-/** The host owns the section name, heading ID and decorative media. */
+/**
+ * The host owns the section name, heading ID and decorative media. `titleVariant` chooses the heading's size
+ * recipe, and `show` also drops the accent glow.
+ */
 const meta = {
   title: 'Organisms/ChapterBreak',
   component: ChapterBreak,
@@ -35,6 +38,21 @@ export const OptionalCopy: Story = {
 export const NoMedia: Story = {};
 /** The host supplies decorative media. */
 export const DecorativeMedia: Story = { args: { media: image } };
+/**
+ * The smaller `show` heading recipe in the narrow copy column that decorative media creates. Its accent does not glow.
+ * It narrows the risk of a long word breaking inside itself and does not remove it, so shorten the copy for wider
+ * viewports.
+ */
+export const ShowTitle: Story = {
+  args: {
+    eyebrow: 'Chapter',
+    title: 'An extraordinary ',
+    accent: 'chapter',
+    lede: 'Discover a new perspective.',
+    titleVariant: 'show',
+    media: image
+  }
+};
 /** Longer translated copy stays in normal flow. */
 export const LongLocalizedContent: Story = {
   args: {

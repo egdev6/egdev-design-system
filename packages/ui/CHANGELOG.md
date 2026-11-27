@@ -8,6 +8,81 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `NowCard` accepts `statusPresentation` (`'badge'` by default, or `'band'`) to present its status as a full-width band
+  across the top of the card, as in the Pulso reference, instead of a content-width pill. In `band` the card paints a
+  brand-tinted, uppercase band (display type, hairline border, light edge) and frames the label you supply, so pass the
+  label words and, optionally, a decorative `Icon` instead of a `Badge`, which would paint a second pill inside it. Long
+  labels wrap, the band follows the card's `size` and it has the brand tone only. The default presentation is
+  unchanged and renders exactly as before. (#564)
+- A link `Chip` whose native `aria-current` is `page` or `true` is painted as the current item, for example the active
+  filter in a row of crawlable filters: the brand border, selected fill and brighter text of Pagination's current
+  page, with the focus ring on top and a system-colour outline in forced colours. The attribute is the only state
+  carrier: there is no new prop, no `data-state` and no built-in icon (pass `icon` for a check). Toggle and static
+  chips, `chipVariants()` and `ChipGroup` are unchanged. (#576)
+- `Hero`, `Closing`, `ChapterBreak` and `LabStage` accept `titleVariant` (`'hero'` by default, or `'show'`) to choose the
+  recipe of the scene's own heading. `show` is the smaller Show-register step, about 9% below `hero` between roughly
+  680px and 1,560px of viewport and capped at 105.6px instead of 112px, so a long title can fit a narrow copy column;
+  its accent does not glow, because the glow belongs to the `hero` recipe. The prop never changes the heading rank
+  (`level`), and omitting it renders exactly as before. It narrows the risk of a title breaking inside a word and does
+  not remove it, so shorten the copy for wider viewports. (#560)
+- Documented the gallery lightbox composition pattern (#575): the `Recipes/Gallery lightbox` story composes a list of
+  `PhotoFrame` thumbnails, each with a `Button` beside it (never wrapping it, so the markup stays valid) that opens a
+  full-size `Dialog` holding a `Carousel` of `PhotoFrame` `fit='contain'` images, starting at the clicked photo, with
+  arrow, Home and End navigation, Escape to close and focus returned to the button. The app composes it, as decided
+  under #509, so there is no new component, prop, token or export.
+- `Embed` reserves the proportion of external content such as a video or an X post in a recessed frame and gives it a
+  required accessible name (`label`). It renders a native `iframe` for an http(s) `src`, mounted only after hydration so
+  the server never starts the request, or consumer `children` for embeds that a provider script fills, with a decorative
+  loading state while the frame loads and a consumer `fallback` when there is no usable content. The component loads no
+  script and decides nothing about consent, cookies or URL trust: mount it only after your own consent decision, choose
+  `sandbox`, `allow` and `referrerPolicy` yourself, and pick a `ratio` that fits the content (default 16/9; taller
+  output is clipped). It has no variant, ref or `asChild`. (#574)
+- `Pagination` splits a long listing into pages with crawlable links: a named navigation landmark (required `label`)
+  holding Previous and Next and numbered pages in a constant-width window of at most seven slots with ellipses, with
+  the current page marked `aria-current="page"`. Every control is a native anchor whose URL the consumer builds with
+  `getHref`, so each page works without JavaScript; at the first and last page the missing Previous or Next stays in
+  the row as a dimmed placeholder that leaves the accessibility tree. The consumer owns the data slice, `pageCount`,
+  `value` and the URLs, and handles client-side routing, focus and announcements through `onNavigate`. The text is
+  English by default and localizable through `messages`. Pagination keeps no state, has no size, variant or tone axis
+  and adds no stylesheet, ref or `asChild`. (#571)
+- `DetailHeader` opens a detail page with its title block and metadata. It composes SectionHeader (optional eyebrow, a
+  heading at `level`, default 1, and an optional lede) with an optional label/value facts list (`metadata`, where an
+  entry may carry a `dateTime` for a native `time`), a named list of static tag pills (`tags`) and a named list of
+  external links (`links`: absolute `https:` URLs that open in a new tab with a hidden notice, localizable through
+  `newTabText`). The list names are English by default (`Tags`, `Links`) and localizable through `messages`. Blank or
+  invalid entries are skipped with a development warning and an unreadable title renders nothing. Long fact values,
+  link labels and tag labels wrap instead of overflowing, unbroken ones included; an unbroken title is the one limit,
+  because Heading sets its own wrapping. It paints no surface: the host formats dates and text, places it inside `main`
+  or `article` and supplies one page-level heading. (#572)
+- `Breadcrumb` shows where the reader is on a detail page: a named navigation landmark (required `label`) holding an
+  ordered trail of `items`, where every ancestor is a link (`href`, optional `onNavigate`) and the last entry is the
+  current page, plain text marked `aria-current="page"`, with decorative chevrons between steps. The consumer supplies
+  the entries ordered from the root to the current page and the wording and language of `label` and every entry
+  label; invalid entries are omitted with a development warning. Long trails wrap instead of truncating, and
+  Breadcrumb adds no routing, ref or `asChild`. (#570)
+- `EmptyState` shows that a listing or a filter combination returned nothing: a native heading (`title`, rank 2 to 6,
+  default 3), an optional plain-text `description`, an optional decorative `icon` and one recovery `actions` Button or
+  Link, on the host backdrop with no card, border or shadow. It is passive: it renders no live region and never moves
+  focus, so the host announces "no results" if it wants speech and places focus when the action removes the state.
+  There is no built-in copy: consumers provide localized text. (#573)
+- `Prose` gives bare semantic content (`h2` to `h4`, paragraphs, lists, links, quotes, code, images, figures, simple
+  tables and rules) a readable reading column: a built-in 65ch measure, a 16px body step (`size='sm'` selects the
+  compact step) and brand-coloured inline code by `tone` (any `code` outside a `pre`, one directly under the root
+  included). It renders one `div`, never parses or sanitizes content and takes no HTML string, so the app converts and
+  sanitizes its rich text, caps heading levels, provides `alt` text and wraps wide tables in a scroll region.
+  Components that own a recipe (`PullQuote`, `Table`, `PhotoFrame`) are not supported inside it. (#569)
+- Footer accepts an optional `wrap`: when true, one centered wrapper with the page content max-width and gutters
+  encloses the motto, grid and legal row, so the footer content aligns with wrapped sections while the root
+  hairlines and bottom padding stay full width. The default is `false`: the footer renders as before. (#561)
+- Footer accepts an optional `register`: `'grafito'` paints the Grafito reading wash (`surface-0` at 50 percent, solid
+  under reduced transparency) on the footer root, which stays a native `footer` at its natural height; `'none'` (the
+  default) paints nothing and the host keeps the background. The group-edge fade stays host-owned (see the `HostFade`
+  story). The `FooterRegister` type is exported. (#565)
+- Link accepts `variant='quiet'`: neutral text with a brand-coloured underline, for navigation links inside cards and
+  footer navigation. It keeps the default label size, the underline removal on hover, the arrow and the focus ring,
+  so only the ink and underline colour differ, and it is not meant for inline prose, where the underline is the only
+  cue. Omitting `variant`, `plain` and the deprecated `underlined` render as before. `FooterNavigation` adopts it
+  through the Footer amendment, not through this entry. (#562)
 - `FooterNavigationItem` accepts the optional `'aria-current': 'page'`, rendered on that entry's link so the footer
   exposes the current page like TopBar and NavList. The host marks at most one link across the Footer; Footer does
   not infer the current page and adds no visual cue, so sighted users get no indication from the Footer itself. (#559)
@@ -28,6 +103,26 @@ a local tarball from `pnpm release:pack`.
 - A NowCard footer may hold one `StepMeter` beside its supporting detail or action; with a meter, keep at most one
   other footer child. NowCard renders no meter itself and gains no prop, and cards without a meter render as before.
   (#556)
+
+### Changed
+
+- `ProjectCardFooter` takes one to three supplied `Button` or `Link` actions instead of one, and its row wraps onto
+  further lines in a narrow card. It adds no list semantics, tab stop or whole-card link, and nothing nests: each action
+  keeps its own focus and the card still emits no event. The cap of three and unique accessible names within the card
+  are yours to keep and are not enforced at runtime; add the project name when the same wording repeats across a
+  listing. A single label wider than the card's content box is clipped by the card's legacy `overflow: hidden`, so keep
+  labels short or use Button `labelWrap`. A one-action footer renders as before. (#577)
+- In link mode `Chip` types `aria-current` as `'page' | 'true'` instead of the full native union, so `step`,
+  `location`, `date`, `time`, `'false'` and booleans no longer compile on a link chip. Their runtime behaviour is
+  unchanged: the attribute is still forwarded, but it is not painted. (#576)
+- SectionNav shows each section's number with at least two digits (`01`, `09`, `10`, `100`) in the raised brand
+  colour and its label in uppercase display type, in the disclosure and in every index row. The number is the item's
+  position in `items`; the props, the label text and the `onNavigate` payload are unchanged, and each index link's
+  accessible name now reads `02 Beta`. Consumer tests that pin an exact link name such as `1 About` must change to
+  `01 About`. (#563)
+- `FooterNavigation` renders its links with Link `quiet` (neutral text with an underline) instead of `plain`, so the
+  link ink and underline colour change for every Footer consumer, with no opt-out prop; the type step and the
+  44.8px target recipe are unchanged. It needs Link `quiet` from the same release. (#562)
 
 ## 0.10.0
 

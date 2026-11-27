@@ -16,6 +16,7 @@ export function useLabStage(props: LabStageProps) {
   const {
     title,
     level,
+    titleVariant,
     eyebrow,
     accent,
     lede,
@@ -36,9 +37,12 @@ export function useLabStage(props: LabStageProps) {
     };
   const hasMedia = Children.toArray(media).length > 0;
   const hasChildren = Children.toArray(children).length > 0;
+  // Only 'show' selects the smaller recipe; any other runtime value, including null, resolves to the default.
+  const titleRecipe: NonNullable<LabStageProps['titleVariant']> = titleVariant === 'show' ? 'show' : 'hero';
   return {
     title,
     level,
+    titleVariant: titleRecipe,
     eyebrow,
     accent,
     lede,

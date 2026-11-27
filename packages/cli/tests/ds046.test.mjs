@@ -866,6 +866,172 @@ test('S9 resolves the artifact from the project using Node lookup, including a h
   assert.equal(treeHash(app.root), localBefore);
 });
 
+// S10 (#566): DS046 also checks @egdev/effects components against the allowances their own package publishes.
+const anchorGeometry = [
+  'aspect-ratio',
+  'block-size',
+  'height',
+  'inline-size',
+  'max-block-size',
+  'max-height',
+  'max-inline-size',
+  'max-width',
+  'min-block-size',
+  'min-height',
+  'min-inline-size',
+  'min-width',
+  'width'
+];
+const anchorEntry = { name: 'HomeTemplateAnchor', package: '@egdev/effects', classNameAllows: anchorGeometry };
+const effectsArtifact = artifact([
+  anchorEntry,
+  { name: 'HomeTemplate', package: '@egdev/effects' },
+  { name: 'Button', package: '@egdev/ui' }
+]);
+
+test('S10 an @egdev/effects allowance extends DS046 for direct, aliased and namespace imports only', () => {
+  const app = fixture();
+  const baseline = doctorBaseline(app);
+  write(artifactPath(app.project), effectsArtifact);
+  write(
+    join(app.project, 'src/Example.tsx'),
+    [
+      "import { HomeTemplate, HomeTemplateAnchor, HomeTemplateAnchor as Anchor } from '@egdev/effects';",
+      "import * as Effects from '@egdev/effects';",
+      "import { Button } from '@egdev/ui';",
+      'const a = <HomeTemplateAnchor zone="hero" className="direct direct-mixed" />;',
+      'const b = <Anchor zone="hero" className="alias alias-mixed" />;',
+      'const c = <Effects.HomeTemplateAnchor zone="hero" className="namespace ns-mixed" />;',
+      'const d = <HomeTemplate zoneTable={[]} className="root">{null}</HomeTemplate>;',
+      'const e = <Button className="button" />;',
+      ''
+    ].join('\n')
+  );
+  const published = [
+    '.direct { width: 100%; min-width: 4rem; max-width: 40rem; aspect-ratio: 1 / 1; margin: 0 auto; align-self: center; --gap: 1rem; }',
+    '.alias { inline-size: 100%; min-inline-size: 4rem; max-inline-size: 40rem; height: 100%; min-block-size: 4rem; }',
+    '.namespace { MIN-HEIGHT: 12rem; max-height: 40rem; block-size: 100%; max-block-size: 40rem; ASPECT-RATIO: 1; }'
+  ];
+  write(join(app.project, 'src/styles.css'), `${published.join('\n')}\n`);
+  assertDoctor(app, baseline, []);
+  write(
+    join(app.project, 'src/styles.css'),
+    [
+      ...published,
+      '.direct-mixed { width: 100%; aspect-ratio: 1; color: red; }',
+      '.alias-mixed { height: 100%; position: absolute; display: flex; }',
+      '.ns-mixed { inline-size: 100%; padding: 1rem; }',
+      '.root { width: 100%; }',
+      '.button { width: 100%; }',
+      ''
+    ].join('\n')
+  );
+  assertDoctor(app, baseline, [
+    ds046(4, '.direct-mixed', 'HomeTemplateAnchor', 'color'),
+    ds046(5, '.alias-mixed', 'Anchor', 'position, display'),
+    ds046(6, '.ns-mixed', 'Effects.HomeTemplateAnchor', 'padding'),
+    ds046(7, '.root', 'HomeTemplate', 'width'),
+    ds046(8, '.button', 'Button', 'width')
+  ]);
+});
+
+test('S10 a missing, malformed or untagged artifact keeps the base list for effects components', () => {
+  const cases = [
+    ['missing', null],
+    ['malformed JSON', '{not json'],
+    ['invalid property array', artifact([{ ...anchorEntry, classNameAllows: ['width', 42] }])],
+    ['unreadable file', 'directory'],
+    ['untagged anchor', artifact([{ name: 'HomeTemplateAnchor', package: '@egdev/effects' }])],
+    ['same name in another package', artifact([{ ...anchorEntry, package: '@egdev/ui' }])]
+  ];
+  for (const [label, contents] of cases) {
+    const app = fixture();
+    const baseline = doctorBaseline(app);
+    write(
+      join(app.project, 'src/Example.tsx'),
+      'import { HomeTemplateAnchor as Anchor } from \'@egdev/effects\'; const view = <Anchor zone="hero" className="anchor" />;\n'
+    );
+    write(join(app.project, 'src/styles.css'), '.anchor { width: 100%; aspect-ratio: 1; }\n');
+    if (contents === 'directory') {
+      mkdirSync(artifactPath(app.project));
+    } else if (contents !== null) {
+      write(artifactPath(app.project), contents);
+    }
+    assert.doesNotThrow(
+      () => assertDoctor(app, baseline, [ds046(1, '.anchor', 'Anchor', 'width, aspect-ratio')]),
+      label
+    );
+  }
+});
+
+test('S10 allowances never cross packages, and a class shared by same-named components is checked against both', () => {
+  const app = fixture();
+  const baseline = doctorBaseline(app);
+  write(
+    artifactPath(app.project),
+    artifact([
+      { name: 'SelectTile', package: '@egdev/ui', classNameAllows: ['width'] },
+      { name: 'SelectTile', package: '@egdev/effects', classNameAllows: ['grid-template-columns'] }
+    ])
+  );
+  // Both imports resolve to the export name SelectTile: only the package tells the owners apart. The ui file
+  // sorts first, so its allowance would hide the effects owner if the two were taken for the same component.
+  write(
+    join(app.project, 'src/FirstTile.tsx'),
+    'import { SelectTile } from \'@egdev/ui\'; const a = <SelectTile className="ui-width ui-columns shared" />;\n'
+  );
+  write(
+    join(app.project, 'src/SecondTile.tsx'),
+    'import { SelectTile } from \'@egdev/effects\'; const b = <SelectTile className="fx-columns fx-width shared" />;\n'
+  );
+  write(
+    join(app.project, 'src/styles.css'),
+    [
+      '.ui-width { width: 100%; }',
+      '.fx-columns { grid-template-columns: 1fr; }',
+      '.ui-columns { grid-template-columns: 1fr; }',
+      '.fx-width { width: 100%; }',
+      '.shared { width: 100%; }',
+      '.ui-width, .fx-columns { width: 100%; }',
+      ''
+    ].join('\n')
+  );
+  assertDoctor(app, baseline, [
+    ds046(3, '.ui-columns', 'SelectTile', 'grid-template-columns'),
+    ds046(4, '.fx-width', 'SelectTile', 'width'),
+    ds046(5, '.shared', 'SelectTile', 'width'),
+    ds046(6, '.ui-width, .fx-columns', 'SelectTile', 'width')
+  ]);
+});
+
+test('S10 DS047 keeps its @egdev/ui scope on effects imports', () => {
+  const app = fixture();
+  const baseline = doctorBaseline(app);
+  write(artifactPath(app.project), effectsArtifact);
+  write(
+    join(app.project, 'src/Example.tsx'),
+    [
+      "import { HomeTemplateAnchor } from '@egdev/effects';",
+      "import { Button } from '@egdev/ui';",
+      'const a = <HomeTemplateAnchor zone="hero" className="stage" />;',
+      'const b = <Button className="control" />;',
+      ''
+    ].join('\n')
+  );
+  write(join(app.project, 'src/styles.css'), '.stage > span { color: red; }\n.stage .label { width: 100%; }\n');
+  assertDoctor(app, baseline, []);
+  write(join(app.project, 'src/styles.css'), '.stage > span { color: red; }\n.control > span { color: red; }\n');
+  assertDoctor(app, baseline, [
+    {
+      code: 'DS047',
+      message:
+        '.control > span reaches into Button internals: use the component API or add an allowlist entry with an issue.',
+      file: 'src/styles.css',
+      line: 2
+    }
+  ]);
+});
+
 test('S3 doctor honors excluded paths and a pending allowlisted DS046, including --fail-on-pending', () => {
   const app = fixture();
   writeFileSync(

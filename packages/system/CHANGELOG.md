@@ -4,12 +4,53 @@
 
 ### Added
 
+- The source-derived artifact and reference include `NowCard`'s `statusPresentation` prop (default `badge`), the
+  amended `statusBadge` description, the status-band recipe lines and the `leading-status-presentation` naming concept
+  (approved, with its receipt); other props and recipes are unchanged. (#564)
+- The source-derived artifact and reference describe `ProjectCardFooter` as holding one to three supplied actions (the
+  part and `children` descriptions) and list `flex-wrap` in its `projectCardFootVariants` recipe; no prop, recipe axis
+  or export is added. (#577)
+- The source-derived artifact and reference list the current-state utilities of `Chip`'s link recipe (`chipVariants`
+  `mode=link`: the `aria-current` `page` and `true` paint, focus ring and forced-colours outline). The narrowed
+  `aria-current` declaration is not a separate prop row, because docgen merges it into the native attribute that the
+  artifact's own-prop filter omits; existing props and recipes are unchanged. (#576)
+- The source-derived artifact and reference include the `titleVariant` prop of `Hero`, `Closing`, `ChapterBreak` and
+  `LabStage` (default `hero`) and the `heading-title-variant` naming concept (approved, with its receipt); existing
+  props and recipes are unchanged. (#560)
+- The source-derived artifact and reference list the `GalleryLightbox` composition recipe in the catalog, composed from
+  Dialog, Carousel and PhotoFrame and not exported; no prop, recipe or other entry changes. (#575)
+- The source-derived artifact and reference include `Embed` (its six props and static recipes), the
+  `unavailable-content-fallback` naming concept (approved, with its receipt) and Embed among the users of two reused
+  conventions. (#574)
+- The source-derived artifact and reference include `Pagination` (its six props and static recipes), the `page-count`
+  and `page-href` naming concepts (approved, with their receipt) and Pagination among the users of four reused
+  conventions. (#571)
+- The source-derived artifact and reference include `DetailHeader` (its props, static recipes and `classNameAllows`
+  width set), the `content-metadata`, `content-tags` and `external-links` naming concepts (approved, with their
+  receipt) and DetailHeader among the users of six reused conventions. (#572)
+- The source-derived artifact and reference include `Breadcrumb` (its `items`, `label` and `onNavigate` props, the
+  `BreadcrumbItem` entry type and its static recipes) and its usages of the approved `accessible-name`,
+  `collection-items` and `navigation-intent` conventions. (#570)
+- The source-derived artifact and reference include `EmptyState` (its props, static recipes and `className`
+  allowance) and its five reused naming conventions. (#573)
+- The source-derived artifact and reference include `Prose` (its props and static descendant recipe), the
+  `--container-prose` token and the two reused naming conventions. (#569)
+- The source-derived artifact lists `classNameAllows` for `HomeTemplateAnchor` (the thirteen published width, height
+  and aspect-ratio properties); no prop, recipe or other entry changes. (#566)
+- The source-derived artifact and reference include SectionNav's number and label recipes and the `items` description
+  of its zero-padded numbers; existing props are unchanged. (#563)
+- The artifact and design reference include Footer's `wrap` and `register` props, its `register` recipe axis and
+  `footerWrapVariants`, and the `section-register` and `section-content-wrap` conventions widened to Footer; existing
+  props and recipes are unchanged. (#561, #565)
+- The artifact and design reference include Link's `quiet` variant: the widened `variant` description, a `quiet`
+  entry in the recipe anatomy and the ink listed per variant, so the shared `linkVariants` base no longer carries
+  `text-link-default`; every other Link prop is unchanged. (#562)
 - The source-derived artifact and reference include ProjectCard's `statusBadge` slot and its
   `leading-status-badge` usage. (#558)
 - The artifact and design reference include Carousel's `variant` prop and its current-slide emphasis recipes;
   existing props and recipes are unchanged. (#557)
 - The source-derived artifact and reference include `StepMeter` (its props and static recipes), the `step-count`
-  naming concept (proposed, with no approval receipt) and the refreshed NowCard footer description. (#556)
+  naming concept (approved, with its receipt) and the refreshed NowCard footer description. (#556)
 
 ## 0.12.0
 

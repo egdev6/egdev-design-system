@@ -9,6 +9,7 @@
 @source "../packages/ui/src/organisms/calendar-grid/CalendarGrid.stories.tsx";
 @source "../packages/ui/src/organisms/chapter-break/ChapterBreak.stories.tsx";
 @source "../packages/ui/src/organisms/closing/Closing.stories.tsx";
+@source "../packages/ui/src/organisms/footer/Footer.stories.tsx";
 @source "../packages/ui/src/organisms/live-band/LiveBand.stories.tsx";
 @source "../packages/ui/src/organisms/notes-board/NotesBoard.stories.tsx";
 @source "../packages/ui/src/organisms/preview-frame/PreviewFrame.stories.tsx";
@@ -25,6 +26,7 @@
 @source "../packages/ui/src/atoms/chip/Chip.stories.tsx";
 @source "../packages/ui/src/atoms/countdown/Countdown.stories.tsx";
 @source "../packages/ui/src/atoms/dropzone/Dropzone.stories.tsx";
+@source "../packages/ui/src/atoms/embed/Embed.stories.tsx";
 @source "../packages/ui/src/atoms/gauge/Gauge.stories.tsx";
 @source "../packages/ui/src/atoms/icon/Icon.stories.tsx";
 @source "../packages/ui/src/atoms/icon-button/IconButton.stories.tsx";
@@ -65,6 +67,7 @@
 @source "../packages/ui/src/primitives/aspect-ratio/AspectRatio.stories.tsx";
 @source "../packages/ui/src/primitives/divider/Divider.stories.tsx";
 @source "../packages/ui/src/primitives/label/Label.stories.tsx";
+@source "../packages/ui/src/primitives/prose/Prose.stories.tsx";
 
 @source "../packages/ui/src/primitives/skeleton/Skeleton.stories.tsx";
 @source "../packages/ui/src/primitives/stack/Cluster.stories.tsx";

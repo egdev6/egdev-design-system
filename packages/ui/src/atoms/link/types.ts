@@ -57,10 +57,12 @@ export type LinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'children'>
      */
     arrow?: boolean;
     /**
-     * Appearance axis. plain is the only treatment: link-coloured text with a text underline at rest that
-     * is removed on hover, where the arrow still moves and the colour stays. `underlined` is deprecated:
-     * it is an alias that renders exactly like plain, kept so existing consumers do not break, and it
-     * will be removed in a later major. Omit the prop instead of requesting underlined.
+     * Appearance axis. plain is the default treatment: link-coloured text with a text underline at rest that
+     * is removed on hover, where the arrow still moves and the colour stays. quiet is for links inside cards
+     * and footer navigation: neutral text with a brand-coloured underline at rest, removed on hover the same
+     * way; not for inline prose. `underlined` is deprecated: it is an alias that renders exactly like plain,
+     * kept so existing consumers do not break, and it will be removed in a later major. Omit the prop instead
+     * of requesting underlined.
      * @control select
      * @default plain
      */
@@ -68,24 +70,28 @@ export type LinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'children'>
   };
 
 /**
- * Appearance axis for the link root. `underlined` is a deprecated alias of `plain` (same classes), kept
- * for compatibility until a later major removes it.
+ * Appearance axis for the link root. `quiet` is neutral text with a brand underline for links in cards and
+ * footer navigation. `underlined` is a deprecated alias of `plain` (same classes), kept for compatibility
+ * until a later major removes it.
  */
-export type LinkVariant = 'plain' | 'underlined';
+export type LinkVariant = 'plain' | 'underlined' | 'quiet';
 
-// Resets the retained legacy .eg-link bottom border and padding, so the text underline is the only line.
-const plainLinkRecipe = 'pb-0 border-0';
-
-// The text underline follows the link colour (currentColor) and is offset by a space token; hover removes
-// it instead of changing the colour, so the hover change never relies on colour alone (WCAG 1.4.1).
+// The text underline is offset by a space token and hover removes it instead of changing the colour, so the
+// hover change never relies on colour alone (WCAG 1.4.1). plain underlines in its link ink (currentColor);
+// quiet keeps the neutral ink and paints the underline in the brand colour, its only non-colour cue at rest.
+// Each variant owns its ink, so no branch emits two text-colour utilities and the result never relies on
+// tailwind-merge to settle one. pb-0 border-0 resets the retained legacy .eg-link bottom border and padding,
+// so the text underline is the only line. The recipes are inline literals on purpose: the system artifact
+// builder reads string literals in `variants` but does not follow module-level constants.
 export const linkVariants = cva(
-  'eg-link group/link inline-flex items-center gap-2 font-sans text-label-default text-link-default underline underline-offset-(--space-1) cursor-pointer transition-colors duration-(--duration-fast) ease-(--ease-out) hover:no-underline focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:rounded-sm motion-reduce:transition-none',
+  'eg-link group/link inline-flex items-center gap-2 font-sans text-label-default underline underline-offset-(--space-1) cursor-pointer transition-colors duration-(--duration-fast) ease-(--ease-out) hover:no-underline focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:rounded-sm motion-reduce:transition-none',
   {
     variants: {
       variant: {
-        plain: plainLinkRecipe,
+        plain: 'text-link-default pb-0 border-0',
         /** @deprecated Alias of plain; renders the same classes. Removed in a later major. */
-        underlined: plainLinkRecipe
+        underlined: 'text-link-default pb-0 border-0',
+        quiet: 'text-fg-default decoration-fg-brand-default pb-0 border-0'
       }
     },
     defaultVariants: { variant: 'plain' }

@@ -7,6 +7,7 @@ export * from './atoms/checkbox';
 export * from './atoms/chip';
 export * from './atoms/countdown';
 export * from './atoms/dropzone';
+export * from './atoms/embed';
 export * from './atoms/field-message';
 export * from './atoms/gauge';
 export * from './atoms/icon';
@@ -46,6 +47,7 @@ export { cn } from './lib/cn';
 export * from './molecules/alert-dialog';
 export * from './molecules/article-feature';
 export * from './molecules/attachment-field';
+export * from './molecules/breadcrumb';
 export * from './molecules/button-group';
 export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
@@ -61,7 +63,9 @@ export type { ColorSwatchGroupOption, ColorSwatchGroupProps } from './molecules/
 export { ColorSwatchGroup } from './molecules/color-swatch-group';
 export * from './molecules/command-palette';
 export * from './molecules/community-card';
+export * from './molecules/detail-header';
 export * from './molecules/dialog';
+export * from './molecules/empty-state';
 export * from './molecules/field';
 export type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from './molecules/gauge-group';
 export { GaugeGroup } from './molecules/gauge-group';
@@ -73,6 +77,7 @@ export * from './molecules/nav-list';
 export * from './molecules/notice';
 export * from './molecules/now-card';
 export * from './molecules/page-header';
+export * from './molecules/pagination';
 export type {
   PanelBodyProps,
   PanelFooterProps,
@@ -144,6 +149,7 @@ export type {
   FooterNavigationLevel,
   FooterNavigationProps,
   FooterProps,
+  FooterRegister,
   FooterSocialProps
 } from './organisms/footer';
 export {
@@ -206,6 +212,8 @@ export type { LabelProps, LabelVariant } from './primitives/label';
 export { Label, labelVariants } from './primitives/label';
 export type { PortalProps } from './primitives/portal';
 export { Portal } from './primitives/portal';
+export type { ProseProps, ProseSize, ProseTone } from './primitives/prose';
+export { Prose } from './primitives/prose';
 export * from './primitives/skeleton';
 export type { SlotProps } from './primitives/slot';
 export { Slot, Slottable } from './primitives/slot';

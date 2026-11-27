@@ -115,6 +115,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   appIcon: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
+  pagination: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   tabBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   topBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   sidebar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
@@ -168,6 +169,20 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   meterRow: ['id', 'title', 'dir', 'lang', 'className', 'style'],
   pixel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
   stepMeter: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
+  embed: [
+    'allow',
+    'allowFullScreen',
+    'referrerPolicy',
+    'sandbox',
+    'onLoad',
+    'id',
+    'dir',
+    'lang',
+    'aria-describedby',
+    'className'
+  ],
+  emptyState: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
+  breadcrumb: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
   photoFrame: [
     'srcSet',
     'sizes',
@@ -203,6 +218,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   ],
   input: ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className'],
   sectionHeader: ['id', 'dir', 'lang', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick'],
+  detailHeader: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   searchTrigger: [
     'id',
     'title',
@@ -239,6 +255,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   cluster: ['id', 'title', 'aria-describedby', 'className', 'style'],
   text: ['id', 'title', 'aria-describedby', 'className', 'style'],
   heading: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  prose: ['id', 'title', 'lang', 'dir', 'aria-describedby', 'className', 'style'],
   icon: ['id', 'aria-describedby', 'className', 'style'],
   iconButton: [
     'id',

@@ -1,0 +1,50 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the heading-title-variant convention for the titleVariant prop of Hero, Closing, ChapterBreak and LabStage, and record its registry receipt.",
+  "evidence": {
+    "channel": "Owner answers forwarded in odd/tasks/round-5-consumer-requests.md (L5 and L9), 2026-11-26 and 2026-11-27",
+    "userStatements": [
+      {
+        "quote": "Aprobar todas (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L5 (specs, scene titleVariant v0.2 OQ-4 naming convention)",
+        "date": "2026-11-26"
+      },
+      {
+        "quote": "Aprobar (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L9 (plan, scene titleVariant v0.2 D2 registry receipt for the newly named convention)",
+        "date": "2026-11-27"
+      }
+    ],
+    "specPath": "docs/components/hero/v0.2/spec.md",
+    "specPayloadSHA256": "sha256:170160c2115a7b7b29b5743a046b7a08187c3f1fc821577e2ae9f192ac0a2474",
+    "planPath": "docs/components/hero/v0.2/implementation-plan.md",
+    "planPayloadSHA256": "sha256:791a3fdfa8dfff2a84ff597215e11164f15c3468ac443e17f238ffa88b7de0de",
+    "interpretation": "Scoped convention approval only: it binds the exact payload below, which the approved scene titleVariant v0.2 spec states in its block 3 (OQ-4, approved by L5 with the recommended answer) and whose receipt the approved plan (L9, decision D2) authorized. It is not native review authority. The spec writes the three texts as prose; the registry holds them as sentences (first letter capitalised, final period, nothing else changed). specPayloadSHA256 is the payload of the spec as finalized with the recorded measurement and the owner's answers, which approval.md records next to the draft digest; the repository does not hold the question text, so the digest binds those bytes, not a digest the owner quoted. The one bound field the owner's answers did not show is status: the spec lists id, name, meaning, use and avoid with no alias and no exception, and the plan (section 5.1, D2) states that hashing the approved form is the step D2 adds. The receipt does not approve the implementation, a visual capture, an alias, an exception or any other convention: title, level, eyebrow, accent, lede, media and social reuse existing entries, and the entry carries no exception."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": ["heading-title-variant"],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:heading-title-variant",
+      "contentHash": "sha256:c3f702649a81a950bbcfe63a4a07199a81d715ea229830e63309b9946ec23b1d",
+      "convention": {
+        "id": "heading-title-variant",
+        "name": "titleVariant",
+        "meaning": "Display-title typography recipe of the heading slot a composite component owns, chosen from the Heading recipes that component supports.",
+        "whenToUse": "A composite renders its title through Heading and lets the consumer pick one of a small finite set of Heading's existing recipes so the title fits the container it sits in; the rank stays on `level`.",
+        "avoid": "The component's own visual treatment (use `variant`), heading rank, dimension presets (use `size`), colour tone, accent layout, arbitrary font sizes or CSS values.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/organisms/closing/types.ts",
+        "symbol": "ClosingProps",
+        "revision": "sha256:41b07659f7deb7c3f1ab36e2648117ec5d45f534651c5e1747e7626d6682bb8b"
+      }
+    }
+  ]
+}

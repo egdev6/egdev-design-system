@@ -54,6 +54,8 @@ jobs:
         run: pnpm test
       - name: Test CLI
         run: pnpm test:cli
+      - name: Test MCP server and README examples
+        run: pnpm test:mcp
       - name: Test compiled token contract
         run: pnpm --filter @egdev/tokens run test
       - name: Test package exports after build

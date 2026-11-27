@@ -1,0 +1,45 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the leading-status-presentation convention for the statusPresentation prop of NowCard, and record its registry receipt.",
+  "evidence": {
+    "channel": "Owner answer forwarded in odd/tasks/round-5-consumer-requests.md (L13), 2026-11-27",
+    "userStatements": [
+      {
+        "quote": "Aprobar todo (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L13 (cataloging, spec and plan, NowCard v0.4 OQ-4 naming convention and D5 registry receipt for the newly named convention)",
+        "date": "2026-11-27"
+      }
+    ],
+    "specPath": "docs/components/now-card/v0.4/spec.md",
+    "specPayloadSHA256": "sha256:50b9141f4c26fd01aa5016af57c1ebd3221cdc44b839c94b9a17a882cb456b39",
+    "planPath": "docs/components/now-card/v0.4/implementation-plan.md",
+    "planPayloadSHA256": "sha256:5a50e7a2c3a3cb95f715040ae87c9e16e4be98914d4cebc1c126698466ca1551",
+    "interpretation": "Scoped convention approval only: it binds the exact payload below, which the approved NowCard v0.4 spec states in its block 3 (OQ-4, approved by L13 with the recommended answer) and whose receipt the approved plan (L13, decision D5) authorized; the parent forwarded that the owner's answer \"Aprobar todo (Recomendado)\" covers this receipt. It is not native review authority. The spec quotes the three texts as the registry holds them. specPayloadSHA256 is the payload of the spec as finalized with the owner's answers, which approval.md records next to the draft digest; the repository does not hold the question text, so the digest binds those bytes, not a digest the owner quoted. The one bound field the owner's answer did not show is status: the spec lists id, name, meaning, use and avoid with no alias and no exception, and the plan (section 5.1, D5) states that hashing the approved form is the step D5 adds. The receipt does not approve the implementation, a visual capture, an alias, an exception or any other convention: statusBadge, title, level and size reuse existing entries, and the entry carries no exception."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": ["leading-status-presentation"],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:leading-status-presentation",
+      "contentHash": "sha256:7a3ba2560fd852782f2a66c582bbc03bbd9efaf9d6bce286927d5cbfd2045c8d",
+      "convention": {
+        "id": "leading-status-presentation",
+        "name": "statusPresentation",
+        "meaning": "How a heading-owning card presents its leading status slot: the supplied node at its content width, or a full-width status band that the card paints around it.",
+        "whenToUse": "A card that renders a consumer-supplied status node before its heading offers a small finite choice of how that slot is presented, with the default leaving the node as supplied.",
+        "avoid": "The component's own visual treatment (use `variant`), the status node's tone or treatment, lifecycle presentation (use `status`), dimension presets (use `size`), arbitrary widths or CSS values.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/now-card/types.ts",
+        "symbol": "NowCardProps",
+        "revision": "sha256:cb4f5e4ccf91666842b318fea264723dd64753a5e0bbef392c4f21c4ca49873a"
+      }
+    }
+  ]
+}

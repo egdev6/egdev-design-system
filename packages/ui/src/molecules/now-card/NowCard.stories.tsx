@@ -19,10 +19,12 @@ import { NowCard, NowCardBody, NowCardDetail, NowCardFooter } from './NowCard';
  *
  * ## Usage guidelines
  * Supply the status badge through the statusBadge slot: the card renders it itself as its first
- * content, before the heading (badge → title → copy, as the web card reads). The body holds copy
- * only. Keep at most one action in the footer and mark emphasized detail values with <b> (wrap
- * real instants in <time dateTime>). Density never clamps or hides supplied content, so consumers
- * shorten their own copy. The card adds no tab stop, no hover motion and no live region.
+ * content, before the heading (badge → title → copy, as the web card reads). For a full-width
+ * status band, set `statusPresentation='band'` and supply the label words instead of a Badge; the
+ * card owns the band's brand tint. The body holds copy only. Keep at most one action in the footer
+ * and mark emphasized detail values with <b> (wrap real instants in <time dateTime>). Density never
+ * clamps or hides supplied content, so consumers shorten their own copy. The card adds no tab stop,
+ * no hover motion and no live region.
  */
 const meta: Meta<typeof NowCard> = {
   title: 'Molecules/NowCard',
@@ -74,6 +76,57 @@ export const WithBadge: Story = {
         <p>Testing token-backed density presets for compact card strips.</p>
       </NowCardBody>
     </NowCard>
+  )
+};
+
+/**
+ * With `statusPresentation='band'` the card paints the status as a full-width, uppercase, brand-tinted band across the
+ * top. Supply the label words and, optionally, a decorative Icon: a Badge would paint a second pill inside the band.
+ * The default presentation keeps the Badge as supplied.
+ */
+export const WithStatusBand: Story = {
+  render: () => (
+    <div className='grid gap-4'>
+      <NowCard
+        title='Currently building'
+        statusPresentation='band'
+        statusBadge={
+          <>
+            <Icon name='hammer' size='sm' />
+            Building
+          </>
+        }
+      >
+        <NowCardBody>
+          <p>Porting the web catalog molecules into the design system.</p>
+        </NowCardBody>
+        <NowCardFooter>
+          <NowCardDetail>
+            Layer (c) <b>in review</b>
+          </NowCardDetail>
+        </NowCardFooter>
+      </NowCard>
+      <NowCard
+        title='Currently exploring'
+        size='sm'
+        statusPresentation='band'
+        statusBadge={
+          <>
+            <Icon name='compass' size='sm' />
+            Exploring
+          </>
+        }
+      >
+        <NowCardBody>
+          <p>Testing token-backed density presets for compact card strips.</p>
+        </NowCardBody>
+        <NowCardFooter>
+          <NowCardDetail>
+            Density <b>sm</b>
+          </NowCardDetail>
+        </NowCardFooter>
+      </NowCard>
+    </div>
   )
 };
 

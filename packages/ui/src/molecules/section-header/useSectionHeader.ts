@@ -30,8 +30,8 @@ type UseSectionHeaderResult = {
   ruleClassName: string;
 };
 
-/** Skip malformed untyped entries and retain content only when it has readable text. */
-function normalizeText(value: unknown): SectionHeaderText | undefined {
+/** Skip malformed untyped entries and retain content only when it has readable text; DetailHeader reuses it. */
+export function normalizeText(value: unknown): SectionHeaderText | undefined {
   if (typeof value === 'string') {
     return value.trim() ? value : undefined;
   }
