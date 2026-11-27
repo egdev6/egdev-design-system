@@ -1998,6 +1998,21 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · —
   - multiple: boolean; Accept several files; otherwise only the first file is delivered from every input path. (components[] · packages/ui/src/atoms/dropzone/types.ts)
   - onFiles: (files: File[]) => void; Receives a non-empty array of picked, dropped or pasted files, without accept/size validation. (components[] · packages/ui/src/atoms/dropzone/types.ts)
   - variant: enum; Square target by default; inline is a full-width row with a 56px minimum height. (components[] · packages/ui/src/atoms/dropzone/types.ts)
+### Embed
+catalog[] · docs/catalog.json · @egdev/ui · atom · AspectRatio
+- Embed (components[] · packages/ui/src/atoms/embed/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - embedFallbackVariants base: p-6 → --spacing-6
+    - embedFallbackVariants base: text-center → unresolved
+    - embedFallbackVariants base: font-sans → --font-sans
+    - embedFallbackVariants base: text-body-default → --text-body-default
+    - surfaceVariants({ tone: 'well', padding: 'none', radius: 'xl' }) · packages/ui/src/atoms/embed/useEmbed.ts; see Surface anatomy
+  - children: ReactNode; Consumer-owned content that a script or the app fills, for example a post blockquote that a provider script upgrades. It is rendered inside the reserved box with data-state ready and the root becomes a group named by label; the component never loads a script. Exclusive with src and the frame attributes. (components[] · packages/ui/src/atoms/embed/types.ts)
+  - fallback: ReactNode; Consumer-supplied alternative rendered in place of the frame or the children in the fallback state, inside the reserved box. Expected content is a short, localized explanation plus a link to the original. It must fit the box, because overflow is clipped. There is no built-in text: without a renderable fallback an empty reserved box is rendered and a development warning is raised. (components[] · packages/ui/src/atoms/embed/types.ts)
+  - label: string; Accessible name of the embedded content, never rendered visibly: the iframe title in the frame branch and the name of the root group when no iframe is rendered. Describe the content (for example "Keynote recording" or "Post by (components[] · packages/ui/src/atoms/embed/types.ts)
+  - loading: enum; Native deferral of the frame request until it nears the viewport; use eager for embeds above the fold. Only available with src. (components[] · packages/ui/src/atoms/embed/types.ts)
+  - ratio: number; Width divided by height of the reserved box. Every state keeps the box, so a state change never moves the layout; the parent owns the width. A positive finite number whose reciprocal percentage is finite is used as given, and anything else silently falls back to the default. (components[] · packages/ui/src/atoms/embed/types.ts)
+  - src: string; Document URL of the external content, rendered in a native iframe that mounts after the first client render, so a server render never starts the request. Only http: and https: URLs are accepted, absolute, scheme-relative or relative, as resolved by the WHATWG URL parser. An absent, empty or whitespace-only value renders the fallback state; any other scheme (javascript:, data:, blob:, vbscript:, file:) or an unparsable value renders the fallback state and warns in development. A different value mounts a fresh frame and restarts loading. Exclusive with children. (components[] · packages/ui/src/atoms/embed/types.ts)
 ### FieldMessage
 catalog[] · docs/catalog.json · @egdev/ui · atom · —
 - FieldMessage (components[] · packages/ui/src/atoms/field-message/types.ts)
@@ -2585,6 +2600,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
 - Slot (components[] · packages/ui/src/index.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - surfaceVariants({ tone: 'surface-1', elevation: 0, radius: 'md', padding: 'none' }) · packages/ui/src/atoms/app-icon/useAppIcon.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'well', padding: 'none', radius: 'xl' }) · packages/ui/src/atoms/embed/useEmbed.ts; see Surface anatomy
     - surfaceVariants({         tone: variant === 'framed' ? 'surface-0' : 'surface-1',         elevation: variant === 'framed' ? 2 : 1,         padding: 'none',         radius: 'xl'       }) · packages/ui/src/atoms/photo-frame/usePhotoFrame.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/atoms/search-trigger/useSearchTrigger.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
@@ -3272,6 +3288,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 - Slottable (components[] · packages/ui/src/index.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - surfaceVariants({ tone: 'surface-1', elevation: 0, radius: 'md', padding: 'none' }) · packages/ui/src/atoms/app-icon/useAppIcon.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'well', padding: 'none', radius: 'xl' }) · packages/ui/src/atoms/embed/useEmbed.ts; see Surface anatomy
     - surfaceVariants({         tone: variant === 'framed' ? 'surface-0' : 'surface-1',         elevation: variant === 'framed' ? 2 : 1,         padding: 'none',         radius: 'xl'       }) · packages/ui/src/atoms/photo-frame/usePhotoFrame.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/atoms/search-trigger/useSearchTrigger.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
@@ -3627,7 +3644,7 @@ Not exported:
 - absolute-deadline-text: deadlineText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - accent-line-break: accentBreak; approved; Heading, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
 - accepted-file-types: acceptedTypes; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
-- accessible-name: label; approved; AppIcon, AttachmentField, Avatar, Breadcrumb, BreadcrumbItem, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, Pagination, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, StepMeter, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- accessible-name: label; approved; AppIcon, AttachmentField, Avatar, Breadcrumb, BreadcrumbItem, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Embed, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, Pagination, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, StepMeter, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - action-alternative-text: actionAltText; approved; Toast (propNaming[] · skills/_shared/prop-naming.json)
 - active-row: activeRowId; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - active-section-id: activeId; approved; SectionNav (propNaming[] · skills/_shared/prop-naming.json)
@@ -3636,7 +3653,7 @@ Not exported:
 - anchor-zone-binding: zone; approved; HomeTemplateAnchor (propNaming[] · skills/_shared/prop-naming.json)
 - animation-paused: animationPaused; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - announcement-label: announcementLabel; approved; ToastProvider (propNaming[] · skills/_shared/prop-naming.json)
-- aspect-ratio: ratio; approved; AspectRatio, PhotoFrame, PreviewFrame, SelectTile (propNaming[] · skills/_shared/prop-naming.json)
+- aspect-ratio: ratio; approved; AspectRatio, Embed, PhotoFrame, PreviewFrame, SelectTile (propNaming[] · skills/_shared/prop-naming.json)
 - auto-dismiss-duration: duration; approved; Toast (propNaming[] · skills/_shared/prop-naming.json)
 - board-sticky-side: sticky; approved; NotesBoard (propNaming[] · skills/_shared/prop-naming.json)
 - bottom-navigation: bottomNavigation; approved; AppShell (propNaming[] · skills/_shared/prop-naming.json)
@@ -3806,6 +3823,7 @@ Not exported:
 - trailing-text-accent: accent; approved; ChapterBreak, Closing, Heading, Hero, LabStage, PullQuote, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
 - transient-feedback-reset-key: resetKey; approved; AttachmentField (propNaming[] · skills/_shared/prop-naming.json)
 - transient-highlight: highlighted; approved; Stat, Timeline (propNaming[] · skills/_shared/prop-naming.json)
+- unavailable-content-fallback: fallback; approved; Embed (propNaming[] · skills/_shared/prop-naming.json)
 - unavailable-measurement-message: unavailableText; approved; Countdown, Gauge, GaugeGroupRing, Stat (propNaming[] · skills/_shared/prop-naming.json)
 - value-context: delta; approved; Stat (propNaming[] · skills/_shared/prop-naming.json)
 - value-readout: readout; approved; Field (propNaming[] · skills/_shared/prop-naming.json)

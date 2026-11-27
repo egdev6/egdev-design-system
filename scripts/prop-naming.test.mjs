@@ -884,6 +884,11 @@ const postReceiptUsages = [
   ...['accessible-name', 'primary-value', 'localized-messages', 'navigation-intent'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/pagination/types.ts#PaginationProps'
+  })),
+  // Embed #574 reuses two approved conventions as usages only: no new meaning, exception or receipt for them.
+  ...['accessible-name', 'aspect-ratio'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/embed/types.ts#EmbedProps'
   }))
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
@@ -938,7 +943,9 @@ const postReceiptProposals = [
   'external-links',
   // Pagination v0.1 page conventions: approved by their own receipt (docs/components/pagination/v0.1/prop-naming-approval.json).
   'page-count',
-  'page-href'
+  'page-href',
+  // Embed v0.1 fallback convention: approved by its own receipt (docs/components/embed/v0.1/prop-naming-approval.json).
+  'unavailable-content-fallback'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -2311,6 +2318,183 @@ test('Pagination binds its scoped owner approval for two new conventions, reuses
   validate(registry);
 });
 
+test('Embed binds its scoped owner approval for one new convention, reuses two approved ones and binds every reviewed source revision (#574)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/embed/v0.1/prop-naming-approval.json';
+  assert.ok(fs.existsSync(resolve(root, reference)), 'The Embed naming receipt must be recorded');
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const path = 'packages/ui/src/atoms/embed/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const source = { path, symbol: 'EmbedProps', revision };
+  // The receipt carries the owner's verbatim answers and binds the approved form of the exact convention payload.
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.deepEqual(receipt.evidence.userStatements, [
+    {
+      quote: 'Aprobar todas (Recomendado)',
+      provenance: 'odd/tasks/round-5-consumer-requests.md L5 (specs, Embed v0.1 OQ-6 naming convention)',
+      date: '2026-11-26'
+    },
+    {
+      quote: 'Aprobar los 10 (Recomendado)',
+      provenance:
+        'odd/tasks/round-5-consumer-requests.md L6 (plans, Embed v0.1 D2 registry receipt for the newly named convention)',
+      date: '2026-11-26'
+    }
+  ]);
+  const log = fs.readFileSync(resolve(root, 'odd/tasks/round-5-consumer-requests.md'), 'utf8');
+  for (const { quote } of receipt.evidence.userStatements) {
+    assert.ok(log.includes(`"${quote}"`), `The task log must hold the owner's answer: ${quote}`);
+  }
+  // The approved spec and plan payloads (their line-start first heading through EOF) are the recorded digests, and the
+  // spec quotes the convention's text in its table of new proposals.
+  const payload = (file, heading) => {
+    const text = fs.readFileSync(resolve(root, file), 'utf8');
+    return text.slice(text.search(heading));
+  };
+  const specPath = 'docs/components/embed/v0.1/spec.md';
+  const planPath = 'docs/components/embed/v0.1/implementation-plan.md';
+  const specPayload = payload(specPath, /^## 1\. Purpose and scope$/m);
+  assert.equal(receipt.evidence.specPath, specPath);
+  // The receipt sits under the spec as amended by Amendment 1 (the owner's L8 answer): the live payload is the amended one.
+  assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(specPayload)));
+  assert.equal(
+    receipt.evidence.specPayloadSHA256,
+    'sha256:11b9368099008dafb0e175ed8628ae9df32837b1ad8df2a0b8b2329f0c3035f6'
+  );
+  // The amendment changed the fallback layer recipe only. It records the digest the owner approved at L5, the amended
+  // one, and the owner's verbatim answer, which the approval record and the task log both hold.
+  const amendmentQuote = 'A: agregar `box-border` (Recomendado)';
+  assert.deepEqual(receipt.evidence.specAmendments, [
+    {
+      name: 'Amendment 1',
+      date: '2026-11-27',
+      record: 'docs/components/embed/v0.1/approval.md',
+      change:
+        'Adds the static keyword utility box-border to the fallback layer recipe and the matching EM-11 wording; the three convention texts are byte-identical in both payloads.',
+      ownerChoice: amendmentQuote,
+      provenance: 'odd/tasks/round-5-consumer-requests.md L8',
+      specPayloadSHA256Before: 'sha256:a004144377a34800c9729c2b983bf48bdaaadd3bb8d41b0ca3338c98317e1b69',
+      specPayloadSHA256After: receipt.evidence.specPayloadSHA256
+    }
+  ]);
+  const approvalRecord = fs.readFileSync(resolve(root, receipt.evidence.specAmendments[0].record), 'utf8');
+  for (const hash of [
+    receipt.evidence.specAmendments[0].specPayloadSHA256Before,
+    receipt.evidence.specAmendments[0].specPayloadSHA256After
+  ]) {
+    assert.ok(approvalRecord.includes(hash.replace('sha256:', '')), `approval.md must record ${hash}`);
+  }
+  assert.ok(approvalRecord.includes(`"${amendmentQuote}"`), 'approval.md must hold the amendment answer');
+  assert.ok(log.includes(`"${amendmentQuote}"`), 'The task log must hold the amendment answer (L8)');
+  assert.equal(receipt.evidence.planPath, planPath);
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    digest(Buffer.from(payload(planPath, /^## 1\. Authority and gates$/m)))
+  );
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    'sha256:df0282e3cb879efa4704bcbe9334f623cd719de5c0651457f953da2484b938be'
+  );
+  assert.match(receipt.evidence.interpretation, /not native review authority/i);
+  assert.deepEqual(receipt.priorReceipts, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, ['unavailable-content-fallback']);
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    ['convention:unavailable-content-fallback']
+  );
+  const id = 'unavailable-content-fallback';
+  const meaning =
+    'Consumer-supplied content a component shows in place of its primary content while that content is unavailable or deliberately withheld.';
+  const whenToUse =
+    'A component owns the reserved space and the state of external or deferred content, and the consumer supplies the readable alternative, such as a short explanation and a link to the original.';
+  const avoid =
+    'Numeric or time displays (use unavailableText), image-load initials (identity-image-source), form errors (error), loading indicators or skeletons, built-in default copy, or deciding when content is withheld (policy stays with the consumer).';
+  const entry = registry.find((item) => item.id === id);
+  assert.ok(entry);
+  assert.equal(entry.name, 'fallback');
+  assert.equal(entry.meaning, meaning);
+  assert.equal(entry.whenToUse, whenToUse);
+  assert.equal(entry.avoid, avoid);
+  // The three texts are quoted verbatim in the spec, and the spec names the concept and the prop.
+  for (const field of [meaning, whenToUse, avoid]) {
+    assert.ok(specPayload.includes(field), field);
+  }
+  assert.ok(specPayload.includes(`semantic ID \`${id}\`, name \`fallback\``));
+  // Convention approval stays separate from the spec approval: only this scoped receipt promotes the entry.
+  assert.equal(entry.status, 'approved');
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(approval, {
+    reference,
+    scope: `convention:${id}`,
+    contentHash: props.conventionHash(entry)
+  });
+  assert.deepEqual(
+    receipt.entries.find(({ scope }) => scope === approval.scope),
+    { scope: approval.scope, contentHash: approval.contentHash, convention, source }
+  );
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  assert.deepEqual(usages, [{ component: 'Embed', type: 'ReactNode (optional)', status: 'existing', source }]);
+  assert.deepEqual(historicalRegistry([entry]), []);
+  // The name is free: no other canonical name or alias is `fallback`, so the validator accepts the new concept.
+  assert.deepEqual(
+    registry.filter((item) => item.name === 'fallback' || item.aliases.includes('fallback')).map((item) => item.id),
+    [id]
+  );
+  // Changed semantic content or a dropped approval invalidates the entry; a recomputed digest is not consent.
+  const changed = structuredClone(registry);
+  changed.find((item) => item.id === id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+  const unapproved = structuredClone(registry);
+  unapproved.find((item) => item.id === id).approval = null;
+  assert.throws(() => validate(unapproved), /approval/i);
+  // The two reused entries keep their approved status and gain exactly one Embed usage each, with no exception.
+  const reused = [
+    ['accessible-name', 'string (required; non-empty after trimming, otherwise nothing renders)'],
+    ['aspect-ratio', 'number (optional; default 16 / 9; an unrepresentable value falls back to the default)']
+  ];
+  for (const [reusedId, type] of reused) {
+    const existing = registry.find((item) => item.id === reusedId);
+    assert.equal(existing.status, 'approved', reusedId);
+    assert.deepEqual(
+      existing.exceptions.filter(({ scope }) => scope.includes('Embed')),
+      [],
+      reusedId
+    );
+    assert.deepEqual(
+      existing.usages.filter(({ component }) => component === 'Embed'),
+      [{ component: 'Embed', type, status: 'existing', source }],
+      reusedId
+    );
+    // The frozen receipts compare the registry without the reviewed post-receipt usages.
+    assert.deepEqual(
+      historicalRegistry([existing]).flatMap(({ usages: remaining }) =>
+        remaining.filter((usage) => usage.source.path === path)
+      ),
+      [],
+      reusedId
+    );
+  }
+  // The prop types that stay native or general carry no entry: src, children, loading and the iframe attributes.
+  assert.deepEqual(
+    registry
+      .filter((item) => item.usages.some((usage) => usage.source.path === path))
+      .map(({ id: entryId }) => entryId)
+      .sort(),
+    [id, ...reused.map(([reusedId]) => reusedId)].sort()
+  );
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 3);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  validate(registry);
+});
+
 test('Text truncation binds its scoped owner approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
@@ -2862,8 +3046,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // StepMeter v0.1 proposes the step total.
   // DetailHeader v0.1 adds three approved content conventions (metadata, tags, external links).
   // Pagination v0.1 adds two approved page conventions (page count, page href).
-  assert.equal(actual.length, 190);
-  assert.equal(beforeIndicatorConventions(actual).length, 187);
+  // Embed v0.1 adds one approved fallback convention.
+  assert.equal(actual.length, 191);
+  assert.equal(beforeIndicatorConventions(actual).length, 188);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

@@ -13,6 +13,7 @@
 @source "../atoms/chip/types.ts";
 @source "../atoms/countdown/types.ts";
 @source "../atoms/dropzone/types.ts";
+@source "../atoms/embed/types.ts";
 @source "../atoms/field-message/types.ts";
 @source "../atoms/gauge/types.ts";
 @source "../atoms/icon/types.ts";

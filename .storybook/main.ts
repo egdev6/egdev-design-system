@@ -169,6 +169,18 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   meterRow: ['id', 'title', 'dir', 'lang', 'className', 'style'],
   pixel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
   stepMeter: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
+  embed: [
+    'allow',
+    'allowFullScreen',
+    'referrerPolicy',
+    'sandbox',
+    'onLoad',
+    'id',
+    'dir',
+    'lang',
+    'aria-describedby',
+    'className'
+  ],
   emptyState: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   breadcrumb: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
   photoFrame: [

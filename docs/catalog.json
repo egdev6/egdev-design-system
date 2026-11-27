@@ -374,6 +374,17 @@
     "notas": "Implemented React atom under the [approved v0.1 contract](components/step-meter/v0.1/spec.md): passive named image (`role=\"img\"`, required `label`) showing a coarse stepped level, default four steps filled from the inline start, token-backed flat steps with an approved clip-path literal and a forced-colors paint. The consumer owns the level and its wording; no stylesheet, ref or asChild. Packed React 18.3.1 and 19.3.0 consumers and Chromium geometry, contrast and forced-colors observations are recorded in the [implementation evidence](components/step-meter/v0.1/implementation-evidence.md); visual conformity is not evaluated."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Embed",
+    "nivel": "atom",
+    "destino": "ui",
+    "radix": "AspectRatio",
+    "compone": "Spinner, Surface recipe",
+    "accion": "nuevo",
+    "notas": "Implemented React atom under the [approved v0.1 contract](components/embed/v0.1/spec.md): a named, reserved frame for external content. A required `label` names a native `iframe` (http(s) `src`, mounted after hydration so no request starts on the server) or a `group` of consumer `children`; a decorative Spinner shows while the frame loads and a consumer `fallback` replaces unusable content. Material is the Surface well recipe. The component loads no script and decides nothing about consent, cookies or URL trust; fixed `ratio` (default 16/9), no stylesheet, ref or asChild. Browser and packed-consumer results are recorded in the [implementation evidence](components/embed/v0.1/implementation-evidence.md); visual conformity is not evaluated."
+  },
+  {
     "actual": "ProgressBar",
     "nivelActual": "átomo",
     "nombre": "ProgressBar",

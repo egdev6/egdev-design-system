@@ -139,7 +139,8 @@ const components = [
   ['StepMeter', 'atoms/step-meter'],
   ['Prose', 'primitives/prose'],
   ['EmptyState', 'molecules/empty-state'],
-  ['Breadcrumb', 'molecules/breadcrumb']
+  ['Breadcrumb', 'molecules/breadcrumb'],
+  ['Embed', 'atoms/embed']
 ] as const;
 const expectedIconNames = [
   'github',
@@ -483,6 +484,7 @@ const expected: Record<string, Record<string, string | false>> = {
   avatar: { src: 'text', label: 'text', size: 'select', paused: 'boolean' },
   navlist: { label: 'text', items: false, onNavigate: false },
   breadcrumb: { label: 'text', items: false, onNavigate: false },
+  embed: { label: 'text', ratio: 'number', src: 'text', children: false, fallback: false, loading: 'select' },
   pagination: {
     label: 'text',
     value: 'number',
@@ -880,6 +882,7 @@ const ownPropCounts: Record<string, number> = {
   searchtrigger: 3,
   navlist: 3,
   breadcrumb: 3,
+  embed: 6,
   pagination: 6,
   detailheader: 9,
   sociallinks: 8,
@@ -1668,6 +1671,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['NotesBoard', { sticky: 'false' }],
     ['Pixel', { state: '"idle"' }],
     ['StepMeter', { steps: '4' }],
+    ['Embed', { ratio: '16 / 9', loading: '"lazy"' }],
     ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
@@ -2176,6 +2180,79 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'onClick',
       'ref',
       'asChild'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Embed required label text, the ratio and source rows, the loading select and two ReactNode rows without defaults they do not own', () => {
+    const { argTypes, args } = story('Embed');
+    const tags = (name: string) =>
+      component('Embed').__docgenInfo.props[name]?.tags as Record<string, string> | undefined;
+    const reasons = (name: string) => new Set((tags(name)?.controlReason ?? '').split('\n').map((line) => line.trim()));
+    expect([...reasons('fallback')]).toEqual([
+      expect.stringMatching(/ReactNode content is not serializable; see Fallback/)
+    ]);
+    expect([...reasons('children')]).toEqual([
+      expect.stringMatching(/ReactNode content is not serializable; see ScriptEmbed/)
+    ]);
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.ratio?.type).toMatchObject({ name: 'number', required: false });
+    expect(argTypes.ratio?.control).toEqual({ type: 'number' });
+    expect(argTypes.ratio?.table?.defaultValue?.summary).toBe('16 / 9');
+    expect(argTypes.src?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.src?.control).toEqual({ type: 'text' });
+    expect(argTypes.src?.table?.defaultValue).toBeUndefined();
+    // The select keeps the extracted values and their extracted order: the order is read, never chosen.
+    expect(argTypes.loading?.control).toEqual({ type: 'select' });
+    expect(argTypes.loading?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.loading?.options).toEqual(['eager', 'lazy']);
+    expect(argTypes.loading?.options).toEqual(story('Embed', false).argTypes.loading?.options);
+    expect(argTypes.loading?.table?.defaultValue?.summary).toBe('"lazy"');
+    // The two ReactNode rows stay documented with no widget and no hidden table row.
+    for (const name of ['children', 'fallback']) {
+      expect(argTypes[name]?.control, name).toBe(false);
+      expect(argTypes[name]?.table?.disable, name).toBeUndefined();
+      expect(argTypes[name]?.table?.defaultValue, name).toBeUndefined();
+    }
+    expect(argTypes.fallback?.type).toMatchObject({ required: false });
+    // Documentation must not initialize any control just to fill the UI.
+    expect(args).toEqual({});
+    for (const prop of [
+      'allow',
+      'allowFullScreen',
+      'referrerPolicy',
+      'sandbox',
+      'onLoad',
+      'id',
+      'dir',
+      'lang',
+      'aria-describedby',
+      'className'
+    ]) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Embed', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'title',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'aria-busy',
+      'tabIndex',
+      'style',
+      'onClick',
+      'onKeyDown',
+      'onError',
+      'srcDoc',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone'
     ]) {
       expect(argTypes[prop], prop).toBeUndefined();
     }

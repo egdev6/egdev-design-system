@@ -2247,6 +2247,16 @@
           "symbol": "PaginationProps",
           "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
         }
+      },
+      {
+        "component": "Embed",
+        "type": "string (required; non-empty after trimming, otherwise nothing renders)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/embed/types.ts",
+          "symbol": "EmbedProps",
+          "revision": "sha256:debbddc467385adcdbe1ce8cdbb9ab7fd6c0d294c7abee1ad536070dc60fae39"
+        }
       }
     ]
   },
@@ -4025,6 +4035,16 @@
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
           "revision": "sha256:e61cc416f86355b6d60841a969c93d5e027be1571be8f7f23347ce96e70530c4"
+        }
+      },
+      {
+        "component": "Embed",
+        "type": "number (optional; default 16 / 9; an unrepresentable value falls back to the default)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/embed/types.ts",
+          "symbol": "EmbedProps",
+          "revision": "sha256:debbddc467385adcdbe1ce8cdbb9ab7fd6c0d294c7abee1ad536070dc60fae39"
         }
       }
     ]
@@ -9290,6 +9310,33 @@
           "path": "packages/ui/src/molecules/pagination/types.ts",
           "symbol": "PaginationProps",
           "revision": "sha256:b947a96ee6a78f085ea7f97f1737d09cc77fc6efe0ab9cd832c89554a8edfde8"
+        }
+      }
+    ]
+  },
+  {
+    "id": "unavailable-content-fallback",
+    "name": "fallback",
+    "meaning": "Consumer-supplied content a component shows in place of its primary content while that content is unavailable or deliberately withheld.",
+    "whenToUse": "A component owns the reserved space and the state of external or deferred content, and the consumer supplies the readable alternative, such as a short explanation and a link to the original.",
+    "avoid": "Numeric or time displays (use unavailableText), image-load initials (identity-image-source), form errors (error), loading indicators or skeletons, built-in default copy, or deciding when content is withheld (policy stays with the consumer).",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/embed/v0.1/prop-naming-approval.json",
+      "scope": "convention:unavailable-content-fallback",
+      "contentHash": "sha256:e812551824142c5c3a378bd4f49d6a236882fa4eb0dd3e45fa8273eeb4165767"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Embed",
+        "type": "ReactNode (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/embed/types.ts",
+          "symbol": "EmbedProps",
+          "revision": "sha256:debbddc467385adcdbe1ce8cdbb9ab7fd6c0d294c7abee1ad536070dc60fae39"
         }
       }
     ]

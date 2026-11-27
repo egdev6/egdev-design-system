@@ -26,6 +26,7 @@
 @source "../packages/ui/src/atoms/chip/Chip.stories.tsx";
 @source "../packages/ui/src/atoms/countdown/Countdown.stories.tsx";
 @source "../packages/ui/src/atoms/dropzone/Dropzone.stories.tsx";
+@source "../packages/ui/src/atoms/embed/Embed.stories.tsx";
 @source "../packages/ui/src/atoms/gauge/Gauge.stories.tsx";
 @source "../packages/ui/src/atoms/icon/Icon.stories.tsx";
 @source "../packages/ui/src/atoms/icon-button/IconButton.stories.tsx";

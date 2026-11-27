@@ -1507,6 +1507,146 @@ test('Pagination publishes its six own props, the seven static part recipes, its
   );
 });
 
+test('Embed publishes its six own props, the four static recipes, the Surface well it composes, its new convention and the reused ones (#574)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const embed = artifact.components.find(({ name }) => name === 'Embed');
+  assert.ok(embed, 'the artifact lists Embed');
+  assert.equal(embed.package, '@egdev/ui');
+  assert.equal(embed.source, 'packages/ui/src/atoms/embed/types.ts');
+  // The six own props, merged across the two union branches; the native iframe picks come from node_modules.
+  assert.deepEqual(
+    embed.props.map(({ name }) => name),
+    ['children', 'fallback', 'label', 'loading', 'ratio', 'src']
+  );
+  const prop = (name) => embed.props.find((item) => item.name === name);
+  assert.deepEqual([prop('label').type, prop('label').required], ['string', true]);
+  assert.deepEqual([prop('ratio').type, prop('ratio').required], ['number', false]);
+  assert.deepEqual([prop('src').type, prop('src').required], ['string', false]);
+  assert.equal(prop('fallback').required, false);
+  assert.equal(prop('children').required, false);
+  // The artifact names an enum prop by its docgen type; the allowed values are pinned by the Controls suite.
+  assert.equal(prop('loading').type, 'enum');
+  assert.equal(prop('loading').required, false);
+  // Only the two constants carry a default.
+  assert.deepEqual(
+    embed.props.map(({ name, default: value }) => [name, value]),
+    [
+      ['children', null],
+      ['fallback', null],
+      ['label', null],
+      ['loading', 'lazy'],
+      ['ratio', '16 / 9'],
+      ['src', null]
+    ]
+  );
+  assert.match(prop('label').description, /never rendered visibly/);
+  assert.match(prop('src').description, /http: and https: URLs are accepted/);
+  assert.match(prop('fallback').description, /There is no built-in text/);
+  // No title, role, naming attribute, handler, inline style, ref, asChild or appearance axis is published.
+  for (const name of [
+    'title',
+    'role',
+    'aria-label',
+    'aria-labelledby',
+    'aria-hidden',
+    'aria-busy',
+    'tabIndex',
+    'style',
+    'dangerouslySetInnerHTML',
+    'onClick',
+    'onKeyDown',
+    'onError',
+    'srcDoc',
+    'ref',
+    'asChild',
+    'className',
+    'variant',
+    'size',
+    'tone'
+  ]) {
+    assert.ok(!embed.props.some((item) => item.name === name), `Embed must not publish ${name}`);
+  }
+  // No @classNameAllows tag: className supports the DS046 base placement list only, so no extra property is allowed.
+  assert.equal(Object.hasOwn(embed, 'classNameAllows'), false);
+  // Four private static recipes: the approved inventory and nothing else, and no stylesheet part.
+  assert.deepEqual(
+    embed.variants.map(({ name }) => name),
+    ['embedFallbackVariants', 'embedFrameVariants', 'embedLoadingVariants', 'embedVariants']
+  );
+  const recipes = Object.fromEntries(
+    embed.variants.map(({ name, classes }) => [name, classes.join(' ').split(/\s+/).filter(Boolean)])
+  );
+  assert.deepEqual(recipes.embedVariants, ['eg-embed', 'min-w-0', 'overflow-hidden']);
+  assert.deepEqual(recipes.embedLoadingVariants, [
+    'absolute',
+    'inset-0',
+    'grid',
+    'place-items-center',
+    'text-fg-muted'
+  ]);
+  assert.deepEqual(recipes.embedFrameVariants, ['relative', 'block', 'size-full', 'border-0']);
+  assert.deepEqual(recipes.embedFallbackVariants, [
+    'box-border',
+    'grid',
+    'size-full',
+    'place-items-center',
+    'p-6',
+    'text-center',
+    'font-sans',
+    'text-body-default',
+    'text-fg-muted'
+  ]);
+  // Nothing in the recipes paints Material, transitions, transforms or animates: the Material is the Surface well.
+  for (const classes of Object.values(recipes)) {
+    for (const utility of classes) {
+      assert.doesNotMatch(
+        utility,
+        /^(?:bg|shadow|ring|backdrop|filter|transition|animate|duration|ease|transform|translate|scale|rotate|rounded)\b/,
+        utility
+      );
+    }
+  }
+  assert.deepEqual(embed.parts, []);
+  // It composes the exported AspectRatio and Spinner (read from the JSX tags) and one Surface well recipe in the hook.
+  assert.deepEqual(embed.composedOf.map(({ name }) => name).sort(), ['AspectRatio', 'Spinner']);
+  for (const { source } of embed.composedOf) {
+    assert.equal(source, 'packages/ui/src/atoms/embed/Embed.tsx');
+  }
+  assert.deepEqual(embed.surfaceUsage, [
+    {
+      source: 'packages/ui/src/atoms/embed/useEmbed.ts',
+      arguments: "{ tone: 'well', padding: 'none', radius: 'xl' }"
+    }
+  ]);
+  // The new convention is approved by its own receipt and lists Embed as its only component.
+  const fallback = artifact.propNaming.find((item) => item.id === 'unavailable-content-fallback');
+  assert.ok(fallback);
+  assert.equal(fallback.name, 'fallback');
+  assert.equal(fallback.status, 'approved');
+  assert.deepEqual(fallback.components, ['Embed']);
+  // The two reused conventions keep their approved status and list Embed beside the other components.
+  for (const id of ['accessible-name', 'aspect-ratio']) {
+    const convention = artifact.propNaming.find((item) => item.id === id);
+    assert.equal(convention.status, 'approved', id);
+    assert.ok(convention.components.includes('Embed'), id);
+  }
+  // src, children, loading and the iframe attributes are native or general: no convention names them.
+  assert.ok(!artifact.propNaming.some((item) => item.name === 'src' && item.components.includes('Embed')));
+  assert.deepEqual(
+    artifact.catalog.find(({ name }) => name === 'Embed'),
+    {
+      name: 'Embed',
+      level: 'atom',
+      package: '@egdev/ui',
+      radix: 'AspectRatio',
+      // Like every multi-part cell of the catalog, the composition is one comma-separated entry.
+      composes: ['Spinner, Surface recipe'],
+      action: 'nuevo',
+      available: true
+    }
+  );
+});
+
 test('NowCard footer documents one optional StepMeter without a prop, part or composition change', () => {
   const artifact = read('packages/system/design-system.json');
   const card = artifact.components.find(({ name }) => name === 'NowCard');

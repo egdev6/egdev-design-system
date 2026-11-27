@@ -769,6 +769,147 @@ describe('Storybook TypeScript docgen contract', () => {
       /\b(?:argTypes|play)\s*:/
     );
   });
+  it('extracts Embed own props with their annotations, the shown native rows and the documented stories (EM-13)', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
+    const doc = parser.parse(source('atoms/embed/Embed.tsx')).find(({ displayName }) => displayName === 'Embed');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      label: 'text',
+      ratio: 'number',
+      fallback: 'false',
+      src: 'text',
+      loading: 'select',
+      children: 'false'
+    };
+    const file = ast(source('atoms/embed/types.ts'));
+    const own = ownProps(file, ['EmbedSharedProps', 'EmbedFrameProps', 'EmbedContentProps']);
+    // The two branches both declare children and src, each declaration carrying its own annotation.
+    expect(own.map((property) => property.name.getText(file))).toEqual([
+      'label',
+      'ratio',
+      'fallback',
+      'src',
+      'loading',
+      'children',
+      'children',
+      'src'
+    ]);
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+        name
+      ).toEqual([controls[name]]);
+      // Only the two constants carry a default: the rest of the rules live in the description bodies.
+      expect(
+        tags.some(({ tagName }) => tagName.text === 'default'),
+        name
+      ).toBe(name === 'ratio' || name === 'loading');
+      if (controls[name] === 'false') {
+        expect(tags.filter(({ tagName }) => tagName.text === 'controlReason').length, `${name} reason`).toBe(1);
+      }
+    }
+    // Repeated identical directives of a union normalize to one distinct value.
+    const tagOf = (name: string, tag: string) => [
+      ...new Set(
+        String((props[name]?.tags as Record<string, string> | undefined)?.[tag] ?? '')
+          .split(/\r?\n/)
+          .map((line) => line.trim())
+          .filter(Boolean)
+      )
+    ];
+    for (const [name, control] of Object.entries(controls)) {
+      expect(tagOf(name, 'control'), name).toEqual([control]);
+    }
+    expect(props.label).toMatchObject({ required: true, type: { name: 'string' }, defaultValue: null });
+    expect(props.ratio).toMatchObject({ required: false, type: { name: 'number' } });
+    expect(normalize(props.ratio?.defaultValue?.value)).toBe('16 / 9');
+    expect(props.src).toMatchObject({ required: false, type: { name: 'string' }, defaultValue: null });
+    expect(props.fallback).toMatchObject({ required: false, defaultValue: null });
+    expect(props.children).toMatchObject({ defaultValue: null });
+    expect(props.loading).toMatchObject({ required: false, type: { name: 'enum' } });
+    expect(normalize(props.loading?.defaultValue?.value)).toBe('lazy');
+    expect(
+      (props.loading?.type as { value?: { value: string }[] } | undefined)?.value
+        ?.map(({ value }) => normalize(value))
+        .sort()
+    ).toEqual(['eager', 'lazy']);
+    const reasonOf = (name: string) => tagOf(name, 'controlReason').join(' ');
+    expect(reasonOf('fallback')).toMatch(/ReactNode content is not serializable; see Fallback/);
+    expect(reasonOf('children')).toMatch(/ReactNode content is not serializable; see ScriptEmbed/);
+    for (const name of [
+      'allow',
+      'allowFullScreen',
+      'referrerPolicy',
+      'sandbox',
+      'onLoad',
+      'id',
+      'dir',
+      'lang',
+      'aria-describedby',
+      'className'
+    ]) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'title',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'aria-busy',
+      'tabIndex',
+      'style',
+      'dangerouslySetInnerHTML',
+      'contentEditable',
+      'onClick',
+      'onKeyDown',
+      'onError',
+      'srcDoc',
+      'name',
+      'width',
+      'height',
+      'ref',
+      'asChild',
+      'variant',
+      'size',
+      'tone'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // The component and its prop type are public; the hook and the four recipes stay internal.
+    expect(publicAPI.Embed).toBeDefined();
+    for (const name of [
+      'useEmbed',
+      'embedVariants',
+      'embedLoadingVariants',
+      'embedFrameVariants',
+      'embedFallbackVariants'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    expect(readFileSync(source('atoms/embed/index.ts'), 'utf8')).not.toMatch(/Variants|useEmbed/);
+    const stories = source('atoms/embed/Embed.stories.tsx');
+    expect(exportedStoryNames(ast(stories))).toEqual(['Default', 'Ratios', 'ScriptEmbed', 'Fallback', 'OnGrafito']);
+    const text = readFileSync(stories, 'utf8');
+    expect(text).toMatch(/title: 'Atoms\/Embed'/);
+    expect(text).not.toMatch(/\b(?:argTypes|play)\s*:/);
+    // No story requests third-party content: no string literal is an absolute or scheme-relative URL.
+    const urls: string[] = [];
+    (function visit(node: ts.Node) {
+      if (
+        (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) &&
+        /^(?:https?:)?\/\//i.test(node.text)
+      ) {
+        urls.push(node.text);
+      }
+      ts.forEachChild(node, visit);
+    })(ast(stories));
+    expect(urls).toEqual([]);
+  });
   it('extracts Breadcrumb own props with their annotations, the shown native rows and the dropped boundaries (BC-16)', {
     timeout: heavyDocgenTimeoutMs
   }, () => {
@@ -2403,6 +2544,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/chip',
       './atoms/countdown',
       './atoms/dropzone',
+      './atoms/embed',
       './atoms/field-message',
       './atoms/gauge',
       './atoms/icon',
@@ -2546,6 +2688,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'DialogTrigger',
       'Divider',
       'Dropzone',
+      'Embed',
       'EmptyState',
       'Field',
       'FieldMessage',
