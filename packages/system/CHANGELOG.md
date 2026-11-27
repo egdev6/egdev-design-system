@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- The source-derived artifact and reference include `Grid` and `GridItem` (their props and static recipes), the four
+  new naming concepts and their reused conventions, and the catalog rows; existing props and recipes are unchanged.
+  (#395)
+
 ## 0.13.0
 
 ### Added

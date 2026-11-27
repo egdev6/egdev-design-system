@@ -44,6 +44,17 @@
     "notas": "Implemented in @egdev/ui: Stack (vertical flow, no wrap) and Cluster (wrapping row) with exact spacing-token gaps and flex alignment. Contract: [#105](https://github.com/egdev6/egdev-design-system/issues/105)."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Grid / GridItem",
+    "nivel": "primitive",
+    "destino": "ui",
+    "radix": "Slot",
+    "compone": "—",
+    "accion": "nuevo",
+    "notas": "Implemented in @egdev/ui: Grid (equal-width token-gap columns with an inclusive one-column collapse at 860 or 1080 CSS px) and GridItem (column and row span), passive layout with no stylesheet. Contract: [spec](components/grid/v0.1/spec.md); request [#395](https://github.com/egdev6/egdev-design-system/issues/395)."
+  },
+  {
     "actual": "Title + Eyebrow",
     "nivelActual": "átomo",
     "nombre": "Text / Heading",
@@ -1240,7 +1251,7 @@
     "radix": "—",
     "compone": "ProjectCard",
     "accion": "componer",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval. Layout: arrange the cards with `Grid` and `GridItem` ([#395](https://github.com/egdev6/egdev-design-system/issues/395)); still a documented recipe, not an export."
   },
   {
     "actual": "BlogGrid",
@@ -1273,7 +1284,7 @@
     "radix": "—",
     "compone": "CommunityCard",
     "accion": "componer",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging CommunityCard instances; not a standalone export."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging CommunityCard instances; not a standalone export. Layout: arrange the cards with `Grid` and `GridItem` ([#395](https://github.com/egdev6/egdev-design-system/issues/395)); still a documented recipe, not an export."
   },
   {
     "actual": "TipsSlider",

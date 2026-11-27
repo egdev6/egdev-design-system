@@ -2538,6 +2538,37 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Separator
     - dividerVariants base: p-0 → --spacing-0
   - decorative: boolean; Whether the rule is decoration rather than a meaningful content boundary. Changes semantics only, never paint. Set false for a semantic separator. (components[] · packages/ui/src/primitives/divider/types.ts)
   - orientation: enum; Rule axis, shared with Radix semantic orientation. Horizontal fades physically left to right, including in RTL. Parent layout supplies the available horizontal length. (components[] · packages/ui/src/primitives/divider/types.ts)
+### Grid / GridItem
+catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
+- Grid (components[] · packages/ui/src/primitives/grid/types.ts)
+  - GridItem: Places one child of a Grid by column span and row span, with a zero minimum width so long content cannot widen its track. A passive layout with no public ref; an asChild child keeps its own ref through Slot. (components[].parts · packages/ui/src/primitives/grid/Grid.tsx)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - gridVariants gap=0: gap-0 → --spacing-0
+    - gridVariants gap=1: gap-1 → --spacing-1
+    - gridVariants gap=2: gap-2 → --spacing-2
+    - gridVariants gap=3: gap-3 → --spacing-3
+    - gridVariants gap=4: gap-4 → --spacing-4
+    - gridVariants gap=5: gap-5 → --spacing-5
+    - gridVariants gap=6: gap-6 → --spacing-6
+    - gridVariants gap=7: gap-7 → --spacing-7
+    - gridVariants gap=8: gap-8 → --spacing-8
+    - gridVariants gap=10: gap-10 → --spacing-10
+    - gridVariants gap=12: gap-12 → --spacing-12
+    - gridVariants gap=14: gap-14 → --spacing-14
+    - gridVariants gap=16: gap-16 → --spacing-16
+    - gridVariants gap=20: gap-20 → --spacing-20
+    - gridVariants gap=24: gap-24 → --spacing-24
+  - alignItems: enum; Cross-axis alignment of each item inside its grid area. (components[] · packages/ui/src/primitives/grid/types.ts)
+  - asChild: boolean; Merge the grid onto its single child element through Slot instead of rendering a div. (components[] · packages/ui/src/primitives/grid/types.ts)
+  - collapseBelow: enum; Viewport width in CSS pixels at and below which, inclusive, the grid becomes one column and each direct child's column and row placement resets to automatic. Above it nothing changes. When omitted the grid never collapses. The threshold follows the viewport, not the width of the grid. (components[] · packages/ui/src/primitives/grid/types.ts)
+  - columnCount: enum; Number of equal-width columns, drawn as `repeat(N, minmax(0, 1fr))`: a track may shrink below the minimum width of its content. (components[] · packages/ui/src/primitives/grid/types.ts)
+  - gap: enum; Token-key gap between rows and between columns. (components[] · packages/ui/src/primitives/grid/types.ts)
+- GridItem (components[] · packages/ui/src/primitives/grid/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - No statically extracted anatomy.
+  - asChild: boolean; Merge the placement onto its single child element through Slot instead of rendering a div. (components[] · packages/ui/src/primitives/grid/types.ts)
+  - rowSpan: enum; Number of rows the item spans in the automatic flow. When omitted the item takes one row. (components[] · packages/ui/src/primitives/grid/types.ts)
+  - span: enum; Number of columns the item spans. Keep it at or below the grid's `columnCount`: a larger span adds implicit columns. When omitted the item takes one column. (components[] · packages/ui/src/primitives/grid/types.ts)
 ### Label
 catalog[] · docs/catalog.json · @egdev/ui · primitive · Label
 - Label (components[] · packages/ui/src/primitives/label/types.ts)
@@ -3702,7 +3733,7 @@ Not exported:
 - corner-badge-icon: badgeIcon; approved; Indicator (propNaming[] · skills/_shared/prop-naming.json)
 - corner-radius: radius; approved; Surface (propNaming[] · skills/_shared/prop-naming.json)
 - cover-badge: coverBadge; approved; ArticleFeatureCover, TipCard (propNaming[] · skills/_shared/prop-naming.json)
-- cross-axis-alignment: alignItems; approved; Cluster, Stack (propNaming[] · skills/_shared/prop-naming.json)
+- cross-axis-alignment: alignItems; approved; Cluster, Grid, Stack (propNaming[] · skills/_shared/prop-naming.json)
 - deadline-expiration: onExpire; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - deadline-instant: deadline; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-center-content: center; approved; Gauge, GaugeGroup (propNaming[] · skills/_shared/prop-naming.json)
@@ -3734,6 +3765,9 @@ Not exported:
 - filled-glyph: filled; approved; Icon (propNaming[] · skills/_shared/prop-naming.json)
 - floating-align: align; approved; Menu, PopoverContent (propNaming[] · skills/_shared/prop-naming.json)
 - floating-side: side; approved; Menu, PopoverContent, Tooltip (propNaming[] · skills/_shared/prop-naming.json)
+- grid-columns: columnCount; approved; Grid (propNaming[] · skills/_shared/prop-naming.json)
+- grid-item-row-span: rowSpan; approved; GridItem (propNaming[] · skills/_shared/prop-naming.json)
+- grid-item-span: span; approved; GridItem (propNaming[] · skills/_shared/prop-naming.json)
 - group-caption: caption; approved; SocialLinks (propNaming[] · skills/_shared/prop-naming.json)
 - guide-zones: zones; approved; PreviewFrame (propNaming[] · skills/_shared/prop-naming.json)
 - header-status-text: statusText; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
@@ -3767,7 +3801,8 @@ Not exported:
 - keyboard-shortcut-hint: shortcut; approved; CommandPaletteItem, MenuEntry, SearchTrigger (propNaming[] · skills/_shared/prop-naming.json)
 - label-layout: layout; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
 - layer-opacity: opacity; approved; AmbientBackground, Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
-- layout-gap: gap; approved; Cluster, SocialLinks, Stack (propNaming[] · skills/_shared/prop-naming.json)
+- layout-collapse-below: collapseBelow; approved; Grid (propNaming[] · skills/_shared/prop-naming.json)
+- layout-gap: gap; approved; Cluster, Grid, SocialLinks, Stack (propNaming[] · skills/_shared/prop-naming.json)
 - layout-orientation: orientation; approved; Divider, RadioGroup (propNaming[] · skills/_shared/prop-naming.json)
 - leading-icon: icon; approved; Badge, Button, Chip, ChipGroupOption, CommandPaletteItem, EmptyState, FieldMessage, IconButton, Input, MenuEntry, ModuleCard, ModuleRail, NavList, Notice, SocialLinkItem, TabBarItem, Timeline, Toast, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - leading-status-badge: statusBadge; approved; NowCard, ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
@@ -3825,7 +3860,7 @@ Not exported:
 - side-navigation: sideNavigation; approved; AppShell (propNaming[] · skills/_shared/prop-naming.json)
 - signal-pulse: pulse; approved; Skeleton, StatusDot (propNaming[] · skills/_shared/prop-naming.json)
 - single-line-text-truncation: truncate; approved; Text (propNaming[] · skills/_shared/prop-naming.json)
-- slot-composition: asChild; approved; AlertDialogAction, AlertDialogCancel, AlertDialogTrigger, ArticleFeature, Button, Cluster, DialogClose, DialogTrigger, IconButton, Link, ListItem, PopoverClose, PopoverTrigger, ScrollReveal, Stack, Surface, Text, VisuallyHidden (propNaming[] · skills/_shared/prop-naming.json)
+- slot-composition: asChild; approved; AlertDialogAction, AlertDialogCancel, AlertDialogTrigger, ArticleFeature, Button, Cluster, DialogClose, DialogTrigger, Grid, GridItem, IconButton, Link, ListItem, PopoverClose, PopoverTrigger, ScrollReveal, Stack, Surface, Text, VisuallyHidden (propNaming[] · skills/_shared/prop-naming.json)
 - sort-change: onSortChange; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - square-particle-direction: squareDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - step-count: steps; approved; StepMeter (propNaming[] · skills/_shared/prop-naming.json)

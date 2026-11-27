@@ -209,7 +209,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { ArticleFeature, ArticleFeatureCover, AspectRatio, AttachmentField, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, CommunityCard, CommunityCardAction, CommunityCardMark, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { ArticleFeature, ArticleFeatureCover, AspectRatio, AttachmentField, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, CommunityCard, CommunityCardAction, CommunityCardMark, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Grid, GridItem, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   ArticleFeatureCoverProps,
   AttachmentFieldMessages,
@@ -370,6 +370,8 @@ import type {
   ClusterProps,
   LayoutGap,
   StackProps,
+  GridItemProps,
+  GridProps,
   HeadingLevel,
   HeadingProps,
   TextForeground,
@@ -848,6 +850,42 @@ type PaginationPrivateRecipe = (typeof import('@egdev/ui'))['paginationVariants'
 // @ts-expect-error The internal hook is not public.
 type PaginationPrivateHook = (typeof import('@egdev/ui'))['usePagination'];
 export type PaginationNegatives = [typeof paginationMissingLabel, typeof paginationMissingValue, typeof paginationMissingCount, typeof paginationMissingHref, typeof paginationStringValue, typeof paginationNumericHref, typeof paginationRole, typeof paginationAriaLabel, typeof paginationAriaLabelledBy, typeof paginationChildren, typeof paginationRef, typeof paginationSlot, typeof paginationEntryCallback, PaginationPrivateRecipe, PaginationPrivateHook];
+
+// Keep Grid samples outside App so the existing link-count/focus harness stays unchanged.
+export const gridProps: GridProps = { columnCount: 12, gap: 5, alignItems: 'stretch', collapseBelow: 1080, id: 'packed-grid', 'aria-label': 'Projects', className: 'mt-6' };
+export const gridItemProps: GridItemProps = { span: 7, rowSpan: 2, id: 'packed-grid-item' };
+export function GridSamples() {
+  return createElement(Fragment, null,
+    createElement(Grid, gridProps,
+      createElement(GridItem, gridItemProps, 'Featured'),
+      createElement(GridItem, { span: 5 }, 'Second')),
+    createElement(Grid, { asChild: true, columnCount: 3, gap: 6, collapseBelow: 860 },
+      createElement('ul', { 'aria-label': 'Listing' },
+        createElement(GridItem, { asChild: true, span: 5, rowSpan: 3 }, createElement('li', null, 'One')),
+        createElement(GridItem, { asChild: true }, createElement('li', null, 'Two')))),
+    createElement(Grid, { columnCount: 1 }, 'Single column'));
+}
+// @ts-expect-error Only 860 and 1080 are supported viewport thresholds.
+const gridThreshold: GridProps = { collapseBelow: 900 };
+// @ts-expect-error Only 1, 2, 3, 4 and 12 columns are supported.
+const gridColumns: GridProps = { columnCount: 5 };
+// @ts-expect-error The gap is a spacing-token key, not an arbitrary number.
+const gridGap: GridProps = { gap: 9 };
+// @ts-expect-error Only the five alignment values are supported.
+const gridAlign: GridProps = { alignItems: 'around' };
+// @ts-expect-error A column span runs from 1 to 12.
+const gridItemSpan: GridItemProps = { span: 13 };
+// @ts-expect-error A row span runs from 1 to 4.
+const gridItemRowSpan: GridItemProps = { rowSpan: 5 };
+// @ts-expect-error A root ref is not part of this API.
+const gridRef: GridProps = { ref: null };
+// @ts-expect-error A root ref is not part of this API.
+const gridItemRef: GridItemProps = { ref: null };
+// @ts-expect-error The internal hook is not public.
+type GridPrivateHook = (typeof import('@egdev/ui'))['useGrid'];
+// @ts-expect-error The recipes are private.
+type GridPrivateRecipe = (typeof import('@egdev/ui'))['gridVariants'];
+export type GridNegatives = [typeof gridThreshold, typeof gridColumns, typeof gridGap, typeof gridAlign, typeof gridItemSpan, typeof gridItemRowSpan, typeof gridRef, typeof gridItemRef];
 
 // Keep Embed samples outside App so the existing link-count/focus harness stays unchanged.
 export const embedFrameProps: EmbedProps = { label: 'Keynote recording', src: 'https://video.example/embed/1', ratio: 4 / 3, loading: 'eager', allow: 'fullscreen', allowFullScreen: true, referrerPolicy: 'no-referrer', sandbox: 'allow-scripts', onLoad: (event) => { void event.currentTarget.src; }, id: 'packed-embed', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
@@ -5950,6 +5988,133 @@ function assertPaginationCSS(css) {
   assert.doesNotMatch(css, /\.eg-pagination\b/);
 }
 
+// Grid ships no stylesheet: every utility of its two recipes is emitted for native and Tailwind consumers, the inclusive
+// collapse rules come after the span rules at the same specificity (so only the order decides), and the effects
+// stylesheet, which can be imported before or after the ui one, declares no property that could override them (#392).
+function assertGridConsumerCSS(css, effectsCss) {
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const space = (step) => 'var\\(--space-' + step + '[,)]';
+  const base = [
+    ['grid', /display:\s*grid/],
+    ['min-w-0', new RegExp('min-width:\\s*(?:0\\b|' + space('0') + ')')]
+  ];
+  for (const count of [1, 2, 3, 4, 12]) {
+    base.push([
+      'grid-cols-' + count,
+      new RegExp('grid-template-columns:\\s*repeat\\(' + count + ',\\s*minmax\\(0,\\s*1fr\\)\\)')
+    ]);
+  }
+  for (const gap of [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24]) {
+    base.push(['gap-' + gap, new RegExp('gap:\\s*' + space(String(gap)))]);
+  }
+  for (const [name, value] of [
+    ['start', 'flex-start'],
+    ['center', 'center'],
+    ['end', 'flex-end'],
+    ['stretch', 'stretch'],
+    ['baseline', 'baseline']
+  ]) {
+    base.push(['items-' + name, new RegExp('align-items:\\s*' + value + '\\s*(?:;|$)')]);
+  }
+  for (let span = 1; span <= 12; span += 1) {
+    base.push(['col-span-' + span, new RegExp('grid-column:\\s*span ' + span + ' / span ' + span)]);
+  }
+  for (let span = 1; span <= 4; span += 1) {
+    base.push(['row-span-' + span, new RegExp('grid-row:\\s*span ' + span + ' / span ' + span)]);
+  }
+  for (const [token, declaration] of base) {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + '[^{}]*\\{[^}]*' + declaration.source, declaration.flags),
+      'Missing Grid rule ' + token
+    );
+  }
+  const indexOfRule = (source, selector) => {
+    const match = new RegExp('(?:^|[{}\\s])' + selector + '\\s*\\{').exec(source);
+    return match ? match.index : -1;
+  };
+  // Brace-matched ranges of the inclusive blocks of one threshold, written `width<=N` or lowered to `max-width: N`.
+  const inclusiveBlocks = (source, threshold) => {
+    const header = new RegExp('@media\\s*\\((?:width<=|max-width:\\s*)' + threshold + 'px\\)\\s*\\{', 'g');
+    const ranges = [];
+    for (const match of source.matchAll(header)) {
+      let depth = 1;
+      let end = match.index + match[0].length;
+      while (depth > 0 && end < source.length) {
+        if (source[end] === '\\') {
+          end += 2;
+          continue;
+        }
+        depth += source[end] === '{' ? 1 : source[end] === '}' ? -1 : 0;
+        end += 1;
+      }
+      ranges.push([match.index, end]);
+    }
+    return ranges;
+  };
+  const lastSpan = (source) =>
+    Math.max(
+      ...base
+        .map(([token]) => token)
+        .filter((token) => /^(?:col|row)-span-/.test(token))
+        .map((token) => indexOfRule(source, escapeRegExp(escapeClass(token))))
+    );
+  assert.ok(lastSpan(css) > 0, 'The Grid span rules must be emitted');
+  const collapse = [];
+  for (const threshold of [860, 1080]) {
+    const token = (ending) => '[@media(width<=' + threshold + 'px)]:' + ending;
+    for (const [ending, combinator, declaration] of [
+      ['grid-cols-1', '', /grid-template-columns:\s*repeat\(1,\s*minmax\(0,\s*1fr\)\)/],
+      ['[&>*]:col-auto', ' > \\*', /grid-column:\s*auto/],
+      ['[&>*]:row-auto', ' > \\*', /grid-row:\s*auto/]
+    ]) {
+      const selector = escapeRegExp(escapeClass(token(ending))) + combinator;
+      assert.match(
+        css,
+        new RegExp(selector + '\\s*\\{[^}]*' + declaration.source),
+        'Missing Grid collapse rule ' + token(ending)
+      );
+      const position = indexOfRule(css, selector);
+      assert.ok(
+        inclusiveBlocks(css, threshold).some(([from, to]) => position > from && position < to),
+        token(ending) + ' must sit in the inclusive ' + threshold + 'px query'
+      );
+      assert.ok(position > lastSpan(css), token(ending) + ' must be emitted after every span rule');
+      collapse.push(selector);
+    }
+  }
+  // Either import order keeps the Grid collapse after the Grid spans: the sheets are only concatenated.
+  for (const [label, sheets] of [
+    ['ui then effects', [css, effectsCss]],
+    ['effects then ui', [effectsCss, css]]
+  ]) {
+    const combined = sheets.join('\n');
+    for (const selector of collapse) {
+      assert.ok(
+        indexOfRule(combined, selector) > lastSpan(combined),
+        selector + ' must follow the spans (' + label + ')'
+      );
+    }
+  }
+  // #392 guard: an effects utility declaring one of these properties could beat the collapse at equal specificity.
+  const declared = ['grid-template-columns', 'grid-column', 'grid-row'].filter((property) =>
+    new RegExp('(?:^|[{;\\s])' + property + '\\s*:').test(effectsCss)
+  );
+  assert.deepEqual(
+    declared,
+    [],
+    '@egdev/effects now declares ' +
+      declared.join(', ') +
+      ': the Grid collapse can lose to an unconditional effects utility when effects is imported after ui (#392). ' +
+      'Review packages/effects/src/styles/compiled.css and the four types.ts files it scans.'
+  );
+  // The scan reads types.ts as text: a bare utility word in a doc comment would ship a global rule (`collapse` did).
+  assert.doesNotMatch(css, /(?:^|[{}\s])\.collapse\s*\{/, 'No stray .collapse utility from the prose of Grid types.ts');
+  // No stylesheet: nothing in the shipped CSS selects the markers.
+  assert.doesNotMatch(css, /\.eg-grid(?:-item)?\b/);
+}
+
 // Embed ships no stylesheet: every utility of its four recipes and of the Surface well it composes is emitted for native and
 // Tailwind consumers with the token declarations of the spec's emission inventory, and nothing selects the marker.
 function assertEmbedCSS(css) {
@@ -6543,6 +6708,8 @@ ${assertDetailHeaderCSS.toString()}
 assertDetailHeaderCSS(shippedStyles);
 ${assertPaginationCSS.toString()}
 assertPaginationCSS(shippedStyles);
+${assertGridConsumerCSS.toString()}
+assertGridConsumerCSS(shippedStyles, ambientStyles);
 ${assertEmbedCSS.toString()}
 assertEmbedCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
@@ -6676,6 +6843,8 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'FooterSocial',
   'Gauge',
   'GaugeGroup',
+  'Grid',
+  'GridItem',
   'Heading',
   'Hero',
   'Icon',
@@ -7284,6 +7453,33 @@ assert.equal(headerFacts.querySelector('time'), null);
 assert.deepEqual([...headerInvalid.children].map((node) => node.tagName), ['HEADER']);
 assert.equal(headerInvalid.querySelectorAll('a, dl, ul').length, 0);
 detailHeaderDocument.window.close();
+const { GridSamples } = await import('./consumer.ts');
+const gridDocument = new JSDOM(renderToString(createElement(GridSamples)));
+const gridRoots = [...gridDocument.window.document.querySelectorAll('.eg-grid')];
+assert.equal(gridRoots.length, 3);
+const [gridFeature, gridListRoot, gridSingle] = gridRoots;
+const gridCollapse = (element, threshold) => [...element.classList].filter((name) => name.includes('[@media(width<=' + threshold + 'px)]')).sort();
+const gridUtilities = (threshold) => ['[@media(width<=' + threshold + 'px)]:[&>*]:col-auto', '[@media(width<=' + threshold + 'px)]:[&>*]:row-auto', '[@media(width<=' + threshold + 'px)]:grid-cols-1'].sort();
+assert.equal(gridFeature.tagName, 'DIV');
+for (const name of ['grid', 'min-w-0', 'grid-cols-12', 'gap-5', 'items-stretch', 'mt-6']) assert.ok(gridFeature.classList.contains(name), name);
+assert.deepEqual(gridCollapse(gridFeature, 1080), gridUtilities(1080));
+assert.deepEqual(gridCollapse(gridFeature, 860), []);
+assert.deepEqual([...gridFeature.getAttributeNames()].sort(), ['aria-label', 'class', 'id']);
+assert.equal(gridFeature.getAttribute('id'), 'packed-grid');
+assert.equal(gridFeature.getAttribute('aria-label'), 'Projects');
+assert.deepEqual([...gridFeature.children].map((cell) => [cell.tagName, cell.textContent, [...cell.classList].filter((name) => /span/.test(name))]), [['DIV', 'Featured', ['col-span-7', 'row-span-2']], ['DIV', 'Second', ['col-span-5']]]);
+assert.equal(gridFeature.children[0].getAttribute('id'), 'packed-grid-item');
+// asChild merges onto the supplied list and items: no wrapper element.
+assert.equal(gridListRoot.tagName, 'UL');
+assert.equal(gridListRoot.getAttribute('aria-label'), 'Listing');
+assert.ok(gridListRoot.classList.contains('grid-cols-3') && gridListRoot.classList.contains('gap-6'));
+assert.deepEqual(gridCollapse(gridListRoot, 860), gridUtilities(860));
+assert.deepEqual([...gridListRoot.children].map((item) => [item.tagName, item.textContent, [...item.classList].filter((name) => /span/.test(name))]), [['LI', 'One', ['col-span-5', 'row-span-3']], ['LI', 'Two', []]]);
+assert.equal(gridSingle.textContent, 'Single column');
+assert.ok(gridSingle.classList.contains('grid-cols-1'));
+assert.deepEqual(gridCollapse(gridSingle, 860).concat(gridCollapse(gridSingle, 1080)), []);
+assert.equal(gridDocument.window.document.querySelectorAll('[style], [role], [tabindex], [data-state]').length, 0);
+gridDocument.window.close();
 const { PaginationSamples } = await import('./consumer.ts');
 const paginationDocument = new JSDOM(renderToString(createElement(PaginationSamples)));
 const paginationRoots = [...paginationDocument.window.document.querySelectorAll('nav.eg-pagination')];
@@ -9680,6 +9876,27 @@ const { App, AttachmentFieldSamples, attachmentChanges, attachmentRejections, Bu
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
+  // Grid client render: both parts mount without a wrapper, and a rerender swaps the utility of a changed prop.
+  const { GridSamples } = await import('./consumer.ts');
+  const { Grid, GridItem } = await import('@egdev/ui');
+  await act(async () => root.render(createElement(GridSamples)));
+  const gridClientRoots = [...document.querySelectorAll('.eg-grid')];
+  assert.equal(gridClientRoots.length, 3);
+  assert.equal(document.getElementById('app').children.length, 3);
+  assert.deepEqual(gridClientRoots.map((node) => node.tagName), ['DIV', 'UL', 'DIV']);
+  assert.ok(gridClientRoots[0].classList.contains('grid-cols-12'));
+  assert.deepEqual([...gridClientRoots[0].children].map((cell) => cell.classList.contains('eg-grid-item')), [true, true]);
+  assert.deepEqual([...gridClientRoots[1].children].map((item) => item.tagName), ['LI', 'LI']);
+  await act(async () => root.render(createElement(Grid, { columnCount: 3, gap: 8, collapseBelow: 860, 'aria-label': 'Rerender' }, createElement(GridItem, { span: 2 }, 'Cell'))));
+  const gridRerendered = document.querySelector('.eg-grid');
+  assert.ok(gridRerendered.classList.contains('grid-cols-3') && gridRerendered.classList.contains('gap-8'));
+  assert.equal(gridRerendered.classList.contains('grid-cols-12'), false);
+  await act(async () => root.render(createElement(Grid, { columnCount: 2, gap: 8, 'aria-label': 'Rerender' }, createElement(GridItem, { span: 2 }, 'Cell'))));
+  assert.equal(document.querySelector('.eg-grid'), gridRerendered);
+  assert.ok(gridRerendered.classList.contains('grid-cols-2'));
+  assert.equal(gridRerendered.classList.contains('grid-cols-3'), false);
+  assert.equal([...gridRerendered.classList].some((name) => name.includes('@media')), false);
+  await act(async () => root.render(null));
   const { Dialog, DialogTrigger, DialogContent, DialogClose } = await import('@egdev/ui');
   const packedTriggerRef = createRef();
   const packedCloseRef = createRef();

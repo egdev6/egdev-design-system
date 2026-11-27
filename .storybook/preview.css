@@ -66,6 +66,7 @@
 @source "../packages/ui/src/molecules/**/*.stories.tsx";
 @source "../packages/ui/src/primitives/aspect-ratio/AspectRatio.stories.tsx";
 @source "../packages/ui/src/primitives/divider/Divider.stories.tsx";
+@source "../packages/ui/src/primitives/grid/Grid.stories.tsx";
 @source "../packages/ui/src/primitives/label/Label.stories.tsx";
 @source "../packages/ui/src/primitives/prose/Prose.stories.tsx";
 

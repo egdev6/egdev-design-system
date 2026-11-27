@@ -44,6 +44,8 @@ const components = [
   ['Icon', 'atoms/icon'],
   ['IconButton', 'atoms/icon-button'],
   ['Stack', 'primitives/stack'],
+  ['Grid', 'primitives/grid'],
+  ['GridItem', 'primitives/grid'],
   ['Text', 'primitives/text'],
   ['Surface', 'primitives/surface'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
@@ -598,6 +600,8 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
+  grid: { columnCount: 'select', gap: 'select', alignItems: 'select', collapseBelow: 'select', asChild: 'boolean' },
+  griditem: { span: 'select', rowSpan: 'select', asChild: 'boolean' },
   text: {
     variant: 'select',
     foreground: 'select',
@@ -912,6 +916,8 @@ const ownPropCounts: Record<string, number> = {
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
+  grid: 5,
+  griditem: 3,
   text: 8,
   heading: 7,
   surface: 5
@@ -1479,7 +1485,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         .map(([name, directory]) =>
           fileURLToPath(
             new URL(
-              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/notes-board' ? 'NotesBoard' : directory === 'organisms/blog-grid' ? 'BlogGrid' : directory === 'organisms/live-band' ? 'LiveBand' : name}.tsx`,
+              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/notes-board' ? 'NotesBoard' : directory === 'organisms/blog-grid' ? 'BlogGrid' : directory === 'organisms/live-band' ? 'LiveBand' : directory === 'primitives/grid' ? 'Grid' : name}.tsx`,
               import.meta.url
             )
           )
@@ -1659,6 +1665,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         'VisuallyHidden',
         'Stack',
         'Cluster',
+        'Grid',
+        'GridItem',
         'Text',
         'Surface',
         'Link',
@@ -1712,6 +1720,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['AttachmentField', { disabled: 'false' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
+    ['Grid', { columnCount: '1', gap: '4', alignItems: '"stretch"', asChild: 'false' }],
+    ['GridItem', { asChild: 'false' }],
     [
       'Text',
       {

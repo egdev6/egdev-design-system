@@ -1,0 +1,107 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the grid-columns, layout-collapse-below, grid-item-span and grid-item-row-span conventions for the Grid columnCount and collapseBelow props and the GridItem span and rowSpan props, and record their registry receipt.",
+  "evidence": {
+    "channel": "Owner answers forwarded in odd/tasks/layout-grid-395.md (L4), 2026-11-27",
+    "userStatements": [
+      {
+        "quote": "`columnCount` (Recomendado)",
+        "provenance": "odd/tasks/layout-grid-395.md L4 (name, Grid v0.1 OQ-1 column-count prop)",
+        "date": "2026-11-27"
+      },
+      {
+        "quote": "Aprobar (Recomendado)",
+        "provenance": "odd/tasks/layout-grid-395.md L4 (approval, Grid v0.1 spec and plan, OQ-6 conventions and D3 registry receipts for the newly named conventions)",
+        "date": "2026-11-27"
+      }
+    ],
+    "specPath": "docs/components/grid/v0.1/spec.md",
+    "specPayloadSHA256": "sha256:b7de8109cea062361a1f2847400032eec460fc65d47dbd014ccc72b2f17ca885",
+    "planPath": "docs/components/grid/v0.1/implementation-plan.md",
+    "planPayloadSHA256": "sha256:46fb0348e4971d4b582ca5de3f949ba956b699c8abfa04af407bbe77871b5500",
+    "interpretation": "Scoped convention approval only: it binds the exact payloads below, which the approved Grid v0.1 spec quotes in its block 3 table of new conventions (OQ-6, approved by L4 with the recommended answer) and whose receipt the approved plan (L4, decision D3) authorized. The name columnCount is the owner's own answer (OQ-1). It is not native review authority. The one bound field the owner's answers did not show is status: the spec table lists id, name, meaning, use and avoid, with no alias and no exception, and the plan (sections 5.1 and 5.2, D3) states that hashing the approved form is the step D3 adds. The reused layout-gap, cross-axis-alignment and slot-composition conventions gain usages only: their text, hash and status do not change. The receipt does not approve the Grid implementation, a visual capture, an alias, an exception or any other convention, and the four entries carry no exception."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": ["grid-columns", "layout-collapse-below", "grid-item-span", "grid-item-row-span"],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:grid-columns",
+      "contentHash": "sha256:5bd1ecc0e20ae137c9f02a6b78f9f59cb5b3aa393aa39d66f02e96e97020ade6",
+      "convention": {
+        "id": "grid-columns",
+        "name": "columnCount",
+        "meaning": "Number of equal-width columns of a grid layout container.",
+        "whenToUse": "A reusable grid layout container exposes a small finite set of equal column counts.",
+        "avoid": "Table column definitions (use `columns`), explicit track sizes or templates, item spans (use `span`) and responsive breakpoints (use `collapseBelow`).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/primitives/grid/types.ts",
+        "symbol": "GridProps",
+        "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+      }
+    },
+    {
+      "scope": "convention:layout-collapse-below",
+      "contentHash": "sha256:2cdb5d00b770b4e9be08fb6ef1037574195f857df6a90697f6e3c3d9d75ef064",
+      "convention": {
+        "id": "layout-collapse-below",
+        "name": "collapseBelow",
+        "meaning": "Viewport width in CSS pixels at and below which a layout container drops to a single column; above it the container keeps its columns.",
+        "whenToUse": "A grid layout container offers a small finite set of inclusive viewport thresholds at which its columns stack.",
+        "avoid": "Container-relative thresholds, arbitrary pixel values, automatic responsive detection and changing the order of the children.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/primitives/grid/types.ts",
+        "symbol": "GridProps",
+        "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+      }
+    },
+    {
+      "scope": "convention:grid-item-span",
+      "contentHash": "sha256:7d6aad7d2c416d3dd9541ecbafd9b3be69f165376e38fceea2e870b353ede7e2",
+      "convention": {
+        "id": "grid-item-span",
+        "name": "span",
+        "meaning": "Number of grid columns that one item of a grid layout container occupies.",
+        "whenToUse": "A grid item part places itself by a finite column span in the container's automatic flow.",
+        "avoid": "Explicit start or end lines, reordering the items, column counts of the container (use `columnCount`) and native table cell attributes.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/primitives/grid/types.ts",
+        "symbol": "GridItemProps",
+        "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+      }
+    },
+    {
+      "scope": "convention:grid-item-row-span",
+      "contentHash": "sha256:fd70e5292341ea10e77f38e42a22da3a3701eff74ffeef5dae17c98abf8d9a3a",
+      "convention": {
+        "id": "grid-item-row-span",
+        "name": "rowSpan",
+        "meaning": "Number of implicit grid rows that one item of a grid layout container occupies.",
+        "whenToUse": "A grid item part stretches over a finite number of rows next to items that span fewer.",
+        "avoid": "Explicit row lines or templates, reordering the items, column spans (use `span`) and native table cell attributes.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/primitives/grid/types.ts",
+        "symbol": "GridItemProps",
+        "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+      }
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
   <section className="eg-docs-panel">
     <h2><span className="eg-docs-section-title">What this is (and is not)</span></h2>
-    <p>The owner approved these two scenes as <strong>documented recipes without export</strong> (<a href="https://github.com/egdev6/egdev-design-system/blob/main/odd/tasks/web-catalog.md" target="_blank" rel="noopener noreferrer">tracking, L41</a>). About is composed from <code>PhotoFrame</code> + <code>PullQuote</code> + <code>TerminalCard</code>; Community is a grid of <code>CommunityCard</code>. There is no scene component, no new props, no tokens and no choreography — the recipes compose delivered public API inside a <code>SectionShell</code>, like the already cataloged <code>ProjectsGrid</code> and <code>MobileMenu</code> recipes.</p>
+    <p>The owner approved these two scenes as <strong>documented recipes without export</strong> (<a href="https://github.com/egdev6/egdev-design-system/blob/main/odd/tasks/web-catalog.md" target="_blank" rel="noopener noreferrer">tracking, L41</a>). About is composed from <code>PhotoFrame</code> + <code>PullQuote</code> + <code>TerminalCard</code>; Community is two <code>CommunityCard</code>. Both lay their columns out with the <code>Grid</code> and <code>GridItem</code> layout primitives, so a consumer that writes no utility classes can copy them unchanged. There is no scene component, no new props, no tokens and no choreography — the recipes compose delivered public API inside a <code>SectionShell</code>, like the already cataloged <code>ProjectsGrid</code> and <code>MobileMenu</code> recipes.</p>
   </section>
 
   <section className="eg-docs-panel">
@@ -29,12 +29,12 @@ import { Meta } from '@storybook/addon-docs/blocks';
       <table>
         <thead><tr><th>Scene</th><th>Parts</th><th>Host obligations</th></tr></thead>
         <tbody>
-          <tr><td>About</td><td><code>PhotoFrame</code> (framed media) · <code>PullQuote</code> · <code>TerminalCard</code>, inside a <code>SectionShell</code> two-column split</td><td>Section register and landmark name, image source and alt, quotation text and source, definition rows</td></tr>
-          <tr><td>Community</td><td>A grid of two <code>CommunityCard</code> with <code>CommunityCardMark</code> and one <code>CommunityCardAction</code> each</td><td>Section register and landmark name, community copy, marks, the single action per card</td></tr>
+          <tr><td>About</td><td><code>PhotoFrame</code> (framed media) · <code>PullQuote</code> · <code>TerminalCard</code>, inside a <code>SectionShell</code>, in a 12-column <code>Grid</code> (media <code>GridItem</code> 5, copy <code>GridItem</code> 7 over a <code>Stack</code>)</td><td>Section register and landmark name, image source and alt, quotation text and source, definition rows</td></tr>
+          <tr><td>Community</td><td>Two <code>CommunityCard</code> with <code>CommunityCardMark</code> and one <code>CommunityCardAction</code> each, in a two-column <code>Grid</code></td><td>Section register and landmark name, community copy, marks, the single action per card</td></tr>
         </tbody>
       </table>
     </div>
-    <p className="eg-docs-note">Every part stays within its own contract: outer layout only on <code>className</code>, one action per card, and no domain data baked into any component.</p>
+    <p className="eg-docs-note">Every part stays within its own contract: outer layout only on <code>className</code>, one action per card, and no domain data baked into any component. The columns come from <code>Grid</code> and <code>GridItem</code> and stack at and below 860px of viewport width, inclusive.</p>
   </section>
 
   <footer className="eg-docs-links"><a href="/?path=/story/recipes-scene-recipes--about-scene" target="_top">Open the About recipe →</a><a href="/?path=/story/recipes-scene-recipes--community-scene" target="_top">Open the Community recipe →</a><a href="/?path=/docs/foundations-material--docs" target="_top">Review Material rules →</a></footer>
