@@ -2039,6 +2039,11 @@ test('Pagination package SSR renders one named landmark of crawlable links, hidd
   const { JSDOM } = await import('jsdom');
   assert.equal(typeof exported.Pagination, 'function');
   for (const name of [
+    'useEmbed',
+    'embedVariants',
+    'embedLoadingVariants',
+    'embedFrameVariants',
+    'embedFallbackVariants',
     'usePagination',
     'defaultPaginationMessages',
     'paginationVariants',
@@ -2232,6 +2237,256 @@ test('StepMeter package SSR renders a named image of presentational steps and no
   } finally {
     console.warn = warn;
   }
+});
+
+test('Embed ships every static recipe utility with its token declaration and no rule of its own (#574)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/embed/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 4, 'Embed declares exactly four static recipes');
+  assert.deepEqual(
+    [...classes].filter((name) => name.startsWith('eg-')),
+    ['eg-embed']
+  );
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  // The selector is escaped for CSS, then again for the regular expression that reads it.
+  const ruleOf = (token) => {
+    const selector = escapeClass(token).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const match = new RegExp(`${selector}\\s*\\{([^}]*)\\}`).exec(utilities);
+    assert.ok(match, `Missing Embed utility ${token}`);
+    return match[1];
+  };
+  // The Surface well recipe composed by the hook is shipped through the Surface recipe, not through Embed's own.
+  const well = ['bg-surface-0', 'border-border-hairline', 'shadow-[var(--shadow-well)]', 'rounded-xl', 'p-0'];
+  const own = [...classes].filter((name) => !name.startsWith('eg-'));
+  assert.deepEqual(
+    own,
+    [
+      'min-w-0',
+      'overflow-hidden',
+      'absolute',
+      'inset-0',
+      'grid',
+      'place-items-center',
+      'text-fg-muted',
+      'relative',
+      'block',
+      'size-full',
+      'border-0',
+      'box-border',
+      'p-6',
+      'text-center',
+      'font-sans',
+      'text-body-default'
+    ].filter((name, index, all) => all.indexOf(name) === index)
+  );
+  for (const token of [...own, ...well]) {
+    assert.ok(ruleOf(token).length > 0, `Empty Embed utility ${token}`);
+  }
+  // The token declarations the spec's emission inventory names: clip, well, layers, frame and fallback.
+  const rows = [
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['overflow-hidden', /overflow:\s*hidden/],
+    ['bg-surface-0', /background-color:\s*var\(--color-surface-0[,)]/],
+    ['border-border-hairline', /border-color:\s*var\(--color-border-hairline[,)]/],
+    ['shadow-[var(--shadow-well)]', /--tw-shadow:\s*var\(--shadow-well\)/],
+    ['rounded-xl', /border-radius:\s*var\(--radius-xl[,)]/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['absolute', /position:\s*absolute/],
+    ['inset-0', /inset:\s*var\(--space-0\)/],
+    ['grid', /display:\s*grid/],
+    ['place-items-center', /place-items:\s*center/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['relative', /position:\s*relative/],
+    ['block', /display:\s*block/],
+    ['size-full', /width:\s*100%/],
+    ['size-full', /height:\s*100%/],
+    ['border-0', /border-width:\s*0px/],
+    ['box-border', /box-sizing:\s*border-box/],
+    ['p-6', /padding:\s*var\(--space-6\)/],
+    ['text-center', /text-align:\s*center/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/]
+  ];
+  for (const [token, declaration] of rows) {
+    assert.match(ruleOf(token), declaration, token);
+  }
+  // The values those declarations resolve to are the ones the spec's arithmetic uses (all token-scaled by 0.8).
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  assert.match(theme, /--space-6:\s*19\.2px;/);
+  assert.match(theme, /--radius-xl:\s*17\.6px;/);
+  assert.match(theme, /--text-body-default:\s*12\.8px;/);
+  // Nothing in Embed's recipes transitions, transforms or animates: the only motion is the Spinner's own.
+  for (const name of classes) {
+    assert.doesNotMatch(name, /^(?:transition|transform|duration|ease|animate|rotate|scale|translate|motion-)/, name);
+    assert.doesNotMatch(name, /[#!]|\d+px|\[/, name);
+  }
+  // No stylesheet: nothing in the shipped CSS selects the marker, and the legacy bundle has no Embed rule.
+  assert.doesNotMatch(css, /eg-embed/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/atoms/embed/embed.css')), false);
+});
+
+test('Embed package SSR reserves the box without a frame or a src and renders nothing without a name (#574)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Embed, 'function');
+  for (const name of [
+    'useEmbed',
+    'embedVariants',
+    'embedLoadingVariants',
+    'embedFrameVariants',
+    'embedFallbackVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Embed`);
+  }
+  const warn = console.warn;
+  const warnings = [];
+  console.warn = (message) => warnings.push(message);
+  try {
+    // Frame branch: loading, busy, a decorative Spinner, the reserved box and no frame or src at all.
+    const html = renderToString(
+      createElement(exported.Embed, { label: 'Keynote recording', src: 'https://video.example/embed/1', ratio: 4 / 3 })
+    );
+    assert.doesNotMatch(html, /<iframe|video\.example/);
+    assert.equal(
+      renderToString(
+        createElement(exported.Embed, {
+          label: 'Keynote recording',
+          src: 'https://video.example/embed/1',
+          ratio: 4 / 3
+        })
+      ),
+      html
+    );
+    const dom = new JSDOM(html);
+    try {
+      const document = dom.window.document;
+      const embed = document.querySelector('div.eg-embed');
+      assert.ok(embed);
+      assert.equal(document.body.children.length, 1);
+      assert.equal(embed.getAttribute('data-state'), 'loading');
+      assert.equal(embed.getAttribute('aria-busy'), 'true');
+      for (const attribute of ['role', 'aria-label', 'tabindex', 'style', 'title']) {
+        assert.equal(embed.hasAttribute(attribute), false, attribute);
+      }
+      const boxes = embed.querySelectorAll('[data-radix-aspect-ratio-wrapper]');
+      assert.equal(boxes.length, 1);
+      assert.equal(boxes[0].style.paddingBottom, '75%');
+      const spinner = embed.querySelector('.eg-spinner');
+      assert.equal(spinner?.getAttribute('aria-hidden'), 'true');
+      assert.equal(embed.querySelector('[role], [aria-live], iframe, script'), null);
+      // Material comes from the Surface well recipe, composed in the hook.
+      for (const name of [
+        'eg-surface',
+        'bg-surface-0',
+        'border-border-hairline',
+        'rounded-xl',
+        'p-0',
+        'overflow-hidden'
+      ]) {
+        assert.ok(embed.classList.contains(name), name);
+      }
+      // The only inline styles are the two geometry styles Radix owns inside AspectRatio.
+      for (const node of embed.querySelectorAll('[style]')) {
+        assert.ok(node.hasAttribute('data-radix-aspect-ratio-wrapper') || node.classList.contains('eg-aspect-ratio'));
+      }
+    } finally {
+      dom.window.close();
+    }
+    // Content branch: the children are rendered in the box, ready, inside a group named by the label.
+    const content = new JSDOM(
+      renderToString(
+        createElement(exported.Embed, { label: 'Post by @egdev6', children: createElement('p', null, 'Post') })
+      )
+    );
+    try {
+      const embed = content.window.document.querySelector('div.eg-embed');
+      assert.equal(embed?.getAttribute('data-state'), 'ready');
+      assert.equal(embed?.getAttribute('role'), 'group');
+      assert.equal(embed?.getAttribute('aria-label'), 'Post by @egdev6');
+      assert.equal(embed?.hasAttribute('aria-busy'), false);
+      assert.equal(embed?.querySelector('.eg-spinner, iframe'), null);
+      assert.equal(embed?.querySelector('.eg-aspect-ratio > p')?.textContent, 'Post');
+    } finally {
+      content.window.close();
+    }
+    // Fallback state: no src, so no request; and a rejected scheme never reaches the markup.
+    for (const src of [undefined, '   ', 'javascript:alert(1)', 'data:text/html,x']) {
+      const markup = renderToString(
+        createElement(exported.Embed, {
+          label: 'Keynote recording',
+          src,
+          fallback: createElement('p', null, 'Unavailable')
+        })
+      );
+      assert.doesNotMatch(markup, /<iframe|javascript:|data:text/);
+      const fallback = new JSDOM(markup);
+      try {
+        const embed = fallback.window.document.querySelector('div.eg-embed');
+        assert.equal(embed?.getAttribute('data-state'), 'fallback');
+        assert.equal(embed?.getAttribute('role'), 'group');
+        assert.equal(embed?.getAttribute('aria-label'), 'Keynote recording');
+        assert.equal(embed?.hasAttribute('aria-busy'), false);
+        assert.equal(embed?.querySelector('.eg-aspect-ratio > div > p')?.textContent, 'Unavailable');
+        // The only part with padding is sized border-box in the markup itself, so a host without a preflight cannot overflow.
+        const layer = embed?.querySelector('.eg-aspect-ratio > div');
+        for (const name of ['box-border', 'grid', 'size-full', 'place-items-center', 'p-6']) {
+          assert.ok(layer?.classList.contains(name), `Missing fallback layer class ${name}`);
+        }
+      } finally {
+        fallback.window.close();
+      }
+    }
+    // An unnamed frame is never rendered, and an unusable ratio silently falls back to 16:9.
+    assert.equal(
+      renderToString(createElement(exported.Embed, { label: '  ', src: 'https://video.example/embed/1' })),
+      ''
+    );
+    assert.equal(renderToString(createElement(exported.Embed, { src: 'https://video.example/embed/1' })), '');
+    const square = new JSDOM(
+      renderToString(createElement(exported.Embed, { label: 'Keynote recording', src: '/embed/1', ratio: 0 }))
+    );
+    try {
+      assert.equal(
+        square.window.document.querySelector('[data-radix-aspect-ratio-wrapper]')?.style.paddingBottom,
+        `${100 / (16 / 9)}%`
+      );
+    } finally {
+      square.window.close();
+    }
+  } finally {
+    console.warn = warn;
+  }
+  assert.ok(warnings.includes('Embed requires a non-empty label. Nothing was rendered.'));
+  assert.ok(warnings.includes('Embed ignored a src that is not an http(s) URL. The fallback state was rendered.'));
 });
 
 test('NotesBoard ships every scanned utility and bounded responsive resets', () => {
@@ -7303,6 +7558,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'DialogTrigger',
       'Divider',
       'Dropzone',
+      'Embed',
       'EmptyState',
       'Field',
       'FieldMessage',
@@ -7684,6 +7940,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'DividerProps',
     'Dropzone',
     'DropzoneProps',
+    'Embed',
+    'EmbedProps',
     'EmptyState',
     'EmptyStateLevel',
     'EmptyStateProps',
@@ -8255,6 +8513,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'Embed',
+    'EmbedProps',
     'EmptyState',
     'EmptyStateLevel',
     'EmptyStateProps',

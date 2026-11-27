@@ -106,6 +106,8 @@ import { DetailHeader } from '@egdev/ui';
 import type { DetailHeaderLink, DetailHeaderMessages, DetailHeaderMetadataItem, DetailHeaderProps } from '@egdev/ui';
 import { Pagination } from '@egdev/ui';
 import type { PaginationMessages, PaginationProps } from '@egdev/ui';
+import { Embed } from '@egdev/ui';
+import type { EmbedProps } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -846,6 +848,60 @@ type PaginationPrivateRecipe = (typeof import('@egdev/ui'))['paginationVariants'
 // @ts-expect-error The internal hook is not public.
 type PaginationPrivateHook = (typeof import('@egdev/ui'))['usePagination'];
 export type PaginationNegatives = [typeof paginationMissingLabel, typeof paginationMissingValue, typeof paginationMissingCount, typeof paginationMissingHref, typeof paginationStringValue, typeof paginationNumericHref, typeof paginationRole, typeof paginationAriaLabel, typeof paginationAriaLabelledBy, typeof paginationChildren, typeof paginationRef, typeof paginationSlot, typeof paginationEntryCallback, PaginationPrivateRecipe, PaginationPrivateHook];
+
+// Keep Embed samples outside App so the existing link-count/focus harness stays unchanged.
+export const embedFrameProps: EmbedProps = { label: 'Keynote recording', src: 'https://video.example/embed/1', ratio: 4 / 3, loading: 'eager', allow: 'fullscreen', allowFullScreen: true, referrerPolicy: 'no-referrer', sandbox: 'allow-scripts', onLoad: (event) => { void event.currentTarget.src; }, id: 'packed-embed', lang: 'en', 'aria-describedby': 'packed-hint', className: 'mt-6' };
+export const embedContentProps: EmbedProps = { label: 'Post by @egdev6', ratio: 1, children: createElement('p', null, 'Post'), fallback: createElement('p', null, 'Unavailable') };
+export function EmbedSamples() {
+  return createElement(Fragment, null,
+    createElement(Embed, embedFrameProps),
+    createElement(Embed, embedContentProps),
+    createElement(Embed, { label: 'Unavailable recording', fallback: createElement('p', null, 'Unavailable') }),
+    createElement(Embed, { label: 'Default frame', src: '/embed/1' }));
+}
+// @ts-expect-error The accessible name is required.
+const embedMissingLabel: EmbedProps = { src: '/embed/1' };
+// @ts-expect-error The name is label, never title.
+const embedTitle: EmbedProps = { ...embedFrameProps, title: 'x' };
+// @ts-expect-error The root has no role override.
+const embedRole: EmbedProps = { ...embedFrameProps, role: 'region' };
+// @ts-expect-error The name is label, never aria-label.
+const embedAriaLabel: EmbedProps = { ...embedFrameProps, 'aria-label': 'x' };
+// @ts-expect-error The name is label, never aria-labelledby.
+const embedAriaLabelledBy: EmbedProps = { ...embedFrameProps, 'aria-labelledby': 'x' };
+// @ts-expect-error The component owns the busy hint.
+const embedBusy: EmbedProps = { ...embedFrameProps, 'aria-busy': true };
+// @ts-expect-error The component adds no tab stop.
+const embedTab: EmbedProps = { ...embedFrameProps, tabIndex: 0 };
+// @ts-expect-error No inline appearance.
+const embedStyle: EmbedProps = { ...embedFrameProps, style: { color: 'red' } };
+// @ts-expect-error No injected markup.
+const embedHtml: EmbedProps = { ...embedFrameProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error The component has no click handler of its own.
+const embedClick: EmbedProps = { ...embedFrameProps, onClick: () => {} };
+// @ts-expect-error A frame reports no navigation failure.
+const embedError: EmbedProps = { ...embedFrameProps, onError: () => {} };
+// @ts-expect-error A root ref is not part of this API.
+const embedRef: EmbedProps = { ...embedFrameProps, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const embedSlot: EmbedProps = { ...embedFrameProps, asChild: true };
+// @ts-expect-error Inline documents are not supported.
+const embedSrcDoc: EmbedProps = { ...embedFrameProps, srcDoc: '<p>x</p>' };
+// @ts-expect-error A frame and children are exclusive.
+const embedBoth: EmbedProps = { label: 'x', src: '/embed/1', children: 'y' };
+// @ts-expect-error Frame attributes belong to the frame branch.
+const embedSandboxChildren: EmbedProps = { label: 'x', children: 'y', sandbox: '' };
+// @ts-expect-error Loading belongs to the frame branch.
+const embedLoadingChildren: EmbedProps = { label: 'x', children: 'y', loading: 'eager' };
+// @ts-expect-error The ratio is a number, never text.
+const embedTextRatio: EmbedProps = { label: 'x', src: '/embed/1', ratio: '16 / 9' };
+// @ts-expect-error Loading is lazy or eager.
+const embedAutoLoading: EmbedProps = { label: 'x', src: '/embed/1', loading: 'auto' };
+// @ts-expect-error The recipes are private.
+type EmbedPrivateRecipe = (typeof import('@egdev/ui'))['embedVariants'];
+// @ts-expect-error The internal hook is not public.
+type EmbedPrivateHook = (typeof import('@egdev/ui'))['useEmbed'];
+export type EmbedNegatives = [typeof embedMissingLabel, typeof embedTitle, typeof embedRole, typeof embedAriaLabel, typeof embedAriaLabelledBy, typeof embedBusy, typeof embedTab, typeof embedStyle, typeof embedHtml, typeof embedClick, typeof embedError, typeof embedRef, typeof embedSlot, typeof embedSrcDoc, typeof embedBoth, typeof embedSandboxChildren, typeof embedLoadingChildren, typeof embedTextRatio, typeof embedAutoLoading, EmbedPrivateRecipe, EmbedPrivateHook];
 
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
@@ -5763,6 +5819,45 @@ function assertPaginationCSS(css) {
   assert.doesNotMatch(css, /\.eg-pagination\b/);
 }
 
+// Embed ships no stylesheet: every utility of its four recipes and of the Surface well it composes is emitted for native and
+// Tailwind consumers with the token declarations of the spec's emission inventory, and nothing selects the marker.
+function assertEmbedCSS(css) {
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [token, declaration] of [
+    ['min-w-0', /min-width:\s*var\(--space-0\)/],
+    ['overflow-hidden', /overflow:\s*hidden/],
+    ['bg-surface-0', /background-color:\s*var\(--color-surface-0[,)]/],
+    ['border-border-hairline', /border-color:\s*var\(--color-border-hairline[,)]/],
+    ['shadow-[var(--shadow-well)]', /--tw-shadow:\s*var\(--shadow-well\)/],
+    ['rounded-xl', /border-radius:\s*var\(--radius-xl[,)]/],
+    ['p-0', /padding:\s*var\(--space-0\)/],
+    ['absolute', /position:\s*absolute/],
+    ['inset-0', /inset:\s*var\(--space-0\)/],
+    ['grid', /display:\s*grid/],
+    ['place-items-center', /place-items:\s*center/],
+    ['text-fg-muted', /color:\s*var\(--color-fg-muted[,)]/],
+    ['relative', /position:\s*relative/],
+    ['block', /display:\s*block/],
+    ['size-full', /width:\s*100%/],
+    ['size-full', /height:\s*100%/],
+    ['border-0', /border-width:\s*0px/],
+    ['box-border', /box-sizing:\s*border-box/],
+    ['p-6', /padding:\s*var\(--space-6\)/],
+    ['text-center', /text-align:\s*center/],
+    ['font-sans', /font-family:\s*var\(--font-sans[,)]/],
+    ['text-body-default', /font-size:\s*var\(--text-body-default[,)]/]
+  ]) {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + '[^{}]*\\{[^}]*' + declaration.source, declaration.flags),
+      'Missing Embed rule ' + token
+    );
+  }
+  // No stylesheet: nothing in the shipped CSS selects the Embed marker.
+  assert.doesNotMatch(css, /\.eg-embed\b/);
+}
+
 function assertStepMeterConsumerCSS(css) {
   const utilitiesStart = css.search(/@layer utilities\s*\{/);
   assert.ok(utilitiesStart >= 0);
@@ -6317,6 +6412,8 @@ ${assertDetailHeaderCSS.toString()}
 assertDetailHeaderCSS(shippedStyles);
 ${assertPaginationCSS.toString()}
 assertPaginationCSS(shippedStyles);
+${assertEmbedCSS.toString()}
+assertEmbedCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -6436,6 +6533,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'DialogTrigger',
   'Divider',
   'Dropzone',
+  'Embed',
   'EmptyState',
   'Field',
   'FieldMessage',
@@ -7363,6 +7461,75 @@ try {
   assert.equal(root.querySelector('a').getAttribute('href'), '#content');
   assert.equal(root.querySelector('a').textContent, 'Visible packed content');
 } finally { revealDOM.window.close(); }
+const { EmbedSamples } = await import('./consumer.ts');
+const embedHTML = renderToString(createElement(EmbedSamples));
+writeFileSync(new URL('./embed-hydration.html', import.meta.url), embedHTML);
+// The server never starts a request: no frame and no src in the markup of any sample.
+for (const forbidden of ['<iframe', 'video.example', '/embed/1']) assert.equal(embedHTML.includes(forbidden), false, forbidden);
+const embedDOM = new JSDOM(embedHTML);
+try {
+  const embeds = [...embedDOM.window.document.querySelectorAll('div.eg-embed')];
+  assert.equal(embeds.length, 4);
+  const [embedFrame, embedContent, embedFallback, embedDefault] = embeds;
+  assert.deepEqual(embeds.map((embed) => embed.getAttribute('data-state')), ['loading', 'ready', 'fallback', 'loading']);
+  const reservedOf = (embed) => embed.querySelector('[data-radix-aspect-ratio-wrapper]').style.paddingBottom;
+  assert.deepEqual(embeds.map(reservedOf), ['75%', '100%', String(100 / (16 / 9)) + '%', String(100 / (16 / 9)) + '%']);
+  assert.equal(embedFrame.getAttribute('id'), 'packed-embed');
+  assert.equal(embedFrame.getAttribute('lang'), 'en');
+  assert.equal(embedFrame.getAttribute('aria-describedby'), 'packed-hint');
+  assert.ok(embedFrame.classList.contains('mt-6'));
+  // Frame branch: busy, a decorative Spinner, and no role or name on the root (the frame carries it once mounted).
+  for (const embed of [embedFrame, embedDefault]) {
+    assert.equal(embed.getAttribute('aria-busy'), 'true');
+    assert.equal(embed.hasAttribute('role'), false);
+    assert.equal(embed.hasAttribute('aria-label'), false);
+    assert.equal(embed.querySelector('.eg-spinner').getAttribute('aria-hidden'), 'true');
+  }
+  // Content branch: the children in the box, ready, a group named by the label; the fallback is not rendered.
+  assert.equal(embedContent.getAttribute('role'), 'group');
+  assert.equal(embedContent.getAttribute('aria-label'), 'Post by @egdev6');
+  assert.equal(embedContent.hasAttribute('aria-busy'), false);
+  assert.equal(embedContent.querySelector('.eg-aspect-ratio > p').textContent, 'Post');
+  assert.equal(embedContent.textContent, 'Post');
+  assert.equal(embedContent.querySelector('.eg-spinner'), null);
+  // Fallback state: a group named by the label holding the consumer fallback.
+  assert.equal(embedFallback.getAttribute('role'), 'group');
+  assert.equal(embedFallback.getAttribute('aria-label'), 'Unavailable recording');
+  assert.equal(embedFallback.hasAttribute('aria-busy'), false);
+  assert.equal(embedFallback.querySelector('.eg-aspect-ratio > div > p').textContent, 'Unavailable');
+  // The only part with padding is sized border-box in the markup itself, so a host without a preflight cannot overflow.
+  const embedFallbackLayer = embedFallback.querySelector('.eg-aspect-ratio > div');
+  for (const name of ['box-border', 'grid', 'size-full', 'place-items-center', 'p-6']) assert.ok(embedFallbackLayer.classList.contains(name), 'Missing fallback layer class ' + name);
+  for (const embed of embeds) {
+    for (const name of ['eg-surface', 'bg-surface-0', 'border-border-hairline', 'rounded-xl', 'p-0', 'min-w-0', 'overflow-hidden']) {
+      assert.ok(embed.classList.contains(name), 'Missing Embed root class ' + name);
+    }
+    assert.equal(embed.hasAttribute('style'), false);
+    assert.equal(embed.hasAttribute('tabindex'), false);
+    assert.equal(embed.querySelectorAll('[tabindex], iframe, script').length, 0);
+    for (const node of embed.querySelectorAll('[style]')) {
+      assert.ok(node.hasAttribute('data-radix-aspect-ratio-wrapper') || node.classList.contains('eg-aspect-ratio'));
+    }
+  }
+} finally { embedDOM.window.close(); }
+{
+  const { Embed } = await import('@egdev/ui');
+  const embedWarnings = [];
+  const embedWarn = console.warn;
+  console.warn = (message) => embedWarnings.push(message);
+  try {
+    // A scheme that is not http(s) never reaches the markup, whatever the obfuscation.
+    for (const src of ['javascript:alert(1)', 'data:text/html,x', 'blob:https://video.example/x', ' vbscript:x', 'jav' + String.fromCharCode(9) + 'ascript:alert(1)']) {
+      const markup = renderToString(createElement(Embed, { label: 'Keynote recording', src, fallback: createElement('p', null, 'Unavailable') }));
+      assert.doesNotMatch(markup, /<iframe|script:|data:text|blob:/i);
+      assert.match(markup, /data-state="fallback"/);
+    }
+    // An unnamed frame is never rendered.
+    assert.equal(renderToString(createElement(Embed, { label: '  ', src: '/embed/1' })), '');
+  } finally { console.warn = embedWarn; }
+  assert.ok(embedWarnings.includes('Embed requires a non-empty label. Nothing was rendered.'));
+  assert.ok(embedWarnings.includes('Embed ignored a src that is not an http(s) URL. The fallback state was rendered.'));
+}
 import { AmbientSamples, IsotipoSamples } from './consumer.ts';
 const isotipoHTML = renderToString(createElement(IsotipoSamples));
 writeFileSync(new URL('./isotipo-hydration.html', import.meta.url), isotipoHTML);
@@ -9373,6 +9540,53 @@ try {
   await act(async () => revealHydrated.unmount());
   assert.equal(scrollRevealRef.current, null);
   revealHost.remove();
+  const { Embed } = await import('@egdev/ui');
+  const { EmbedSamples } = await import('./consumer.ts');
+  const embedHost = document.createElement('section');
+  embedHost.innerHTML = readWaveFile(new URL('./embed-hydration.html', import.meta.url), 'utf8');
+  document.body.append(embedHost);
+  assert.equal(embedHost.querySelectorAll('iframe').length, 0);
+  const embedServerRoots = [...embedHost.querySelectorAll('div.eg-embed')];
+  const embedRecoveries = [];
+  let embedHydrated;
+  await act(async () => {
+    embedHydrated = hydrateRoot(embedHost, createElement(EmbedSamples), { onRecoverableError: error => embedRecoveries.push(error) });
+  });
+  // Hydration finds the server markup unchanged, keeps its nodes, and the frames mount only afterwards.
+  assert.deepEqual(embedRecoveries, []);
+  assert.deepEqual([...embedHost.querySelectorAll('div.eg-embed')], embedServerRoots);
+  const embedFrames = [...embedHost.querySelectorAll('iframe')];
+  assert.deepEqual(embedFrames.map((frame) => [frame.getAttribute('title'), frame.getAttribute('src'), frame.getAttribute('loading')]), [['Keynote recording', 'https://video.example/embed/1', 'eager'], ['Default frame', '/embed/1', 'lazy']]);
+  assert.equal(embedFrames[0].getAttribute('allow'), 'fullscreen');
+  assert.ok(embedFrames[0].hasAttribute('allowfullscreen'));
+  assert.equal(embedFrames[0].getAttribute('referrerpolicy'), 'no-referrer');
+  assert.equal(embedFrames[0].getAttribute('sandbox'), 'allow-scripts');
+  for (const name of ['allow', 'allowfullscreen', 'referrerpolicy', 'sandbox']) assert.equal(embedFrames[1].hasAttribute(name), false, name);
+  assert.deepEqual(embedFrames.map((frame) => frame.closest('div.eg-embed').getAttribute('data-state')), ['loading', 'loading']);
+  await act(async () => embedFrames[0].dispatchEvent(new Event('load')));
+  const embedLoaded = embedFrames[0].closest('div.eg-embed');
+  assert.equal(embedLoaded.getAttribute('data-state'), 'ready');
+  assert.equal(embedLoaded.hasAttribute('aria-busy'), false);
+  assert.equal(embedLoaded.querySelector('.eg-spinner'), null);
+  assert.equal(embedFrames[1].closest('div.eg-embed').getAttribute('data-state'), 'loading');
+  await act(async () => embedHydrated.unmount());
+  assert.equal(embedHost.querySelector('iframe'), null);
+  embedHost.remove();
+  // A client render: the frame mounts after the first render, loads once, and a new src is a fresh frame again.
+  await act(async () => root.render(createElement(Embed, { label: 'Keynote recording', src: '/embed/1' })));
+  const embedFirstFrame = document.querySelector('iframe');
+  assert.equal(embedFirstFrame.getAttribute('src'), '/embed/1');
+  assert.equal(document.querySelector('div.eg-embed').getAttribute('data-state'), 'loading');
+  await act(async () => embedFirstFrame.dispatchEvent(new Event('load')));
+  assert.equal(document.querySelector('div.eg-embed').getAttribute('data-state'), 'ready');
+  await act(async () => root.render(createElement(Embed, { label: 'Keynote recording', src: '/embed/2' })));
+  assert.notEqual(document.querySelector('iframe'), embedFirstFrame);
+  assert.equal(embedFirstFrame.isConnected, false);
+  assert.equal(document.querySelector('div.eg-embed').getAttribute('data-state'), 'loading');
+  await act(async () => root.render(createElement(Embed, { label: 'Keynote recording', src: '', fallback: createElement('p', null, 'Unavailable') })));
+  assert.equal(document.querySelector('iframe'), null);
+  assert.equal(document.querySelector('div.eg-embed').getAttribute('data-state'), 'fallback');
+  await act(async () => root.render(null));
   await act(async () => root.render(createElement(ScrollRevealSamples)));
   assert.equal(scrollRevealRef.current, document.getElementById('packed-scroll-reveal'));
   await act(async () => root.render(null));
@@ -11124,6 +11338,7 @@ ${assertTimelineCSS.toString()}
 ${assertSectionHeaderCSS.toString()}
 ${assertDetailHeaderCSS.toString()}
 ${assertPaginationCSS.toString()}
+${assertEmbedCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertSocialLinksCSS.toString()}
 ${assertMenuCSS.toString()}
@@ -11183,6 +11398,7 @@ assertStatCSS(emitted);
 assertSectionHeaderCSS(emitted);
 assertDetailHeaderCSS(emitted);
 assertPaginationCSS(emitted);
+assertEmbedCSS(emitted);
 ${assertListItemCSS.toString()}
 assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
@@ -11316,6 +11532,7 @@ assertModuleCardCSS(twCss);
 assertSectionHeaderCSS(twCss);
 assertDetailHeaderCSS(twCss);
 assertPaginationCSS(twCss);
+assertEmbedCSS(twCss);
 assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertToastCSS(twCss);
