@@ -2367,6 +2367,21 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 
+  it('keeps the narrowed Chip aria-current declaration out of the rows without a diagnostic or an injected argument', () => {
+    const metadata = component('Chip');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    // The merged union row starts at React's AriaAttributes, so the Storybook propFilter drops it before Controls:
+    // there is no row to map, no widget to offer and no diagnostic for the pure helper to raise.
+    expect(metadata.__docgenInfo.props['aria-current']).toBeUndefined();
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const { argTypes, args } = story('Chip');
+    expect(argTypes['aria-current']).toBeUndefined();
+    expect(args).toEqual({});
+    // The ten annotated own rows keep their widgets: the narrowing changes none of them.
+    expect(argTypes.href?.control).toEqual({ type: 'text' });
+    expect(argTypes.mode?.control).toEqual({ type: 'select' });
+  });
+
   it('retains Prose children without a widget, size and tone selects with constant defaults and passive native rows', () => {
     const { argTypes, args } = story('Prose');
     const tags = component('Prose').__docgenInfo.props.children?.tags as Record<string, string> | undefined;

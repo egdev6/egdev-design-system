@@ -6366,6 +6366,7 @@ describe('Chip metadata contract', () => {
     mode: 'select',
     disabled: 'boolean',
     href: 'text',
+    'aria-current': 'false',
     external: 'boolean',
     newTabText: 'text'
   };
@@ -6376,6 +6377,10 @@ describe('Chip metadata contract', () => {
     external: 'false',
     newTabText: '(opens in a new tab)'
   };
+  // Own declarations that docgen merges into a union row whose first declaration is React's AriaAttributes: the
+  // Storybook propFilter drops that row, so it appears in neither the Docs table nor Controls (plan section 5.2).
+  const chipMergedNativeRows = ['aria-current'];
+  const chipRows = Object.keys(chipControls).filter((name) => !chipMergedNativeRows.includes(name));
 
   it('annotates every non-never own prop with one control and only actual constant defaults', () => {
     const file = ast(source('atoms/chip/types.ts'));
@@ -6390,7 +6395,7 @@ describe('Chip metadata contract', () => {
       if (property.type?.getText(file) === 'never') {
         continue;
       }
-      const name = property.name.getText(file);
+      const name = normalize(property.name.getText(file));
       declarations.set(name, [...(declarations.get(name) ?? []), property]);
     }
     expect([...declarations.keys()].sort()).toEqual(Object.keys(chipControls).sort());
@@ -6407,7 +6412,11 @@ describe('Chip metadata contract', () => {
         chipDefaults[name] ? [chipDefaults[name]] : []
       );
       if (chipControls[name] === 'false') {
-        expect(values('controlReason')[0], `Chip.${name} reason`).toMatch(/Non-serializable.*stor(?:y|ies)\.$/);
+        expect(values('controlReason')[0], `Chip.${name} reason`).toMatch(
+          name === 'aria-current'
+            ? /native unions of all three modes.*LinkCurrent story\.$/
+            : /Non-serializable.*stor(?:y|ies)\.$/
+        );
       }
     }
   });
@@ -6427,9 +6436,13 @@ describe('Chip metadata contract', () => {
       throw new Error('Missing docgen for Chip');
     }
     const { props } = doc;
-    for (const [prop, control] of Object.entries(chipControls)) {
+    for (const prop of chipRows) {
+      const control = chipControls[prop];
       expect(props[prop], `Chip.${prop}`).toMatchObject({ required: prop === 'children', tags: { control } });
       expect(normalize(props[prop]?.defaultValue?.value ?? ''), `Chip.${prop} default`).toBe(chipDefaults[prop] ?? '');
+    }
+    for (const prop of chipMergedNativeRows) {
+      expect(props[prop], `Chip.${prop} is filtered out of the Storybook rows`).toBeUndefined();
     }
     expect(props.mode?.type.raw, 'mode enum').toBe('"link" | "toggle" | "static"');
     expect(
@@ -6441,22 +6454,36 @@ describe('Chip metadata contract', () => {
       expect(props[prop]?.type.name, prop).toBe('boolean');
     }
     expect(Object.keys(props).sort()).toEqual(
-      [
-        ...Object.keys(chipControls),
-        'id',
-        'title',
-        'name',
-        'onClick',
-        'aria-describedby',
-        'className',
-        'target',
-        'rel'
-      ].sort()
+      [...chipRows, 'id', 'title', 'name', 'onClick', 'aria-describedby', 'className', 'target', 'rel'].sort()
     );
     for (const prop of ['type', 'value', 'asChild', 'aria-pressed', 'data-state', 'chipVariants', 'chipIconVariants']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
+
+  it(
+    'keeps the narrowed aria-current tags on the unfiltered merged row that the Storybook filter drops',
+    () => {
+      const { propFilter: _projectFilter, ...unfiltered } = config.typescript?.reactDocgenTypescriptOptions ?? {};
+      const scoped = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), unfiltered);
+      const doc = scoped.parse(source('atoms/chip/Chip.tsx')).find((item) => item.displayName === 'Chip');
+      const row = doc?.props['aria-current'];
+      if (!row) {
+        throw new Error('Missing unfiltered aria-current row for Chip');
+      }
+      // The merged row is the union of the three modes' native types and keeps the link branch's own annotation.
+      expect(row.parent?.name).toBe('AriaAttributes');
+      expect(row.required).toBe(false);
+      expect(row.defaultValue).toBeNull();
+      expect(row.tags).toMatchObject({ control: 'false' });
+      expect((row.tags as Record<string, string> | undefined)?.controlReason).toMatch(
+        /native unions of all three modes.*LinkCurrent story\.$/
+      );
+      expect(row.description).toContain('Marks the link as the current item');
+      expect(row.declarations?.some((declaration) => declaration.fileName.endsWith('atoms/chip/types.ts'))).toBe(true);
+    },
+    heavyDocgenTimeoutMs
+  );
 
   it('exports exactly the contract stories', () => {
     expect(exportedStoryNames(ast(source('atoms/chip/Chip.stories.tsx')))).toEqual([
@@ -6468,6 +6495,8 @@ describe('Chip metadata contract', () => {
       'Static',
       'Link',
       'ExternalLink',
+      'LinkCurrent',
+      'LinkCurrentWithIcon',
       'StaticInList',
       'CustomAccent'
     ]);

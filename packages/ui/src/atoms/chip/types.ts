@@ -77,7 +77,7 @@ export type ChipStaticProps = Omit<ComponentPropsWithoutRef<'span'>, 'children' 
     disabled?: never;
   };
 
-export type ChipLinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'children' | 'href'> &
+export type ChipLinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'children' | 'href' | 'aria-current'> &
   ChipCommonProps & {
     /**
      * Selects the link role: the same pill rendered as a native anchor for a real destination.
@@ -88,6 +88,14 @@ export type ChipLinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'children' | 'hr
      * @control text
      */
     href: string;
+    /**
+     * Marks the link as the current item: `page` when the destination is the page being shown, `true` for the
+     * current item of a set that is not a page sequence, such as the active filter. Both paint the same current
+     * treatment; any other token does not compile.
+     * @control false
+     * @controlReason The row merges the native unions of all three modes, which mix booleans and strings; see the LinkCurrent story.
+     */
+    'aria-current'?: 'page' | 'true';
     /**
      * Opens the destination in a new browsing context with safe rel values and a hidden notice.
      * @control boolean
@@ -121,7 +129,7 @@ export const chipVariants = cva(
         toggle:
           'pointer-coarse:min-h-14 cursor-pointer transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:border-border-hairline-strong hover:[background:var(--gradient-sheen),var(--color-surface-2)] hover:text-fg-default data-[state=on]:border-state-selected/60 data-[state=on]:[background:var(--gradient-chip-active),var(--color-surface-1)] data-[state=on]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)] data-[state=on]:text-fg-default active:translate-y-px active:scale-[.97] active:duration-[var(--duration-press)] active:ease-[var(--ease-snappy)] motion-reduce:active:transform-none motion-reduce:active:translate-none motion-reduce:active:scale-none focus-visible:outline-none focus-visible:shadow-focus data-[state=on]:focus-visible:shadow-focus disabled:opacity-45 disabled:pointer-events-none',
         static: '',
-        link: 'pointer-coarse:min-h-14 cursor-pointer no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:border-border-hairline-strong hover:[background:var(--gradient-sheen),var(--color-surface-2)] hover:text-fg-default focus-visible:outline-none focus-visible:shadow-focus'
+        link: 'pointer-coarse:min-h-14 cursor-pointer no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:border-border-hairline-strong hover:[background:var(--gradient-sheen),var(--color-surface-2)] hover:text-fg-default focus-visible:outline-none focus-visible:shadow-focus aria-[current=page]:border-state-selected aria-[current=true]:border-state-selected aria-[current=page]:[background:var(--gradient-chip-active),var(--color-surface-1)] aria-[current=true]:[background:var(--gradient-chip-active),var(--color-surface-1)] aria-[current=page]:shadow-[var(--shadow-edge-strong)] aria-[current=true]:shadow-[var(--shadow-edge-strong)] aria-[current=page]:text-fg-default aria-[current=true]:text-fg-default aria-[current=page]:focus-visible:shadow-focus aria-[current=true]:focus-visible:shadow-focus forced-colors:focus-visible:outline-solid forced-colors:focus-visible:outline-(length:--focus-width) forced-colors:focus-visible:outline-[color:Highlight] forced-colors:aria-[current=page]:outline-solid forced-colors:aria-[current=page]:outline-(length:--focus-width) forced-colors:aria-[current=page]:outline-[color:Highlight] forced-colors:aria-[current=true]:outline-solid forced-colors:aria-[current=true]:outline-(length:--focus-width) forced-colors:aria-[current=true]:outline-[color:Highlight]'
       }
     },
     defaultVariants: { mode: 'toggle' }

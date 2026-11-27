@@ -33,9 +33,9 @@ function ControlledChip(props: Extract<ChipProps, { mode?: 'toggle' }>) {
  * ## Usage guidelines
  * Keep labels short; they never truncate. Use one mode per visual group, because a static chip and
  * an off toggle look identical. Status labels stay Badge and one-shot actions stay Button. The
- * consumer owns list semantics, `aria-current`, router interception (via `onClick`) and the link
- * destination. className supports outer layout only, not appearance overrides. No ref, asChild or
- * stylesheet.
+ * consumer owns list semantics, which chip is current (`aria-current` `page` or `true`, painted on
+ * link chips only), router interception (via `onClick`) and the link destination. className
+ * supports outer layout only, not appearance overrides. No ref, asChild or stylesheet.
  */
 const meta = {
   title: 'Atoms/Chip',
@@ -128,6 +128,72 @@ export const ExternalLink: Story = {
         Examples
       </Chip>
     </div>
+  )
+};
+
+/**
+ * The active filter carries the native `aria-current`; the paint follows the attribute alone. `page` paints
+ * identically, and the consumer keeps the attribute in sync with the route.
+ */
+export const LinkCurrent: Story = {
+  render: () => (
+    <nav aria-label='Article filters'>
+      <ul className='flex flex-wrap gap-2'>
+        <li>
+          <Chip mode='link' href='#all'>
+            All
+          </Chip>
+        </li>
+        <li>
+          <Chip mode='link' href='#react' aria-current='true'>
+            React
+          </Chip>
+        </li>
+        <li>
+          <Chip mode='link' href='#css'>
+            CSS
+          </Chip>
+        </li>
+        <li>
+          <Chip mode='link' href='#testing'>
+            Testing
+          </Chip>
+        </li>
+      </ul>
+    </nav>
+  )
+};
+
+/**
+ * A consumer-supplied check glyph is the cue that survives losing colour. The icon stays decorative and the
+ * label still names the link.
+ */
+export const LinkCurrentWithIcon: Story = {
+  render: () => (
+    <nav aria-label='Article filters'>
+      <ul className='flex flex-wrap gap-2'>
+        <li>
+          <Chip mode='link' href='#all'>
+            All
+          </Chip>
+        </li>
+        <li>
+          <Chip mode='link' href='#react' aria-current='page' icon={<Icon name='check' className='size-3.5' />}>
+            React
+          </Chip>
+        </li>
+        <li>
+          <Chip mode='link' href='#css'>
+            CSS
+          </Chip>
+        </li>
+        <li>
+          <Chip mode='link' href='#testing'>
+            Testing
+          </Chip>
+        </li>
+      </ul>
+    </nav>
   )
 };
 
