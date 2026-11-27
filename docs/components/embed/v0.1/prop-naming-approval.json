@@ -1,0 +1,62 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the unavailable-content-fallback convention for the Embed fallback prop, and record its registry receipt.",
+  "evidence": {
+    "channel": "Owner answers forwarded in odd/tasks/round-5-consumer-requests.md (L5 and L6), 2026-11-26",
+    "userStatements": [
+      {
+        "quote": "Aprobar todas (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L5 (specs, Embed v0.1 OQ-6 naming convention)",
+        "date": "2026-11-26"
+      },
+      {
+        "quote": "Aprobar los 10 (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L6 (plans, Embed v0.1 D2 registry receipt for the newly named convention)",
+        "date": "2026-11-26"
+      }
+    ],
+    "specPath": "docs/components/embed/v0.1/spec.md",
+    "specPayloadSHA256": "sha256:11b9368099008dafb0e175ed8628ae9df32837b1ad8df2a0b8b2329f0c3035f6",
+    "specAmendments": [
+      {
+        "name": "Amendment 1",
+        "date": "2026-11-27",
+        "record": "docs/components/embed/v0.1/approval.md",
+        "change": "Adds the static keyword utility box-border to the fallback layer recipe and the matching EM-11 wording; the three convention texts are byte-identical in both payloads.",
+        "ownerChoice": "A: agregar `box-border` (Recomendado)",
+        "provenance": "odd/tasks/round-5-consumer-requests.md L8",
+        "specPayloadSHA256Before": "sha256:a004144377a34800c9729c2b983bf48bdaaadd3bb8d41b0ca3338c98317e1b69",
+        "specPayloadSHA256After": "sha256:11b9368099008dafb0e175ed8628ae9df32837b1ad8df2a0b8b2329f0c3035f6"
+      }
+    ],
+    "planPath": "docs/components/embed/v0.1/implementation-plan.md",
+    "planPayloadSHA256": "sha256:df0282e3cb879efa4704bcbe9334f623cd719de5c0651457f953da2484b938be",
+    "interpretation": "Scoped convention approval only: it binds the exact payload below, which the approved Embed v0.1 spec quotes verbatim in its block 3 table of new proposals (OQ-6, approved by L5 with the recommended answer) and whose receipt the approved plan (L6, decision D2) authorized. It is not native review authority. specPayloadSHA256 is the payload of the spec as amended by Amendment 1 (the owner's L8 answer, which only added box-border to the fallback layer recipe); the payload the owner approved at L5 is the digest recorded in specAmendments, and the convention texts are byte-identical in both. The one bound field the owner's answers did not show is status: the spec table lists id, name, meaning, whenToUse and avoid, with no alias and no exception, and the plan (section 5.1, D2) states that hashing the approved form is the step D2 adds. The receipt does not approve the Embed implementation, a visual capture, an alias, an exception or any other convention: label, ratio, src, children, loading and the iframe attributes reuse existing entries or stay native, and the entry carries no exception."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": ["unavailable-content-fallback"],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:unavailable-content-fallback",
+      "contentHash": "sha256:e812551824142c5c3a378bd4f49d6a236882fa4eb0dd3e45fa8273eeb4165767",
+      "convention": {
+        "id": "unavailable-content-fallback",
+        "name": "fallback",
+        "meaning": "Consumer-supplied content a component shows in place of its primary content while that content is unavailable or deliberately withheld.",
+        "whenToUse": "A component owns the reserved space and the state of external or deferred content, and the consumer supplies the readable alternative, such as a short explanation and a link to the original.",
+        "avoid": "Numeric or time displays (use unavailableText), image-load initials (identity-image-source), form errors (error), loading indicators or skeletons, built-in default copy, or deciding when content is withheld (policy stays with the consumer).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      },
+      "source": {
+        "path": "packages/ui/src/atoms/embed/types.ts",
+        "symbol": "EmbedProps",
+        "revision": "sha256:debbddc467385adcdbe1ce8cdbb9ab7fd6c0d294c7abee1ad536070dc60fae39"
+      }
+    }
+  ]
+}
