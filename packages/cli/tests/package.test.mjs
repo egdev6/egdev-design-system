@@ -9,7 +9,7 @@ const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 test('AC1 @egdev/cli ships bin egdev-ds, Node 24, no dependencies and a matching changelog', () => {
   const manifest = JSON.parse(read('../package.json'));
   assert.equal(manifest.name, '@egdev/cli');
-  assert.equal(manifest.version, '0.4.0');
+  assert.equal(manifest.version, '0.5.0');
   assert.equal(manifest.type, 'module');
   assert.deepEqual(manifest.bin, { 'egdev-ds': './bin/egdev-ds.mjs' });
   assert.deepEqual(manifest.files, ['bin', 'src', 'types', 'CHANGELOG.md']);

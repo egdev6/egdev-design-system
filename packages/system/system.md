@@ -19,7 +19,7 @@ Schema: 1.0.0 (schemaVersion)
 | Package | Version | Source |
 | --- | --- | --- |
 | @egdev/effects | 0.2.12 | packages[] · packages/effects/package.json |
-| @egdev/tokens | 0.6.1 | packages[] · packages/tokens/package.json |
+| @egdev/tokens | 0.7.0 | packages[] · packages/tokens/package.json |
 | @egdev/ui | 0.11.0 | packages[] · packages/ui/package.json |
 Re-run: `pnpm exec egdev-system-md --write`
 
