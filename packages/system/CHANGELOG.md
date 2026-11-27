@@ -4,6 +4,10 @@
 
 ### Added
 
+- The source-derived artifact and reference list the current-state utilities of `Chip`'s link recipe (`chipVariants`
+  `mode=link`: the `aria-current` `page` and `true` paint, focus ring and forced-colours outline). The narrowed
+  `aria-current` declaration is not a separate prop row, because docgen merges it into the native attribute that the
+  artifact's own-prop filter omits; existing props and recipes are unchanged. (#576)
 - The source-derived artifact and reference include the `titleVariant` prop of `Hero`, `Closing`, `ChapterBreak` and
   `LabStage` (default `hero`) and the `heading-title-variant` naming concept (approved, with its receipt); existing
   props and recipes are unchanged. (#560)

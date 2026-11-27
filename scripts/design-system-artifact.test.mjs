@@ -2051,6 +2051,34 @@ test('Storybook hidden own props do not appear in Chip', () => {
   assert.ok(!chip.props.some(({ name }) => name === 'aria-pressed'));
 });
 
+test('Chip link recipe lists the current-state utilities and the merged aria-current declaration stays out of props (#576)', () => {
+  const chip = read('packages/system/design-system.json').components.find(({ name }) => name === 'Chip');
+  const recipe = chip.variants.find(({ name }) => name === 'chipVariants');
+  assert.equal(recipe.classes.length, 4);
+  const [base, toggle, , link] = recipe.classes.map((value) => value.split(/\s+/).filter(Boolean));
+  // The link entry keeps its 11 v0.2 utilities and gains the 19 of recipe R1.
+  assert.equal(link.length, 30);
+  for (const utility of [
+    'aria-[current=page]:border-state-selected',
+    'aria-[current=true]:border-state-selected',
+    'aria-[current=true]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
+    'aria-[current=true]:shadow-[var(--shadow-edge-strong)]',
+    'aria-[current=true]:text-fg-default',
+    'aria-[current=true]:focus-visible:shadow-focus',
+    'forced-colors:focus-visible:outline-[color:Highlight]',
+    'forced-colors:aria-[current=true]:outline-[color:Highlight]'
+  ]) {
+    assert.ok(link.includes(utility), `link recipe lists ${utility}`);
+  }
+  // The shared base and the toggle recipe carry no current-state utility.
+  assert.equal(
+    [...base, ...toggle].some((value) => value.includes('aria-[current')),
+    false
+  );
+  // The merged union row of aria-current starts at React's AriaAttributes, so the own-prop filter drops it.
+  assert.ok(!chip.props.some(({ name }) => name === 'aria-current'));
+});
+
 test('CVA recipes include class values, not default variant names', () => {
   const button = read('packages/system/design-system.json').components.find(({ name }) => name === 'Button');
   const recipe = button.variants.find(({ name }) => name === 'buttonVariants');

@@ -1944,6 +1944,10 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Toggle
     - chipVariants mode=toggle: focus-visible:shadow-focus → --shadow-focus
     - chipVariants mode=toggle: data-[state=on]:focus-visible:shadow-focus → --shadow-focus
     - chipVariants mode=link: focus-visible:shadow-focus → --shadow-focus
+    - chipVariants mode=link: aria-[current=page]:shadow-[var(--shadow-edge-strong)] → --shadow-edge-strong
+    - chipVariants mode=link: aria-[current=true]:shadow-[var(--shadow-edge-strong)] → --shadow-edge-strong
+    - chipVariants mode=link: aria-[current=page]:focus-visible:shadow-focus → --shadow-focus
+    - chipVariants mode=link: aria-[current=true]:focus-visible:shadow-focus → --shadow-focus
   - children: ReactNode; Visible short label and accessible name in every mode. (components[] · packages/ui/src/atoms/chip/types.ts)
   - defaultPressed: boolean; Initial pressed state when uncontrolled. (components[] · packages/ui/src/atoms/chip/types.ts)
   - disabled: boolean; Removes the chip from the Tab order and blocks toggling; dims it to 45% opacity. (components[] · packages/ui/src/atoms/chip/types.ts)
@@ -3471,6 +3475,10 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - chipVariants mode=toggle: focus-visible:shadow-focus → --shadow-focus
     - chipVariants mode=toggle: data-[state=on]:focus-visible:shadow-focus → --shadow-focus
     - chipVariants mode=link: focus-visible:shadow-focus → --shadow-focus
+    - chipVariants mode=link: aria-[current=page]:shadow-[var(--shadow-edge-strong)] → --shadow-edge-strong
+    - chipVariants mode=link: aria-[current=true]:shadow-[var(--shadow-edge-strong)] → --shadow-edge-strong
+    - chipVariants mode=link: aria-[current=page]:focus-visible:shadow-focus → --shadow-focus
+    - chipVariants mode=link: aria-[current=true]:focus-visible:shadow-focus → --shadow-focus
 ### cn
 - cn (components[] · packages/ui/src/lib/cn.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):

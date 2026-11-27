@@ -8,6 +8,11 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- A link `Chip` whose native `aria-current` is `page` or `true` is painted as the current item, for example the active
+  filter in a row of crawlable filters: the brand border, selected fill and brighter text of Pagination's current
+  page, with the focus ring on top and a system-colour outline in forced colours. The attribute is the only state
+  carrier: there is no new prop, no `data-state` and no built-in icon (pass `icon` for a check). Toggle and static
+  chips, `chipVariants()` and `ChipGroup` are unchanged. (#576)
 - `Hero`, `Closing`, `ChapterBreak` and `LabStage` accept `titleVariant` (`'hero'` by default, or `'show'`) to choose the
   recipe of the scene's own heading. `show` is the smaller Show-register step, about 9% below `hero` between roughly
   680px and 1,560px of viewport and capped at 105.6px instead of 112px, so a long title can fit a narrow copy column;
@@ -95,6 +100,9 @@ a local tarball from `pnpm release:pack`.
 
 ### Changed
 
+- In link mode `Chip` types `aria-current` as `'page' | 'true'` instead of the full native union, so `step`,
+  `location`, `date`, `time`, `'false'` and booleans no longer compile on a link chip. Their runtime behaviour is
+  unchanged: the attribute is still forwarded, but it is not painted. (#576)
 - SectionNav shows each section's number with at least two digits (`01`, `09`, `10`, `100`) in the raised brand
   colour and its label in uppercase display type, in the disclosure and in every index row. The number is the item's
   position in `items`; the props, the label text and the `onNavigate` payload are unchanged, and each index link's
