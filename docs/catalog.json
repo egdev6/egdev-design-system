@@ -74,7 +74,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Implemented React primitive under the [approved v0.1 contract](components/prose/v0.1/spec.md): passive reading column (`div.eg-prose`) that gives bare semantic children (h2 to h4, paragraphs, lists, links, strong, blockquote, code, pre, images, figures, simple tables and rules) a token-backed long-form presentation, with a built-in reading measure (`--container-prose`, 65ch), `size` md or sm and a `tone` for inline code. Descendant utilities only: no stylesheet, ref, asChild, HTML-string input or part markers. The consumer converts and sanitizes content; nested recipe-owning components are unsupported. Browser, contrast and packed-consumer verification remain pending until observed."
+    "notas": "Implemented React primitive under the [approved v0.1 contract](components/prose/v0.1/spec.md): passive reading column (`div.eg-prose`) that gives bare semantic children (h2 to h4, paragraphs, lists, links, strong, blockquote, code, pre, images, figures, simple tables and rules) a token-backed long-form presentation, with a built-in reading measure (`--container-prose`, 65ch), `size` md or sm and a `tone` for inline code. Descendant utilities only: no stylesheet, ref, asChild, HTML-string input or part markers. The consumer converts and sanitizes content; nested recipe-owning components are unsupported. v0.2 ([#580](https://github.com/egdev6/egdev-design-system/issues/580)) documents that links are written as bare `a` elements, and `egdev-ds` DS040 accepts them in a file that renders `Prose`. Browser, contrast and packed-consumer verification remain pending until observed."
   },
   {
     "actual": "Divider",

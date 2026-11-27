@@ -35,6 +35,9 @@ import { Prose } from './Prose';
  * which are below 4.5:1 on `surface-1` to `surface-3`: the owner retained that trade-off, and links keep an underline
  * as their non-colour cue. `className` supports outer layout only (margins such as `mx-auto`, self-alignment, flex or
  * grid placement); width constraints are unsupported.
+ *
+ * Write links as bare `a` elements: Prose styles them at the body size, while a `Link` keeps its own, smaller label
+ * step and does not belong inside it. `egdev-ds doctor` (DS040) accepts a raw `a` in a file that renders `Prose`.
  */
 const meta: Meta<typeof Prose> = {
   title: 'Primitives/Prose',

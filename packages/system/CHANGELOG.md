@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- The source-derived artifact and reference carry the amended `children` description of `Prose`; no prop, recipe or
+  other entry changes. (#580)
+
 ## 0.14.0
 
 ### Added
