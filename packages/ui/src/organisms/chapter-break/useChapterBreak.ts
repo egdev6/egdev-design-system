@@ -15,6 +15,7 @@ export function useChapterBreak(props: ChapterBreakProps) {
   const {
     title,
     level,
+    titleVariant,
     eyebrow,
     accent,
     lede,
@@ -34,9 +35,12 @@ export function useChapterBreak(props: ChapterBreakProps) {
       asChild?: unknown;
     };
   const hasMedia = Children.toArray(media).length > 0;
+  // Only 'show' selects the smaller recipe; any other runtime value, including null, resolves to the default.
+  const titleRecipe: NonNullable<ChapterBreakProps['titleVariant']> = titleVariant === 'show' ? 'show' : 'hero';
   return {
     title,
     level,
+    titleVariant: titleRecipe,
     eyebrow,
     accent,
     lede,

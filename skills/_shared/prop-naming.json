@@ -166,7 +166,7 @@
         "source": {
           "path": "packages/ui/src/organisms/hero/types.ts",
           "symbol": "HeroProps",
-          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+          "revision": "sha256:678ba18a2a2d1c2a3dc554423ca95e436d6dc4c47e2ebe2af326e2bbf90fe12c"
         }
       },
       {
@@ -176,7 +176,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+          "revision": "sha256:41b07659f7deb7c3f1ab36e2648117ec5d45f534651c5e1747e7626d6682bb8b"
         }
       },
       {
@@ -186,7 +186,7 @@
         "source": {
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
-          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+          "revision": "sha256:81aaf37785a4e315060ea94c3de0870a2a6984998fc0ba395f533c93a8a0e590"
         }
       },
       {
@@ -196,7 +196,7 @@
         "source": {
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
-          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+          "revision": "sha256:4313dc9abfdfbb9376c909a4a4513c748ad07334475d313aecbee73267ca1506"
         }
       }
     ]
@@ -233,7 +233,7 @@
         "source": {
           "path": "packages/ui/src/organisms/hero/types.ts",
           "symbol": "HeroProps",
-          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+          "revision": "sha256:678ba18a2a2d1c2a3dc554423ca95e436d6dc4c47e2ebe2af326e2bbf90fe12c"
         }
       }
     ]
@@ -5426,7 +5426,7 @@
         "source": {
           "path": "packages/ui/src/organisms/hero/types.ts",
           "symbol": "HeroProps",
-          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+          "revision": "sha256:678ba18a2a2d1c2a3dc554423ca95e436d6dc4c47e2ebe2af326e2bbf90fe12c"
         }
       },
       {
@@ -5536,7 +5536,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+          "revision": "sha256:41b07659f7deb7c3f1ab36e2648117ec5d45f534651c5e1747e7626d6682bb8b"
         }
       },
       {
@@ -5546,7 +5546,7 @@
         "source": {
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
-          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+          "revision": "sha256:81aaf37785a4e315060ea94c3de0870a2a6984998fc0ba395f533c93a8a0e590"
         }
       },
       {
@@ -5556,7 +5556,7 @@
         "source": {
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
-          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+          "revision": "sha256:4313dc9abfdfbb9376c909a4a4513c748ad07334475d313aecbee73267ca1506"
         }
       },
       {
@@ -5603,7 +5603,7 @@
         "source": {
           "path": "packages/ui/src/organisms/hero/types.ts",
           "symbol": "HeroProps",
-          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+          "revision": "sha256:678ba18a2a2d1c2a3dc554423ca95e436d6dc4c47e2ebe2af326e2bbf90fe12c"
         }
       },
       {
@@ -5733,7 +5733,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+          "revision": "sha256:41b07659f7deb7c3f1ab36e2648117ec5d45f534651c5e1747e7626d6682bb8b"
         }
       },
       {
@@ -5743,7 +5743,7 @@
         "source": {
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
-          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+          "revision": "sha256:81aaf37785a4e315060ea94c3de0870a2a6984998fc0ba395f533c93a8a0e590"
         }
       },
       {
@@ -5753,7 +5753,7 @@
         "source": {
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
-          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+          "revision": "sha256:4313dc9abfdfbb9376c909a4a4513c748ad07334475d313aecbee73267ca1506"
         }
       },
       {
@@ -6022,7 +6022,7 @@
         "source": {
           "path": "packages/ui/src/organisms/hero/types.ts",
           "symbol": "HeroProps",
-          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+          "revision": "sha256:678ba18a2a2d1c2a3dc554423ca95e436d6dc4c47e2ebe2af326e2bbf90fe12c"
         }
       },
       {
@@ -6082,7 +6082,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+          "revision": "sha256:41b07659f7deb7c3f1ab36e2648117ec5d45f534651c5e1747e7626d6682bb8b"
         }
       },
       {
@@ -6092,7 +6092,7 @@
         "source": {
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
-          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+          "revision": "sha256:81aaf37785a4e315060ea94c3de0870a2a6984998fc0ba395f533c93a8a0e590"
         }
       },
       {
@@ -6102,7 +6102,7 @@
         "source": {
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
-          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+          "revision": "sha256:4313dc9abfdfbb9376c909a4a4513c748ad07334475d313aecbee73267ca1506"
         }
       },
       {
@@ -6388,7 +6388,7 @@
         "source": {
           "path": "packages/ui/src/organisms/hero/types.ts",
           "symbol": "HeroProps",
-          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+          "revision": "sha256:678ba18a2a2d1c2a3dc554423ca95e436d6dc4c47e2ebe2af326e2bbf90fe12c"
         }
       },
       {
@@ -6438,7 +6438,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+          "revision": "sha256:41b07659f7deb7c3f1ab36e2648117ec5d45f534651c5e1747e7626d6682bb8b"
         }
       },
       {
@@ -6448,7 +6448,7 @@
         "source": {
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
-          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+          "revision": "sha256:81aaf37785a4e315060ea94c3de0870a2a6984998fc0ba395f533c93a8a0e590"
         }
       },
       {
@@ -6458,7 +6458,7 @@
         "source": {
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
-          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+          "revision": "sha256:4313dc9abfdfbb9376c909a4a4513c748ad07334475d313aecbee73267ca1506"
         }
       }
     ]
@@ -6660,7 +6660,7 @@
         "source": {
           "path": "packages/ui/src/organisms/hero/types.ts",
           "symbol": "HeroProps",
-          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+          "revision": "sha256:678ba18a2a2d1c2a3dc554423ca95e436d6dc4c47e2ebe2af326e2bbf90fe12c"
         }
       },
       {
@@ -6680,7 +6680,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+          "revision": "sha256:41b07659f7deb7c3f1ab36e2648117ec5d45f534651c5e1747e7626d6682bb8b"
         }
       },
       {
@@ -6690,7 +6690,7 @@
         "source": {
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
-          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+          "revision": "sha256:81aaf37785a4e315060ea94c3de0870a2a6984998fc0ba395f533c93a8a0e590"
         }
       },
       {
@@ -6700,7 +6700,7 @@
         "source": {
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
-          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+          "revision": "sha256:4313dc9abfdfbb9376c909a4a4513c748ad07334475d313aecbee73267ca1506"
         }
       },
       {
@@ -9337,6 +9337,63 @@
           "path": "packages/ui/src/atoms/embed/types.ts",
           "symbol": "EmbedProps",
           "revision": "sha256:debbddc467385adcdbe1ce8cdbb9ab7fd6c0d294c7abee1ad536070dc60fae39"
+        }
+      }
+    ]
+  },
+  {
+    "id": "heading-title-variant",
+    "name": "titleVariant",
+    "meaning": "Display-title typography recipe of the heading slot a composite component owns, chosen from the Heading recipes that component supports.",
+    "whenToUse": "A composite renders its title through Heading and lets the consumer pick one of a small finite set of Heading's existing recipes so the title fits the container it sits in; the rank stays on `level`.",
+    "avoid": "The component's own visual treatment (use `variant`), heading rank, dimension presets (use `size`), colour tone, accent layout, arbitrary font sizes or CSS values.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/hero/v0.2/prop-naming-approval.json",
+      "scope": "convention:heading-title-variant",
+      "contentHash": "sha256:c3f702649a81a950bbcfe63a4a07199a81d715ea229830e63309b9946ec23b1d"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Closing",
+        "type": "'hero' | 'show' (optional; default 'hero'; any other runtime value resolves to 'hero')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:41b07659f7deb7c3f1ab36e2648117ec5d45f534651c5e1747e7626d6682bb8b"
+        }
+      },
+      {
+        "component": "Hero",
+        "type": "'hero' | 'show' (optional; default 'hero'; any other runtime value resolves to 'hero')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:678ba18a2a2d1c2a3dc554423ca95e436d6dc4c47e2ebe2af326e2bbf90fe12c"
+        }
+      },
+      {
+        "component": "ChapterBreak",
+        "type": "'hero' | 'show' (optional; default 'hero'; any other runtime value resolves to 'hero')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/chapter-break/types.ts",
+          "symbol": "ChapterBreakProps",
+          "revision": "sha256:81aaf37785a4e315060ea94c3de0870a2a6984998fc0ba395f533c93a8a0e590"
+        }
+      },
+      {
+        "component": "LabStage",
+        "type": "'hero' | 'show' (optional; default 'hero'; any other runtime value resolves to 'hero')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/lab-stage/types.ts",
+          "symbol": "LabStageProps",
+          "revision": "sha256:4313dc9abfdfbb9376c909a4a4513c748ad07334475d313aecbee73267ca1506"
         }
       }
     ]

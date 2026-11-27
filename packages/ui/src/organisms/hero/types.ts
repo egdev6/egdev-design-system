@@ -14,6 +14,12 @@ export type HeroProps = Omit<
    * @control select
    */
   level: 1 | 2 | 3 | 4 | 5 | 6;
+  /** Display recipe of the scene's own heading: `hero` (default) or the smaller `show` step, so a long
+   * title can fit its column. Independent of `level`; the accent glows only with `hero`.
+   * @default hero
+   * @control select
+   */
+  titleVariant?: 'hero' | 'show';
   /** Optional context above the heading.
    * @control text
    */

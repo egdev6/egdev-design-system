@@ -247,6 +247,7 @@ const expected: Record<string, Record<string, string | false>> = {
   labstage: {
     title: 'text',
     level: 'select',
+    titleVariant: 'select',
     eyebrow: 'text',
     accent: 'text',
     lede: 'text',
@@ -257,6 +258,7 @@ const expected: Record<string, Record<string, string | false>> = {
   chapterbreak: {
     title: 'text',
     level: 'select',
+    titleVariant: 'select',
     eyebrow: 'text',
     accent: 'text',
     lede: 'text',
@@ -266,6 +268,7 @@ const expected: Record<string, Record<string, string | false>> = {
   closing: {
     title: 'text',
     level: 'select',
+    titleVariant: 'select',
     eyebrow: 'text',
     accent: 'text',
     lede: 'text',
@@ -275,6 +278,7 @@ const expected: Record<string, Record<string, string | false>> = {
   hero: {
     title: 'text',
     level: 'select',
+    titleVariant: 'select',
     eyebrow: 'text',
     accent: 'text',
     lede: 'text',
@@ -778,10 +782,10 @@ const expected: Record<string, Record<string, string | false>> = {
 const ownPropCounts: Record<string, number> = {
   websection: 5,
   webtemplate: 4,
-  labstage: 8,
-  chapterbreak: 7,
-  closing: 7,
-  hero: 9,
+  labstage: 9,
+  chapterbreak: 8,
+  closing: 8,
+  hero: 10,
   sectionnav: 10,
   pixel: 1,
   stepmeter: 3,
@@ -1340,6 +1344,20 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.variant?.table?.defaultValue?.summary).toBe('"default"');
     expect(args).toEqual({});
   });
+  it.each(['Hero', 'Closing', 'ChapterBreak', 'LabStage'])(
+    'maps %s titleVariant as an optional select without injecting an argument (#560)',
+    (name) => {
+      const metadata = component(name);
+      const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics, name).toEqual([]);
+      const { argTypes, args } = story(name);
+      expect(argTypes.titleVariant?.control, name).toEqual({ type: 'select' });
+      expect([...(argTypes.titleVariant?.options ?? [])].sort(), name).toEqual(['hero', 'show']);
+      expect(argTypes.titleVariant?.type?.required, name).not.toBe(true);
+      expect(argTypes.titleVariant?.table?.defaultValue?.summary, name).toBe('"hero"');
+      expect(args, name).toEqual({});
+    }
+  );
   it('maps Collapsible part controls and defaults through the registered pipeline', () => {
     for (const name of ['CollapsibleHeader', 'CollapsibleTrigger', 'CollapsibleContent']) {
       const metadata = component(name);

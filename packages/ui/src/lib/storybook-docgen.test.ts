@@ -571,6 +571,15 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.titleVariant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'hero' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.titleVariant?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'hero',
+      'show'
+    ]);
     expect(publicAPI.LabStage).toBeDefined();
   });
   it('extracts ChapterBreak inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
@@ -599,6 +608,15 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['children', 'role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.titleVariant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'hero' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.titleVariant?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'hero',
+      'show'
+    ]);
     expect(publicAPI.ChapterBreak).toBeDefined();
   });
   it('extracts Closing inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
@@ -625,6 +643,15 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['role', 'style', 'dangerouslySetInnerHTML']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.titleVariant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'hero' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.titleVariant?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'hero',
+      'show'
+    ]);
     expect(publicAPI.Closing).toBeDefined();
   });
   it('extracts Hero inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
@@ -641,6 +668,15 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
       expect(doc?.props[name], name).toBeUndefined();
     }
+    expect(doc?.props.titleVariant).toMatchObject({
+      required: false,
+      defaultValue: { value: 'hero' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.titleVariant?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'hero',
+      'show'
+    ]);
     expect(publicAPI.Hero).toBeDefined();
     expect('heroVariants' in publicAPI).toBe(false);
   });

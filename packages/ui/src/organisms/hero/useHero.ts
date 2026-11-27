@@ -16,6 +16,7 @@ import {
 export function useHero({
   title,
   level,
+  titleVariant,
   id,
   eyebrow,
   accent,
@@ -29,6 +30,8 @@ export function useHero({
   const hasMedia = Children.toArray(media).length > 0;
   const hasActions = Children.toArray(children).length > 0;
   const hasSocial = Children.toArray(social).length > 0;
+  // Only 'show' selects the smaller recipe; any other runtime value, including null, resolves to the default.
+  const titleRecipe: NonNullable<HeroProps['titleVariant']> = titleVariant === 'show' ? 'show' : 'hero';
   const safeNative = Object.fromEntries(
     Object.entries(native).filter(
       ([key]) => !['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild'].includes(key)
@@ -37,6 +40,7 @@ export function useHero({
   return {
     title,
     level,
+    titleVariant: titleRecipe,
     id,
     eyebrow,
     accent,

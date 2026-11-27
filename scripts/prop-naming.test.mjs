@@ -889,7 +889,14 @@ const postReceiptUsages = [
   ...['accessible-name', 'aspect-ratio'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/atoms/embed/types.ts#EmbedProps'
-  }))
+  })),
+  // Hero, Closing, ChapterBreak and LabStage #560 record one usage each of the newly approved titleVariant convention.
+  ...[
+    'packages/ui/src/organisms/closing/types.ts#ClosingProps',
+    'packages/ui/src/organisms/hero/types.ts#HeroProps',
+    'packages/ui/src/organisms/chapter-break/types.ts#ChapterBreakProps',
+    'packages/ui/src/organisms/lab-stage/types.ts#LabStageProps'
+  ].map((source) => ({ conventionId: 'heading-title-variant', source }))
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
 const postReceiptProposals = [
@@ -945,7 +952,9 @@ const postReceiptProposals = [
   'page-count',
   'page-href',
   // Embed v0.1 fallback convention: approved by its own receipt (docs/components/embed/v0.1/prop-naming-approval.json).
-  'unavailable-content-fallback'
+  'unavailable-content-fallback',
+  // Scene titleVariant v0.2 convention: approved by its own receipt (docs/components/hero/v0.2/prop-naming-approval.json).
+  'heading-title-variant'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -2540,6 +2549,175 @@ test('Embed binds its scoped owner approval for one new convention, reuses two a
   validate(registry);
 });
 
+test('The four scenes bind the scoped owner approval of the heading-title-variant convention and every reviewed source revision (#560)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/hero/v0.2/prop-naming-approval.json';
+  assert.ok(fs.existsSync(resolve(root, reference)), 'The scene titleVariant naming receipt must be recorded');
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  // Landing order of the usages: Closing, then Hero and ChapterBreak, then LabStage.
+  const scenes = [
+    ['Closing', 'packages/ui/src/organisms/closing/types.ts', 'ClosingProps'],
+    ['Hero', 'packages/ui/src/organisms/hero/types.ts', 'HeroProps'],
+    ['ChapterBreak', 'packages/ui/src/organisms/chapter-break/types.ts', 'ChapterBreakProps'],
+    ['LabStage', 'packages/ui/src/organisms/lab-stage/types.ts', 'LabStageProps']
+  ].map(([component, path, symbol]) => ({
+    component,
+    path,
+    source: { path, symbol, revision: digest(fs.readFileSync(resolve(root, path))) }
+  }));
+  // The receipt carries the owner's verbatim answers and binds the approved form of the exact convention payload.
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.deepEqual(receipt.evidence.userStatements, [
+    {
+      quote: 'Aprobar todas (Recomendado)',
+      provenance: 'odd/tasks/round-5-consumer-requests.md L5 (specs, scene titleVariant v0.2 OQ-4 naming convention)',
+      date: '2026-11-26'
+    },
+    {
+      quote: 'Aprobar (Recomendado)',
+      provenance:
+        'odd/tasks/round-5-consumer-requests.md L9 (plan, scene titleVariant v0.2 D2 registry receipt for the newly named convention)',
+      date: '2026-11-27'
+    }
+  ]);
+  const log = fs.readFileSync(resolve(root, 'odd/tasks/round-5-consumer-requests.md'), 'utf8');
+  for (const { quote } of receipt.evidence.userStatements) {
+    assert.ok(log.includes(`"${quote}"`), `The task log must hold the owner's answer: ${quote}`);
+  }
+  // The approved spec and plan payloads (their line-start first heading through EOF) are the recorded digests, and
+  // the spec quotes the convention's three texts in its table of new proposals.
+  const payload = (file, heading) => {
+    const text = fs.readFileSync(resolve(root, file), 'utf8');
+    return text.slice(text.search(heading));
+  };
+  const specPath = 'docs/components/hero/v0.2/spec.md';
+  const planPath = 'docs/components/hero/v0.2/implementation-plan.md';
+  const specPayload = payload(specPath, /^## 1\. Purpose and scope$/m);
+  assert.equal(receipt.evidence.specPath, specPath);
+  assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(specPayload)));
+  assert.equal(
+    receipt.evidence.specPayloadSHA256,
+    'sha256:170160c2115a7b7b29b5743a046b7a08187c3f1fc821577e2ae9f192ac0a2474'
+  );
+  assert.equal(receipt.evidence.planPath, planPath);
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    digest(Buffer.from(payload(planPath, /^## 1\. Authority and gates$/m)))
+  );
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    'sha256:791a3fdfa8dfff2a84ff597215e11164f15c3468ac443e17f238ffa88b7de0de'
+  );
+  // The three amendment notes ride on the same approval record as the shared spec.
+  for (const note of [
+    'docs/components/closing/v0.2/amendment.md',
+    'docs/components/chapter-break/v0.2/amendment.md',
+    'docs/components/lab-stage/v0.2/amendment.md'
+  ]) {
+    assert.ok(fs.existsSync(resolve(root, note)), note);
+  }
+  assert.match(receipt.evidence.interpretation, /not native review authority/i);
+  assert.deepEqual(receipt.priorReceipts, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, ['heading-title-variant']);
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    ['convention:heading-title-variant']
+  );
+  const id = 'heading-title-variant';
+  const meaning =
+    'Display-title typography recipe of the heading slot a composite component owns, chosen from the Heading recipes that component supports.';
+  const whenToUse =
+    "A composite renders its title through Heading and lets the consumer pick one of a small finite set of Heading's existing recipes so the title fits the container it sits in; the rank stays on `level`.";
+  const avoid =
+    "The component's own visual treatment (use `variant`), heading rank, dimension presets (use `size`), colour tone, accent layout, arbitrary font sizes or CSS values.";
+  const entry = registry.find((item) => item.id === id);
+  assert.ok(entry);
+  assert.equal(entry.name, 'titleVariant');
+  assert.equal(entry.meaning, meaning);
+  assert.equal(entry.whenToUse, whenToUse);
+  assert.equal(entry.avoid, avoid);
+  // The spec writes the three texts as prose (lower-case first letter, no final period); the registry holds them as
+  // sentences, and nothing else differs.
+  for (const field of [meaning, whenToUse, avoid]) {
+    assert.ok(specPayload.includes(field.charAt(0).toLowerCase() + field.slice(1, -1)), field);
+  }
+  assert.ok(specPayload.includes(`semantic ID \`${id}\`, name \`titleVariant\``));
+  // Convention approval stays separate from the spec approval: only this scoped receipt promotes the entry.
+  assert.equal(entry.status, 'approved');
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(approval, {
+    reference,
+    scope: `convention:${id}`,
+    contentHash: props.conventionHash(entry)
+  });
+  assert.deepEqual(
+    receipt.entries.find(({ scope }) => scope === approval.scope),
+    { scope: approval.scope, contentHash: approval.contentHash, convention, source: scenes[0].source }
+  );
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  const type = "'hero' | 'show' (optional; default 'hero'; any other runtime value resolves to 'hero')";
+  assert.deepEqual(
+    usages,
+    scenes.map(({ component, source }) => ({ component, type, status: 'existing', source }))
+  );
+  assert.deepEqual(historicalRegistry([entry]), []);
+  // The name is free: no other canonical name or alias is titleVariant, so the validator accepts the new concept.
+  assert.deepEqual(
+    registry
+      .filter((item) => item.name === 'titleVariant' || item.aliases.includes('titleVariant'))
+      .map((item) => item.id),
+    [id]
+  );
+  // Changed semantic content or a dropped approval invalidates the entry; a recomputed digest is not consent.
+  const changed = structuredClone(registry);
+  changed.find((item) => item.id === id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+  const unapproved = structuredClone(registry);
+  unapproved.find((item) => item.id === id).approval = null;
+  assert.throws(() => validate(unapproved), /approval/i);
+  // The seven reused conventions keep their approved status, gain no exception and carry the live revision of each
+  // scene; no other entry lists a scene file.
+  const shared = [
+    'scene-media',
+    'heading-title',
+    'heading-level',
+    'heading-eyebrow',
+    'trailing-text-accent',
+    'section-lede'
+  ];
+  const reused = new Map([
+    ['Closing', shared],
+    ['Hero', [...shared, 'scene-social']],
+    ['ChapterBreak', shared],
+    ['LabStage', shared]
+  ]);
+  for (const { component, path, source } of scenes) {
+    const own = registry.flatMap((item) =>
+      item.usages.filter((usage) => usage.source.path === path).map((usage) => ({ id: item.id, usage }))
+    );
+    assert.deepEqual(own.map(({ id: entryId }) => entryId).sort(), [id, ...reused.get(component)].sort(), component);
+    for (const { id: entryId, usage } of own) {
+      assert.equal(usage.component, component, entryId);
+      assert.equal(usage.source.revision, source.revision, `${component} ${entryId}`);
+      if (entryId !== id) {
+        const existing = registry.find((item) => item.id === entryId);
+        assert.equal(existing.status, 'approved', entryId);
+        assert.deepEqual(
+          existing.exceptions.filter(({ scope }) => scope === component),
+          [],
+          entryId
+        );
+        assert.equal(usage.status, 'existing', entryId);
+      }
+    }
+  }
+  validate(registry);
+});
+
 test('Text truncation binds its scoped owner approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
@@ -3092,8 +3270,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // DetailHeader v0.1 adds three approved content conventions (metadata, tags, external links).
   // Pagination v0.1 adds two approved page conventions (page count, page href).
   // Embed v0.1 adds one approved fallback convention.
-  assert.equal(actual.length, 191);
-  assert.equal(beforeIndicatorConventions(actual).length, 188);
+  // Scene titleVariant v0.2 adds one approved display-title recipe convention.
+  assert.equal(actual.length, 192);
+  assert.equal(beforeIndicatorConventions(actual).length, 189);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

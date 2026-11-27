@@ -324,3 +324,132 @@ describe('Hero', () => {
     expect(unsafe.ref).not.toHaveBeenCalled();
   });
 });
+
+describe('Hero titleVariant (#560)', () => {
+  // Every optional part is present. Plain elements keep ids out of the markup, so two renders compare byte for byte.
+  const props = {
+    title: 'Hello ',
+    accent: 'world',
+    level: 2,
+    id: 'hero-title',
+    eyebrow: 'Intro',
+    lede: 'Description',
+    children: <a href='#start'>Start</a>,
+    social: <span>Profiles</span>,
+    media: <span>Art</span>
+  } satisfies HeroProps;
+  const glow = '[text-shadow:var(--text-shadow-title-hero)]';
+  const baseline = () => {
+    const view = render(<Hero {...props} />);
+    const html = view.container.innerHTML;
+    view.unmount();
+    return html;
+  };
+
+  it('TV-01 renders the default recipe, byte for byte, with the prop omitted and with hero', () => {
+    const expected = baseline();
+    const { container } = render(<Hero {...props} titleVariant='hero' />);
+    expect(container.innerHTML).toBe(expected);
+    const heading = screen.getByRole('heading', { level: 2, name: 'Hello world' });
+    expect(heading).toHaveClass('text-title-hero');
+    expect(heading).not.toHaveClass('text-title-show');
+    expect(screen.getByText('world')).toHaveClass('block', 'text-fg-brand-default', glow);
+    expect(screen.getByText('world')).not.toHaveClass('[text-shadow:none]');
+  });
+
+  it.each([1, 2, 3, 4, 5, 6] as const)(
+    'TV-02 selects the show recipe at rank %i on the same heading and drops the accent glow',
+    (level) => {
+      const { container } = render(<Hero {...props} level={level} titleVariant='show' />);
+      const heading = screen.getByRole('heading', { level, name: 'Hello world' });
+      expect(heading.tagName).toBe(`H${level}`);
+      expect(heading).toHaveAttribute('id', 'hero-title');
+      expect(heading).toHaveClass('text-title-show');
+      expect(heading).not.toHaveClass('text-title-hero');
+      expect(screen.getByText('world')).toHaveClass('block', 'text-fg-brand-default', '[text-shadow:none]');
+      expect(screen.getByText('world')).not.toHaveClass(glow);
+      expect(container.querySelectorAll('h1, h2, h3, h4, h5, h6')).toHaveLength(1);
+    }
+  );
+
+  it.each(['display', 'section', 'inverse', 'compact', 'SHOW', '', null, 42])(
+    'TV-03 resolves the untyped value %j to hero and never reaches the DOM',
+    (value) => {
+      const expected = baseline();
+      const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      try {
+        const untyped = { titleVariant: value } as unknown as HeroProps;
+        const { container } = render(<Hero {...props} {...untyped} />);
+        expect(container.innerHTML).toBe(expected);
+        expect(container.innerHTML).not.toMatch(/title-?variant/i);
+        expect(container.querySelector('.eg-hero')?.getAttributeNames()).toEqual(['class']);
+        expect(screen.getByRole('heading', { level: 2 })).toHaveClass('text-title-hero');
+        expect(error).not.toHaveBeenCalled();
+      } finally {
+        error.mockRestore();
+      }
+    }
+  );
+
+  it('TV-03 accepts only hero and show at compile time', () => {
+    const base = { title: 'Title', level: 2 as const };
+    const hero: HeroProps = { ...base, titleVariant: 'hero' };
+    const show: HeroProps = { ...base, titleVariant: 'show' };
+    // @ts-expect-error display is not a supported scene recipe.
+    const display: HeroProps = { ...base, titleVariant: 'display' };
+    // @ts-expect-error section is not a supported scene recipe.
+    const section: HeroProps = { ...base, titleVariant: 'section' };
+    // @ts-expect-error inverse is not a supported scene recipe.
+    const inverse: HeroProps = { ...base, titleVariant: 'inverse' };
+    // @ts-expect-error compact is not a supported scene recipe.
+    const compact: HeroProps = { ...base, titleVariant: 'compact' };
+    // @ts-expect-error a number is not a recipe.
+    const numeric: HeroProps = { ...base, titleVariant: 42 };
+    expect([hero, show, display, section, inverse, compact, numeric]).toHaveLength(7);
+  });
+
+  it('TV-04 changes nothing but the recipe class and the glow utility', () => {
+    const hero = render(<Hero {...props} titleVariant='hero' />);
+    const heroHtml = hero.container.innerHTML;
+    hero.unmount();
+    const { container } = render(<Hero {...props} titleVariant='show' />);
+    expect(heroHtml.split('text-title-hero')).toHaveLength(2);
+    expect(heroHtml.split(glow)).toHaveLength(2);
+    const swapped = heroHtml.replace('text-title-hero', 'text-title-show').replace(glow, '[text-shadow:none]');
+    expect(container.innerHTML).toBe(swapped);
+    expect(container.innerHTML).not.toBe(heroHtml);
+    expect(container.querySelector('[style]')).toBeNull();
+    const markers = (html: string) => html.match(/\beg-[\w-]+/g);
+    expect(markers(container.innerHTML)).toEqual(markers(heroHtml));
+  });
+
+  it('TV-05 keeps the heading node and id across hero, show and hero again', () => {
+    const { rerender } = render(<Hero {...props} />);
+    const heading = screen.getByRole('heading', { level: 2 });
+    rerender(<Hero {...props} titleVariant='show' />);
+    expect(screen.getByRole('heading', { level: 2 })).toBe(heading);
+    expect(heading).toHaveClass('text-title-show');
+    expect(heading).not.toHaveClass('text-title-hero');
+    expect(heading).toHaveAttribute('id', 'hero-title');
+    rerender(<Hero {...props} titleVariant='hero' />);
+    expect(screen.getByRole('heading', { level: 2 })).toBe(heading);
+    expect(heading).toHaveClass('text-title-hero');
+    expect(heading).not.toHaveClass('text-title-show');
+    expect(heading).toHaveAttribute('id', 'hero-title');
+  });
+
+  it('TV-05 keeps instance ids distinct when scenes choose different recipes', () => {
+    const { container } = render(
+      <>
+        <Hero {...props} id='first-scene' titleVariant='show' />
+        <Hero {...props} id='second-scene' title='Another ' />
+      </>
+    );
+    const [first, second] = screen.getAllByRole('heading', { level: 2 });
+    expect(first).toHaveAttribute('id', 'first-scene');
+    expect(second).toHaveAttribute('id', 'second-scene');
+    expect(first).toHaveClass('text-title-show');
+    expect(second).toHaveClass('text-title-hero');
+    expect(container.querySelectorAll('[id]')).toHaveLength(2);
+  });
+});

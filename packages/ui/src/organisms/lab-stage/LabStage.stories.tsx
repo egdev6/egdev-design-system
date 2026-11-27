@@ -37,7 +37,10 @@ function SceneHost({ children }: { children: (id: string) => ReactNode }) {
     </SectionShell>
   );
 }
-/** The host owns the section name and the consumer owns the experiment and media. */
+/**
+ * The host owns the section name and the consumer owns the experiment and media. `titleVariant` chooses the
+ * heading's size recipe, and `show` also drops the accent glow.
+ */
 const meta = {
   title: 'Organisms/LabStage',
   component: LabStage,
@@ -61,6 +64,22 @@ export const NoMedia: Story = { args: { children: experiment } };
 export const EmptyMedia: Story = { args: { children: experiment, media: false } };
 /** Consumer-owned decorative image. */
 export const DecorativeMedia: Story = { args: { children: experiment, media: image } };
+/**
+ * The smaller `show` heading recipe above the experiment and beside decorative media. Its accent does not glow. It
+ * narrows the risk of a long word breaking inside itself and does not remove it, so shorten the copy for wider
+ * viewports.
+ */
+export const ShowTitle: Story = {
+  args: {
+    eyebrow: 'Ideas',
+    title: 'Explore extraordinary ',
+    accent: 'experiments',
+    lede: 'Discover works in progress.',
+    titleVariant: 'show',
+    children: experiment,
+    media: image
+  }
+};
 /** Long copy remains in normal flow. */
 export const LongCopy: Story = {
   args: {
