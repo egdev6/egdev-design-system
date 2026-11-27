@@ -1857,6 +1857,132 @@ test('DetailHeader package SSR renders one header, a description list, two named
   assert.deepEqual(unreadable, ['DetailHeader requires a non-blank title; nothing was rendered.']);
 });
 
+test('Grid ships every static recipe utility with its declaration, the collapse rules inside inclusive blocks after the base rules, and no rule of its own (#395)', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/primitives/grid/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  let recipes = 0;
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      // defaultVariants names a variant; it is not a utility.
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      recipes += 1;
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.equal(recipes, 2, 'Grid declares exactly two static recipes');
+  assert.deepEqual([...classes].filter((name) => name.startsWith('eg-')).sort(), ['eg-grid', 'eg-grid-item']);
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const space = (step) => `var\\(--space-${step}[,)]`;
+  const base = new Map([
+    ['grid', /display:\s*grid/],
+    ['min-w-0', new RegExp(`min-width:\\s*(?:0\\b|${space(0)})`)]
+  ]);
+  for (const count of [1, 2, 3, 4, 12]) {
+    base.set(
+      `grid-cols-${count}`,
+      new RegExp(`grid-template-columns:\\s*repeat\\(${count},\\s*minmax\\(0,\\s*1fr\\)\\)`)
+    );
+  }
+  for (const gap of [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24]) {
+    base.set(`gap-${gap}`, new RegExp(`gap:\\s*${space(gap)}`));
+  }
+  for (const [name, value] of [
+    ['start', 'flex-start'],
+    ['center', 'center'],
+    ['end', 'flex-end'],
+    ['stretch', 'stretch'],
+    ['baseline', 'baseline']
+  ]) {
+    base.set(`items-${name}`, new RegExp(`align-items:\\s*${value}\\s*(?:;|$)`));
+  }
+  for (let span = 1; span <= 12; span += 1) {
+    base.set(`col-span-${span}`, new RegExp(`grid-column:\\s*span ${span} / span ${span}`));
+  }
+  for (let span = 1; span <= 4; span += 1) {
+    base.set(`row-span-${span}`, new RegExp(`grid-row:\\s*span ${span} / span ${span}`));
+  }
+  const collapse = [860, 1080].flatMap((threshold) => [
+    `[@media(width<=${threshold}px)]:grid-cols-1`,
+    `[@media(width<=${threshold}px)]:[&>*]:col-auto`,
+    `[@media(width<=${threshold}px)]:[&>*]:row-auto`
+  ]);
+  assert.deepEqual(
+    [...base.keys(), ...collapse].sort(),
+    [...classes].filter((name) => !name.startsWith('eg-')).sort(),
+    'Every recipe utility has a declaration row'
+  );
+  // One flat rule per selector: its declarations, and where it starts.
+  const ruleIn = (selector, within) =>
+    new RegExp(`(?:^|[{}\\s])${escapeRegExp(selector)}\\s*\\{([^{}]*)\\}`).exec(within);
+  const startOf = (selector, within) => {
+    const match = new RegExp(`(?:^|[{}\\s])${escapeRegExp(selector)}\\s*\\{`).exec(within);
+    return match ? within.indexOf(selector, match.index) : -1;
+  };
+  for (const [token, declaration] of base) {
+    const match = ruleIn(escapeClass(token), utilities);
+    assert.ok(match, `Missing Grid rule ${token}`);
+    assert.match(match[1], declaration, token);
+  }
+  const lastBase = Math.max(
+    ...[...base.keys()]
+      .filter((token) => /^(?:col|row)-span-/.test(token))
+      .map((token) => startOf(escapeClass(token), utilities))
+  );
+  assert.ok(lastBase > 0, 'The span rules are emitted');
+  // Each threshold is one inclusive block (written `width<=N` or lowered to `max-width: N`), emitted after the spans.
+  for (const threshold of [860, 1080]) {
+    const query = `\\((?:width<=|max-width:\\s*)${threshold}px\\)`;
+    const blocks = [...utilities.matchAll(new RegExp(`@media ${query}\\s*\\{`, 'g'))].map(({ index }) => ({
+      index,
+      text: cssBlock(utilities.slice(index), new RegExp(`^@media ${query}\\s*\\{`))
+    }));
+    assert.ok(blocks.length > 0, `Missing the inclusive ${threshold}px block`);
+    const own = [
+      [`[@media(width<=${threshold}px)]:grid-cols-1`, '', /grid-template-columns:\s*repeat\(1,\s*minmax\(0,\s*1fr\)\)/],
+      [`[@media(width<=${threshold}px)]:[&>*]:col-auto`, ' > *', /grid-column:\s*auto/],
+      [`[@media(width<=${threshold}px)]:[&>*]:row-auto`, ' > *', /grid-row:\s*auto/]
+    ];
+    for (const [token, combinator, declaration] of own) {
+      const selector = escapeClass(token) + combinator;
+      const inside = blocks.filter(({ text }) => ruleIn(selector, text));
+      assert.equal(inside.length, 1, `${token} is emitted in exactly one ${threshold}px block`);
+      assert.match(ruleIn(selector, inside[0].text)[1], declaration, token);
+      // Same specificity as `.col-span-N`: one class, so only the source order can decide, and it follows the spans.
+      assert.match(selector, /^\.(?:\\.|[\w-])+(?: > \*)?$/, `${token} keeps the specificity of one class`);
+      assert.ok(inside[0].index > lastBase, `${token} must be emitted after every span rule`);
+      // Never emitted anywhere else, so no exclusive or unconditional copy can shadow the inclusive one.
+      assert.equal(utilities.split(selector).length - 1, 1, `${token} appears once in the shipped utilities`);
+    }
+  }
+  // The scan reads types.ts as text, so a bare utility word in a doc comment would ship a global rule: the word
+  // `collapse` once added `.collapse { visibility: collapse }` to the stylesheet.
+  assert.doesNotMatch(css, /(?:^|[{}\s])\.collapse\s*\{/, 'No stray `.collapse` utility from the prose of types.ts');
+  // No stylesheet: nothing in the shipped CSS selects the markers, and no file exists for them.
+  assert.doesNotMatch(css, /\.eg-grid(?:-item)?\b/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/primitives/grid/grid.css')), false);
+});
+
 test('Pagination ships every static recipe utility with its token declaration, in the right variant and media block, and no rule of its own (#571)', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2044,6 +2170,114 @@ test('Pagination ships every static recipe utility with its token declaration, i
   // No stylesheet: nothing in the shipped CSS selects the marker, and no file exists for it.
   assert.doesNotMatch(css, /\.eg-pagination\b/);
   assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/pagination/pagination.css')), false);
+});
+
+test('Grid package SSR renders passive divs and a semantic list, ignores unsupported values quietly, and keeps its recipes internal (#395)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup, renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Grid, 'function');
+  assert.equal(typeof exported.GridItem, 'function');
+  for (const name of ['useGrid', 'useGridItem', 'gridVariants', 'gridItemVariants']) {
+    assert.equal(exported[name], undefined, `${name} must stay internal to Grid`);
+  }
+  const warnings = [];
+  const spies = ['error', 'warn', 'log'].map((method) => {
+    const original = console[method];
+    console[method] = (...args) => warnings.push([method, ...args]);
+    return () => {
+      console[method] = original;
+    };
+  });
+  let markup;
+  let list;
+  let fallback;
+  try {
+    const grid = () =>
+      createElement(
+        exported.Grid,
+        { columnCount: 12, gap: 5, collapseBelow: 1080, 'aria-label': 'Projects', id: 'packed-grid' },
+        createElement(exported.GridItem, { span: 7, rowSpan: 2 }, 'Featured'),
+        createElement(exported.GridItem, { span: 5 }, 'Second')
+      );
+    markup = renderToString(grid());
+    // Deterministic markup: a second render of the same props is byte-identical.
+    assert.equal(renderToString(grid()), markup);
+    list = renderToStaticMarkup(
+      createElement(
+        exported.Grid,
+        { asChild: true, columnCount: 3, gap: 6 },
+        createElement(
+          'ul',
+          { 'aria-label': 'Listing', className: 'listing' },
+          createElement(exported.GridItem, { asChild: true, span: 5 }, createElement('li', null, 'One'))
+        )
+      )
+    );
+    fallback = renderToStaticMarkup(
+      createElement(exported.Grid, { columnCount: 5, gap: 9, alignItems: 'around', collapseBelow: 900 }, 'Cell')
+    );
+  } finally {
+    for (const restore of spies) {
+      restore();
+    }
+  }
+  assert.deepEqual(warnings, []);
+  const document = new JSDOM(markup).window.document;
+  const root = document.querySelector('.eg-grid');
+  assert.ok(root, 'SSR must render the Grid root');
+  assert.equal(root.tagName, 'DIV');
+  for (const name of ['grid', 'min-w-0', 'grid-cols-12', 'gap-5', 'items-stretch']) {
+    assert.ok(root.classList.contains(name), `the root carries ${name}`);
+  }
+  for (const name of [
+    '[@media(width<=1080px)]:grid-cols-1',
+    '[@media(width<=1080px)]:[&>*]:col-auto',
+    '[@media(width<=1080px)]:[&>*]:row-auto'
+  ]) {
+    assert.ok(root.classList.contains(name), `the root carries ${name}`);
+  }
+  assert.equal(
+    [...root.classList].some((name) => name.includes('860px')),
+    false,
+    'no 860px utility on a 1080 grid'
+  );
+  // Passive: only the class list, the id and the name reach the DOM; no role, tabindex, style or data attribute.
+  assert.deepEqual([...root.getAttributeNames()].sort(), ['aria-label', 'class', 'id']);
+  const cells = [...root.querySelectorAll('.eg-grid-item')];
+  assert.deepEqual(
+    cells.map((cell) => [cell.tagName, cell.textContent, [...cell.classList].filter((name) => /span/.test(name))]),
+    [
+      ['DIV', 'Featured', ['col-span-7', 'row-span-2']],
+      ['DIV', 'Second', ['col-span-5']]
+    ]
+  );
+  for (const cell of cells) {
+    assert.ok(cell.classList.contains('min-w-0'));
+    assert.deepEqual(cell.getAttributeNames(), ['class']);
+  }
+  assert.doesNotMatch(markup, /\sstyle=|role=|tabindex=/);
+  // asChild merges onto the supplied list and items: no wrapper element.
+  const listDocument = new JSDOM(list).window.document;
+  const ul = listDocument.body.firstElementChild;
+  assert.equal(ul?.tagName, 'UL');
+  assert.equal(listDocument.body.children.length, 1);
+  assert.ok(
+    ul.classList.contains('eg-grid') && ul.classList.contains('listing') && ul.classList.contains('grid-cols-3')
+  );
+  assert.equal(ul.getAttribute('aria-label'), 'Listing');
+  const li = ul.firstElementChild;
+  assert.equal(li?.tagName, 'LI');
+  assert.ok(li.classList.contains('eg-grid-item') && li.classList.contains('col-span-5'));
+  // Unsupported runtime values add no utility of their own and nothing reaches the DOM.
+  const fallbackRoot = new JSDOM(fallback).window.document.querySelector('.eg-grid');
+  assert.ok(fallbackRoot);
+  assert.deepEqual(
+    [...fallbackRoot.classList].filter((name) => /^(?:grid-cols-|gap-|items-)/.test(name) || name.includes('@media')),
+    []
+  );
+  assert.deepEqual(fallbackRoot.getAttributeNames(), ['class']);
 });
 
 test('Pagination package SSR renders one named landmark of crawlable links, hidden placeholders and ellipses, and nothing for invalid input, and keeps its recipes internal (#571)', async () => {
@@ -7874,6 +8108,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'FooterSocial',
       'Gauge',
       'GaugeGroup',
+      'Grid',
+      'GridItem',
       'Heading',
       'Hero',
       'Icon',
@@ -8104,6 +8340,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   for (const name of ['Text', 'Heading']) {
     assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
   }
+  for (const name of ['Grid', 'GridItem']) {
+    assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
+    assert.equal(exported[name].prototype?.render, undefined, `${name} must not be a forwardRef component (#395)`);
+  }
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
   const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
@@ -8280,6 +8520,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Grid',
+    'GridItem',
+    'GridItemProps',
+    'GridProps',
     'Heading',
     'HeadingLevel',
     'HeadingProps',
@@ -8868,6 +9112,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeState',
     'GaugeSize',
+    'Grid',
+    'GridProps',
+    'GridItem',
+    'GridItemProps',
     'Icon',
     'IconButton',
     'IconButtonProps',
