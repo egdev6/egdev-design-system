@@ -3270,6 +3270,12 @@ const chipExternalLink: Extract<ChipProps, { mode: 'link' }> = {
   newTabText: '(new window)',
   children: 'Documentation'
 };
+const chipCurrentLink: Extract<ChipProps, { mode: 'link' }> = {
+  mode: 'link',
+  href: '#topics',
+  'aria-current': 'true',
+  children: 'Topics'
+};
 export function ChipSamples() {
   return createElement('section', { 'aria-label': 'Chip samples' },
     createElement(Chip, { ...chipDefaults, id: 'chip-default', onPressedChange: (next) => chipChanges.push(next) }),
@@ -3279,6 +3285,7 @@ export function ChipSamples() {
     createElement('ul', { 'aria-label': 'Topics' },
       createElement('li', null, createElement(Chip, { ...chipStatic, id: 'chip-static' })),
       createElement('li', null, createElement(Chip, { ...chipLink, id: 'chip-link' })),
+      createElement('li', null, createElement(Chip, { ...chipCurrentLink, id: 'chip-current' })),
       createElement('li', null, createElement(Chip, { ...chipExternalLink, id: 'chip-external' }))));
 }
 // @ts-expect-error Chip always requires its visible label.
@@ -3309,6 +3316,10 @@ const linkedStaticChip: ChipProps = { mode: 'static', children: 'Design', href: 
 const hrefLessLinkChip: ChipProps = { mode: 'link', children: 'Design' };
 // @ts-expect-error Link mode rejects pressed state.
 const pressedLinkChip: ChipProps = { mode: 'link', href: '#topics', children: 'Design', pressed: true };
+// @ts-expect-error Link mode narrows aria-current to page or true: step is rejected.
+const stepCurrentLinkChip: ChipProps = { mode: 'link', href: '#topics', children: 'Design', 'aria-current': 'step' };
+// @ts-expect-error Link mode narrows aria-current to page or true: a boolean is rejected.
+const booleanCurrentLinkChip: ChipProps = { mode: 'link', href: '#topics', children: 'Design', 'aria-current': true };
 // @ts-expect-error Toggle mode rejects a destination.
 const hrefToggleChip: ChipProps = { children: 'Design', href: '#topics' };
 // @ts-expect-error mode is a closed union of the three roles.
@@ -3954,6 +3965,76 @@ function assertChipCSS(css) {
   assert.match(css, /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-glow-base\)/);
   assert.match(css, /translate:\s*none/);
   assert.match(css, /scale:\s*none/);
+  // Link-mode current state (v0.3, #576): recipe R1 is emitted under the attribute value each utility names, the
+  // current paint follows the hover rules, the focus ring follows the current edge shadow, and the forced-colours
+  // outline follows outline-none.
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const ring =
+    /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #ff0036\)/i;
+  const rule = (token, suffix, declaration) => {
+    assert.match(
+      css,
+      new RegExp(escapeRegExp(escapeClass(token)) + suffix + '\\s*\\{[^}]*' + declaration.source, declaration.flags),
+      'Missing Chip current-state rule ' + token + suffix
+    );
+  };
+  const at = (token, suffix) => {
+    const match = new RegExp(escapeRegExp(escapeClass(token)) + suffix + '\\s*\\{').exec(css);
+    assert.ok(match, 'Missing Chip selector ' + token + suffix);
+    return match.index;
+  };
+  const ringAt = at('focus-visible:shadow-focus', ':focus-visible');
+  const noneAt = at('focus-visible:outline-none', ':focus-visible');
+  for (const value of ['page', 'true']) {
+    const attribute = '\\[aria-current="?' + value + '"?\\]';
+    const named = (utility) => 'aria-[current=' + value + ']:' + utility;
+    rule(named('border-state-selected'), attribute, /border-color:\s*var\(--color-state-selected[,)]/);
+    rule(
+      named('[background:var(--gradient-chip-active),var(--color-surface-1)]'),
+      attribute,
+      /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)/
+    );
+    rule(named('shadow-[var(--shadow-edge-strong)]'), attribute, /--tw-shadow:\s*var\(--shadow-edge-strong\)/);
+    rule(named('text-fg-default'), attribute, /color:\s*var\(--color-fg-default[,)]/);
+    rule(named('focus-visible:shadow-focus'), attribute + ':focus-visible', ring);
+    rule('forced-colors:aria-[current=' + value + ']:outline-solid', attribute, /outline-style:\s*solid/);
+    rule(
+      'forced-colors:aria-[current=' + value + ']:outline-(length:--focus-width)',
+      attribute,
+      /outline-width:\s*var\(--focus-width\)/
+    );
+    rule(
+      'forced-colors:aria-[current=' + value + ']:outline-[color:Highlight]',
+      attribute,
+      /outline-color:\s*highlight/i
+    );
+    const edgeAt = at(named('shadow-[var(--shadow-edge-strong)]'), attribute);
+    const compoundAt = at(named('focus-visible:shadow-focus'), attribute + ':focus-visible');
+    assert.ok(
+      ringAt < edgeAt && edgeAt < compoundAt,
+      'The ' + value + ' focus ring must follow the current edge shadow'
+    );
+    assert.ok(
+      at(named('border-state-selected'), attribute) > at('hover:border-border-hairline-strong', ':hover'),
+      'The ' + value + ' paint must keep itself under hover'
+    );
+    assert.ok(
+      at('forced-colors:aria-[current=' + value + ']:outline-solid', attribute) > noneAt,
+      'The ' + value + ' forced-colours outline must follow outline-none'
+    );
+  }
+  rule('forced-colors:focus-visible:outline-solid', ':focus-visible', /outline-style:\s*solid/);
+  rule(
+    'forced-colors:focus-visible:outline-(length:--focus-width)',
+    ':focus-visible',
+    /outline-width:\s*var\(--focus-width\)/
+  );
+  rule('forced-colors:focus-visible:outline-[color:Highlight]', ':focus-visible', /outline-color:\s*highlight/i);
+  assert.ok(
+    at('forced-colors:focus-visible:outline-solid', ':focus-visible') > noneAt,
+    'The forced-colours focus outline must follow outline-none'
+  );
 }
 
 // Checkbox ships only its fixed geometry and Radix-state token recipes, never a marker rule.
@@ -8758,6 +8839,14 @@ try {
   assert.ok(archived.disabled);
   assert.ok(archived.hasAttribute('data-disabled'));
   assert.equal(archived.getAttribute('aria-pressed'), 'true');
+  const currentChip = document.getElementById('chip-current');
+  assert.equal(currentChip.tagName, 'A');
+  assert.equal(currentChip.getAttribute('aria-current'), 'true', 'The consumer aria-current reaches the anchor');
+  assert.ok(currentChip.classList.contains('eg-chip'));
+  assert.ok(currentChip.classList.contains('aria-[current=true]:border-state-selected'), 'The current recipe rides in the class list');
+  assert.equal(currentChip.hasAttribute('aria-pressed'), false);
+  assert.equal(currentChip.hasAttribute('data-state'), false);
+  assert.equal(document.getElementById('chip-link').hasAttribute('aria-current'), false, 'A link chip is not current on its own');
 } finally {
   chipDocument.window.close();
 }
@@ -10016,6 +10105,11 @@ try {
   assert.equal(disabledChip.getAttribute('aria-pressed'), 'true');
   assert.ok(disabledChip.disabled);
   assert.ok(chipRecipe.split(' ').includes('eg-chip'), 'Public chipVariants resolves the stable root marker');
+  assert.equal(chipRecipe.includes('aria-[current'), false, 'The toggle recipe carries no current-state utility');
+  const currentChipNode = document.getElementById('chip-current');
+  assert.equal(currentChipNode.getAttribute('aria-current'), 'true');
+  assert.ok(currentChipNode.classList.contains('forced-colors:aria-[current=true]:outline-[color:Highlight]'));
+  assert.equal(document.getElementById('chip-link').hasAttribute('aria-current'), false);
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();

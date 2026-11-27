@@ -4499,6 +4499,98 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
     assert.ok(css.includes(selector), `Missing Chip utility ${selector}`);
   }
   assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
+  // Link-mode current state (v0.3, #576): recipe R1 ships under the attribute value each utility names, the current
+  // paint follows the hover rules, the focus ring follows the current edge shadow and the forced-colours outline
+  // follows outline-none.
+  const escapeClass = (name) => '.' + name.replace(/[^\w-]/g, '\\$&');
+  const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  const focusRing = /--shadow-focus:\s*([^;]+);/.exec(theme)?.[1]?.trim();
+  assert.ok(focusRing, '--shadow-focus must exist in theme.css');
+  const tokenRing = focusRing
+    .split(/\s*,\s*/)
+    .map((layer) => layer.replace(/(#[0-9A-Fa-f]{3,8})$/, (hex) => `var(--tw-shadow-color, ${hex})`))
+    .join(', ');
+  const block = (selector, within = utilities) => cssBlock(within, new RegExp(`${escapeRegExp(selector)}\\s*\\{`));
+  const position = (selector) => {
+    const index = css.indexOf(selector);
+    assert.ok(index > -1, `Missing Chip selector ${selector}`);
+    return index;
+  };
+  const hover = (token) => position(`${escapeClass(token)}:hover`);
+  const ringAt = position(String.raw`.focus-visible\:shadow-focus:focus-visible`);
+  const noneAt = position(String.raw`.focus-visible\:outline-none:focus-visible`);
+  for (const value of ['page', 'true']) {
+    const attribute = `[aria-current="${value}"]`;
+    const named = (utility, suffix = attribute) => `${escapeClass(`aria-[current=${value}]:${utility}`)}${suffix}`;
+    const paint = [
+      ['border-state-selected', /border-color:\s*var\(--color-state-selected[,)]/],
+      [
+        '[background:var(--gradient-chip-active),var(--color-surface-1)]',
+        /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)\s*;/
+      ],
+      ['shadow-[var(--shadow-edge-strong)]', /--tw-shadow:\s*var\(--shadow-edge-strong\)\s*;/],
+      ['shadow-[var(--shadow-edge-strong)]', /box-shadow:[^;}]*var\(--tw-shadow\)/],
+      ['text-fg-default', /color:\s*var\(--color-fg-default[,)]/]
+    ];
+    for (const [utility, declaration] of paint) {
+      assert.match(block(named(utility)), declaration, `${value} ${utility}`);
+      // Every rule of this class carries the attribute value it names and nothing else.
+      const suffixes = [
+        ...css.matchAll(
+          new RegExp(
+            `${escapeRegExp(escapeClass(`aria-[current=${value}]:${utility}`))}(?![\\w\\\\-])([^\\s{,]*)\\s*[{,]`,
+            'g'
+          )
+        )
+      ].map((match) => match[1]);
+      assert.deepEqual([...new Set(suffixes)], [attribute], `${value} ${utility} selectors`);
+    }
+    const compound = block(named('focus-visible:shadow-focus', `${attribute}:focus-visible`));
+    assert.match(compound, new RegExp(`--tw-shadow:\\s*${escapeRegExp(tokenRing)}`));
+    assert.match(compound, /box-shadow:[^;}]*var\(--tw-shadow\)/);
+    // Cascade: the plain ring, then the current edge shadow, then the compound ring that restores it on focus.
+    const edgeAt = position(named('shadow-[var(--shadow-edge-strong)]'));
+    const compoundAt = position(named('focus-visible:shadow-focus', `${attribute}:focus-visible`));
+    assert.ok(ringAt < edgeAt && edgeAt < compoundAt, `The ${value} focus ring must follow the current edge shadow`);
+    // A hovered current chip keeps its own paint: the current rules follow the hover rules.
+    for (const [hovered, utility] of [
+      ['hover:border-border-hairline-strong', 'border-state-selected'],
+      [
+        'hover:[background:var(--gradient-sheen),var(--color-surface-2)]',
+        '[background:var(--gradient-chip-active),var(--color-surface-1)]'
+      ],
+      ['hover:text-fg-default', 'text-fg-default']
+    ]) {
+      assert.ok(position(named(utility)) > hover(hovered), `The ${value} paint must follow ${hovered}`);
+    }
+  }
+  // The current paint exists only behind the attribute: no unscoped utility carries it.
+  for (const name of ['border-state-selected', 'shadow-\\[var\\(--shadow-edge-strong\\)\\]']) {
+    assert.doesNotMatch(css, new RegExp(`(?<!\\\\:)\\.${name}\\s*[,{]`), name);
+  }
+  const forcedBlocks = [...utilities.matchAll(/@media\s*\(forced-colors:\s*active\)\s*\{/g)]
+    .map(({ index }) => cssBlock(utilities.slice(index), /@media\s*\(forced-colors:\s*active\)\s*\{/))
+    .join('\n');
+  for (const [prefix, suffix] of [
+    ['forced-colors:focus-visible:', ':focus-visible'],
+    ['forced-colors:aria-[current=page]:', '[aria-current="page"]'],
+    ['forced-colors:aria-[current=true]:', '[aria-current="true"]']
+  ]) {
+    for (const [utility, declaration] of [
+      ['outline-solid', /outline-style:\s*solid\s*;/],
+      ['outline-(length:--focus-width)', /outline-width:\s*var\(--focus-width\)\s*;/],
+      ['outline-[color:Highlight]', /outline-color:\s*highlight\s*;/i]
+    ]) {
+      const selector = `${escapeClass(`${prefix}${utility}`)}${suffix}`;
+      assert.match(
+        block(selector, forcedBlocks),
+        declaration,
+        `${prefix}${utility} sits in the forced-colors media block`
+      );
+      assert.ok(position(selector) > noneAt, `${prefix}${utility} must follow outline-none`);
+    }
+  }
 });
 
 test('SocialLinks ships static collection utilities and native SSR composition without a second visual engine', async () => {
@@ -8896,6 +8988,25 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     createElement(exported.Chip, { mode: 'link', href: '#topics', children: 'Topics' })
   );
   assert.doesNotMatch(sameTabLinkChipHtml, /target=|rel=|\(opens in a new tab\)/);
+  assert.doesNotMatch(sameTabLinkChipHtml, /aria-current=/, 'A link chip is not current unless the consumer says so');
+  // v0.3 (#576): the consumer's aria-current reaches the anchor and the current-state utilities ride in the class list.
+  for (const value of ['page', 'true']) {
+    const currentLinkChipHtml = renderToString(
+      createElement(exported.Chip, { mode: 'link', href: '#topics', 'aria-current': value, children: 'Topics' })
+    );
+    assert.match(currentLinkChipHtml, new RegExp(`^<a [^>]*aria-current="${value}"`));
+    assert.match(
+      currentLinkChipHtml,
+      new RegExp(`class="eg-chip [^"]*aria-\\[current=${value}\\]:border-state-selected`)
+    );
+    assert.match(
+      currentLinkChipHtml,
+      new RegExp(`forced-colors:aria-\\[current=${value}\\]:outline-\\[color:Highlight\\]`)
+    );
+    assert.doesNotMatch(currentLinkChipHtml, /aria-pressed|data-state|role=|style=/);
+  }
+  assert.doesNotMatch(toggleChipHtml, /aria-\[current/, 'The toggle recipe carries no current-state utility');
+  assert.doesNotMatch(staticChipHtml, /aria-\[current/, 'The static recipe carries no current-state utility');
   assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
   const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
   assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');
