@@ -2084,6 +2084,21 @@ const projectCardStatus: ProjectCardProps = {
 export function ProjectCardStatusSample() {
   return createElement(ProjectCard, projectCardStatus);
 }
+// The footer takes one to three consumer-supplied actions: the card renders them verbatim in one wrapping row.
+const projectCardActions: ProjectCardFooterProps = {
+  children: [
+    createElement(Link, { key: 'details', href: '#packed-details', variant: 'quiet', children: 'Details' }),
+    createElement(Link, { key: 'source', href: '#packed-source', variant: 'quiet', children: 'GitHub' }),
+    createElement(Button, { key: 'demo', size: 'sm', variant: 'neutral', children: 'Demo' })
+  ]
+};
+export function ProjectCardActionsSample() {
+  return createElement(ProjectCard, {
+    title: 'Packed actions',
+    id: 'packed-actions',
+    children: createElement(ProjectCardFooter, projectCardActions)
+  });
+}
 // @ts-expect-error The generated heading owns the article name.
 const relabelledProjectCard: ProjectCardProps = { ...projectCardBase, 'aria-label': 'Other' };
 // @ts-expect-error Passive articles have no root tab stop API.
@@ -7990,7 +8005,7 @@ import { App, AttachmentFieldSamples, ButtonGroupSamples, ButtonWrapSamples, Car
     terminalDocument.window.close();
   }
 }
-import { ProjectCardSamples, ProjectCardStatusSample } from './consumer.ts';
+import { ProjectCardActionsSample, ProjectCardSamples, ProjectCardStatusSample } from './consumer.ts';
 for (const [projectVariant, projectSize] of [
   ['default', 'md'],
   ['featured', 'sm']
@@ -8049,6 +8064,30 @@ try {
   assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is still the only tab stop');
 } finally {
   statusDocument.window.close();
+}
+const actionsDocument = new JSDOM(renderToString(createElement(ProjectCardActionsSample)));
+try {
+  const document = actionsDocument.window.document;
+  const card = document.getElementById('packed-actions');
+  const footers = card.querySelectorAll('.eg-project-card__foot');
+  assert.equal(footers.length, 1, 'One footer holds the supplied actions');
+  const controls = [...footers[0].children];
+  assert.deepEqual(
+    controls.map((control) => control.tagName),
+    ['A', 'A', 'BUTTON'],
+    'The actions render verbatim in supplied order'
+  );
+  assert.deepEqual(
+    controls.map((control) => control.textContent),
+    ['Details', 'GitHub', 'Demo']
+  );
+  assert.ok(footers[0].classList.contains('flex-wrap'), 'The footer row wraps');
+  assert.equal(card.hasAttribute('role'), false);
+  assert.equal(card.hasAttribute('tabindex'), false);
+  assert.equal(card.querySelectorAll('a, button').length, 3, 'The three supplied actions are the only tab stops');
+  assert.equal(card.querySelector('ul, ol, [role="list"]'), null, 'The footer adds no list semantics');
+} finally {
+  actionsDocument.window.close();
 }
 import { TipCardSamples } from './consumer.ts';
 for (const [tipBadge, tipLevel, tipTitle] of [

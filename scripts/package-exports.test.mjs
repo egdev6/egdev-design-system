@@ -7148,6 +7148,33 @@ test('ProjectCard ships named passive article SSR and keeps its composition reci
   assert.ok(compact.includes('eg-project-card__code'), 'sm density never hides the code well');
   assert.match(compact, /class="[^\"]*\bp-3\b/);
   assert.doesNotMatch(compact, /\bp-0\b/);
+  // v0.4 (#577): the footer holds one to three supplied actions, in supplied order, in one wrapping row.
+  const actions = renderToStaticMarkup(
+    createElement(exported.ProjectCard, {
+      title: 'Pulso',
+      children: createElement(exported.ProjectCardFooter, {
+        children: [
+          createElement(exported.Link, { key: 'details', href: '#pulso', variant: 'quiet', children: 'Details' }),
+          createElement(exported.Link, { key: 'source', href: '#pulso-source', variant: 'quiet', children: 'GitHub' }),
+          createElement(exported.Button, { key: 'demo', size: 'sm', variant: 'neutral', children: 'Demo' })
+        ]
+      })
+    })
+  );
+  assert.equal(actions.split('eg-project-card__foot').length - 1, 1, 'One footer holds the three actions');
+  const footerStart = actions.indexOf('<div class="eg-project-card__foot');
+  assert.ok(footerStart >= 0, 'The footer renders as its marked div');
+  const footerHtml = actions.slice(footerStart);
+  const footerClass = /^<div class="([^"]*)"/.exec(footerHtml)?.[1] ?? '';
+  for (const utility of ['flex', 'flex-wrap', 'items-center', 'gap-3']) {
+    assert.ok(footerClass.split(' ').includes(utility), `The footer carries ${utility}`);
+  }
+  const at = (needle) => footerHtml.indexOf(needle);
+  assert.ok(at('>Details') > 0 && at('>Details') < at('>GitHub'), 'The first link precedes the second');
+  assert.ok(at('>GitHub') < at('<button') && at('<button') < at('>Demo'), 'The button follows both links');
+  assert.equal(footerHtml.split('<a ').length - 1, 2, 'Two links render');
+  assert.equal(footerHtml.split('<button').length - 1, 1, 'One button renders');
+  assert.doesNotMatch(actions, /tabindex=|role="list"|<ul|<li\b/);
   // Without a status the card renders no row, wrapper or marker, and none of the row utilities.
   for (const absent of ['eg-project-card__badge', 'ms-auto', 'self-stretch']) {
     assert.ok(!html.includes(absent), `${absent} must not appear without a status`);
