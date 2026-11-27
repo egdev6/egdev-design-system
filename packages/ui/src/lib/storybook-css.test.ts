@@ -52,6 +52,7 @@ import {
   paginationPlaceholderVariants,
   paginationVariants
 } from '../molecules/pagination/types';
+import { gridItemVariants, gridVariants } from '../primitives/grid/types';
 import { proseVariants } from '../primitives/prose/types';
 import { textBodyVariants, textVariants } from '../primitives/text/types';
 
@@ -255,6 +256,69 @@ function specificity(selector: string): number {
   const pseudoClasses = withoutAttributes.match(/(?<!:):[a-z-]+/g)?.length ?? 0;
   const classes = withoutAttributes.match(/\.[A-Za-z_][\w-]*/g)?.length ?? 0;
   return attributes + pseudoClasses + classes;
+}
+
+// A class name as a CSS selector: every character outside [\w-] is backslash-escaped, as the installed utility does.
+function classSelector(token: string): string {
+  return `.${token.replace(/[^\w-]/g, (character) => `\\${character}`)}`;
+}
+
+// Index of the first rule whose selector is exactly this one, or -1; the same delimiters as `rule()`.
+function ruleIndex(source: string, selector: string): number {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = new RegExp(`(?:^|[{}])\\s*${escaped}\\s*\\{`).exec(source);
+  return match ? source.indexOf(selector, match.index) : -1;
+}
+
+// The installed optimizer lowers the range query `(width<=N)` to its inclusive legacy form `(max-width: N)`; the
+// exclusive `(width < N)` would lower to a value below N, so a Grid rule in any other block is a regression.
+const inclusiveQuery = (threshold: 860 | 1080) => `(max-width: ${threshold}px)`;
+
+const gridSpanSelectors = [
+  ...Array.from({ length: 12 }, (_, index) => `.col-span-${index + 1}`),
+  ...Array.from({ length: 4 }, (_, index) => `.row-span-${index + 1}`)
+];
+
+// Selectors of the two child resets one Grid collapse query emits (`… > *`), derived from the production recipe.
+function gridResetSelectors(threshold: 860 | 1080): string[] {
+  return gridVariants({ collapseBelow: threshold })
+    .split(/\s+/)
+    .filter((token) => token.includes('@media') && token.includes('[&>*]'))
+    .map((token) => `${classSelector(token)} > *`);
+}
+
+// What would break the Grid collapse in a built stylesheet: a reset emitted before a span rule or with less specificity.
+function gridCollapseCascadeProblems(source: string): string[] {
+  const problems: string[] = [];
+  const positions = gridSpanSelectors.map((selector) => ruleIndex(source, selector));
+  for (const [index, position] of positions.entries()) {
+    if (position < 0) {
+      problems.push(`missing ${gridSpanSelectors[index]}`);
+    }
+  }
+  const lastSpan = Math.max(...positions);
+  for (const threshold of [860, 1080] as const) {
+    const selectors = gridResetSelectors(threshold);
+    if (selectors.length !== 2) {
+      problems.push(`expected two child resets for ${threshold}, got ${selectors.length}`);
+    }
+    for (const selector of selectors) {
+      const position = ruleIndex(source, selector);
+      if (position < 0) {
+        problems.push(`missing ${selector}`);
+        continue;
+      }
+      if (position < lastSpan) {
+        problems.push(`${selector} is emitted before a span rule`);
+      }
+      for (const span of gridSpanSelectors) {
+        if (specificity(selector) < specificity(span)) {
+          problems.push(`${selector} has a lower specificity than ${span}`);
+        }
+      }
+    }
+  }
+  return problems;
 }
 
 describe('Storybook preview CSS', () => {
@@ -1332,6 +1396,109 @@ describe('Storybook preview CSS', () => {
     expect(specificity(String.raw`.aria-\[current\=page\]\:text-fg-default[aria-current="page"]`)).toBeGreaterThan(
       specificity('.text-fg-secondary')
     );
+  });
+
+  it('emits every Grid utility with its declaration, the collapse rules inside their inclusive media blocks, and no rule for its markers (#395, E1)', () => {
+    for (const count of [1, 2, 3, 4, 12] as const) {
+      expect(gridVariants({ columnCount: count }).split(/\s+/), `columnCount ${count}`).toContain(`grid-cols-${count}`);
+      expect(rule(`.grid-cols-${count}`), `grid-cols-${count}`).toMatch(
+        new RegExp(`grid-template-columns:\\s*repeat\\(${count},\\s*minmax\\(0,\\s*1fr\\)\\)`)
+      );
+    }
+    expect(rule('.grid')).toMatch(/display:\s*grid/);
+    expect(rule('.min-w-0')).toMatch(/min-width:\s*(?:0\b|var\(--space-0[,)])/);
+    for (const gap of [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24] as const) {
+      expect(gridVariants({ gap }).split(/\s+/), `gap ${gap}`).toContain(`gap-${gap}`);
+      expect(rule(`.gap-${gap}`), `gap-${gap}`).toMatch(new RegExp(`gap:\\s*var\\(--space-${gap}[,)]`));
+    }
+    for (const [alignItems, declaration] of [
+      ['start', 'flex-start'],
+      ['center', 'center'],
+      ['end', 'flex-end'],
+      ['stretch', 'stretch'],
+      ['baseline', 'baseline']
+    ] as const) {
+      expect(gridVariants({ alignItems }).split(/\s+/), alignItems).toContain(`items-${alignItems}`);
+      expect(rule(`.items-${alignItems}`), `items-${alignItems}`).toMatch(
+        new RegExp(`align-items:\\s*${declaration}\\s*(?:;|$)`)
+      );
+    }
+    for (const span of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const) {
+      expect(gridItemVariants({ span }).split(/\s+/), `span ${span}`).toContain(`col-span-${span}`);
+      expect(rule(`.col-span-${span}`), `col-span-${span}`).toMatch(
+        new RegExp(`grid-column:\\s*span ${span} / span ${span}`)
+      );
+    }
+    for (const rowSpan of [1, 2, 3, 4] as const) {
+      expect(gridItemVariants({ rowSpan }).split(/\s+/), `rowSpan ${rowSpan}`).toContain(`row-span-${rowSpan}`);
+      expect(rule(`.row-span-${rowSpan}`), `row-span-${rowSpan}`).toMatch(
+        new RegExp(`grid-row:\\s*span ${rowSpan} / span ${rowSpan}`)
+      );
+    }
+    // Each threshold lives in its own inclusive block (the optimizer's `max-width` form): the column count falls to
+    // one and the child placement resets.
+    for (const threshold of [860, 1080] as const) {
+      const tokens = gridVariants({ collapseBelow: threshold })
+        .split(/\s+/)
+        .filter((token) => token.includes('@media'));
+      expect(tokens, `collapse ${threshold}`).toHaveLength(3);
+      const blocks = mediaBlocks(inclusiveQuery(threshold)).join('\n');
+      const token = (ending: string) => {
+        const found = tokens.find((candidate) => candidate.endsWith(ending));
+        expect(found, `${threshold} ${ending}`).toBeDefined();
+        return found ?? '';
+      };
+      expect(rule(classSelector(token(':grid-cols-1')), blocks)).toMatch(
+        /grid-template-columns:\s*repeat\(1,\s*minmax\(0,\s*1fr\)\)/
+      );
+      expect(rule(`${classSelector(token(':col-auto'))} > *`, blocks)).toMatch(/grid-column:\s*auto/);
+      expect(rule(`${classSelector(token(':row-auto'))} > *`, blocks)).toMatch(/grid-row:\s*auto/);
+    }
+    // The markers are public hooks, not styling hooks: nothing is emitted for them.
+    expect(css).not.toMatch(/\.eg-grid(?:-item)?\s*[,{]/);
+  });
+
+  it('keeps the Grid collapse after every span rule at no lower specificity, only inside inclusive queries, and can fail when reordered (#395, E2)', () => {
+    expect(gridCollapseCascadeProblems(css)).toEqual([]);
+    // Every emission of a Grid collapse selector sits inside its own inclusive block, never under an exclusive query.
+    for (const threshold of [860, 1080] as const) {
+      const inside = mediaBlocks(inclusiveQuery(threshold)).join('\n');
+      const selectors = [
+        ...gridResetSelectors(threshold),
+        classSelector(`[@media(width<=${threshold}px)]:grid-cols-1`)
+      ];
+      for (const selector of selectors) {
+        const everywhere = css.split(selector).length - 1;
+        expect(everywhere, selector).toBeGreaterThan(0);
+        expect(inside.split(selector).length - 1, `${selector} must only be emitted inside its inclusive query`).toBe(
+          everywhere
+        );
+      }
+    }
+    // The resets and the spans are one class each, so their specificity ties and only the source order decides.
+    for (const threshold of [860, 1080] as const) {
+      for (const selector of gridResetSelectors(threshold)) {
+        expect(specificity(selector), selector).toBe(specificity('.col-span-7'));
+      }
+    }
+    // The check can fail: the same stylesheet with the 860px block moved before the first span rule must be rejected.
+    const reset = gridResetSelectors(860)[0] ?? '';
+    const blockStart = css.lastIndexOf(`@media ${inclusiveQuery(860)} {`, ruleIndex(css, reset));
+    expect(blockStart).toBeGreaterThanOrEqual(0);
+    let depth = 0;
+    let blockEnd = css.indexOf('{', blockStart);
+    do {
+      depth += css[blockEnd] === '{' ? 1 : css[blockEnd] === '}' ? -1 : 0;
+      blockEnd += 1;
+    } while (depth > 0 && blockEnd < css.length);
+    const block = css.slice(blockStart, blockEnd);
+    const without = css.slice(0, blockStart) + css.slice(blockEnd);
+    const firstSpan = ruleIndex(without, '.col-span-1');
+    expect(firstSpan).toBeGreaterThanOrEqual(0);
+    const reordered = `${without.slice(0, firstSpan)}${block}\n${without.slice(firstSpan)}`;
+    expect(
+      gridCollapseCascadeProblems(reordered).some((problem) => /is emitted before a span rule/.test(problem))
+    ).toBe(true);
   });
 
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {

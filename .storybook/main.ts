@@ -253,6 +253,8 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   label: ['htmlFor', 'id', 'className'],
   stack: ['id', 'title', 'aria-describedby', 'className', 'style'],
   cluster: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  grid: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  gridItem: ['id', 'title', 'aria-describedby', 'className', 'style'],
   text: ['id', 'title', 'aria-describedby', 'className', 'style'],
   heading: ['id', 'title', 'aria-describedby', 'className', 'style'],
   prose: ['id', 'title', 'lang', 'dir', 'aria-describedby', 'className', 'style'],

@@ -3152,6 +3152,26 @@
           "symbol": "ScrollRevealProps",
           "revision": "sha256:84c3badd268fe8b78d6b53fc8ba9db3d43b6142904896394b472ace130346158"
         }
+      },
+      {
+        "component": "Grid",
+        "type": "boolean (asChild)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/grid/types.ts",
+          "symbol": "GridProps",
+          "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+        }
+      },
+      {
+        "component": "GridItem",
+        "type": "boolean (asChild)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/grid/types.ts",
+          "symbol": "GridItemProps",
+          "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+        }
       }
     ]
   },
@@ -6904,6 +6924,16 @@
           "symbol": "ClusterProps",
           "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
         }
+      },
+      {
+        "component": "Grid",
+        "type": "LayoutGap (0|1|2|3|4|5|6|7|8|10|12|14|16|20|24)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/grid/types.ts",
+          "symbol": "GridProps",
+          "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+        }
       }
     ]
   },
@@ -6994,6 +7024,16 @@
           "path": "packages/ui/src/primitives/stack/types.ts",
           "symbol": "ClusterProps",
           "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
+      },
+      {
+        "component": "Grid",
+        "type": "LayoutAlignItems (start|center|end|stretch|baseline)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/grid/types.ts",
+          "symbol": "GridProps",
+          "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
         }
       }
     ]
@@ -9421,6 +9461,114 @@
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
           "revision": "sha256:cb4f5e4ccf91666842b318fea264723dd64753a5e0bbef392c4f21c4ca49873a"
+        }
+      }
+    ]
+  },
+  {
+    "id": "grid-columns",
+    "name": "columnCount",
+    "meaning": "Number of equal-width columns of a grid layout container.",
+    "whenToUse": "A reusable grid layout container exposes a small finite set of equal column counts.",
+    "avoid": "Table column definitions (use `columns`), explicit track sizes or templates, item spans (use `span`) and responsive breakpoints (use `collapseBelow`).",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/grid/v0.1/prop-naming-approval.json",
+      "scope": "convention:grid-columns",
+      "contentHash": "sha256:5bd1ecc0e20ae137c9f02a6b78f9f59cb5b3aa393aa39d66f02e96e97020ade6"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Grid",
+        "type": "1 | 2 | 3 | 4 | 12 (default 1)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/grid/types.ts",
+          "symbol": "GridProps",
+          "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+        }
+      }
+    ]
+  },
+  {
+    "id": "layout-collapse-below",
+    "name": "collapseBelow",
+    "meaning": "Viewport width in CSS pixels at and below which a layout container drops to a single column; above it the container keeps its columns.",
+    "whenToUse": "A grid layout container offers a small finite set of inclusive viewport thresholds at which its columns stack.",
+    "avoid": "Container-relative thresholds, arbitrary pixel values, automatic responsive detection and changing the order of the children.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/grid/v0.1/prop-naming-approval.json",
+      "scope": "convention:layout-collapse-below",
+      "contentHash": "sha256:2cdb5d00b770b4e9be08fb6ef1037574195f857df6a90697f6e3c3d9d75ef064"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Grid",
+        "type": "860 | 1080 (inclusive; absent never collapses)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/grid/types.ts",
+          "symbol": "GridProps",
+          "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+        }
+      }
+    ]
+  },
+  {
+    "id": "grid-item-span",
+    "name": "span",
+    "meaning": "Number of grid columns that one item of a grid layout container occupies.",
+    "whenToUse": "A grid item part places itself by a finite column span in the container's automatic flow.",
+    "avoid": "Explicit start or end lines, reordering the items, column counts of the container (use `columnCount`) and native table cell attributes.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/grid/v0.1/prop-naming-approval.json",
+      "scope": "convention:grid-item-span",
+      "contentHash": "sha256:7d6aad7d2c416d3dd9541ecbafd9b3be69f165376e38fceea2e870b353ede7e2"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "GridItem",
+        "type": "1 | … | 12",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/grid/types.ts",
+          "symbol": "GridItemProps",
+          "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
+        }
+      }
+    ]
+  },
+  {
+    "id": "grid-item-row-span",
+    "name": "rowSpan",
+    "meaning": "Number of implicit grid rows that one item of a grid layout container occupies.",
+    "whenToUse": "A grid item part stretches over a finite number of rows next to items that span fewer.",
+    "avoid": "Explicit row lines or templates, reordering the items, column spans (use `span`) and native table cell attributes.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/grid/v0.1/prop-naming-approval.json",
+      "scope": "convention:grid-item-row-span",
+      "contentHash": "sha256:fd70e5292341ea10e77f38e42a22da3a3701eff74ffeef5dae17c98abf8d9a3a"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "GridItem",
+        "type": "1 | 2 | 3 | 4",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/grid/types.ts",
+          "symbol": "GridItemProps",
+          "revision": "sha256:10398d7b05fbcf83df1dc4b41522f1fa1b4bbee79f8c66359ce8fd2f9a815a39"
         }
       }
     ]

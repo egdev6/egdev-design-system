@@ -7,6 +7,8 @@ import { PullQuote } from '../atoms/pull-quote';
 import { CommunityCard, CommunityCardAction, CommunityCardMark } from '../molecules/community-card';
 import type { TerminalCardRow } from '../molecules/terminal-card';
 import { TerminalCard, TerminalCardBar, TerminalCardList } from '../molecules/terminal-card';
+import { Grid, GridItem } from '../primitives/grid';
+import { Stack } from '../primitives/stack';
 import { SectionShell } from '../templates/section-shell';
 
 /**
@@ -20,13 +22,16 @@ import { SectionShell } from '../templates/section-shell';
  * - `SectionShell` (template): the section frame and its registers; the host owns the landmark name.
  * - `PhotoFrame`, `PullQuote`, `TerminalCard` (About): photo + quote split with a key/value card.
  * - `CommunityCard` (Community): a grid of passive community cards, each with one action.
+ * - `Grid`, `GridItem` and `Stack` (primitives): the column layout of both recipes, with no consumer layout
+ *   utilities; the columns stack at and below 860px.
  * - `Button` / `Link` (consumer-supplied actions).
  *
  * ## Usage guidelines
  * Copy the composition, not an abstraction: the host supplies its own copy, media, marks and
  * actions, and keeps section registers, heading identifiers and image alternatives under its
  * control. Every part stays within its own contract (outer layout only on `className`, one action
- * per card, decorative media with an explicit empty alternative when appropriate).
+ * per card, decorative media with an explicit empty alternative when appropriate). Layout comes from `Grid`,
+ * `GridItem` and `Stack`, so a host that writes no utility classes can copy the recipes unchanged.
  */
 const meta = {
   title: 'Recipes/Scene recipes',
@@ -59,48 +64,53 @@ const wordmark = (
 const logoSrc = '/brand/egdev-logo.png';
 
 /**
- * About scene: a photo + quote split with a key/value card. A host that wants the media to fill the
- * stretched row's height may switch to `ratio='auto'`, as PhotoFrame documents for definite-height
- * hosts; the preset here stays readable at every canvas width.
+ * About scene: a photo + quote split with a key/value card, on 12 columns (media 5, copy 7) that stack at
+ * and below 860px. A host that wants the media to fill the stretched row's height may switch to
+ * `ratio='auto'`, as PhotoFrame documents for definite-height hosts; the preset here stays readable at
+ * every canvas width.
  */
 export const AboutScene: Story = {
   name: 'About scene',
   render: () => (
     <SectionShell register='pro' aria-label='About the project'>
-      <div className='grid gap-10 min-[48rem]:grid-cols-2 min-[48rem]:items-stretch'>
-        <PhotoFrame
-          src={media}
-          alt='Diagnostic grid fixture standing in for a photograph'
-          variant='framed'
-          ratio='landscape'
-          imageCaption='Studio bench, mid-build'
-        />
-        <div className='flex min-w-0 flex-col justify-center gap-8'>
-          <PullQuote
-            text='A design system is how a project keeps its promises '
-            accent='at every scale.'
-            source='Illustrative quotation, not web copy'
+      <Grid columnCount={12} gap={10} alignItems='stretch' collapseBelow={860}>
+        <GridItem span={5}>
+          <PhotoFrame
+            src={media}
+            alt='Diagnostic grid fixture standing in for a photograph'
+            variant='framed'
+            ratio='landscape'
+            imageCaption='Studio bench, mid-build'
           />
-          <TerminalCard label='Studio profile' className='w-full'>
-            <TerminalCardBar shell='zsh'>~/egdev</TerminalCardBar>
-            <TerminalCardList items={studioRows} />
-          </TerminalCard>
-        </div>
-      </div>
+        </GridItem>
+        <GridItem asChild={true} span={7}>
+          <Stack gap={8} justifyContent='center'>
+            <PullQuote
+              text='A design system is how a project keeps its promises '
+              accent='at every scale.'
+              source='Illustrative quotation, not web copy'
+            />
+            <TerminalCard label='Studio profile' className='w-full'>
+              <TerminalCardBar shell='zsh'>~/egdev</TerminalCardBar>
+              <TerminalCardList items={studioRows} />
+            </TerminalCard>
+          </Stack>
+        </GridItem>
+      </Grid>
     </SectionShell>
   )
 };
 
 /**
- * Community scene: a grid of two passive community cards stretched to equal height, so the pinned
- * actions align at the bottom edge. Each card carries exactly one action; the register is the
- * host's choice.
+ * Community scene: a two-column grid of passive community cards stretched to equal height, so the pinned
+ * actions align at the bottom edge; the columns stack at and below 860px. Each card carries exactly one
+ * action; the register is the host's choice.
  */
 export const CommunityScene: Story = {
   name: 'Community scene',
   render: () => (
     <SectionShell register='grafito' aria-label='Community'>
-      <div className='grid items-stretch gap-6 min-[48rem]:grid-cols-2'>
+      <Grid columnCount={2} gap={6} alignItems='stretch' collapseBelow={860}>
         <CommunityCard title='Stack and Flow' eyebrow='My community'>
           <p>Where members of the studio share work in progress, review each other and ship together.</p>
           {wordmark}
@@ -121,7 +131,7 @@ export const CommunityScene: Story = {
             </Button>
           </CommunityCardAction>
         </CommunityCard>
-      </div>
+      </Grid>
     </SectionShell>
   )
 };

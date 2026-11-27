@@ -898,7 +898,16 @@ const postReceiptUsages = [
     'packages/ui/src/organisms/lab-stage/types.ts#LabStageProps'
   ].map((source) => ({ conventionId: 'heading-title-variant', source })),
   // NowCard #564 records one usage of the newly approved statusPresentation convention.
-  { conventionId: 'leading-status-presentation', source: 'packages/ui/src/molecules/now-card/types.ts#NowCardProps' }
+  { conventionId: 'leading-status-presentation', source: 'packages/ui/src/molecules/now-card/types.ts#NowCardProps' },
+  // Grid #395 records one usage of each newly approved convention and reuses three approved ones as usages only.
+  { conventionId: 'grid-columns', source: 'packages/ui/src/primitives/grid/types.ts#GridProps' },
+  { conventionId: 'layout-collapse-below', source: 'packages/ui/src/primitives/grid/types.ts#GridProps' },
+  { conventionId: 'grid-item-span', source: 'packages/ui/src/primitives/grid/types.ts#GridItemProps' },
+  { conventionId: 'grid-item-row-span', source: 'packages/ui/src/primitives/grid/types.ts#GridItemProps' },
+  { conventionId: 'layout-gap', source: 'packages/ui/src/primitives/grid/types.ts#GridProps' },
+  { conventionId: 'cross-axis-alignment', source: 'packages/ui/src/primitives/grid/types.ts#GridProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/grid/types.ts#GridProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/grid/types.ts#GridItemProps' }
 ];
 // These proposed or independently approved conventions postdate the immutable historical receipts.
 const postReceiptProposals = [
@@ -958,7 +967,12 @@ const postReceiptProposals = [
   // Scene titleVariant v0.2 convention: approved by its own receipt (docs/components/hero/v0.2/prop-naming-approval.json).
   'heading-title-variant',
   // NowCard v0.4 statusPresentation convention: approved by its own receipt (docs/components/now-card/v0.4/prop-naming-approval.json).
-  'leading-status-presentation'
+  'leading-status-presentation',
+  // Grid v0.1 layout conventions: approved by their own receipt (docs/components/grid/v0.1/prop-naming-approval.json).
+  'grid-columns',
+  'layout-collapse-below',
+  'grid-item-span',
+  'grid-item-row-span'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -2856,6 +2870,206 @@ test('NowCard binds the scoped owner approval of the leading-status-presentation
   validate(registry);
 });
 
+test('Grid binds its scoped owner approval for four new conventions, reuses three approved ones and binds every reviewed source revision (#395)', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/grid/v0.1/prop-naming-approval.json';
+  assert.ok(fs.existsSync(resolve(root, reference)), 'The Grid naming receipt must be recorded');
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const path = 'packages/ui/src/primitives/grid/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const gridSource = { path, symbol: 'GridProps', revision };
+  const itemSource = { path, symbol: 'GridItemProps', revision };
+  // The receipt carries the owner's verbatim answers and binds the approved form of the exact convention payloads.
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.deepEqual(receipt.evidence.userStatements, [
+    {
+      quote: '`columnCount` (Recomendado)',
+      provenance: 'odd/tasks/layout-grid-395.md L4 (name, Grid v0.1 OQ-1 column-count prop)',
+      date: '2026-11-27'
+    },
+    {
+      quote: 'Aprobar (Recomendado)',
+      provenance:
+        'odd/tasks/layout-grid-395.md L4 (approval, Grid v0.1 spec and plan, OQ-6 conventions and D3 registry receipts for the newly named conventions)',
+      date: '2026-11-27'
+    }
+  ]);
+  const log = fs.readFileSync(resolve(root, 'odd/tasks/layout-grid-395.md'), 'utf8');
+  const approvalRecord = fs.readFileSync(resolve(root, 'docs/components/grid/v0.1/approval.md'), 'utf8');
+  for (const { quote } of receipt.evidence.userStatements) {
+    assert.ok(log.includes(`"${quote}"`), `The task log must hold the owner's answer: ${quote}`);
+    assert.ok(approvalRecord.includes(`"${quote}"`), `The approval record must hold the owner's answer: ${quote}`);
+  }
+  // The approved spec and plan payloads (their line-start first heading through EOF) are the recorded digests, and
+  // the spec quotes each convention's text in its table of the new conventions.
+  const payload = (file, heading) => {
+    const text = fs.readFileSync(resolve(root, file), 'utf8');
+    return text.slice(text.search(heading));
+  };
+  const specPath = 'docs/components/grid/v0.1/spec.md';
+  const planPath = 'docs/components/grid/v0.1/implementation-plan.md';
+  const specPayload = payload(specPath, /^## 1\. Purpose and scope$/m);
+  assert.equal(receipt.evidence.specPath, specPath);
+  assert.equal(receipt.evidence.specPayloadSHA256, digest(Buffer.from(specPayload)));
+  assert.equal(
+    receipt.evidence.specPayloadSHA256,
+    'sha256:b7de8109cea062361a1f2847400032eec460fc65d47dbd014ccc72b2f17ca885'
+  );
+  assert.equal(receipt.evidence.planPath, planPath);
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    digest(Buffer.from(payload(planPath, /^## 1\. Authority and gates$/m)))
+  );
+  assert.equal(
+    receipt.evidence.planPayloadSHA256,
+    'sha256:46fb0348e4971d4b582ca5de3f949ba956b699c8abfa04af407bbe77871b5500'
+  );
+  assert.match(receipt.evidence.interpretation, /not native review authority/i);
+  assert.deepEqual(receipt.priorReceipts, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, [
+    'grid-columns',
+    'layout-collapse-below',
+    'grid-item-span',
+    'grid-item-row-span'
+  ]);
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    [
+      'convention:grid-columns',
+      'convention:layout-collapse-below',
+      'convention:grid-item-span',
+      'convention:grid-item-row-span'
+    ]
+  );
+  const expectedNew = [
+    [
+      'grid-columns',
+      'columnCount',
+      'Number of equal-width columns of a grid layout container.',
+      'A reusable grid layout container exposes a small finite set of equal column counts.',
+      'Table column definitions (use `columns`), explicit track sizes or templates, item spans (use `span`) and responsive breakpoints (use `collapseBelow`).',
+      { component: 'Grid', type: '1 | 2 | 3 | 4 | 12 (default 1)', source: gridSource }
+    ],
+    [
+      'layout-collapse-below',
+      'collapseBelow',
+      'Viewport width in CSS pixels at and below which a layout container drops to a single column; above it the container keeps its columns.',
+      'A grid layout container offers a small finite set of inclusive viewport thresholds at which its columns stack.',
+      'Container-relative thresholds, arbitrary pixel values, automatic responsive detection and changing the order of the children.',
+      { component: 'Grid', type: '860 | 1080 (inclusive; absent never collapses)', source: gridSource }
+    ],
+    [
+      'grid-item-span',
+      'span',
+      'Number of grid columns that one item of a grid layout container occupies.',
+      "A grid item part places itself by a finite column span in the container's automatic flow.",
+      'Explicit start or end lines, reordering the items, column counts of the container (use `columnCount`) and native table cell attributes.',
+      { component: 'GridItem', type: '1 | … | 12', source: itemSource }
+    ],
+    [
+      'grid-item-row-span',
+      'rowSpan',
+      'Number of implicit grid rows that one item of a grid layout container occupies.',
+      'A grid item part stretches over a finite number of rows next to items that span fewer.',
+      'Explicit row lines or templates, reordering the items, column spans (use `span`) and native table cell attributes.',
+      { component: 'GridItem', type: '1 | 2 | 3 | 4', source: itemSource }
+    ]
+  ];
+  for (const [id, name, meaning, whenToUse, avoid, usage] of expectedNew) {
+    const entry = registry.find((item) => item.id === id);
+    assert.ok(entry, id);
+    assert.equal(entry.name, name, id);
+    assert.equal(entry.meaning, meaning, id);
+    assert.equal(entry.whenToUse, whenToUse, id);
+    assert.equal(entry.avoid, avoid, id);
+    // The spec quotes the three texts as the registry holds them, and names the concept.
+    for (const field of [meaning, whenToUse, avoid]) {
+      assert.ok(specPayload.includes(field), `${id}: ${field}`);
+    }
+    assert.ok(specPayload.includes(`name \`${name}\``), `${id}: the spec names ${name}`);
+    // Convention approval stays separate from the spec approval: only this scoped receipt promotes the entry.
+    assert.equal(entry.status, 'approved', id);
+    const { approval, usages, ...convention } = entry;
+    assert.deepEqual(approval, {
+      reference,
+      scope: `convention:${id}`,
+      contentHash: props.conventionHash(entry)
+    });
+    assert.deepEqual(
+      receipt.entries.find(({ scope }) => scope === approval.scope),
+      { scope: approval.scope, contentHash: approval.contentHash, convention, source: usage.source },
+      id
+    );
+    assert.deepEqual(entry.aliases, [], id);
+    assert.deepEqual(entry.exceptions, [], id);
+    assert.deepEqual(usages, [{ ...usage, status: 'existing' }], id);
+    assert.deepEqual(historicalRegistry([entry]), [], id);
+    // Changed semantic content or a dropped approval invalidates the entry; a recomputed digest is not consent.
+    const changed = structuredClone(registry);
+    changed.find((item) => item.id === id).meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i, id);
+    const unapproved = structuredClone(registry);
+    unapproved.find((item) => item.id === id).approval = null;
+    assert.throws(() => validate(unapproved), /approval/i, id);
+  }
+  // The column-count name is free of the table-columns convention: no exception to `columns` exists for Grid.
+  assert.deepEqual(registry.find((item) => item.id === 'table-columns').name, 'columns');
+  assert.deepEqual(
+    registry.flatMap((item) => item.exceptions.filter(({ scope }) => /^Grid(Item)?$/.test(scope))),
+    []
+  );
+  // The three reused entries keep their approved status and gain exactly the Grid usages.
+  const reused = [
+    [
+      'layout-gap',
+      [{ component: 'Grid', type: 'LayoutGap (0|1|2|3|4|5|6|7|8|10|12|14|16|20|24)', source: gridSource }]
+    ],
+    [
+      'cross-axis-alignment',
+      [{ component: 'Grid', type: 'LayoutAlignItems (start|center|end|stretch|baseline)', source: gridSource }]
+    ],
+    [
+      'slot-composition',
+      [
+        { component: 'Grid', type: 'boolean (asChild)', source: gridSource },
+        { component: 'GridItem', type: 'boolean (asChild)', source: itemSource }
+      ]
+    ]
+  ];
+  for (const [id, expectedUsages] of reused) {
+    const entry = registry.find((item) => item.id === id);
+    assert.equal(entry.status, 'approved', id);
+    assert.deepEqual(
+      entry.usages.filter(({ component }) => component === 'Grid' || component === 'GridItem'),
+      expectedUsages.map((usage) => ({ ...usage, status: 'existing' })),
+      id
+    );
+    // The frozen receipts compare the registry without the reviewed post-receipt usages.
+    assert.deepEqual(
+      historicalRegistry([entry]).flatMap(({ usages }) => usages.filter((usage) => usage.source.path === path)),
+      [],
+      id
+    );
+  }
+  assert.deepEqual(
+    registry
+      .filter((item) => item.usages.some((usage) => usage.source.path === path))
+      .map(({ id }) => id)
+      .sort(),
+    [...expectedNew.map(([id]) => id), ...reused.map(([id]) => id)].sort()
+  );
+  // Every registry usage of the file carries the live whole-file revision, so a late edit cannot go unnoticed.
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 8);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+  }
+  validate(registry);
+});
+
 test('Text truncation binds its scoped owner approval and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/text/v0.3/prop-naming-approval.json';
@@ -3410,8 +3624,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // Embed v0.1 adds one approved fallback convention.
   // Scene titleVariant v0.2 adds one approved display-title recipe convention.
   // NowCard v0.4 adds one approved status-presentation convention.
-  assert.equal(actual.length, 193);
-  assert.equal(beforeIndicatorConventions(actual).length, 190);
+  // Grid v0.1 adds four approved layout conventions (column count, collapse threshold, item span, item row span).
+  assert.equal(actual.length, 197);
+  assert.equal(beforeIndicatorConventions(actual).length, 194);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
