@@ -1450,9 +1450,16 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - NowCardDetail: Supporting date or context line with the consumer-marked emphasized value. Children: Supporting date or context line with an emphasized value; no controls. One short visible sentence; mark the value with <b> (for example a real <time dateTime> inside it). (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
   - NowCardFooter: Lower band for one supporting detail and/or one action. Children: Lower band for one supporting detail and/or one action (a Link or a labelled IconButton), never two competing actions, and optionally one StepMeter. With a StepMeter the footer holds it plus at most one other child; that rule is the consumer's, as the card never inspects, reorders or limits its children. One NowCardDetail and/or one Link/IconButton, and optionally one StepMeter (an informative named image with its own label); with a StepMeter, at most one other child. Omit the part entirely when the card has no footer. (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - nowCardBadgeVariants base: px-6 → --spacing-6
-    - nowCardBadgeVariants base: pt-6 → --spacing-6
-    - nowCardBadgeVariants base: pb-3 → --spacing-3
+    - nowCardBadgeVariants presentation=badge: px-6 → --spacing-6
+    - nowCardBadgeVariants presentation=badge: pt-6 → --spacing-6
+    - nowCardBadgeVariants presentation=badge: pb-3 → --spacing-3
+    - nowCardBadgeVariants presentation=band: gap-2 → --spacing-2
+    - nowCardBadgeVariants presentation=band: rounded-sm → --radius-sm
+    - nowCardBadgeVariants presentation=band: px-2.5 → --spacing
+    - nowCardBadgeVariants presentation=band: py-1.5 → --spacing
+    - nowCardBadgeVariants presentation=band: font-display → --font-display
+    - nowCardBadgeVariants presentation=band: text-label-eyebrow → --text-label-eyebrow
+    - nowCardBadgeVariants presentation=band: shadow-edge → --shadow-edge
     - nowCardHeadingVariants base: px-6 → --spacing-6
     - nowCardHeadingVariants base: text-heading-small → --text-heading-small
     - nowCardHeadingVariants size=sm: px-4 → --spacing-4
@@ -1465,7 +1472,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - children: ReactNode; Body and footer parts in reading order (NowCardBody, then NowCardFooter). (components[] · packages/ui/src/molecules/now-card/types.ts)
   - level: enum; Native heading rank only; the visual step follows size. (components[] · packages/ui/src/molecules/now-card/types.ts)
   - size: enum; Density preset: md is the standard card, sm the three-up NowStrip density. Density never clamps, truncates or hides supplied content. (components[] · packages/ui/src/molecules/now-card/types.ts)
-  - statusBadge: ReactNode; Optional consumer-supplied non-interactive status node, typically a Badge composition, rendered before the heading as the card's first content. Absent/null/boolean renders nothing. No interactive descendants, no baked-in status word, no tone ownership. (components[] · packages/ui/src/molecules/now-card/types.ts)
+  - statusBadge: ReactNode; Optional consumer-supplied non-interactive status node rendered before the heading as the card's first content. With the default `badge` presentation it is typically a Badge composition and keeps its own paint. With `statusPresentation='band'` the card paints the band, so supply the label words and, optionally, a decorative Icon instead of a Badge, which would paint a second pill inside the band. Absent/null/boolean renders nothing. No interactive descendants, no baked-in status word. (components[] · packages/ui/src/molecules/now-card/types.ts)
+  - statusPresentation: enum; Presentation of the leading status slot. `badge` renders the supplied node at its content width. `band` paints a full-width, uppercase, brand-tinted band across the top of the card and frames the supplied label in it. It has no effect without `statusBadge`. (components[] · packages/ui/src/molecules/now-card/types.ts)
   - title: string; Visible non-empty heading and complete article name. Blank titles warn in development and render nothing. (components[] · packages/ui/src/molecules/now-card/types.ts)
 ### PageHeader
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
@@ -3763,6 +3771,7 @@ Not exported:
 - layout-orientation: orientation; approved; Divider, RadioGroup (propNaming[] · skills/_shared/prop-naming.json)
 - leading-icon: icon; approved; Badge, Button, Chip, ChipGroupOption, CommandPaletteItem, EmptyState, FieldMessage, IconButton, Input, MenuEntry, ModuleCard, ModuleRail, NavList, Notice, SocialLinkItem, TabBarItem, Timeline, Toast, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - leading-status-badge: statusBadge; approved; NowCard, ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
+- leading-status-presentation: statusPresentation; approved; NowCard (propNaming[] · skills/_shared/prop-naming.json)
 - line-particle-direction: lineDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - live-presentation: live; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
 - localized-messages: messages; approved; AppShell, AttachmentField, CalendarGrid, Carousel, CommandPalette, DetailHeader, MeterRow, ModuleCard, ModuleRail, Pagination, TabBar, Table, Timeline, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)

@@ -877,7 +877,7 @@
     "radix": "—",
     "compone": "Surface, Text",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 current-status card with approved badge-first slot, smaller sm copy and a surface-0 footer band. See [approved amendment](components/now-card/v0.1/badge-order-amendment.md). v0.3 ([approval](components/now-card/v0.3/approval.md)) documents one optional consumer-supplied StepMeter in the footer; the card renders no meter."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 current-status card with approved badge-first slot, smaller sm copy and a surface-0 footer band. See [approved amendment](components/now-card/v0.1/badge-order-amendment.md). v0.3 ([approval](components/now-card/v0.3/approval.md)) documents one optional consumer-supplied StepMeter in the footer; the card renders no meter. v0.4 ([#564](https://github.com/egdev6/egdev-design-system/issues/564)) adds the opt-in `statusPresentation='band'`: the card paints the status as a full-width, uppercase, brand-tinted band around the supplied label; the default presentation is unchanged."
   },
   {
     "actual": "ProjectCard",

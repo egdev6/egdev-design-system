@@ -1716,10 +1716,11 @@ test('NowCard footer documents one optional StepMeter without a prop, part or co
   const artifact = read('packages/system/design-system.json');
   const card = artifact.components.find(({ name }) => name === 'NowCard');
   assert.ok(card);
-  // v0.3 is documentation only: the card gains no prop, no part and no composition edge.
+  // v0.3 is documentation only: it adds no part and no composition edge. v0.4 (#564) adds the one optional
+  // statusPresentation prop, pinned by its own test below.
   assert.deepEqual(
     card.props.map(({ name }) => name),
-    ['children', 'level', 'size', 'statusBadge', 'title']
+    ['children', 'level', 'size', 'statusBadge', 'statusPresentation', 'title']
   );
   assert.deepEqual(
     card.parts.map(({ name }) => name),
@@ -1739,6 +1740,49 @@ test('NowCard footer documents one optional StepMeter without a prop, part or co
   assert.match(footer.children, /at most one other child/);
   assert.match(footer.children, /never inspects, reorders or limits its children/);
   assert.ok(!artifact.components.some(({ name }) => name === 'NowCardMeter'));
+});
+
+test('NowCard publishes statusPresentation, the amended slot text and the band recipe axis, and its convention lists the card (#564)', () => {
+  const artifact = read('packages/system/design-system.json');
+  const card = artifact.components.find(({ name }) => name === 'NowCard');
+  assert.ok(card);
+  const prop = card.props.find(({ name }) => name === 'statusPresentation');
+  assert.ok(prop, 'the artifact lists statusPresentation');
+  assert.equal(prop.type, 'enum');
+  assert.equal(prop.required, false);
+  assert.equal(prop.default, 'badge');
+  assert.equal(prop.deprecated, false);
+  assert.match(prop.description, /`badge`/);
+  assert.match(prop.description, /`band`/);
+  assert.match(prop.description, /no\s+effect\s+without\s+`statusBadge`/);
+  // The slot text says what it holds in each presentation and no longer claims the card never owns a tone.
+  const slot = card.props.find(({ name }) => name === 'statusBadge');
+  assert.match(slot.description, /statusPresentation='band'/);
+  assert.match(slot.description, /instead\s+of\s+a\s+Badge/);
+  assert.doesNotMatch(slot.description, /no tone ownership/);
+  // The private recipe gains the presentation axis, an inert size axis and two compounds; the pill classes are kept.
+  const recipe = card.anatomy.find(({ name }) => name === 'nowCardBadgeVariants');
+  assert.ok(recipe, 'the artifact lists the badge recipe anatomy');
+  assert.deepEqual(Object.keys(recipe.variants), ['presentation', 'size']);
+  assert.deepEqual(Object.keys(recipe.variants.presentation), ['badge', 'band']);
+  assert.equal(recipe.compounds.length, 2);
+  const classes = card.variants.find(({ name }) => name === 'nowCardBadgeVariants').classes;
+  assert.equal(classes[0], 'eg-now-card__badge flex');
+  assert.ok(classes.includes('px-6 pt-6 pb-3'));
+  assert.ok(classes.some((value) => /(^|\s)uppercase(\s|$)/.test(value) && value.includes('bg-alpha-red-12')));
+  assert.ok(classes.includes('mx-6') && classes.includes('mx-4'));
+  // The band adds no part, export or composition edge.
+  assert.deepEqual(
+    card.parts.map(({ name }) => name),
+    ['NowCardBody', 'NowCardDetail', 'NowCardFooter']
+  );
+  assert.deepEqual(card.composedOf, []);
+  assert.ok(!artifact.components.some(({ name }) => name === 'NowCardBand' || name === 'NowCardTag'));
+  const convention = artifact.propNaming.find((item) => item.id === 'leading-status-presentation');
+  assert.ok(convention, 'the artifact lists the leading-status-presentation convention');
+  assert.equal(convention.name, 'statusPresentation');
+  assert.equal(convention.status, 'approved');
+  assert.deepEqual(convention.components, ['NowCard']);
 });
 
 test('Heading and Text expose only their own and shared recipes', () => {

@@ -8,6 +8,12 @@ a local tarball from `pnpm release:pack`.
 
 ### Added
 
+- `NowCard` accepts `statusPresentation` (`'badge'` by default, or `'band'`) to present its status as a full-width band
+  across the top of the card, as in the Pulso reference, instead of a content-width pill. In `band` the card paints a
+  brand-tinted, uppercase band (display type, hairline border, light edge) and frames the label you supply, so pass the
+  label words and, optionally, a decorative `Icon` instead of a `Badge`, which would paint a second pill inside it. Long
+  labels wrap, the band follows the card's `size` and it has the brand tone only. The default presentation is
+  unchanged and renders exactly as before. (#564)
 - A link `Chip` whose native `aria-current` is `page` or `true` is painted as the current item, for example the active
   filter in a row of crawlable filters: the brand border, selected fill and brighter text of Pagination's current
   page, with the focus ring on top and a system-colour outline in forced colours. The attribute is the only state
