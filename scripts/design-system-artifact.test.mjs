@@ -844,6 +844,30 @@ test('ProjectCard statusBadge is an optional source-derived slot with three priv
   assert.deepEqual(naming.components, ['NowCard', 'ProjectCard']);
 });
 
+test('ProjectCardFooter documents one to three supplied actions without adding a prop, recipe or export', () => {
+  const artifact = read('packages/system/design-system.json');
+  const card = artifact.components.find(({ name }) => name === 'ProjectCard');
+  assert.ok(card);
+  const footer = card.parts.find(({ name }) => name === 'ProjectCardFooter');
+  assert.ok(footer);
+  assert.match(footer.description, /one to three supplied Button or Link actions/);
+  assert.match(footer.children, /one to three supplied Button or Link actions/);
+  assert.match(footer.children, /enforced at runtime/);
+  assert.doesNotMatch(`${footer.description} ${footer.children}`, /single (?:supplied )?action|exactly one Link/);
+  // The footer recipe is private and not part of the artifact, and the part list and composition are unchanged.
+  assert.deepEqual(
+    card.parts.map(({ name }) => name),
+    ['ProjectCardBackdrop', 'ProjectCardCode', 'ProjectCardFooter', 'ProjectCardMark', 'ProjectCardTags']
+  );
+  assert.deepEqual(
+    card.composedOf.map(({ name }) => name),
+    ['Chip']
+  );
+  for (const field of ['variants', 'anatomy']) {
+    assert.ok(!card[field].some(({ name }) => name === 'projectCardFootVariants'), `${field} omits the footer recipe`);
+  }
+});
+
 test('StepMeter publishes three source-derived props, two private recipes and the approved step-count convention', () => {
   const artifact = read('packages/system/design-system.json');
   const meter = artifact.components.find(({ name }) => name === 'StepMeter');

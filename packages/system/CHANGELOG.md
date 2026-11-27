@@ -4,6 +4,9 @@
 
 ### Added
 
+- The source-derived artifact and reference describe `ProjectCardFooter` as holding one to three supplied actions (the
+  part and `children` descriptions) and list `flex-wrap` in its `projectCardFootVariants` recipe; no prop, recipe axis
+  or export is added. (#577)
 - The source-derived artifact and reference list the current-state utilities of `Chip`'s link recipe (`chipVariants`
   `mode=link`: the `aria-current` `page` and `true` paint, focus ring and forced-colours outline). The narrowed
   `aria-current` declaration is not a separate prop row, because docgen merges it into the native attribute that the

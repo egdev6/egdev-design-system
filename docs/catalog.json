@@ -888,7 +888,7 @@
     "radix": "—",
     "compone": "Surface, Badge, Link",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 project card on the Surface recipe; static Chip tags, labelled code well and a supplied footer action. See [approved plan](components/project-card/v0.1/implementation-plan.md)."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 project card on the Surface recipe; static Chip tags, labelled code well and one to three supplied footer actions (v0.4, [#577](https://github.com/egdev6/egdev-design-system/issues/577)). See [approved plan](components/project-card/v0.1/implementation-plan.md)."
   },
   {
     "actual": "NoteItem",

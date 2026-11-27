@@ -100,6 +100,12 @@ a local tarball from `pnpm release:pack`.
 
 ### Changed
 
+- `ProjectCardFooter` takes one to three supplied `Button` or `Link` actions instead of one, and its row wraps onto
+  further lines in a narrow card. It adds no list semantics, tab stop or whole-card link, and nothing nests: each action
+  keeps its own focus and the card still emits no event. The cap of three and unique accessible names within the card
+  are yours to keep and are not enforced at runtime; add the project name when the same wording repeats across a
+  listing. A single label wider than the card's content box is clipped by the card's legacy `overflow: hidden`, so keep
+  labels short or use Button `labelWrap`. A one-action footer renders as before. (#577)
 - In link mode `Chip` types `aria-current` as `'page' | 'true'` instead of the full native union, so `step`,
   `location`, `date`, `time`, `'false'` and booleans no longer compile on a link chip. Their runtime behaviour is
   unchanged: the attribute is still forwarded, but it is not painted. (#576)
