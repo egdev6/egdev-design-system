@@ -1964,6 +1964,10 @@ describe('Storybook TypeScript docgen contract', () => {
       expect(part?.props[requiredProp]?.required, `${displayName}.${requiredProp}`).toBe(true);
     }
     expect(extracted.find(({ displayName }) => displayName === 'ProjectCardCode')?.props.items?.required).toBe(true);
+    // v0.4 (#577): the footer documents one to three supplied actions, as extracted from the real source.
+    expect(
+      extracted.find(({ displayName }) => displayName === 'ProjectCardFooter')?.props.children?.description
+    ).toMatch(/to three supplied Button or Link actions/);
     const stories = ast(source('molecules/project-card/ProjectCard.stories.tsx'));
     expect(exportedStoryNames(stories)).toEqual([
       'Default',
@@ -1975,6 +1979,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tags',
       'Code',
       'WithLink',
+      'WithActions',
       'LongContent',
       'WithStatus',
       'StatusPlacements',

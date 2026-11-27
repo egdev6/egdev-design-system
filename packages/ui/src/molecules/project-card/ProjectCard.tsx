@@ -121,7 +121,7 @@ export const ProjectCardCode: FC<ProjectCardCodeProps> = (props) => {
   );
 };
 
-/** Footer zone for the card's single supplied action; the card itself stays passive. */
+/** Footer zone for one to three supplied Button or Link actions; the card itself stays passive. */
 export const ProjectCardFooter: FC<ProjectCardFooterProps> = (props) => {
   const { footProps, children } = useProjectCardFooter(props);
   return <div {...footProps}>{children}</div>;

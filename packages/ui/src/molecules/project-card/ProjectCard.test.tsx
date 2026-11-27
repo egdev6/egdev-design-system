@@ -1,9 +1,11 @@
 import { composeStory } from '@storybook/react-vite';
 import { render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Badge } from '../../atoms/badge';
+import { Button } from '../../atoms/button';
 import { Icon } from '../../atoms/icon';
 import { Link } from '../../atoms/link';
 import {
@@ -14,7 +16,13 @@ import {
   ProjectCardMark,
   ProjectCardTags
 } from './ProjectCard';
-import meta, { StatusInNarrowCard, StatusOverBackdrop, StatusPlacements, WithStatus } from './ProjectCard.stories';
+import meta, {
+  StatusInNarrowCard,
+  StatusOverBackdrop,
+  StatusPlacements,
+  WithActions,
+  WithStatus
+} from './ProjectCard.stories';
 import type { ProjectCardCodeLine, ProjectCardProps } from './types';
 import { useProjectCard } from './useProjectCard';
 
@@ -871,5 +879,242 @@ describe('ProjectCard status stories (#558)', () => {
     const article = screen.getByRole('article');
     expect(statusWrapper(article).parentElement).toHaveClass('flex-wrap');
     expect(within(article).getByText('testing')).toBeInTheDocument();
+  });
+});
+
+describe('ProjectCard footer actions (#577)', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const actionNames = ['Details', 'GitHub', 'Demo'] as const;
+  // The first two actions are quiet Links and the last is a small neutral Button, as in the WithActions story.
+  const actionsOf = (count: number): ReactNode[] =>
+    [
+      <Link key='details' href='#pulso' variant='quiet'>
+        Details
+      </Link>,
+      <Link key='source' href='#pulso-source' variant='quiet'>
+        GitHub
+      </Link>,
+      <Button key='demo' size='sm' variant='neutral'>
+        Demo
+      </Button>
+    ].slice(0, count);
+  const footerCard = (actions: ReactNode, upperZone = false) => (
+    <ProjectCard title='Pulso' index='01' eyebrow='Open source'>
+      {upperZone && (
+        <>
+          <ProjectCardBackdrop>
+            <img src='/backdrop.png' alt='' />
+          </ProjectCardBackdrop>
+          <ProjectCardMark>
+            <img src='/mark.png' alt='Mark' />
+          </ProjectCardMark>
+        </>
+      )}
+      {body}
+      <ProjectCardFooter>{actions}</ProjectCardFooter>
+    </ProjectCard>
+  );
+  const footerOf = (article: HTMLElement) => article.querySelector('.eg-project-card__foot') as HTMLElement;
+  const actionsIn = (footer: HTMLElement, count: number) =>
+    actionNames.slice(0, count).map((name) => within(footer).getByRole(name === 'Demo' ? 'button' : 'link', { name }));
+
+  it('keeps the footer recipe to the marker, flex, flex-wrap, items-center and gap-3, with no pinning, reordering, clipping or no-wrap utility (PC-F2)', () => {
+    render(
+      <ProjectCard title='Pulso'>
+        {body}
+        <ProjectCardFooter className='mt-2'>{actionsOf(3)}</ProjectCardFooter>
+      </ProjectCard>
+    );
+    const footer = footerOf(screen.getByRole('article', { name: 'Pulso' }));
+    expect(footer).toHaveClass('eg-project-card__foot', 'flex', 'flex-wrap', 'items-center', 'gap-3');
+    for (const cls of footer.classList) {
+      expect(cls).not.toMatch(
+        /^(?:ms-auto|me-auto|ml-auto|mr-auto|justify-|order-|truncate|line-clamp|text-ellipsis|overflow-|whitespace-nowrap|flex-nowrap)/
+      );
+    }
+    // The consumer className still merges last through cn().
+    expect(footer).toHaveClass('mt-2');
+    expect(Array.from(footer.classList).pop()).toBe('mt-2');
+  });
+
+  it.each([1, 2, 3])(
+    'renders %s supplied action(s) verbatim, in order, inside one footer without list semantics (PC-F1)',
+    (count) => {
+      render(
+        <ProjectCard title='Pulso'>
+          {body}
+          <ProjectCardFooter>{actionsOf(count)}</ProjectCardFooter>
+        </ProjectCard>
+      );
+      const article = screen.getByRole('article', { name: 'Pulso' });
+      expect(article.querySelectorAll('.eg-project-card__foot')).toHaveLength(1);
+      const footer = footerOf(article);
+      const actions = actionsIn(footer, count);
+      // Verbatim: the footer's children are exactly the supplied elements, with no wrapper or extra node.
+      expect(Array.from(footer.children)).toEqual(actions);
+      expect(footer.childNodes).toHaveLength(count);
+      for (let position = 1; position < actions.length; position++) {
+        const previous = actions[position - 1] as HTMLElement;
+        const next = actions[position] as HTMLElement;
+        expect(previous.compareDocumentPosition(next) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      }
+      expect(footer.getAttributeNames().filter((name) => name === 'role' || name.startsWith('aria-'))).toEqual([]);
+      expect(article.querySelector('ul, ol, li')).toBeNull();
+    }
+  );
+
+  it.each([
+    [2, 'plain'],
+    [3, 'plain'],
+    [2, 'upper zone'],
+    [3, 'upper zone']
+  ] as const)(
+    'gives each of %s footer actions one tab stop in DOM order and reverses with Shift+Tab in the %s branch (PC-08)',
+    async (count, branch) => {
+      const user = userEvent.setup();
+      render(footerCard(actionsOf(count), branch === 'upper zone'));
+      const actions = actionsIn(footerOf(screen.getByRole('article', { name: 'Pulso' })), count);
+      for (const action of actions) {
+        await user.tab();
+        expect(document.activeElement).toBe(action);
+      }
+      await user.tab();
+      expect(document.activeElement).toBe(document.body);
+      for (const action of [...actions].reverse()) {
+        await user.tab({ shift: true });
+        expect(document.activeElement).toBe(action);
+      }
+      await user.tab({ shift: true });
+      expect(document.activeElement).toBe(document.body);
+    }
+  );
+
+  it.each(['plain', 'upper zone'] as const)(
+    'keeps a one-action footer to the supplied element alone, with no wrapper, in the %s branch (PC-F3)',
+    (branch) => {
+      render(
+        footerCard(
+          <Link href='#pulso' variant='underlined'>
+            View project
+          </Link>,
+          branch === 'upper zone'
+        )
+      );
+      const article = screen.getByRole('article', { name: 'Pulso' });
+      const footer = footerOf(article);
+      expect(article.lastElementChild).toBe(footer);
+      expect(footer.childNodes).toHaveLength(1);
+      expect(footer.firstElementChild).toBe(screen.getByRole('link', { name: 'View project' }));
+    }
+  );
+
+  it('renders four actions, repeated names and a non-action child verbatim, with no warning or error (PC-F5)', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    render(
+      <>
+        <ProjectCard title='Four actions'>
+          <ProjectCardFooter>
+            <Link href='#one'>One</Link>
+            <Link href='#two'>Two</Link>
+            <Link href='#three'>Three</Link>
+            <Link href='#four'>Four</Link>
+          </ProjectCardFooter>
+        </ProjectCard>
+        <ProjectCard title='Repeated names'>
+          <ProjectCardFooter>
+            <Link href='#first'>Details</Link>
+            <Link href='#second'>Details</Link>
+          </ProjectCardFooter>
+        </ProjectCard>
+        <ProjectCard title='Mixed children'>
+          <ProjectCardFooter>
+            <Link href='#details'>Details</Link>
+            <span>Plain text child</span>
+          </ProjectCardFooter>
+        </ProjectCard>
+      </>
+    );
+    const four = footerOf(screen.getByRole('article', { name: 'Four actions' }));
+    expect(
+      within(four)
+        .getAllByRole('link')
+        .map((link) => link.textContent)
+    ).toEqual(['One', 'Two', 'Three', 'Four']);
+    expect(four.children).toHaveLength(4);
+    const repeated = footerOf(screen.getByRole('article', { name: 'Repeated names' }));
+    expect(within(repeated).getAllByRole('link', { name: 'Details' })).toHaveLength(2);
+    const mixed = footerOf(screen.getByRole('article', { name: 'Mixed children' }));
+    expect(Array.from(mixed.children, (child) => child.tagName)).toEqual(['A', 'SPAN']);
+    expect(warn).not.toHaveBeenCalled();
+    expect(error).not.toHaveBeenCalled();
+  });
+
+  it('adds no whole-card link, no nested control and no focus change on a click away from the actions (PC-F6)', async () => {
+    const user = userEvent.setup();
+    render(footerCard(actionsOf(3)));
+    const article = screen.getByRole('article', { name: 'Pulso' });
+    const actions = actionsIn(footerOf(article), 3);
+    expect(Array.from(article.querySelectorAll('a[href], button, [tabindex]'))).toEqual(actions);
+    for (const action of actions) {
+      expect(action.parentElement?.closest('a, button, [tabindex]')).toBeNull();
+    }
+    expect(article).not.toHaveAttribute('role');
+    expect(article).not.toHaveAttribute('tabindex');
+    expect(article.closest('a, button')).toBeNull();
+    const before = article.outerHTML;
+    await user.click(article.querySelector('p') as HTMLElement);
+    expect(document.activeElement).toBe(document.body);
+    expect(article.outerHTML).toBe(before);
+  });
+
+  it('keeps three footer actions free of truncation, clamping, clipping and no-wrap utilities in a narrow host (PC-F4)', () => {
+    render(
+      <div className='w-48'>
+        <ProjectCard title='A very long project title that wraps in a narrow card' index='01' eyebrow='Open source'>
+          {body}
+          <ProjectCardTags items={['React', 'Vitest']} />
+          <ProjectCardFooter>{actionsOf(3)}</ProjectCardFooter>
+        </ProjectCard>
+      </div>
+    );
+    const article = screen.getByRole('article', { name: 'A very long project title that wraps in a narrow card' });
+    // The atoms keep their own approved recipes (Chip, Button and Link subtrees are excluded, as the PC-09 scan excludes Chip).
+    const ownParts = [article, ...article.querySelectorAll('*')].filter(
+      (element) => !element.closest('.eg-chip, .eg-btn, .eg-link')
+    );
+    for (const element of ownParts) {
+      for (const cls of element.classList) {
+        expect(cls).not.toMatch(/^(?:truncate|line-clamp|text-ellipsis|overflow-hidden|whitespace-nowrap|flex-nowrap)/);
+      }
+    }
+    expect(article.lastElementChild).toBe(footerOf(article));
+    expect(footerOf(article).children).toHaveLength(3);
+  });
+
+  it('composes WithActions as two links and one button with distinct names, in tab order and with no console output (PC-08, PC-F1, PC-F5)', async () => {
+    const user = userEvent.setup();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const Story = composeStory(WithActions, meta);
+    render(<Story />);
+    const article = screen.getByRole('article', { name: 'Pulso' });
+    const footer = footerOf(article);
+    expect(within(footer).getAllByRole('link')).toHaveLength(2);
+    expect(within(footer).getAllByRole('button')).toHaveLength(1);
+    const actions = actionsIn(footer, 3);
+    expect(Array.from(footer.children)).toEqual(actions);
+    expect(new Set(actions.map((action) => action.textContent)).size).toBe(3);
+    for (const action of actions) {
+      await user.tab();
+      expect(document.activeElement).toBe(action);
+    }
+    await user.tab();
+    expect(document.activeElement).toBe(document.body);
+    expect(warn).not.toHaveBeenCalled();
+    expect(error).not.toHaveBeenCalled();
   });
 });

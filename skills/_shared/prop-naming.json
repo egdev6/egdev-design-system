@@ -1015,7 +1015,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       },
       {
@@ -1342,7 +1342,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       },
       {
@@ -2155,7 +2155,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardCodeProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       },
       {
@@ -4201,7 +4201,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardTagsProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       },
       {
@@ -4211,7 +4211,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardCodeProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       },
       {
@@ -5486,7 +5486,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       },
       {
@@ -5673,7 +5673,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       },
       {
@@ -6052,7 +6052,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       },
       {
@@ -8349,7 +8349,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       }
     ]
@@ -8386,7 +8386,7 @@
         "source": {
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
-          "revision": "sha256:5da961e5d9f85a2a444299cea66fb900f2ae8fa304bd6b3db761fc70b4a9517b"
+          "revision": "sha256:2b6e2f106a7afefb5a5acd4dee76eb429c7d1366a800035e017b11f79a5f78e1"
         }
       }
     ]
