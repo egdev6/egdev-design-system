@@ -4,6 +4,13 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## Unreleased
+
+### Changed
+
+- `Prose` documents how to write links: as bare `a` elements, which it styles at the body size, and never as `Link`,
+  whose label step is smaller. Documentation only: no prop, default, recipe or export changes. (#580)
+
 ## 0.12.0
 
 ### Added

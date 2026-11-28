@@ -309,6 +309,8 @@ test('Prose publishes its three own props, the static descendant recipe, the mea
   assert.deepEqual([tone.type, tone.required, tone.default], ['enum', false, 'canvas']);
   assert.match(size.description, /Root body step and unit of the ch measure/);
   assert.match(tone.description, /brand colour of inline code/);
+  // Links are written as bare anchors, which Prose styles at the body size, and never as `Link` (#580).
+  assert.match(children.description, /Write links as bare `a` elements[\s\S]+do not render `Link` inside it/);
   // No landmark role, accessible name, HTML string, ref or asChild: the root is a generic div over React children.
   for (const name of ['role', 'aria-label', 'aria-labelledby', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
     assert.ok(!prose.props.some((prop) => prop.name === name), `Prose must not publish ${name}`);

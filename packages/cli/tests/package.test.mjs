@@ -24,9 +24,10 @@ test('AC1 @egdev/cli ships bin egdev-ds, Node 24, no dependencies and a matching
   assert.equal(manifest.dependencies, undefined);
   assert.equal(manifest.devDependencies, undefined);
   assert.equal(manifest.scripts?.build, undefined, 'No build step: pnpm -r run build skips the package');
+  // An `## Unreleased` section may sit above the first release, as `changelogError` allows; the versioned sections are pinned.
   const headings = read('../CHANGELOG.md')
     .split('\n')
-    .filter((line) => /^##\s+\S/.test(line));
+    .filter((line) => /^##\s+\S/.test(line) && !/^##\s+unreleased\b/i.test(line));
   assert.deepEqual(headings.slice(0, 5), ['## 0.5.0', '## 0.4.0', '## 0.3.0', '## 0.2.0', '## 0.1.1']);
   const bin = read('../bin/egdev-ds.mjs');
   assert.ok(bin.startsWith('#!/usr/bin/env node\n'));

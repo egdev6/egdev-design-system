@@ -163,9 +163,10 @@ export function createGuard({ ts, postcss }) {
    * @param {string} themeDirectory
    * @param {string} sourceDirectory
    * @param {import('typescript').SourceFile | undefined} source
+   * @param {ReadonlySet<import('typescript').SourceFile>} proseSources files that render `Prose` (S1, #580)
    * @returns {GuardViolation[]}
    */
-  function findViolations(input, themeDirectory, sourceDirectory, source) {
+  function findViolations(input, themeDirectory, sourceDirectory, source, proseSources) {
     const { file, content } = input;
     /** @type {GuardViolation[]} */
     const found = [];
@@ -187,13 +188,17 @@ export function createGuard({ ts, postcss }) {
     };
     const pattern = patterns(sourceDirectory);
     if (source && pattern.tsx.test(file) && !pattern.test.test(file)) {
+      // S1 (#580): the bare anchor is a supported child of Prose, which styles it at the reading size; DS `Link`
+      // would read smaller there. The rendered tree is unknown, so the unit is the file that renders `Prose`.
+      const anchorsExempt = proseSources.has(source);
       /** @param {TsNode} node */
       const visit = (node) => {
         if (
           (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) &&
           ts.isIdentifier(node.tagName) &&
           ['button', 'input', 'a', 'label'].includes(node.tagName.text) &&
-          !isSlotChild(node)
+          !isSlotChild(node) &&
+          !(anchorsExempt && node.tagName.text === 'a')
         ) {
           add(node.getStart(source), node.getText(source));
         }
@@ -343,7 +348,7 @@ export function createGuard({ ts, postcss }) {
         );
       }
     }
-    const { classes, owners, appClasses } = collectClasses(files, sourceDirectory, sourceFiles);
+    const { classes, owners, appClasses, proseSources } = collectClasses(files, sourceDirectory, sourceFiles);
     for (const source of files) {
       // Preserve the existing DS041/DS046 matching, and share any DS047 exception only with
       // checks on the exact same rule offset (not another identical rule on the same line).
@@ -369,7 +374,13 @@ export function createGuard({ ts, postcss }) {
           }
         });
       }
-      const rawViolations = findViolations(source, themeDirectory, sourceDirectory, sourceFiles.get(source));
+      const rawViolations = findViolations(
+        source,
+        themeDirectory,
+        sourceDirectory,
+        sourceFiles.get(source),
+        proseSources
+      );
       for (const violation of rawViolations) {
         const offset = ruleOffsets.get(violation);
         const structuralRule = structuralByOffset.get(offset);

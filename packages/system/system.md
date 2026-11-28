@@ -2628,7 +2628,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · —
     - proseVariants base: [&_td]:text-body-default → --text-body-default
     - proseVariants size=sm: text-body-default → --text-body-default
     - proseVariants size=md: text-body-large → --text-body-large
-  - children: ReactNode; Converted and sanitized flow content as React nodes. (components[] · packages/ui/src/primitives/prose/types.ts)
+  - children: ReactNode; Converted and sanitized flow content as React nodes. Write links as bare `a` elements, which Prose styles at the body size; do not render `Link` inside it, because its label step is smaller. (components[] · packages/ui/src/primitives/prose/types.ts)
   - size: enum; Root body step and unit of the ch measure: md is the 16px reading size, sm the compact 12.8px step. (components[] · packages/ui/src/primitives/prose/types.ts)
   - tone: enum; Surface family hosting the prose: canvas for surface-0 and the grafito register, raised for surface-1 to surface-3 hosts. It only selects the brand colour of inline code and never paints a background. (components[] · packages/ui/src/primitives/prose/types.ts)
 ### Skeleton

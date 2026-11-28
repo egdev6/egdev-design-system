@@ -23,7 +23,8 @@ type ProseNativeProps = Omit<
  */
 export type ProseProps = ProseNativeProps & {
   /**
-   * Converted and sanitized flow content as React nodes.
+   * Converted and sanitized flow content as React nodes. Write links as bare `a` elements, which Prose styles at the
+   * body size; do not render `Link` inside it, because its label step is smaller.
    * @control false
    * @controlReason ReactNode content is not serializable in Controls; see the Default and Elements stories.
    */

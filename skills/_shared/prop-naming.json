@@ -1035,7 +1035,7 @@
         "source": {
           "path": "packages/ui/src/primitives/prose/types.ts",
           "symbol": "ProseProps",
-          "revision": "sha256:fea45507867ff2fc1088010361e918dee996d6a0d525e2f8a22207d0571dedae"
+          "revision": "sha256:47951ffff47ea2a6a333391de2db8193ee42507437634c50a17a6fd20836d5b7"
         }
       }
     ]
@@ -1620,7 +1620,7 @@
         "source": {
           "path": "packages/ui/src/primitives/prose/types.ts",
           "symbol": "ProseProps",
-          "revision": "sha256:fea45507867ff2fc1088010361e918dee996d6a0d525e2f8a22207d0571dedae"
+          "revision": "sha256:47951ffff47ea2a6a333391de2db8193ee42507437634c50a17a6fd20836d5b7"
         }
       }
     ]
