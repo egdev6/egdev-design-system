@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+- `doctor` DS046 and DS047 treat design-system components imported through a local barrel exactly as direct imports. A
+  barrel is a non-test `.ts` or `.tsx` file under `sourceDirectory` with a named re-export from `@egdev/ui` or
+  `@egdev/effects` (`export { Button } from '@egdev/ui'`, aliased or not; type-only re-exports are ignored). A named,
+  aliased or namespace import of one of its names, reached by a relative path or by an alias in `tsconfig.json`
+  `compilerOptions.paths` (comments and trailing commas allowed; `extends` is not followed), is checked as the component
+  it re-exports, with that package's `classNameAllows`. Apps that import through a barrel, such as egdev-website with
+  `@/components/egdev-ui`, can therefore see new DS046 and DS047 errors: resolve them through the component API or an
+  issue-backed allowlist entry. (#582)
+- New `doctor` warning DS049 for a barrel the guard cannot follow, once per file: it has an `export *`, an
+  `export * as NS` or a local re-export of an imported binding, or no import in a scanned non-test `.tsx` file resolves
+  to it (for example an alias missing from `tsconfig.json` `paths`), so DS046 and DS047 do not check what it re-exports.
+  It cannot be allowlisted and `--fail-on-pending` does not change it. DS040, DS041, DS048 and every other check are
+  unchanged. (#582)
+
 ## 0.6.0
 
 - `doctor` DS040 no longer reports a raw `<a>` in a file that renders `Prose`: Prose styles the bare anchors of long-form

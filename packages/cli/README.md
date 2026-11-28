@@ -379,9 +379,10 @@ Codes are stable: a code is never reused for another check.
 | DS043 | warning (error with `--fail-on-pending`) | Guard: `<localRepo>#TBD-*` placeholders pending. |
 | DS044 | error | `typescript` or `postcss` is not resolvable from the project; the guard needs both. |
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
-| DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` or `@egdev/effects` component to set properties outside the base placement list and that component's `classNameAllows` contract. |
-| DS047 | error | Guard: an app CSS selector reaches into an `@egdev/ui` component's internal structure. |
+| DS046 | error | Guard: an app CSS rule outside `themeDirectory` uses a class on an `@egdev/ui` or `@egdev/effects` component, imported directly or through a local barrel, to set properties outside the base placement list and that component's `classNameAllows` contract. |
+| DS047 | error | Guard: an app CSS selector reaches into the internal structure of an `@egdev/ui` component, imported directly or through a local barrel. |
 | DS048 | error | Guard: app code queries DS markup by its `.eg-*` class markers. |
+| DS049 | warning | Guard: a local barrel of `@egdev/ui` or `@egdev/effects` that DS046 and DS047 cannot follow, so they do not check what it re-exports: an `export *`, an `export * as NS`, a local re-export of an imported binding, or no scanned import resolves to it. Not allowlistable; `--fail-on-pending` does not change it. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
 | DS051 | warning | The nearest `design/system.md`, from the project up to its repository root (the nearest folder with `.git`), records a design system commit in its first line (`<!-- Generated from EGDEV design system <commit>; … -->`) other than the vendored one: regenerate it. Skipped without the file, a recorded commit or a single vendored commit. |
 | DS052 | warning | With `--from` at the same vendored commit, each guard allowlist entry whose `egdev6/egdev-design-system#N` issue occurs in `resolves` for a package the project uses names a mitigation to remove. One warning lists the relevant resolving packages and versions in package-name order, with the source line when available. Skipped without `--from`; with a release whose `resolves` is empty or absent it adds no finding; otherwise skipped when the vendored commit is mixed, absent or differs from the release, or when the allowlist cannot be loaded; `--fail-on-pending` does not change its severity. |
@@ -414,8 +415,8 @@ DS040 accepts a raw `<a` in a non-test `.tsx` file that renders `Prose`, which s
 content at the reading size: DS `Link` uses a smaller label step there. A file counts when one of its JSX elements is
 `Prose` imported by that export name from any module (`import { Prose }`, `import { Prose as Reading }` or a namespace
 member such as `<DS.Prose>`, from `@egdev/ui`, an app barrel such as `@/components/egdev-ui` or a relative path). The
-guard resolves no modules, so a type-only import, a default import, a re-export, a barrel alias that renames the export
-and a name shadowed by a parameter or local do not count. An anchor anywhere in that file is accepted, inside the
+exemption resolves no modules (DS046 and DS047 do follow local barrels, below), so a type-only import, a default
+import, a re-export, a barrel alias that renames the export and a name shadowed by a parameter or local do not count. An anchor anywhere in that file is accepted, inside the
 `Prose` element or outside it, so an unrelated raw `<a` in the same file passes too, and so does one in a file that
 imports an app component under the export name `Prose`. `<button`, `<input` and `<label` are still reported there, and
 each file is judged alone: an anchor in a separate converter file stays reported, so keep it in the file that renders
@@ -474,6 +475,31 @@ nested rules are checked. DS046 and DS047 allowlist entries use the CSS file and
 selector. For a rule that triggers DS047, a full-selector entry also covers its DS041 parts. A DS041 entry for one
 comma-list part covers only that part, not other parts or DS046/DS047; it remains used while that part exists. Duplicate
 rules need separate entries. Existing DS042 stale and DS043 pending rules apply.
+
+A component imported through a local barrel is checked by DS046 and DS047 exactly as if it were imported directly
+(amendment `odd/tasks/doctor-barrels-582.md` S2 to S5). A barrel is a non-test `.ts` or `.tsx` file under
+`sourceDirectory`, honoring `exclude`, with at least one value re-export from `@egdev/ui` or `@egdev/effects`, such as
+egdev-website's `@/components/egdev-ui`. The guard follows its named re-exports (`export { Button } from '@egdev/ui'` and
+`export { Card as Panel } from '@egdev/ui'`; type-only ones are ignored) without TypeScript module resolution. A named,
+aliased or namespace import of one of those names in a non-test `.tsx` file becomes an owner of the component the barrel
+re-exports, with that package's `classNameAllows` and the same shadowing, type-only and default-import rules as a direct
+import; DS047 still treats only `@egdev/ui` owners as structural. A name the barrel does not re-export from `@egdev/*`,
+such as its own wrappers, is not an owner. DS040, DS041 and DS048 are unchanged.
+
+An import reaches a barrel, one hop, when it resolves to the barrel's file: a relative specifier, or one matched by
+`compilerOptions.paths` in `<project>/tsconfig.json` (comments and trailing commas are allowed), relative to
+`compilerOptions.baseUrl` or the tsconfig directory, with `*` wildcards substituted as TypeScript does and each target
+tried in order. A candidate is tried as written, then with `.ts`, `.tsx`, `/index.ts` and `/index.tsx`. `extends` is not
+followed, a bare `baseUrl` without a `paths` entry resolves nothing, and a missing or unreadable `tsconfig.json` adds no
+mappings and no finding.
+
+DS049 warns, once per barrel file, when the guard cannot follow a barrel, so DS046 and DS047 do not check what it
+re-exports: it has an `export *`, an `export * as NS` or a local re-export of an imported binding
+(`import { Button } from '@egdev/ui'; export { Button }`), or no import in a scanned non-test `.tsx` file resolves to it,
+typically because its alias is missing from `paths`. Re-export each component by name from its package and import the
+barrel by a relative path or a `paths` alias. DS049 cannot be allowlisted (an entry for it is stale, DS042) and
+`--fail-on-pending` does not change it. An app that updates the CLI and imports components through a barrel can see new
+DS046 and DS047 errors; resolve them through the component API or an issue-backed exception.
 
 DS048 checks non-test `.ts` and `.tsx` files under `sourceDirectory`, honoring `exclude`. It reports one finding per
 call to `querySelector`, `querySelectorAll`, `closest` or `matches` on any receiver when the static first argument

@@ -1,5 +1,5 @@
 // The design-system guard, moved from the egdev-design-system skill (assets/guard/
-// design-system-guard.ts) with DS040–DS045 parity, and extended for DS046–DS048. `typescript` and
+// design-system-guard.ts) with DS040–DS045 parity, and extended for DS046–DS049. `typescript` and
 // `postcss` are injected from the consumer project (Q4); the tree follows `sourceDirectory`.
 import { createAppearanceGuard, ruleOffsets } from './appearance-guard.mjs';
 import { createDomGuard } from './dom-guard.mjs';
@@ -35,14 +35,19 @@ import { createDomGuard } from './dom-guard.mjs';
  * @typedef {import('../types/index.d.ts').GuardAllowlistEntry} GuardAllowlistEntry
  */
 /** @typedef {{ file: string, line: number, snippet: string }} GuardViolation */
-/** @typedef {{ violations: GuardViolation[], appearanceViolations: import('./appearance-guard.mjs').AppearanceViolation[], structuralViolations?: import('./appearance-guard.mjs').StructuralViolation[], domViolations?: import('./dom-guard.mjs').DomViolation[], errors: string[], pendingIssueCount: number }} GuardResult */
+/**
+ * `barrelWarnings` lists the barrels DS046 and DS047 cannot follow (DS049, #582); it is absent when there are none.
+ * @typedef {{ violations: GuardViolation[], appearanceViolations: import('./appearance-guard.mjs').AppearanceViolation[], structuralViolations?: import('./appearance-guard.mjs').StructuralViolation[], domViolations?: import('./dom-guard.mjs').DomViolation[], barrelWarnings?: import('./barrels.mjs').BarrelWarning[], errors: string[], pendingIssueCount: number }} GuardResult
+ */
 /**
  * `localRepo`: repository name used for local issue references (`<localRepo>#N`, `<localRepo>#TBD-slug`).
  * `themeDirectory`: app theme layer, the only place where CSS may target DS internals.
  * `sourceDirectory`: guarded tree, without a trailing slash.
  * `classNameAllows`: per-component properties supplied by the consumer's installed system artifact, keyed
  * `<package>:<export>` (`allowanceKey`) so an allowance applies only to imports from its own package.
- * @typedef {{ localRepo?: string, themeDirectory?: string, sourceDirectory?: string, classNameAllows?: ReadonlyMap<string, ReadonlySet<string>> }} GuardOptions
+ * `pathMappings`: the project's tsconfig `paths`, read by the caller (#582, S3); the guard reads no file, so without
+ * it only relative imports reach a barrel.
+ * @typedef {{ localRepo?: string, themeDirectory?: string, sourceDirectory?: string, classNameAllows?: ReadonlyMap<string, ReadonlySet<string>>, pathMappings?: import('./barrels.mjs').PathMappings }} GuardOptions
  */
 
 /** @param {string} text */
@@ -278,7 +283,13 @@ export function createGuard({ ts, postcss }) {
   function checkDesignSystem(
     files,
     allowlist,
-    { localRepo = 'nexo', themeDirectory = 'src/theme/', sourceDirectory = 'src', classNameAllows = new Map() } = {}
+    {
+      localRepo = 'nexo',
+      themeDirectory = 'src/theme/',
+      sourceDirectory = 'src',
+      classNameAllows = new Map(),
+      pathMappings
+    } = {}
   ) {
     const local = escapeRegExp(localRepo);
     const issuePattern = new RegExp(
@@ -348,7 +359,12 @@ export function createGuard({ ts, postcss }) {
         );
       }
     }
-    const { classes, owners, appClasses, proseSources } = collectClasses(files, sourceDirectory, sourceFiles);
+    const { classes, owners, appClasses, proseSources, barrelWarnings } = collectClasses(
+      files,
+      sourceDirectory,
+      sourceFiles,
+      pathMappings
+    );
     for (const source of files) {
       // Preserve the existing DS041/DS046 matching, and share any DS047 exception only with
       // checks on the exact same rule offset (not another identical rule on the same line).
@@ -459,6 +475,7 @@ export function createGuard({ ts, postcss }) {
       appearanceViolations,
       ...(structuralViolations.length ? { structuralViolations } : {}),
       ...(domViolations.length ? { domViolations } : {}),
+      ...(barrelWarnings.length ? { barrelWarnings } : {}),
       errors,
       pendingIssueCount: allowlist.filter((entry) => pendingIssuePattern.test(entry.issue)).length
     };

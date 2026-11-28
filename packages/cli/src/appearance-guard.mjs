@@ -1,7 +1,12 @@
 // DS046/DS047: relate static JSX classes to app CSS rules. This module uses the guard's injected
 // parsers and source-path patterns; it never resolves packages or walks the disk. The same symbol
-// resolution also records which files render `Prose` (S1, #580), for the DS040 anchor exemption.
+// resolution also records which files render `Prose` (S1, #580), for the DS040 anchor exemption. A component
+// imported through a local barrel of `@egdev/ui` or `@egdev/effects` is an owner like a direct import, and a barrel
+// the guard cannot follow is collected for DS049 (S2 to S5, #582); barrels.mjs reads and resolves them in memory.
+import { readBarrel, resolveImport } from './barrels.mjs';
 
+/** @typedef {import('./barrels.mjs').BarrelExport} BarrelExport */
+/** @typedef {import('./barrels.mjs').BarrelWarning} BarrelWarning */
 /** @typedef {import('./guard.mjs').GuardEngine} GuardEngine */
 /** @typedef {import('./guard.mjs').GuardSource} GuardSource */
 /** @typedef {import('./guard.mjs').PostcssRule} PostcssRule */
@@ -498,9 +503,10 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
    * @param {readonly GuardSource[]} files
    * @param {string} sourceDirectory
    * @param {Map<GuardSource, import('typescript').SourceFile>} sourceFiles
-   * @returns {{ classes: Map<string, string>, owners: Map<string, ClassOwner[]>, appClasses: Set<string>, proseSources: Set<import('typescript').SourceFile> }}
+   * @param {import('./barrels.mjs').PathMappings | undefined} pathMappings
+   * @returns {{ classes: Map<string, string>, owners: Map<string, ClassOwner[]>, appClasses: Set<string>, proseSources: Set<import('typescript').SourceFile>, barrelWarnings: BarrelWarning[] }}
    */
-  function collectClasses(files, sourceDirectory, sourceFiles) {
+  function collectClasses(files, sourceDirectory, sourceFiles, pathMappings) {
     /** @type {Map<string, string>} */
     const classes = new Map();
     /** @type {Map<string, ClassOwner[]>} */
@@ -512,14 +518,49 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
     const pattern = patterns(sourceDirectory);
     /** @type {Map<string, import('typescript').SourceFile>} */
     const sources = new Map();
+    // Every scanned non-test `.ts` and `.tsx` file is a module an import can resolve to (S3); the ones that re-export a
+    // value from a guarded package are barrels (S2). `reached` collects the barrels that a scanned import resolves to.
+    /** @type {Set<string>} */
+    const modules = new Set();
+    /** @type {Map<string, import('./barrels.mjs').Barrel>} */
+    const barrels = new Map();
+    /** @type {Set<string>} */
+    const reached = new Set();
     for (const input of files) {
       const parsed = sourceFiles.get(input);
-      if (parsed && pattern.tsx.test(input.file) && !pattern.test.test(input.file)) {
+      if (!parsed) {
+        continue;
+      }
+      modules.add(input.file);
+      const barrel = readBarrel(ts, GUARDED_PACKAGES, normalize, parsed);
+      if (barrel) {
+        barrels.set(input.file, barrel);
+      }
+      if (pattern.tsx.test(input.file) && !pattern.test.test(input.file)) {
         sources.set(`/${input.file}`, parsed);
       }
     }
+    /**
+     * DS049 (S5): a barrel with a value re-export the guard cannot follow, or that no scanned import resolved to.
+     * @returns {BarrelWarning[]}
+     */
+    const unfollowed = () =>
+      [...barrels].flatMap(([file, { unfollowable }]) => {
+        const [first] = unfollowable;
+        const unreached = !reached.has(file);
+        return first || unreached
+          ? [
+              {
+                file,
+                ...(first ? { line: first.line } : {}),
+                reexports: unfollowable.map(({ snippet }) => snippet),
+                unreached
+              }
+            ]
+          : [];
+      });
     if (sources.size === 0) {
-      return { classes, owners, appClasses, proseSources };
+      return { classes, owners, appClasses, proseSources, barrelWarnings: unfollowed() };
     }
     // An in-memory, no-resolution program distinguishes imports from local shadowing. It cannot
     // read the consumer's filesystem or load its types, and uses the source files already parsed.
@@ -551,33 +592,51 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       const declarations = symbol?.getDeclarations();
       return declarations?.length === 1 && declarations[0] === binding ? symbol : undefined;
     };
-    for (const source of sources.values()) {
-      /** @type {Map<import('typescript').Symbol, { exportName: string, packageName: string }>} */
+    /**
+     * What an import of `specifier` exposes by name: every export of a guarded package, or the names a local barrel
+     * re-exports from one. Resolving a barrel records that a scanned import reaches it, even when that import is
+     * type-only, because the specifier then resolves.
+     * @param {string} importer project-relative path of the importing file
+     * @param {string} specifier
+     * @returns {((name: string) => BarrelExport | undefined) | undefined}
+     */
+    const exportsOf = (importer, specifier) => {
+      if (GUARDED_PACKAGES.includes(specifier)) {
+        return (name) => ({ exportName: name, packageName: specifier });
+      }
+      const file = barrels.size > 0 ? resolveImport(importer, specifier, modules, pathMappings) : undefined;
+      const barrel = file === undefined ? undefined : barrels.get(file);
+      if (file === undefined || !barrel) {
+        return undefined;
+      }
+      reached.add(file);
+      return (name) => barrel.names.get(name);
+    };
+    for (const [key, source] of sources) {
+      /** @type {Map<import('typescript').Symbol, BarrelExport>} */
       const named = new Map();
-      /** @type {Map<import('typescript').Symbol, string>} */
+      /** @type {Map<import('typescript').Symbol, (name: string) => BarrelExport | undefined>} */
       const namespaces = new Map();
       for (const statement of source.statements) {
-        if (
-          !ts.isImportDeclaration(statement) ||
-          !ts.isStringLiteral(statement.moduleSpecifier) ||
-          !GUARDED_PACKAGES.includes(statement.moduleSpecifier.text) ||
-          statement.importClause?.isTypeOnly
-        ) {
+        if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) {
           continue;
         }
-        // `package` is a reserved word in strict mode, so the binding is named `packageName`.
-        const packageName = statement.moduleSpecifier.text;
+        const lookup = exportsOf(key.slice(1), statement.moduleSpecifier.text);
+        if (!lookup || statement.importClause?.isTypeOnly) {
+          continue;
+        }
         const bindings = statement.importClause?.namedBindings;
         if (bindings && ts.isNamespaceImport(bindings)) {
           const symbol = checker.getSymbolAtLocation(bindings.name);
           if (symbol) {
-            namespaces.set(symbol, packageName);
+            namespaces.set(symbol, lookup);
           }
         } else if (bindings && ts.isNamedImports(bindings)) {
           for (const binding of bindings.elements) {
             const symbol = checker.getSymbolAtLocation(binding.name);
-            if (!binding.isTypeOnly && symbol) {
-              named.set(symbol, { exportName: (binding.propertyName ?? binding.name).text, packageName });
+            const exported = lookup((binding.propertyName ?? binding.name).text);
+            if (!binding.isTypeOnly && symbol && exported) {
+              named.set(symbol, exported);
             }
           }
         }
@@ -669,7 +728,7 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
             ? ts.isIdentifier(tag)
               ? named.get(symbol)
               : ts.isPropertyAccessExpression(tag) && namespace
-                ? { exportName: tag.name.text, packageName: namespace }
+                ? namespace(tag.name.text)
                 : undefined
             : undefined;
           /** @type {ClassOwner | undefined} */
@@ -698,7 +757,7 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
       };
       visit(source);
     }
-    return { classes, owners, appClasses, proseSources };
+    return { classes, owners, appClasses, proseSources, barrelWarnings: unfollowed() };
   }
 
   /**
