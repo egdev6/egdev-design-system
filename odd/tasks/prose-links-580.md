@@ -12,7 +12,7 @@ Branch `feat/prose-links-580`. Consumer issue egdev6/egdev-website#49. Gates: ca
 |---|---|---|---|---|---|
 | T1 | S1 | Cataloging, spec and plan drafts; owner approval | writer + owner | Done (L2) | 81de362 |
 | T2 | S1 | Implementation, test-first and independent verification | writer + verifier | Done (L3–L4) | 63f3b86, 3d359f8, db816d1, 22aeb4a |
-| T3 | S1 | PR, owner merge, release, close #580, notify the website | inline | Done except PRS2-12 (L6) | 91fdfc5, 7c28fef |
+| T3 | S1 | PR, owner merge, release, close #580, notify the website | inline | Done (L6–L7) | 91fdfc5, 7c28fef |
 
 Risk: item 3 — shared guard collection also serves DS041 and DS046–DS048. Independent verification is recorded in L3–L4.
 
@@ -28,3 +28,7 @@ Risk: item 3 — shared guard collection also serves DS041 and DS046–DS048. In
 - L4 — B1 corrected in one batch: qualification now requires the exact import binding to be the symbol's sole declaration. Regression RED: 11 pass, 2 fail; GREEN: 13/13; CLI suite 258/258; typecheck and lint exit 0. Parent spot check: 13/13. Independent recheck first ran zero tests because its prior scratch had expired (setup exit 2); one setup recovery with fresh isolated fixtures passed 13/13 (mwzob42h-2o-9uqk). S1/T2 and PRS2-02/07 now pass, including exact text/JSON, exit status, unchanged app trees and valid G4 imports. PRS2-12 remains pending after release; no versions changed.
 - L5 — Owner merged PR #583 as 91fdfc5 with the B1 correction 22aeb4a. Owner release choice, verbatim: "Todo lo pendiente (Recomendado)"; tracked in `odd/tasks/release-cli-0.6.0.md`.
 - L6 — Release PR #584 merged as 7c28fef: cli 0.6.0, ui 0.12.1, system 0.14.1, effects 0.2.14, mcp 0.4.14. Clean `release:pack` on main. Owner grant, verbatim: "Comentar y cerrar (Recomendado)"; #580 commented and closed. egdev-website session notified (message a3d03266). PRS2-12 waits for the website's `egdev-ds doctor` report.
+- L7 — PRS2-12 passed, reported by the egdev-website session: `egdev-ds upgrade` to 7c28fef verified 6 vendored
+  integrities; `egdev-ds doctor . --from release/` gave 0 errors, 0 warnings, 0 skipped; no DS040 allowlist entries
+  covered Prose anchors, so none became stale (DS042); website typecheck, lint and vitest (1179 passed, 12 skipped) green.
+  Side report: `egdev-system-md --write` omits the `Generated from EGDEV design system <commit>` header, so DS051 skips.
