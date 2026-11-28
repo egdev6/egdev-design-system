@@ -35,6 +35,8 @@ import { flattenMessage } from './text.mjs';
 /** @typedef {import('./guard.mjs').GuardAllowlistEntry} GuardAllowlistEntry */
 /** @typedef {import('./guard.mjs').GuardSource} GuardSource */
 /** @typedef {import('./guard.mjs').GuardEngine} GuardEngine */
+/** @typedef {import('./barrels.mjs').PathMappings} PathMappings */
+/** @typedef {import('./barrels.mjs').BarrelWarning} BarrelWarning */
 /** @typedef {'error' | 'warning' | 'skipped'} Severity */
 /** @typedef {{ code: string, severity: Severity, message: string, file?: string, line?: number }} Finding */
 /**
@@ -109,6 +111,58 @@ function readText(path) {
   } catch {
     return null;
   }
+}
+
+/**
+ * `compilerOptions.paths` of `<project>/tsconfig.json` as data for the guard, so a barrel imported through an alias
+ * such as `@/components/egdev-ui` can be reached (#582, S3). The project's own TypeScript reads the file, which accepts
+ * comments and trailing commas. `extends` is not followed. A missing, unreadable or invalid file, or one without usable
+ * `paths`, adds no mappings and no finding: a barrel that stays unreached is reported by DS049.
+ * @param {string} project
+ * @param {GuardEngine['ts']} ts
+ * @returns {PathMappings | undefined}
+ */
+function readPathMappings(project, ts) {
+  const text = readText(join(project, 'tsconfig.json'));
+  if (text === null) {
+    return undefined;
+  }
+  try {
+    const { config, error } = ts.parseConfigFileTextToJson('tsconfig.json', text);
+    const options = !error && isRecord(config) && isRecord(config.compilerOptions) ? config.compilerOptions : undefined;
+    if (!options || !isRecord(options.paths)) {
+      return undefined;
+    }
+    /** @type {Map<string, string[]>} */
+    const paths = new Map();
+    for (const [pattern, targets] of Object.entries(options.paths)) {
+      if (Array.isArray(targets)) {
+        paths.set(
+          pattern,
+          targets.filter((target) => typeof target === 'string')
+        );
+      }
+    }
+    // Targets are relative to `baseUrl`, itself relative to the tsconfig directory, which is the project.
+    const baseUrl = typeof options.baseUrl === 'string' ? options.baseUrl : '.';
+    const baseDirectory = relative(project, resolve(project, baseUrl)).split('\\').join('/');
+    return paths.size > 0 ? { baseDirectory, paths } : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * The DS049 text (#582, S5): why the guard cannot follow a barrel, and how to fix each reason.
+ * @param {BarrelWarning} barrel
+ */
+function barrelMessage({ reexports, unreached }) {
+  const reasons = [...reexports, ...(unreached ? ['no scanned import resolves to it'] : [])];
+  const fixes = [
+    ...(reexports.length > 0 ? ['re-export each component by name from its package'] : []),
+    ...(unreached ? ['import the barrel by a relative path or a tsconfig.json paths alias'] : [])
+  ];
+  return `Barrel not followed (${reasons.join('; ')}): DS046 and DS047 do not check what it re-exports; ${fixes.join(' and ')}.`;
 }
 
 /** @param {string} path */
@@ -266,9 +320,9 @@ export function findInstalled(from, name, root) {
 }
 
 /**
- * Walks the guarded tree: `.tsx` and `.css` files, plus `.ts` for DS048 when requested, sorted by
- * name, skipping symlinks, `node_modules` and excluded paths. Existing mitigation notices keep their
- * previous `.tsx`/`.css` source set.
+ * Walks the guarded tree: `.tsx` and `.css` files, plus `.ts` for DS048 and for barrels (DS046, DS047, DS049) when
+ * requested, sorted by name, skipping symlinks, `node_modules` and excluded paths. Existing mitigation notices keep
+ * their previous `.tsx`/`.css` source set.
  * @param {string} project
  * @param {DoctorConfig} config
  * @param {boolean} [includeTs]
@@ -753,7 +807,7 @@ export async function runDoctor({ project, release, failOnPending = false }) {
     }
   }
 
-  // DS045, DS044, DS040-DS043, DS046-DS048
+  // DS045, DS044, DS040-DS043, DS046-DS049
   const { config, problem } = readConfig(project, manifest);
   if (problem) {
     add('DS045', 'error', problem, CONFIG_FILE);
@@ -799,7 +853,8 @@ export async function runDoctor({ project, release, failOnPending = false }) {
         localRepo: config.localRepo,
         themeDirectory: config.themeDirectory,
         sourceDirectory: config.sourceDirectory,
-        classNameAllows: readClassNameAllows(require)
+        classNameAllows: readClassNameAllows(require),
+        pathMappings: readPathMappings(project, engine.ts)
       });
       for (const { file, line, snippet } of result.violations) {
         if (file.endsWith('.css')) {
@@ -849,6 +904,9 @@ export async function runDoctor({ project, release, failOnPending = false }) {
           line,
           index
         );
+      }
+      for (const barrel of result.barrelWarnings ?? []) {
+        add('DS049', 'warning', barrelMessage(barrel), barrel.file, barrel.line);
       }
       for (const error of result.errors) {
         const split = error.indexOf(': ');

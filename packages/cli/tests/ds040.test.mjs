@@ -3,7 +3,7 @@ import { rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { after, test } from 'node:test';
 import { createGuard } from '../src/guard.mjs';
-import { engine, npmViteFixture, runBin, treeHash, write } from './helpers.mjs';
+import { engine, json, npmViteFixture, runBin, treeHash, write } from './helpers.mjs';
 
 // S1 (#580): DS040 accepts a raw `a` in a file that renders `Prose`. Prose styles the bare anchors of long-form
 // content at the reading size, so DS `Link` (a smaller label step) is the wrong element there. The guard resolves no
@@ -220,9 +220,17 @@ test('S1 a file is not a Prose file when the name is not an import of the export
       2
     ]
   ];
+  // A `.tsx` file that re-exports from the package is also a barrel that no import reaches (#582, S5, DS049); its
+  // DS040 result is the one this test pins and does not change.
+  const unreachedBarrel = { barrelWarnings: [{ file: 'src/page.tsx', reexports: [], unreached: true }] };
   assert.deepEqual(
     judge(rows),
-    Object.fromEntries(rows.map(([name, , line]) => [name, outcome([violation(line, link)])]))
+    Object.fromEntries(
+      rows.map(([name, , line]) => [
+        name,
+        { ...outcome([violation(line, link)]), ...(name === 'a re-export' ? unreachedBarrel : {}) }
+      ])
+    )
   );
 });
 
@@ -424,7 +432,9 @@ const proseOverBlocks = [
   '}',
   ''
 ].join('\n');
+// The website aliases `@/*` to `src/*` in its tsconfig.json, which is how its barrel is reached (#582, S3).
 const websiteShaped = (app, content) => {
+  write(join(app.project, 'tsconfig.json'), json({ compilerOptions: { paths: { '@/*': ['./src/*'] } } }));
   write(join(app.project, 'src/components/egdev-ui.ts'), barrel);
   write(join(app.project, 'src/components/detail-prose.tsx'), content);
 };
