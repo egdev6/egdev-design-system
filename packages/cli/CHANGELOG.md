@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.0
 
 - `doctor` DS040 no longer reports a raw `<a>` in a file that renders `Prose`: Prose styles the bare anchors of long-form
   content at the reading size, so DS `Link`, with its smaller label step, is the wrong element there. A file counts when

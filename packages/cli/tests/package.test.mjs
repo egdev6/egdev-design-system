@@ -9,7 +9,7 @@ const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 test('AC1 @egdev/cli ships bin egdev-ds, Node 24, no dependencies and a matching changelog', () => {
   const manifest = JSON.parse(read('../package.json'));
   assert.equal(manifest.name, '@egdev/cli');
-  assert.equal(manifest.version, '0.5.0');
+  assert.equal(manifest.version, '0.6.0');
   assert.equal(manifest.type, 'module');
   assert.deepEqual(manifest.bin, { 'egdev-ds': './bin/egdev-ds.mjs' });
   assert.deepEqual(manifest.files, ['bin', 'src', 'types', 'CHANGELOG.md']);
@@ -28,7 +28,7 @@ test('AC1 @egdev/cli ships bin egdev-ds, Node 24, no dependencies and a matching
   const headings = read('../CHANGELOG.md')
     .split('\n')
     .filter((line) => /^##\s+\S/.test(line) && !/^##\s+unreleased\b/i.test(line));
-  assert.deepEqual(headings.slice(0, 5), ['## 0.5.0', '## 0.4.0', '## 0.3.0', '## 0.2.0', '## 0.1.1']);
+  assert.deepEqual(headings.slice(0, 5), ['## 0.6.0', '## 0.5.0', '## 0.4.0', '## 0.3.0', '## 0.2.0']);
   const bin = read('../bin/egdev-ds.mjs');
   assert.ok(bin.startsWith('#!/usr/bin/env node\n'));
   assert.ok(statSync(new URL('../bin/egdev-ds.mjs', import.meta.url)).mode & 0o100, 'The bin is executable');
