@@ -130,7 +130,7 @@ test('AC2 bin: --help and --version print on stdout and exit 0', () => {
   assert.deepEqual(help, { status: 0, stdout: USAGE, stderr: '' });
   assert.match(USAGE, /^Usage:\n {2}egdev-ds init {4}<project> \[--from <dir>\]/);
   assert.match(USAGE, /\n {2}egdev-ds doctor {2}<project> \[--from <dir>\] \[--fail-on-pending\] \[--json\]\n/);
-  assert.deepEqual(runBin(['--version'], cwd), { status: 0, stdout: '0.5.0\n', stderr: '' });
+  assert.deepEqual(runBin(['--version'], cwd), { status: 0, stdout: '0.6.0\n', stderr: '' });
 });
 
 test('AC2 bin: misuse exits 2 with one error line plus usage on stderr, empty stdout, no files changed', () => {
