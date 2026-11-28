@@ -226,6 +226,29 @@ test('S1 a file is not a Prose file when the name is not an import of the export
   );
 });
 
+const redeclaredAnchor = '<a href="/outside" />';
+const redeclaredProseRows = [
+  ['named', "import { Prose } from './barrel';", 'Prose', 'Prose'],
+  ['aliased', "import { Prose as Reading } from './barrel';", 'Reading', 'Reading'],
+  ['namespace', "import * as DS from './barrel';", 'DS', 'DS.Prose']
+].flatMap(([kind, imported, local, tag]) =>
+  [
+    ['const', `const ${local} = () => null;`],
+    ['function', `function ${local}() { return null; }`],
+    ['class', `class ${local} {}`]
+  ].map(([declarationKind, declaration]) => [
+    `${kind}-${declarationKind}`,
+    [imported, declaration, `const x = <${tag}>${redeclaredAnchor}</${tag}>;`]
+  ])
+);
+
+test('S1 DS040 reports anchors when a Prose import is redeclared in the same scope', () => {
+  assert.deepEqual(
+    judge(redeclaredProseRows),
+    Object.fromEntries(redeclaredProseRows.map(([name]) => [name, outcome([violation(3, redeclaredAnchor)])]))
+  );
+});
+
 test('S1 only a is exempt: button, input and label are still reported in a file that renders Prose', () => {
   const result = checkDesignSystem(
     [
@@ -454,6 +477,49 @@ test('S1 doctor: the same anchor in a file that does not render Prose is one DS0
     stderr: ''
   });
   assert.equal(treeHash(app.root), before, 'doctor never writes');
+});
+
+test('S1 doctor: redeclaring a Prose import reports exact DS040 findings without writes', () => {
+  const app = fixture();
+  const args = ['doctor', app.argument];
+  const textBaseline = runBin(args, app.root);
+  const jsonBaseline = runBin([...args, '--json'], app.root);
+  assert.equal(textBaseline.status, 0);
+  assert.equal(textBaseline.stderr, '');
+  assert.equal(jsonBaseline.status, 0);
+  assert.equal(jsonBaseline.stderr, '');
+
+  write(join(app.project, 'src/barrel.ts'), barrel);
+  const message = `Raw ${redeclaredAnchor}: use a DS component or add an allowlist entry with an issue.`;
+  const findings = redeclaredProseRows
+    .map(([name, lines]) => {
+      const file = `src/redeclared-${name}.tsx`;
+      write(join(app.project, file), `${lines.join('\n')}\n`);
+      return { code: 'DS040', severity: 'error', message, file, line: 3 };
+    })
+    .sort((a, b) => a.file.localeCompare(b.file));
+  const lines = findings.map(({ file, line }) => `DS040 error ${file}:${line}: ${message}`).join('\n');
+  const expectedJson = JSON.parse(jsonBaseline.stdout);
+  expectedJson.findings.splice(2, 0, ...findings);
+  expectedJson.result = 'failed';
+
+  const before = treeHash(app.root);
+  const text = runBin(args, app.root);
+  const json = runBin([...args, '--json'], app.root);
+  assert.equal(treeHash(app.root), before, 'doctor never writes');
+  assert.deepEqual(
+    { text, json },
+    {
+      text: {
+        status: 1,
+        stdout: textBaseline.stdout
+          .replace('DS051 skipped', `${lines}\nDS051 skipped`)
+          .replace('0 errors, 0 warnings, 4 skipped.', `${findings.length} errors, 0 warnings, 4 skipped.`),
+        stderr: ''
+      },
+      json: { status: 1, stdout: `${JSON.stringify(expectedJson, null, 2)}\n`, stderr: '' }
+    }
+  );
 });
 
 test('S1 doctor: an allowlist entry for an exempt anchor is a stale DS042 finding', () => {

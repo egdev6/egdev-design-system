@@ -541,6 +541,16 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
     };
     const program = ts.createProgram([...sources.keys()], { noLib: true, noResolve: true, types: [] }, host);
     const checker = program.getTypeChecker();
+    /**
+     * For DS040 only: TypeScript can attach a conflicting same-scope declaration to the import's symbol.
+     * The symbol must come from this import and no other declaration to qualify for the exemption.
+     * @param {import('typescript').ImportSpecifier | import('typescript').NamespaceImport} binding
+     */
+    const soleImportSymbol = (binding) => {
+      const symbol = checker.getSymbolAtLocation(binding.name);
+      const declarations = symbol?.getDeclarations();
+      return declarations?.length === 1 && declarations[0] === binding ? symbol : undefined;
+    };
     for (const source of sources.values()) {
       /** @type {Map<import('typescript').Symbol, { exportName: string, packageName: string }>} */
       const named = new Map();
@@ -584,14 +594,17 @@ export function createAppearanceGuard({ ts, postcss }, patterns, normalize) {
             ? statement.importClause?.namedBindings
             : undefined;
         if (bindings && ts.isNamespaceImport(bindings)) {
-          const symbol = checker.getSymbolAtLocation(bindings.name);
+          const symbol = soleImportSymbol(bindings);
           if (symbol) {
             proseNamespaces.add(symbol);
           }
         } else if (bindings && ts.isNamedImports(bindings)) {
           for (const binding of bindings.elements) {
-            const symbol = checker.getSymbolAtLocation(binding.name);
-            if (!binding.isTypeOnly && symbol && (binding.propertyName ?? binding.name).text === 'Prose') {
+            if (binding.isTypeOnly || (binding.propertyName ?? binding.name).text !== 'Prose') {
+              continue;
+            }
+            const symbol = soleImportSymbol(binding);
+            if (symbol) {
               proseBindings.add(symbol);
             }
           }
